@@ -1,0 +1,33 @@
+body {
+  font-family: "Computer Modern Serif", serif;
+  font-size: 18px;
+}
+
+code {
+  font-family: "Computer Modern Typewriter"
+}
+
+.container {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.identity {
+  font-size: 32px;
+}
+
+header {
+  padding-bottom: 10px;
+  border-bottom: 1px dashed black;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 5px;
+}
