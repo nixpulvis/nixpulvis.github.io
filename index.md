@@ -9,8 +9,6 @@ let nix = snow;
 let pulvis = powder || dust;
 ```
 
-# Who am `i`
-
 Welcome to my sclice of the internet. If you'd like to find me elsewhere, here
 are some more places to look:
 
