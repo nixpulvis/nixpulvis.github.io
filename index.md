@@ -11,11 +11,6 @@ let pulvis = powder || dust;
 
 # Who am `i`
 
-My name is Nathan (Nate) Lilienthal. I go by nixpulvis on the internet. You
-may be wondering what nixpulvis means, I'll need to write up an explanation
-for that at some point.
-Some very basic information about me.
-
 - nathan@nixpulvis.com
 - [GitHub](https://github.com/nixpulvis)
 - [Twitter](https://twitter.com/nixpulvis)
