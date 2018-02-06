@@ -20,6 +20,7 @@ an ideal RF setup by any means, but it works.
 The AP is broadcasting at 2412MHz (channel 1 of the 2.4GHz band), the bandwidth
 is 20MHz.
 TODO: Other link stats.
+TODO: wavemon screenshot.
 
 However, it's nowhere near good enough. Enter the world of fancy antennas. In
 the RF antenna world there exists a device named "Yagi", after one of it's
@@ -31,34 +32,40 @@ design as many household TV antennas from the old days.
 
 I'm not going to get into the design of these things, because frankly that's
 above my pay-grade at the moment, but there are a few key things to know about
-these antennas.
+these antennas:
 
-- They are directional,
+- They are directional, TODO: angles?
 - The antenna should be arranged to match the polarization of the AP.
-- The frequency
+- The frequency range (bandwidth) is very narrow, so there's no way a 2.4GHz
+  antenna will work on the 5GHz band.
 
 So I bought [one](amazon), and a [USB WiFi adapter](amazon) to go along with it. I
 chose the adapter to meet the following requirments:
 
 - 802.11n, 802.11ac isn't needed because we're only dealing with the 2.4GHz
-  band here.
-- Drivers included with Linux by default
-- External antenna connection (typically SMA)
+  band.
+- Drivers must be included with Linux by default.
+- External antenna connection (typically SMA).
 
 I After ordering the wrong kind of SMA adapter I finnaly got the [right](amazon)
 one, and we're in business. Simply moving from my laptop's built-in WiFi to this
 new setup improved signal level by TODO, and link quality by TODO.
 
+TODO: another wavemon screenshot.
+
 ### Share the World
 
 It's one thing to have access to a nice, fast network on a single computer, but
 I want my roomates to be able to benifit from this high quality link as well.
-Enter the NAT.
+Enter the [NAT](wiki).
 
-Building a NAT device isn't too bad. I've got an extra Rasperry Pi (v1) lying
-around running ArchARM.
+Building a NAT device isn't too hard. I've got an extra Rasperry Pi (v1) lying
+around running [ArchARM], so we'll work with that, but these techiques should
+work for any modern Linux machine.
 
 TODO: more words, and links to GitHub sources.
+
+#### Manually Configure
 
 First let's connect to the WiFi network, and make sure it's working.
 
@@ -68,14 +75,15 @@ netctl start <profile>
 ping 8.8.8.8
 ```
 
-We need to tell the kernal to route packets accross network interfaces, for
-more information start with [this SO post](https://unix.stackexchange.com/questions/14056/what-is-kernel-ip-forwarding).
+We need to tell the kernal to route packets accross network interfaces. For
+more information about kernal ip forwarding start with
+[this Stack Overflow post](https://unix.stackexchange.com/questions/14056/what-is-kernel-ip-forwarding).
 
 ```sh
 sysctl net.ipv4.ip_forward=1
 ```
 
-Once we've enabled packet forwarding, we need to setup the [NAT](wiki) between
+Once we've enabled packet forwarding, we need to setup the NAT between
 the wireless interface, and the Pi's ethernet interface.
 
 ```sh
@@ -92,9 +100,26 @@ systemctl start dhcpd4@$to.service
 ```
 
 With that all said and done we should be able to connect a computer via ethernet
-and access the internet. Woot! All that's left is to connect that ethernet cable
-to a functional wireless router, and we've got our own WiFi network with good
-connectivity.
+and access the internet. Woot!
+
+#### Systemd Unit
+
+Ideally we should be able to simply power up the pi (or whatever machine) and
+have all the needed networking configuration happen automatically. This is the
+domain of systemd services and targets.
+
+TODO: Actually figure this all out...
+
+#### Setup our own Wireless Network
+
+All that's left is to connect the ethernet cable from the pi to a functional
+wireless router, and we've got our own WiFi network with good connectivity.
+
+The observent reader will notice that we now have two NATs, the NAT between
+our WiFi borrower, and the NAT for our personal WiFi hotspot. It's NATs all the
+way down!
+
+
 
 ### Going Futher (literally…)
 
@@ -103,10 +128,8 @@ modern, FCC complient hardware like I have. If I were to buy another one of
 these antennas and point them at each other, how many meters, or kilometers
 could it go.
 
-Another factor in all this is the TX (sending) power. I don't know,
-at the moment, how much power this WiFi adapter can send with, nor do I know
-what the legal limits are. But the more power the further the signal will go, so
-it's worth looking into.
+Another factor in all this is the TX (sending) power.
+TODO: a bit of info on this.
 
 With an optimal setup, I've heard of people beaming WiFi over a kilometer, so
 this could be fun indeed! Tune in next time...
