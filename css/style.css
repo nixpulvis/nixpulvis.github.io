@@ -30,6 +30,28 @@ blockquote p:last-child {
   margin-bottom: 0;
 }
 
+kbd {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 2px 4px 0px;
+  box-shadow: 1px 1px 1px #777;
+  margin: 5px 0;
+  font-size: small;
+  vertical-align: text-bottom;
+  background: #eee;
+  color: #555;
+  font-variant: small-caps;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.nintendo {
+  font-family: Wendy;
+  font-weight: normal;
+  letter-spacing: 0px;
+  font-variant: caps;
+}
+
 .container {
   width: 600px;
   margin: 0 auto;
