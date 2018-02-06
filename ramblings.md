@@ -12,10 +12,12 @@ you.
 
 <ul>
 {% for rambling in site.posts %}
-    <li>
-        <a href="{{ rambling.url }}">{{ rambling.title }}</a>
-        -
-        {{ rambling.date | date: "%B %d, %Y" }}
-    </li>
+    {% unless rambling.draft %}
+        <li>
+            <a href="{{ rambling.url }}">{{ rambling.title }}</a>
+            -
+            {{ rambling.date | date: "%B %d, %Y" }}
+        </li>
+    {% endunless %}
 {% endfor %}
 </ul>

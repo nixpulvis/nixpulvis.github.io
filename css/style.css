@@ -9,6 +9,10 @@ body {
   font-size: 18px;
 }
 
+pre {
+  overflow-x: auto;
+}
+
 code {
   font-family: "Computer Modern Typewriter"
 }
