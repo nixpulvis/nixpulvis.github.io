@@ -9,7 +9,7 @@ let nix = snow;
 let pulvis = powder || dust;
 ```
 
-Welcome to my sclice of the internet. If you'd like to find me elsewhere, here
+Welcome to my slice of the internet. If you'd like to find me elsewhere, here
 are some more places to look:
 
 - 202.701.4368
