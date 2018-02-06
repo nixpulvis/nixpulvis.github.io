@@ -31,6 +31,13 @@ blockquote p:last-child {
   margin: 0 auto;
 }
 
+@media only screen
+and (max-device-width : 600px) {
+  .container {
+    width: 90%;
+  }
+}
+
 .identity {
   font-size: 32px;
   text-decoration: none;
