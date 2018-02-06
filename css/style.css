@@ -13,6 +13,19 @@ code {
   font-family: "Computer Modern Typewriter"
 }
 
+blockquote {
+  padding: 10px;
+  border: 1px dashed black;
+}
+
+blockquote p:first-child {
+  margin-top: 0;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
 .container {
   width: 600px;
   margin: 0 auto;
