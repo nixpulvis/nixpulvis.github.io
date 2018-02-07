@@ -17,8 +17,9 @@ are some more places to look:
 - [GitHub](https://github.com/nixpulvis)
 - [Twitter](https://twitter.com/nixpulvis)
 
-I'm a *hacker*, meaning I like to make things (and break things). I have a
-passion for Programming Languages (PL) and embedded systems. You'll likely
+I'm a *hacker*, meaning I like to make things (and break things). I'm also a
+*tinker*, by a more literal definition -- I like to get my hands dirty. I have
+a passion for Programming Languages (PL) and embedded systems. You'll likely
 find me writing Rust or soldering something.
 
 I’m from Colorado, went to school in Boston, moved to Silicon Valley, and now
