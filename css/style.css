@@ -14,7 +14,7 @@ pre {
 }
 
 code {
-  font-family: "Computer Modern Typewriter"
+  font-family: "Computer Modern Typewriter";
 }
 
 blockquote {
@@ -109,3 +109,4 @@ nav ul li {
   display: inline-block;
   margin-right: 5px;
 }
+
