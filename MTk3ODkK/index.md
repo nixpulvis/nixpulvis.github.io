@@ -1,22 +1,8 @@
 ---
 layout: default
+style: /css/MTk3ODkK.css
 title: Chunky Bacon
 ---
-
-<style>
-body {
-    color: white;
-    background: black;
-}
-
-a {
-    color: red;
-}
-
-header, blockquote {
-    border-color: white;
-}
-</style>
 
          (λ(f)(λ
          (x)(((x(λ(

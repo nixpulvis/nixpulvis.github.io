@@ -2,11 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>nixpulvis - {{ page.title }}</title>
+    <title>nixpulvis - {{ page.title | default: page.path | split:'/' | last }}</title>
     <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
     <link rel="stylesheet" type="text/css" href="http://c.filler00.com/resources/fonts/wendy/1.0/wendy.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="{{ page.style }}" />
     <script src="/js/mousetrap.min.js"></script>
     <script src="/js/main.js"></script>
   </head>
@@ -24,9 +25,7 @@
       </nav>
     </header>
 
-    <div class="content">
-      {{ content }}
-    </div>
+    <div class="content">{{ content }}</div>
 
     <footer>
       <a href="https://en.wikipedia.org/wiki/Copyright_notice">©</a>

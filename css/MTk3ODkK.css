@@ -1,0 +1,27 @@
+body {
+  color: white;
+  background: black;
+}
+
+a {
+  color: red;
+}
+
+header, blockquote {
+  border-color: white;
+}
+
+.content {
+  font-family: "Computer Modern Typewriter";
+  white-space: pre-wrap;
+}
+
+.content p {
+  display: inline;
+  margin: 0;
+}
+
+.content p:first-child {
+  display: inline-block;
+  margin-top: 20px;
+}
