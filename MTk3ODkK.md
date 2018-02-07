@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Chunky Bacon
-permalink: /MTk3ODkK/
 ---
 
 <style>
