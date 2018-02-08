@@ -103,4 +103,14 @@
   font-style: italic;
 }
 
+/* Pixel
+ * ----- */
+
+/* Normal */
+@font-face {
+  font-family: "Pixel";
+  src: url('/font/Pixel/wendy.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
