@@ -53,7 +53,7 @@ kbd {
 }
 
 .container {
-  width: 600px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -87,6 +87,7 @@ header img {
 
 footer {
   padding: 10px 0;
+  font-size: 14px;
   border-top: 1px dashed black;
 }
 
