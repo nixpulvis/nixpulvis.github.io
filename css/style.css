@@ -81,6 +81,10 @@ header img {
   float: right;
 }
 
+img {
+  max-width: 100%;
+}
+
 .content {
   flex: 1 0 auto;
 }
