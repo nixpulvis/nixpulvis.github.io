@@ -41,9 +41,8 @@ kbd {
   border-radius: 3px;
   padding: 2px 4px 0px;
   box-shadow: 1px 1px 1px #777;
-  margin: 5px 0;
   font-size: calc(100% - 6px);
-  vertical-align: text-bottom;
+  vertical-align: middle;
   background: #eee;
   color: #555;
   font-weight: 600;
