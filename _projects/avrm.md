@@ -1,6 +1,6 @@
 ---
 layout: project
-published: false
+draft: true
 ---
 
 I write a decent bit of code for AVRs, those tiny little processors that power

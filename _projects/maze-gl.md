@@ -1,6 +1,6 @@
 ---
 layout: project
-published: false
+draft: true
 ---
 
 A friend of mine once asked if we could build something in OpenGL just to see

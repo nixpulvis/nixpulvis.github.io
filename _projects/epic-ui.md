@@ -1,6 +1,6 @@
 ---
 layout: project
-published: false
+draft: true
 ---
 
 I used to be an avid World of Warcraft player. Raiding PvE bosses many times a

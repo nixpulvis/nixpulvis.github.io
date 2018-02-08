@@ -22,9 +22,11 @@ the projects themselves.
 
 <ul>
 {% for project in site.projects %}
-    <li>
-        <a href="{{ project.url }}">{{ project.title }}</a>
-        {{ project.excerpt }}
-    </li>
+    {% unless project.draft %}
+        <li>
+            <a href="{{ project.url }}">{{ project.title }}</a>
+            {{ project.excerpt }}
+        </li>
+    {% endunless %}
 {% endfor %}
 </ul>

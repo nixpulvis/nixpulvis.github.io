@@ -1,6 +1,6 @@
 ---
 layout: project
-published: false
+draft: true
 ---
 
 I've wanted to build an LED cube for a while now, and I finnally did. This

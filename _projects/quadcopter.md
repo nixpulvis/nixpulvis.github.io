@@ -1,6 +1,6 @@
 ---
 layout: project
-published: false
+draft: true
 ---
 
 Quadcopters are amazing flying devices, able to move somewhat freely in our

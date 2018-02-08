@@ -1,6 +1,6 @@
 ---
 layout: project
-published: false
+draft: true
 ---
 
 Conway's Game of Life is a cult classic amungst programmers. It's a beautiful
