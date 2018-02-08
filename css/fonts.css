@@ -1,0 +1,106 @@
+/* Serif
+ * ----- */
+
+/* Normal */
+@font-face {
+  font-family: "Computer Modern Serif";
+  src: url('/font/Serif/cmunrm.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Italic */
+@font-face {
+  font-family: "Computer Modern Serif";
+  src: url('/font/Serif/cmunti.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* Bold */
+@font-face {
+  font-family: "Computer Modern Serif";
+  src: url('/font/Serif/cmunbx.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Bold Italic */
+@font-face {
+  font-family: "Computer Modern Serif";
+  src: url('/font/Serif/cmunbi.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* Sans
+ * ---- */
+
+/* Normal */
+@font-face {
+  font-family: "Computer Modern Sans";
+  src: url('/font/Sans/cmunss.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Italic */
+@font-face {
+  font-family: "Computer Modern Sans";
+  src: url('/font/Sans/cmunsi.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* Bold */
+@font-face {
+  font-family: "Computer Modern Sans";
+  src: url('/font/Sans/cmunsx.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Bold Italic */
+@font-face {
+  font-family: "Computer Modern Sans";
+  src: url('/font/Sans/cmunso.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* Typewriter
+ * ---------- */
+
+/* Normal */
+@font-face {
+  font-family: "Computer Modern Typewriter";
+  src: url('/font/Typewriter/cmuntt.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Italic */
+@font-face {
+  font-family: "Computer Modern Typewriter";
+  src: url('/font/Typewriter/cmunit.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* Bold */
+@font-face {
+  font-family: "Computer Modern Typewriter";
+  src: url('/font/Typewriter/cmuntb.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Bold Italic */
+@font-face {
+  font-family: "Computer Modern Typewriter";
+  src: url('/font/Typewriter/cmuntx.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+}
+
+
