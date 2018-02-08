@@ -18,6 +18,7 @@ code {
 }
 
 blockquote {
+  margin: 0;
   padding: 10px;
   border: 1px dashed black;
 }
@@ -30,6 +31,11 @@ blockquote p:last-child {
   margin-bottom: 0;
 }
 
+hr {
+  border: 0;
+  border-bottom: 1px dashed black;
+}
+
 kbd {
   display: inline-block;
   border-radius: 3px;
@@ -40,7 +46,6 @@ kbd {
   vertical-align: text-bottom;
   background: #eee;
   color: #555;
-  font-variant: small-caps;
   font-weight: 600;
   letter-spacing: 1px;
 }
@@ -90,7 +95,6 @@ img {
 
 footer {
   padding: 10px 0;
-  font-size: 14px;
   border-top: 1px dashed black;
 }
 
