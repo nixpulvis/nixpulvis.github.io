@@ -45,8 +45,6 @@ Press <kbd>A</kbd> to do something.
 
 Press <kbd>Ctrl+a</kbd> to do something else.
 
-<small>shhh, <kbd>&</kbd> does something secret</small>
-
 > this is a quote.
 
 [This is a link](#).

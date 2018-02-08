@@ -42,7 +42,7 @@ kbd {
   padding: 2px 4px 0px;
   box-shadow: 1px 1px 1px #777;
   margin: 5px 0;
-  font-size: small;
+  font-size: calc(100% - 6px);
   vertical-align: text-bottom;
   background: #eee;
   color: #555;
@@ -95,6 +95,7 @@ img {
 
 footer {
   padding: 10px 0;
+  font-size: 14px;
   border-top: 1px dashed black;
 }
 
