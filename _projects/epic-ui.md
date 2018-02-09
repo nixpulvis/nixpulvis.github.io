@@ -1,6 +1,6 @@
 ---
 layout: project
-draft: true
+title: Epic UI
 ---
 
 I used to be an avid World of Warcraft player. Raiding PvE bosses many times a
