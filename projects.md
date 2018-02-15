@@ -12,7 +12,7 @@ think/build clearly.
 
 > The reward of a thing well done is having done it.
 >
-> -- Ralph Waldo Emerson
+> -- <cite>Ralph Waldo Emerson</cite>
 
 Please be aware, unlike my [Ramblings](/ramblings), these projects are living
 documents. I may update them without notice to add detail or track changes to
