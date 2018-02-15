@@ -4,7 +4,12 @@ layout: post
 
 All things start with a "Hello World".
 
-To a programmer this means specifically `fn main() { println!("Hello World"); }`.
+To a programmer this means specifically:
+
+```rust
+fn main() { println!("Hello World"); }
+```
+
 But in general it should represent the minimal effort to show the workings of a
 system's dependencies. For example, let's say you are tasked with playing music
 for a crowd. Before you get to actually playing the music you must perform a
