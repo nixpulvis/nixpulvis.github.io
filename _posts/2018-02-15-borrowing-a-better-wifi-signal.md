@@ -95,6 +95,16 @@ iptables -A FORWARD -i $to -o $from -j ACCEPT
 Finally, we enable [DHCP](wiki) to allow clients to negociate for an IP address
 on the new local network.
 
+```conf
+# /etc/dhcpd.conf
+option domain-name-servers 8.8.8.8, 8.8.4.4;
+option subnet-mask 255.255.255.0;
+option routers 192.168.0.1;
+subnet 192.168.0.0 netmask 255.255.255.0 {
+  range 192.168.0.150 192.168.0.250;
+}
+```
+
 ```sh
 systemctl start dhcpd4@$to.service
 ```
