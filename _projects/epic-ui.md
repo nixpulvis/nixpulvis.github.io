@@ -24,7 +24,7 @@ the needed information, without so much clutter.
 
 ### Let There be Code!
 
-After I discovered Tukui, it only took my a little while before I downloaded
+After I discovered Tukui, it only took me a little while before I downloaded
 Notepad++ (the OG editor) and started making my own modifications. I didn't
 know LUA, but for the basic things like moving a UI element somewhere else the
 code was simple.
@@ -98,7 +98,9 @@ Tarecgosa's Rest, a legendary weapon that required a full raiding guild (25+
 members) to create over many weeks for a *single* player to obtain. I was lucky
 enough to be the second member of my guild to recive it. Once I did however it
 became clear to me that the inner workings of this item were not yet known to
-the public. Without going into too much detail, the staff had a chance to do
+the public.
+
+Without going into too much detail, the staff had a chance to do
 a lot of damage, but it wasn't exactly clear what caused it, and what the
 probabilities actaully were. I know how to write code now I thought, this
 should be easy to figure out. Sure enough after only a few hours of programming
@@ -109,18 +111,55 @@ looked like garbage.
 
 #### A Hack to Progress
 
-TODO: maloriak.
+This story almost definetly falls under a category of things Blizzard loves to
+ban people for, however it's been so long, and the gained achivement all but
+forgotten. Let me tell you the story of Heroic Maloriak 25 man, I raided with
+Vox Radix.
+
+We were Darkspear's (Swifty's server) number 1 raiding guild. I don't just tell
+you this to pad my ego, but as an indication that we were good at the game. But
+for whatever reason, this one boss fight mechanic was proving unsurmountable
+for us. In short there was a boss ability that has a **very** short cast time
+(< 1s) which if left un-interrupted would wipe the raid. So we wiped, and we
+wiped, and we wiped. Countless hours wasted to a single issue.
+
+One night me and a friend stayed up late talking (as we normally do). I was
+expressing my frustration with the interrupts, and my powerlessness since I
+played a class without an interrupt. I remember thinking, "I'm learning to
+make WoW addons I should just hack the fight!". This sent me down a research
+path where I learned about `hooksecurefunc` and the world of Taints! Without
+boring you too much with the details of all that, WoW has various mechanisms
+for perventing you from say, creating an addon that casted an interrupt as a
+reaction to a boss ability automatically. Well shit.
+
+"It's imposible", I first thought. Then it dawned on me... There is nothing
+stopping me from **showing and hiding frames** as a reaction to a combat event.
+Toggling frames is a pretty fundamental thing, and it's nice that you can do
+that in combat. So all I needed to do is write an addon that has a frame sit
+directly over the user's interrupt spell, and disapear when the boss casts. The
+addon took about an hour to write, and maybe 3 hours to debug with my friend.
+
+The next raid night my friend (enhancement shamman) was equipped with the addon
+and would spend the whole fight clicking (with the mouse) on the area of his
+actionbars where the interrupt was. As soon as the boss started casting, the
+addon would disapear, and the interrupt would go off. Sure enough, not a single
+wipe to a missed cast.
+
+We didn't kill it that night, becuase there was a new phase to learn at the
+end. But we got to that phase for the first time, and I felt like a hero.
 
 ### What a Long, Strange Trip It's Been
 
 I still have my account, and log on from time to time, but the long nights and
-endless thought has mostly died. I'm a casual player, and I don't run my own UI
+endless thought has mostly died down. I'm a casual player, and I don't run my own UI
 anymore. ElvUI, another project from the same community is my go to, and I'm
 pretty happy with it overall.
 
 WoW to me will always hold a special place in my heart. Not only for the people
 I met playing the game, but also as the gateway drug to harder programming. I
 owe it all to a little LUA and a lot of help from the members of Tukui.
+
+-- <cite>Epicgrim</cite>
 
 ![](/img/epic-ui/invincible.jpg)
 
