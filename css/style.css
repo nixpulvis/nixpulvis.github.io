@@ -93,6 +93,7 @@ img {
 }
 
 footer {
+  margin-top: 20px;
   padding: 10px 0;
   font-size: 14px;
   border-top: 1px dashed black;
