@@ -151,17 +151,52 @@ Pretty simple, and it's nice to be able to talk about our assumptions in code.
 Before I get into chaperone and impersonator contracts, first let me explain
 impersonators and chaperones beifly. Both are a way to wrap data, where a
 chaperone is allowed to view the data, and an impersonator is allowed to modify
-it. Below I create a chaperone of the `add1` function that prints it's inputs
-and outputs (taken from the Racket Documentation).
+it.
 
 ```racket
-(define print-add1
-  (chaperone-procedure add1
-    (lambda (n)
-      (printf "given: ~s\n" n)
-      (values
-        (lambda (r) (printf "returned: ~s\n" r) r)
-        n))))
+(define impersonated-add1
+  (impersonate-procedure add1 (lambda (n) 41)))
+
+; Notice how we update the value that gets passed to `add1`.
+(impersonated-add1 0)
+42
+
+(define chaperoned-add1
+  (chaperone-procedure add1 (lambda (n) 41)))
+
+; A chaperone is not allowed to modify the input to `add1`.
+(chaperoned-add1 0)
+; procedure chaperone: non-chaperone result;
+;  received a argument that is not a chaperone of the original argument
+;   original: 0
+;   received: 41
+```
+
+An important fact about these kinds of wrappers is that they are `equal?` to
+thier wrapped functions, whereas most functions aren't `equal?` to anything
+else.
+
+```racket
+(equal? (lambda (x) x) (lambda (x) x))
+#f
+(equal? impersonated-add1 add1)
+#t
+(equal? chaperoned-add1 add1)
+#t
+```
+
+Below I create a chaperone of the `add1` function that prints it's inputs
+and outputs (taken from the Racket documentation).
+
+```racket
+(define (post-wrap n)
+  (printf "returned: ~s\n" n) n)
+
+(define (wrap n)
+  (printf "given: ~s\n" n)
+  (values post-wrap n))
+
+(define print-add1 (chaperone-procedure add1 wrap))
 ```
 
 As you can see `chaperone-procedure` can wrap both before and after the
