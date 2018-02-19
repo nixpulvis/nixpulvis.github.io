@@ -129,7 +129,7 @@ happy?
 
 As you can see, the contract system caught us when we tried to say that
 `happy?` was contractually obligated to be `#t`, but we assigned `(and #t
-false)`. Strings, numbers, and regexs all work as you'd expect. Predicate
+#f)`. Strings, numbers, and regexs all work as you'd expect. Predicate
 functions are also pretty straightforward, and provide an easy way to check
 whatever condition you'd like.
 
@@ -164,14 +164,16 @@ it.
 
 ```racket
 (define impersonated-add1
-  (impersonate-procedure add1 (lambda (n) 41)))
+  (impersonate-procedure add1
+    (lambda (n) 41)))
 
 ; Notice how we update the value that gets passed to `add1`.
 (impersonated-add1 0)
 42
 
 (define chaperoned-add1
-  (chaperone-procedure add1 (lambda (n) 41)))
+  (chaperone-procedure add1
+    (lambda (n) 41)))
 
 ; A chaperone is not allowed to modify the input to `add1`.
 (chaperoned-add1 0)
@@ -205,7 +207,8 @@ and outputs (taken from the Racket documentation).
   (printf "given: ~s\n" n)
   (values post-wrap n))
 
-(define print-add1 (chaperone-procedure add1 wrap))
+(define print-add1
+  (chaperone-procedure add1 wrap))
 ```
 
 As you can see `chaperone-procedure` can wrap both before and after the
