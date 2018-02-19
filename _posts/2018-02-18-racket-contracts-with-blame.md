@@ -1,6 +1,5 @@
 ---
 layout: post
-draft: true
 ---
 
 Throughout my undergraduate computer science education contracts have been
@@ -53,21 +52,10 @@ be using these in this post, to avoid talking about modules too much.
 
 We'll be using `define/contract` to define an item with a contract directly. We
 can define items just like with `define` but with an additional `contract-expr`
-in it's arguments. For example:
+as it's 2nd argument. For example:
 
 ```racket
-(define (add2 n)
-  (+ n 2))
-
-(add2 0)
-2
-
-(add2 "foo")
-; +: contract violation
-;   expected: number?
-;   given: "foo"
-;   argument position: 1st
-
+; Define `add2` with a contract of it's own.
 (define/contract (add2 n)
   (-> number? number?)
   (+ n 2))
@@ -86,18 +74,34 @@ in it's arguments. For example:
 ;    (assuming the contract is correct)
 ```
 
+Compared to a `define` implementation of `add2`:
+
+```racket
+; Define a plain old `add2` without it's own contract.
+(define (add2 n)
+  (+ n 2))
+
+(add2 0)
+2
+
+(add2 "foo")
+; +: contract violation
+;   expected: number?
+;   given: "foo"
+;   argument position: 1st
+```
+
 As you can see, both definitions of `add2` correctly operate on `0`, and both
 definitions correctly error when given `"foo"`, the important difference is
 which party is blamed. In the `define` example there is no new contract, and
-it's the contract of `+` which detects the error. In our new definition with
+it's the contract of `+` which detects the error. In our definition with
 `define/contract` it's the attached `(-> number? number?)` contract which
 catches our error.
 
 ### Flat Contracts
 
-Before we look at function contracts (and other more complex contracts) any
-more, let's first start by looking at the simplest kind of contract. A flat
-contract is one of:
+Before we look at function contracts any more, let's first start by looking at
+the simplest kind of contract. A flat contract is one of:
 
 - Symbols, booleans, keywords, `null`.
 - Strings, Characters.
@@ -109,11 +113,11 @@ These are the *trival* cases of contracts. Let's take a quick look at creating
 data using flat contracts.
 
 ```racket
-(define/contract happy? true (or #t #f))
+(define/contract happy? #t (or #t #f))
 happy?
 #t
 
-(define/contract happy? true (and #t #f))
+(define/contract happy? #t (and #t #f))
 ; happy?: broke its own contract
 ;   promised: #t
 ;   produced: #f
@@ -124,17 +128,17 @@ happy?
 ```
 
 As you can see, the contract system caught us when we tried to say that
-`happy?` was contractually obligated to be `true`, but we assigned `(and true
+`happy?` was contractually obligated to be `#t`, but we assigned `(and #t
 false)`. Strings, numbers, and regexs all work as you'd expect. Predicate
 functions are also pretty straightforward, and provide an easy way to check
 whatever condition you'd like.
 
 ```racket
+; Define our own contract predicate.
 (define (natural+? n) (> n 0))
 
 (define/contract one natural+? 1)
-
-> (define/contract zero natural+? 0)
+(define/contract zero natural+? 0)
 ; zero: broke its own contract
 ;   promised: natural+?
 ;   produced: 0
@@ -147,6 +151,11 @@ whatever condition you'd like.
 Pretty simple, and it's nice to be able to talk about our assumptions in code.
 
 ### Chaperone and Impersonator Contracts
+
+The most important kind of contract left out of the flat contracts is `->`. This
+form of contract is also known as a contract combinator, since it takes many
+contracts as arguments and returns a new contract. Any contract created with
+`->` (for example `(-> number? number?)`) is a chaperone contract.
 
 Before I get into chaperone and impersonator contracts, first let me explain
 impersonators and chaperones beifly. Both are a way to wrap data, where a
