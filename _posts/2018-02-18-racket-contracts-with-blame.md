@@ -1,5 +1,6 @@
 ---
 layout: post
+draft: true
 ---
 
 Throughout my undergraduate computer science education contracts have been
