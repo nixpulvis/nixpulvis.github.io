@@ -22,6 +22,9 @@ I'm a *hacker*, meaning I like to make things (and break things). I'm also a
 a passion for Programming Languages (PL) and embedded systems. You'll likely
 find me writing Rust or soldering something.
 
+If you would like to read more of my [rambling](/ramblings) or about a
+[project](/projects) I've done, please do!
+
 I’m from Colorado, went to school in Boston, moved to Silicon Valley, and now
 I'm a ski bum back in Colorado, looking for work in Boston as early as May
 2018.
