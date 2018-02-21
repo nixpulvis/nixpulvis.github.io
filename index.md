@@ -3,6 +3,8 @@ layout: default
 title: Home
 ---
 
+### Hello and Welcome!
+
 ```rust
 // Define "nixpulvis" in Latin.
 let nix = snow;
