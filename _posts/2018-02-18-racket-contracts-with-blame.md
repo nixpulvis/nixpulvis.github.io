@@ -14,6 +14,9 @@ differences are that:
 3. In general, a contract system is a system of predicate checks with smart
    errors.
 
+*I strongly recommend following along with these examples either in
+DrRacket, or the `racket` REPL.*
+
 In learning to program Racket you may not write a single contract, but you will
 definetly use them. This is because most of the functions (and data) you'll
 build with have contracts, and when something goes wrong it's the contracts
