@@ -15,8 +15,8 @@ you.
     {% unless rambling.draft %}
         <li>
             <a href="{{ rambling.url }}">{{ rambling.title }}</a>
-            -
-            {{ rambling.date | date: "%B %d, %Y" }}
+            {{ rambling.content | number_of_words }} words
+            published on {{ rambling.date | date: "%B %d, %Y" }}.
         </li>
     {% endunless %}
 {% endfor %}
