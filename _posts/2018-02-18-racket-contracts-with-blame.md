@@ -3,15 +3,16 @@ layout: post
 draft: true
 ---
 
-Throughout my undergraduate computer science education contracts have been
-heavily stressed. However, to many people who didn't study at Northeastern this
-concept may be foriegn. The idea of a contract isn't all that different from a
-type, since both are used to describe the shape of data. The two main
-differences to me are that:
+The idea of a contract isn't all that different from a type, since both are
+used to describe the shape of data. However, due to the dynamic nature of
+contracts they can describe much more than just shape. The three main
+differences are that:
 
 1. Contracts are dynamic, telling you what went wrong at run-time.
 2. Contracts are opt-in. Without getting into gradual type systems, this is
-general not the case with type systems.
+   generally not the case with type systems.
+3. In general, a contract system is a system of predicate checks with smart
+   errors.
 
 In learning to program Racket you may not write a single contract, but you will
 definetly use them. This is because most of the functions (and data) you'll
@@ -158,6 +159,8 @@ form of contract is also known as a contract combinator, since it takes many
 contracts as arguments and returns a new contract. Any contract created with
 `->` (for example `(-> number? number?)`) is a chaperone contract.
 
+#### Immutable and Mutable Wrappers
+
 Before I get into chaperone and impersonator contracts, first let me explain
 impersonators and chaperones beifly. Both are a way to wrap data, where a
 chaperone is allowed to view the data, and an impersonator is allowed to modify
@@ -217,11 +220,133 @@ original function is called. This pattern is perfect for creating a contract on
 functions (and other kinds of composite data), since a contract for a function
 must check the contracts for it's arguments and results.
 
+#### Back to Contracts
+
+So we've seen what impersonators and chaperones are, but where do they show up
+as contracts?
+
 ```racket
-(flat-contract number?)
-#t
-(flat-contract (-> number? number?))
-#f
-(chaperone-contract? (-> number? number?))
-#t
+(define contracts `(number?
+                    ,(-> number? number?)
+                    ,(let ([a (new-∀/c #f)])
+                          (-> a a))))
+
+(map flat-contract? contracts)
+'(#t #f #f)
+(map chaperone-contract? contracts)
+'(#t #t #f)
+(map impersonator-contract? contracts)
+'(#f #f #t)
 ```
+
+As you can see function contracts (`->`) are chaperones and polymorphic
+contracts are impersonators. There are a few other examples of each, but this
+is a good start. I'm going to skip over the polymorphic contracts `new-∀/c` and
+`new-∃/c` for now.
+
+As we've already seen in the first section, we can attched `->` contracts to
+functions to protect their domain, and range. But now I want to look at this
+a bit more carefully. One aspect of contracts we've glossed over a bit is
+**blame**, which we will now come to understand better.
+
+Let's start by defining a function with a partially broken implementation (i.e.
+fails it's contract under some inputs).
+
+```racket
+(define/contract (broken x y)
+  (-> (>=/c 10)
+      (>=/c 5)
+      (>/c 15))
+  (+ x y))
+
+(broken 0 0)
+; broken: contract violation
+;   expected: (>=/c 10)
+;   given: 0
+;   in: the 1st argument of
+;       (-> (>=/c 10) (>=/c 5) (>/c 15))
+;   contract from: (function broken)
+;   blaming: top-level
+;    (assuming the contract is correct)
+
+(broken 10 5)
+; broken: broke its own contract
+;   promised: a number strictly greater than 15
+;   produced: 15
+;   in: the range of
+;       (-> (>=/c 10) (>=/c 5) (>/c 15))
+;   contract from: (function broken)
+;   blaming: (function broken)
+;    (assuming the contract is correct)
+```
+
+As you can see, `(broken 0 0)` didn't supply valid arguments, and the contract
+violation tells us that, and *blames* the top level (the REPL in this case),
+since it was the fault of mine when I tried to supply `0` as arguements.
+However, when I provided valid arguments in `(broken 10 5)` the function
+performed the `(+ 10 5)` arithmatic, and broke it's own contract. This is
+clearly the fault of the function, not the top level, and the violation tell us
+that as well.
+
+Things can get a little confusing when we remember functions are first class in
+Racket, and we can pass them around as data.
+
+```racket
+; Filters a list given a predicate function.
+(define/contract (filter f l)
+  (parametric->/c [X]
+    (-> (-> X boolean?)
+        (listof X)
+        (listof X)))
+  (foldr (lambda (a bs) (if (f a) (cons a bs) bs))
+         '()
+         l))
+
+(filter (lambda (x) (> x 1)) '(0 1 2 3))
+'(2 3)
+(filter odd? '(0 1 2 3))
+'(1 3)
+```
+
+But what who's fault is it when I pass `+` as the predicate function to filter?
+Mine! of course. More specifically, it'd be the top level in the following
+example:
+
+```racket
+(filter + '(0 1 2 3))
+; filter: contract violation
+;   expected: boolean?
+;   given: 3
+;   in: the range of
+;       the 1st argument of
+;       (parametric->/c
+;        (X)
+;        (-> (-> X boolean?) (listof X) (listof X)))
+;   contract from: (function filter)
+;   blaming: top-level
+;    (assuming the contract is correct)
+```
+
+Racket's contract system is smart enough to know that even though the predicate
+function failed within our `filter` function, it was passed into the filter
+function as an argument, and therefor it's still the caller's fault.
+
+Before we dig into the internals of the contract system a bit I thought I'd
+show of one of Racket's coolest type of contract, the `->i` function contract.
+In short, this contract combinator allows you to write a contract where each
+argument and the result can depend on each other. Let's look at another example
+from the Racket reference.
+
+```racket
+(->i ([x number?]
+      [y (x) (>=/c x)])
+     [result (x y) (>=/c (+ x y))])
+```
+
+This is a contract which ensures `y` is greater than `x` and that the result is
+always the sum of the two. This is very powerful, and comes at the cost of
+delaying execution of the contracts until the function itself returns.
+
+### `contract`, `make-contract` and Other Juicy Details
+
+TODO...
