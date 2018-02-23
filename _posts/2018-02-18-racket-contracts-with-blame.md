@@ -229,10 +229,11 @@ So we've seen what impersonators and chaperones are, but where do they show up
 as contracts?
 
 ```racket
-(define contracts `(number?
-                    ,(-> number? number?)
-                    ,(let ([a (new-∀/c #f)])
-                          (-> a a))))
+(define contracts
+  `(number?
+   ,(-> number? number?)
+   ,(let ([a (new-∀/c #f)])
+         (-> a a))))
 
 (map flat-contract? contracts)
 '(#t #f #f)
