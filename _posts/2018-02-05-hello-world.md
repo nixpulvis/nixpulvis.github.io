@@ -7,7 +7,9 @@ All things start with a "Hello World".
 To a programmer this means specifically:
 
 ```rust
-fn main() { println!("Hello World"); }
+fn main() {
+  println!("Hello World");
+}
 ```
 
 But in general it should represent the minimal effort to show the workings of a
