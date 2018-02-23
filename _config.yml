@@ -1,4 +1,7 @@
 collections:
+    ramblings:
+        output: true
+        permalink: /:collection/:name
     projects:
         output: true
         permalink: /:collection/:name

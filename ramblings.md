@@ -11,7 +11,7 @@ If you find something you like here, I've done my job. Otherwise, be gone with
 you.
 
 <ul>
-{% for rambling in site.posts %}
+{% for rambling in site.ramblings %}
     {% unless rambling.draft %}
         <li>
             <a href="{{ rambling.url }}">{{ rambling.title }}</a>
