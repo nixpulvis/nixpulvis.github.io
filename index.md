@@ -35,5 +35,5 @@ I graduated from Northeastern University with a Bachelor's in Computer and
 Information Science. I'm planning on going back to school with a focus on PL
 [soon™](https://gaming.stackexchange.com/questions/23112/where-did-soon-originate).
 
-You can view my [resume](/resume) for more information.
+You can view my [resume](/resume.pdf) for more information.
 
