@@ -11,7 +11,8 @@ If you find something you like here, I've done my job. Otherwise, be gone with
 you.
 
 <ul>
-{% for rambling in site.ramblings %}
+{% assign ramblings = site.ramblings | sort: 'date' | reverse %}
+{% for rambling in ramblings %}
     {% unless rambling.draft %}
         <li>
             <a href="{{ rambling.url }}">{{ rambling.title }}</a>
