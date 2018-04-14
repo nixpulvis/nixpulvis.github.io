@@ -8,6 +8,8 @@ title: Chunky Bacon
 S[p](problems)[h](hackers-band)inx o[f](fairy-tale) black quart[z](zuckerburg),
 judge [m](maxim)y vo[w](wild)!
 
+[War](war)
+
          (λ(f)(λ
          (x)(((x(λ(
          x)(λ(x y)y)
