@@ -33,3 +33,14 @@ the projects themselves.
     {% endunless %}
 {% endfor %}
 </ul>
+
+<ul>
+{% for project in site.projects %}
+    {% if project.draft %}
+        <li class="draft">
+            <a href="{{ project.url }}">{{ project.title }}</a>
+            {{ project.excerpt }}
+        </li>
+    {% endif %}
+{% endfor %}
+</ul>

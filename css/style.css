@@ -112,3 +112,6 @@ nav ul li {
   margin-right: 5px;
 }
 
+li.draft {
+  opacity: 0.25;
+}

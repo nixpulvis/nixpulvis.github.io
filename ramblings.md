@@ -13,12 +13,18 @@ you.
 <ul>
 {% assign ramblings = site.ramblings | sort: 'date' | reverse %}
 {% for rambling in ramblings %}
-    {% unless rambling.draft %}
+    {% if rambling.draft %}
+        <li class="draft">
+            <a href="{{ rambling.url }}">{{ rambling.title }}</a>
+            {{ rambling.content | number_of_words }} words
+            drafted on {{ rambling.date | date: "%B %d, %Y" }}.
+        </li>
+    {% else %}
         <li>
             <a href="{{ rambling.url }}">{{ rambling.title }}</a>
             {{ rambling.content | number_of_words }} words
             published on {{ rambling.date | date: "%B %d, %Y" }}.
         </li>
-    {% endunless %}
+    {% endif %}
 {% endfor %}
 </ul>
