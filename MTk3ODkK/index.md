@@ -8,7 +8,9 @@ title: Chunky Bacon
 S[p](problems)[h](hackers-band)inx o[f](fairy-tale) black quart[z](zuckerburg),
 judge [m](maxim)y vo[w](wild)!
 
-[War](war)
+[War](war)/
+    [Typed Fantasy Land](https://github.com/promises-aplus/promises-spec/issues/94)
+    [FactoryGirl](https://github.com/thoughtbot/factory_bot/issues/921)
 
          (λ(f)(λ
          (x)(((x(λ(
