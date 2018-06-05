@@ -105,3 +105,13 @@ Content column 1 | Content column 2
     <input type="radio" />
     <input type="submit" />
 </form>
+
+# Syntax Test
+
+```rust
+// All good code starts with a comment, right?
+/// This is the start of the glorius documentation.
+fn main() {
+    println!("Hello.");
+}
+```
