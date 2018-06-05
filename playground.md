@@ -2,6 +2,24 @@
 layout: default
 ---
 
+<script>
+  function addCss(fileName) {
+
+    var head = document.head;
+    var link = document.createElement("link");
+
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = fileName;
+
+    head.appendChild(link);
+  }
+
+  if (window.location.pathname.match("/MTk3ODkK")) {
+    addCss('/css/MTk3ODkK.css');
+  }
+</script>
+
 # Header 1
 ## Header 2
 ### Header 3
