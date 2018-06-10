@@ -1,4 +1,8 @@
 window.onload = () => {
+  document.getElementById("lambda").addEventListener("click", (e) => {
+    document.getElementById("me").classList.toggle("hidden");
+  });
+
   // Scroll just below the header.
   // NOTE: Maybe just on posts and projects?
   if (window.pageYOffset < 90) {

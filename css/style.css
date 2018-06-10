@@ -43,6 +43,10 @@ kbd {
   letter-spacing: 1px;
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 .nintendo {
   font-family: "Pixel";
   letter-spacing: 0px;
