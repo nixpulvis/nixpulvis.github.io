@@ -5,7 +5,7 @@ title: Chunky Bacon
 ---
 [![](/img/cavity.jpg)](https://poignant.guide/)
 
-S[p](problems)[h](hackers-band)inx o[f](fairy-tale) b[l](love-hate)ack quart[z](zuckerburg),
+S[p](problems)[h](hackers-band)inx o[f](fairy-tale) b[l](love-hate)ack qua[r](right)t[z](zuckerburg),
 judge [m](maxim)y vo[w](wild)!
 
 [War](war)/
