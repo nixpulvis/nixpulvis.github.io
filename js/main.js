@@ -1,4 +1,5 @@
 window.onload = () => {
+  // Toggle my hidden, ugly mug.
   document.getElementById("lambda").addEventListener("click", (e) => {
     document.getElementById("me").classList.toggle("hidden");
   });
