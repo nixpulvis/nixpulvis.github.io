@@ -11,6 +11,7 @@ judge [m](maxim)y vo[w](wild)!
 [War](war)/
     [Typed Fantasy Land](https://github.com/promises-aplus/promises-spec/issues/94)
     [FactoryGirl](https://github.com/thoughtbot/factory_bot/issues/921)
+    [HTTParty](https://github.com/jnunemaker/httparty/pull/321)
 
          (λ(f)(λ
          (x)(((x(λ(
