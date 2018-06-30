@@ -19,11 +19,11 @@ header, blockquote {
 
 .content {
   font-family: "Computer Modern Typewriter";
-  white-space: pre-wrap;
+  white-space: pre;
 }
 
 .content p {
-  display: inline;
+  display: inline-block;
   margin: 0;
 }
 

@@ -1,3 +1,8 @@
+---
+layout: default
+style: /css/MTk3ODkK.css
+---
+
 Passion is a fuel, consumed by fate. It can spread like fire or smolder in
 place. It's destructive and constructive, no stranger to pain.
 
