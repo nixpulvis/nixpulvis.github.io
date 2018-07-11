@@ -19,10 +19,10 @@ are some more places to look:
 - [GitHub](https://github.com/nixpulvis)
 - [Twitter](https://twitter.com/nixpulvis)
 
-I'm a *hacker*, meaning I like to make things (and break things). I'm also a
-*tinker*, by a more literal definition -- I like to get my hands dirty. I have
-a passion for Programming Languages (PL) and embedded systems. You'll likely
-find me writing Rust or soldering something.
+I'm a *hacker*, meaning I prefer an unlocked door. I'm also a *tinker*, by a
+more literal definition -- I like to dirty my hands building things. I have a
+passion for programming languages (PL) and embedded systems. You'll likely find
+me writing Rust or soldering something.
 
 If you would like to read more of my [rambling](/ramblings) or about a
 [project](/projects) I've done, please do!
