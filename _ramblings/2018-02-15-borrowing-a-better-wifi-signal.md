@@ -1,6 +1,6 @@
 ---
 title: "\"Borrowing\" a Better WiFi Signal"
-layout: post
+layout: rambling
 draft: true
 ---
 

@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: rambling
 ---
 
 Sometimes I like to pretend I was around for the settlement of the West. Much

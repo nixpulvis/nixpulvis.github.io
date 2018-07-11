@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: rambling
 ---
 
 All things start with a "Hello World".

@@ -5,7 +5,7 @@ window.onload = () => {
   });
 
   // Scroll just below the header.
-  // NOTE: Maybe just on posts and projects?
+  // NOTE: Maybe just on ramblings and projects?
   if (window.pageYOffset < 90) {
     window.scroll(0, 90);
   }

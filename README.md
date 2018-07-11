@@ -35,6 +35,6 @@ appear greyed out to viewers, or `published: false` to completely hide it.
 
 To create a rambling simply make a new file in the `_ramblings/` directory, and
 name it with the format `YYYY-MM-DD-the-title.md`. There is only one required
-YAML front matter attribute, `layout: post`. Otherwise, you may set `draft:
+YAML front matter attribute, `layout: rambling`. Otherwise, you may set `draft:
 true` to make the post appear greyed out to viewers, or `published: false` to
 completely hide it.
