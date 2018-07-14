@@ -1,6 +1,7 @@
 ---
 title: Building a Shell - Part 1
 layout: rambling
+draft: true
 ---
 
 A shell is one of the best computer interfaces I've ever used. It's been
