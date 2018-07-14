@@ -43,7 +43,7 @@ Print steps in a REPL, since we're using the same `STDOUT` and `STDERR`.
 # Print a prompt, then read a line from STDIN or file arguments,
 # splitting it into an ARGV-like array.
 def read
-  print("$ ")
+  print('$ ')
   gets.chomp.split(' ')
 end
 ```
@@ -112,10 +112,10 @@ I'll leave those implementations as exercises for the reader.
 # The builtin `cd` for changing the shell's working directory.
 BUILTINS['cd'] = lambda do |*args|
   # Change to the home directory by default.
-  args << ENV["HOME"] if args.empty?
+  args << ENV['HOME'] if args.empty?
 
   # Read the destination path, doing very basic path expansion.
-  dest = args.pop.gsub(/~/, ENV["HOME"])
+  dest = args.pop.gsub(/~/, ENV['HOME'])
 
   # Try to change this shell's working directory.
   begin
