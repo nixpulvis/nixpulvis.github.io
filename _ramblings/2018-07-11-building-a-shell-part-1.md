@@ -56,7 +56,9 @@ running.
 ```rb
 # Run the given command in a subprocess (using /bin/sh).
 def evaluate(*argv)
-  system(*argv)
+  if !system(*argv)
+    puts "unknown command '#{argv[0]}'"
+  end
 end
 ```
 
@@ -98,7 +100,9 @@ def evaluate(*argv)
   if BUILTINS[argv[0]]
     BUILTINS[argv[0]].call(*argv[1..-1])
   else
-    system(*argv)
+    if !system(*argv)
+      puts "unknown command '#{argv[0]}'"
+    end
   end
 end
 ```
