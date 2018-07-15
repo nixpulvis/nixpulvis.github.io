@@ -15,6 +15,8 @@ In this post I want to explain what a shell is, and build a very simple one.
 The shell we create will not be fast, or even good, but it'll work better than
 you might think ~50 lines of Ruby would.
 
+### Shell Basics
+
 A *terminal* is a graphical application, or device which generally runs a
 *shell*. A shell is a special kind of read eval print loop (REPL), that is
 primarily concerned with running subprocesses within the operating system.
@@ -24,6 +26,9 @@ Another kind of REPL you may have used is the browser's web console.
 $ date --iso-8601
 2018-07-11
 ```
+TODO: Explain STDIN/STDOUT/STDERR.
+TODO: Is this the best place to talk about signals?
+TODO: What other basics should I introduce at this point?
 
 ### Our Overly Simplistic Ruby Shell
 
@@ -137,6 +142,15 @@ BUILTINS['exit'] = lambda do |*args|
   # Exit the shell.
   exit args.pop.to_i
 end
+```
+
+Another issue the observant reader may have noticed has to do with signals.
+
+TODO: More background for signals.
+
+```rb
+# Don't exit on `SIGINT`, instead simply return a new prompt.
+trap('INT') { print("\n$ ") }
 ```
 
 ### The Code
