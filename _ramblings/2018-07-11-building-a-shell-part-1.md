@@ -54,13 +54,15 @@ end
 ```
 
 The following implementation of `evaluate` is a copout, because we just pass
-the input through to Ruby's implementation of `system` which calls `/bin/sh`.
+the input through to Ruby's implementation of `system` (TODO: Link to docs) which calls `/bin/sh`.
 It does the correct thing however, and is enough to get us off the ground
 running.
 
 ```rb
 # Run the given command in a subprocess (using /bin/sh).
+# TODO: Avoid or explain the *arg splat pattern.
 def evaluate(*argv)
+  # TODO: Break the `system` call into it's own line.
   if !system(*argv)
     puts "unknown command '#{argv[0]}'"
   end
