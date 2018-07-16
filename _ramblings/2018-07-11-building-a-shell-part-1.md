@@ -171,9 +171,11 @@ BUILTINS['exit'] = lambda do |args|
 end
 ```
 
-Another issue the observant reader may have noticed has to do with signals.
-
-TODO: More background for signals.
+There's another small issue the observant reader may have noticed. If you enter
+<kbd>ctrl-c</kbd> our shell process will exit with a nasty Ruby error. This is
+because by default that sends a `SIGINT` *signal*. Signals are another way UNIX
+processes can communicate with each other. In this case we'll [`trap`][trap]
+the `SIGINT` signal, and simply return a new prompt.
 
 ```rb
 # Don't exit on `SIGINT`, instead simply return a new prompt.
@@ -192,8 +194,10 @@ for your pleasure as a
 That's it, you've now got a working shell. In the future, we'll dive into both
 the `read` and `evaluate` functions in more depth. Both functions need a lot
 of work before we're anywhere near having a standalone POSIX shell ready for
-the "real world".
+the "real world". There's also many other topics worth exploring, like `ENV`
+variables, job control, user groups, glob syntax, locale, and much more.
 
 [loop]: https://ruby-doc.org/core-2.2.3/Kernel.html#method-i-loop
 [gets]: https://ruby-doc.org/core-2.2.3/Kernel.html#method-i-gets
 [system]: https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-system
+[trap]: https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-trap
