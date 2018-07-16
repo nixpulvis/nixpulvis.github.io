@@ -26,62 +26,69 @@ Another kind of REPL you may have used is the browser's web console.
 $ date --iso-8601
 2018-07-11
 ```
-TODO: Explain STDIN/STDOUT/STDERR.
-TODO: Is this the best place to talk about signals?
-TODO: What other basics should I introduce at this point?
+
+- TODO: Explain STDIN/STDOUT/STDERR.
+- TODO: Is this the best place to talk about signals?
+- TODO: What other basics should I introduce at this point?
 
 ### Our Overly Simplistic Ruby Shell
 
-The acronym REPL gives us a very clear path to building a shell. Based on that
-we have a nice wishlist of functions to implement. The shell we're building
-is very simple, reading only one *line* at a time.
+The acronym REPL gives us a starting point for designing our shell, with a
+wishlist of functions to implement. We can get away without defining `print` or
+`loop` since evaluation will print itself, and [`loop`][loop] is built into
+Ruby.
 
 - `read`
 - `evaluate`
 
-A much more complete shell might want to read in pieces to update syntax colors
-as you type, or provide history completion. We're not building anything that
-fancy at the moment however. The `eval` function covers both the Evaluate and
-Print steps in a REPL, since we're using the same `STDOUT` and `STDERR`.
+We'll start by implementing the `read` function. This function will block until
+an entire line is read using [`gets`][gets]. A much more powerful shell might
+read in pieces to update syntax highlighting as you type, or provide various
+kinds of completion. However, we're not building anything that fancy at the
+moment.
 
 ```rb
-# Print a prompt, then read a line from STDIN or file arguments,
-# splitting it into an ARGV-like array.
+# Print a prompt, then read a line from STDIN.
 def read
   print('$ ')
-  gets.chomp.split(' ')
-end
-```
 
-The following implementation of `evaluate` is a copout, because we just pass
-the input through to Ruby's implementation of `system` (TODO: Link to docs) which calls `/bin/sh`.
-It does the correct thing however, and is enough to get us off the ground
-running.
-
-```rb
-# Run the given command in a subprocess (using /bin/sh).
-# TODO: Avoid or explain the *arg splat pattern.
-def evaluate(*argv)
-  # TODO: Break the `system` call into it's own line.
-  if !system(*argv)
-    puts "unknown command '#{argv[0]}'"
+  # Try to read a line, exiting if there's no more lines.
+  line = STDIN.gets
+  if line
+    line.chomp.split(' ')
+  else
+    exit
   end
 end
 ```
 
-With this the full REPL is pretty easy to write.
+The following implementation of `evaluate` is a copout, because we just pass
+the input through to Ruby's implementation of [`system`][system] which calls
+`/bin/sh` under the hood. It does the correct thing however, and is enough to
+get us off the ground running.
 
 ```rb
-# The glorious REPL.
-loop do
-  evaluate(*read)
+# Run the given command in a subprocess.
+def evaluate(argv)
+  success = system(*argv)
+  unless success
+    puts("unknown command '#{argv[0]}'")
+  end
 end
 ```
 
-Running this tiny Ruby program will give you a semi-functional shell. Try it
-out for yourself! There are however a few critical features missing. For
-example, you'll notice `cd` doesn't work. This is where builtins come into
-play.
+Now that we've defined both `read` and `evaluate`, the full blown REPL is a
+simple one liner.
+
+```rb
+# The glorious REPL itself.
+loop { evaluate(read) }
+```
+
+Running this tiny Ruby program will give you a semi-functional shell. Take a
+moment and try it out for yourself! There are however, a few critical features
+missing, for example you'll notice `cd` doesn't work. This is where builtins
+come into play.
 
 ### Extending Our Shell (a little)
 
@@ -90,7 +97,7 @@ to a subprocess. This is exactly what we need for `cd`, since we don't want to
 change the working directory of a sub-process, we want to update the shell's
 working directory itself.
 
-We'll define a hash of `'command' => lambda { |*args| ... }` to serve as a
+We'll define a hash of `'command' => lambda { |args| ... }` to serve as a
 lookup table for the builtins.
 
 ```rb
@@ -102,26 +109,27 @@ Next we need to update our `evaluate` function to handle our special builtin
 commands.
 
 ```rb
-# Run the given command in a subprocess (using /bin/sh).
-def evaluate(*argv)
+# Run the given command in a subprocess.
+def evaluate(argv)
   if BUILTINS[argv[0]]
-    BUILTINS[argv[0]].call(*argv[1..-1])
+    BUILTINS[argv[0]].call(argv[1..-1])
   else
-    if !system(*argv)
-      puts "unknown command '#{argv[0]}'"
+    success = system(*argv)
+    unless success
+      puts("unknown command '#{argv[0]}'")
     end
   end
 end
 ```
 
-Finally, we can start defining the needed builtins. We'll start with just the
-two most needed commands, `cd` and `exit`, however there are many others which
+Finally, we can start defining the needed builtins. We'll start with the two
+most needed commands, `cd` and `exit`, however there are many others which
 could be defined at this point. Mainly `.` (or `source`), `alias` and `exec`.
 I'll leave those implementations as exercises for the reader.
 
 ```rb
 # The builtin `cd` for changing the shell's working directory.
-BUILTINS['cd'] = lambda do |*args|
+BUILTINS['cd'] = lambda do |args|
   # Change to the home directory by default.
   args << ENV['HOME'] if args.empty?
 
@@ -132,12 +140,14 @@ BUILTINS['cd'] = lambda do |*args|
   begin
     Dir.chdir(dest)
   rescue Exception
-    puts "no such directory: #{dest}"
+    puts("no such directory: #{dest}")
   end
 end
+```
 
+```rb
 # The builtin to exit the shell.
-BUILTINS['exit'] = lambda do |*args|
+BUILTINS['exit'] = lambda do |args|
   # Exit with a status of 0 by default.
   args << 0 if args.empty?
 
@@ -168,3 +178,7 @@ That's it, you've now got a working shell. In the future, we'll dive into both
 the `read` and `evaluate` functions in more depth. Both functions need a lot
 of work before we're anywhere near having a standalone POSIX shell ready for
 the "real world".
+
+[loop]: https://ruby-doc.org/core-2.2.3/Kernel.html#method-i-loop
+[gets]: https://ruby-doc.org/core-2.2.3/Kernel.html#method-i-gets
+[system]: https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-system
