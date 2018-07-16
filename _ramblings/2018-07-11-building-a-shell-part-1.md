@@ -4,12 +4,13 @@ layout: rambling
 draft: true
 ---
 
-A shell is one of the best computer interfaces I've ever used. It's been
-*declarative*, before being declarative was cool. It's keyboard centric, making
-it fast, and reliable. Sure, a shell isn't the right tool for everything. I'm
-not going to try and convince you to do your photo editing by typing
-`lighten(0, 0, 100, 100, 50%)`, but it is the right tool for more tasks
-than many people think (a topic for another day).
+A shell is one of the best computer interfaces I've ever used.
+It's *declarative*, before being declarative was cool. It's
+*keyboard centric*, making it fast, and reliable to use. Sure, a
+shell isn't the right tool for everything. I'm not going to try
+and convince you to do your photo editing by typing `lighten(0, 0,
+100, 100, 50%)`, but it is the right tool for more tasks than many
+people think (a topic for another day).
 
 In this post I want to explain what a shell is, and build a very simple one.
 The shell we create will not be fast, or even good, but it'll work better than
@@ -20,16 +21,30 @@ you might think ~50 lines of Ruby would.
 A *terminal* is a graphical application, or device which generally runs a
 *shell*. A shell is a special kind of read eval print loop (REPL), that is
 primarily concerned with running subprocesses within the operating system.
-Another kind of REPL you may have used is the browser's web console.
+
+A shell generally prints a *prompt* (`$` for example) at the start of your
+terminal's line before waiting for a command. Using the shell is easy, just
+type your command and hit return. The shell will execute the command, and after
+everything's done return you back to another prompt.
 
 ```
+$ echo "Hello World"
+Hello World
 $ date --iso-8601
 2018-07-11
+...
 ```
 
-- TODO: Explain STDIN/STDOUT/STDERR.
-- TODO: Is this the best place to talk about signals?
-- TODO: What other basics should I introduce at this point?
+You may have heard the saying that everything in UNIX is a file. Well that's
+kinda true, but here we're not reading and writing to a file that's actually on
+the filesystem, we're interacting with `STDIN`, `STDOUT` and `STDERR`. You
+should think of these like virtual files, which a terminal gives you access to.
+`STDIN` is the file descriptor for reading the text you type, while `STDOUT`
+and `STDERR` are both displayed on the terminal when written to.
+
+With the basics under our belt, let's get started building a very simple, but
+functional shell. We'll use Ruby for this, because it'll make things very easy,
+as you'll soon see.
 
 ### Our Overly Simplistic Ruby Shell
 
