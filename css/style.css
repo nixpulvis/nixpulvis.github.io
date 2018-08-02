@@ -88,10 +88,11 @@ img {
 
 .content {
   flex: 1 0 auto;
+  min-height: 100%;
 }
 
 footer {
-  margin-top: 20px;
+  margin-top: 50px;
   padding: 10px 0;
   font-size: 14px;
   border-top: 1px dashed black;
