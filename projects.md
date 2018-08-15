@@ -18,11 +18,6 @@ Please be aware, unlike my [Ramblings](/ramblings), these projects are living
 documents. I may update them without notice to add detail or track changes to
 the projects themselves.
 
-{% assign nondrafts = site.projects | where:"draft","false" %}
-{% if nondrafts == empty %}
-<img src="/img/dust.jpg" />
-{% endif %}
-
 <ul>
 {% for project in site.projects %}
     {% unless project.draft %}
