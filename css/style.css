@@ -118,6 +118,19 @@ nav ul li {
   margin-right: 5px;
 }
 
+.repos {
+  background: #eee;
+  border: 1px dashed black;
+  font-size: 14px;
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.repos li:before {
+  content: '- ';
+}
+
 li.draft {
   opacity: 0.25;
 }

@@ -21,9 +21,14 @@ the projects themselves.
 <ul>
 {% for project in site.projects %}
     {% unless project.draft %}
-        <li>
+        <li class="project">
             <a href="{{ project.url }}">{{ project.title }}</a>
             {{ project.excerpt }}
+            <ul class="repos">
+            {% for repo in project.repos %}
+                <li><a href="{{repo}}">{{ repo }}</a></li>
+            {% endfor %}
+            </ul>
         </li>
     {% endunless %}
 {% endfor %}
@@ -32,9 +37,14 @@ the projects themselves.
 <ul>
 {% for project in site.projects %}
     {% if project.draft %}
-        <li class="draft">
+        <li class="project draft">
             <a href="{{ project.url }}">{{ project.title }}</a>
             {{ project.excerpt }}
+            <ul class="repos">
+            {% for repo in project.repos %}
+                <li><a href="{{repo}}">{{ repo }}</a></li>
+            {% endfor %}
+            </ul>
         </li>
     {% endif %}
 {% endfor %}
