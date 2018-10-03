@@ -44,7 +44,10 @@ and `STDERR` are both displayed on the terminal when written to.
 
 With the basics under our belt, let's get started building a very simple, but
 functional shell. We'll use Ruby for this, because it'll make things very easy,
-as you'll soon see.
+as you'll soon see. If you're on a Mac you've already got Ruby installed,
+otherwise you can [install][install] it easily on many systems. We'll be
+working on a program aptly named `shell.rb`, which you can run with `ruby
+shell.rb` from the terminal.
 
 ### Our Overly Simplistic Ruby Shell
 
@@ -113,7 +116,8 @@ change the working directory of a sub-process, we want to update the shell's
 working directory itself.
 
 We'll define a hash of `'command' => lambda { |args| ... }` to serve as a
-lookup table for the builtins.
+lookup table for the builtins. The [`lambda`][proc] here is a function which
+performs the task of the given `command`.
 
 ```rb
 # Commands to be executed directly by this shell.
@@ -197,7 +201,9 @@ of work before we're anywhere near having a standalone POSIX shell ready for
 the "real world". There's also many other topics worth exploring, like `ENV`
 variables, job control, user groups, glob syntax, locale, and much more.
 
-[loop]: https://ruby-doc.org/core-2.2.3/Kernel.html#method-i-loop
-[gets]: https://ruby-doc.org/core-2.2.3/Kernel.html#method-i-gets
-[system]: https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-system
-[trap]: https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-trap
+[install]: https://www.ruby-lang.org/en/documentation/installation/
+[loop]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-loop
+[gets]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-gets
+[system]:  https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-system
+[proc]:    https://ruby-doc.org/core-2.2.0/Proc.html
+[trap]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-trap
