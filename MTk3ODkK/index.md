@@ -1,7 +1,8 @@
 ---
 layout: default
-style: /css/MTk3ODkK.css
 title: Chunky Bacon
+style: /css/MTk3ODkK.css
+script: /js/MTk3ODkK.js
 ---
 [![](/img/cavity.jpg)](https://poignant.guide/)
 
