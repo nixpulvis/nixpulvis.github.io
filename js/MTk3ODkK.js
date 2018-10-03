@@ -35,7 +35,7 @@ const hallucinations = [
 ];
 
 function generatePangram() {
-  return "Sphinx of black quartz, judge my vow!";
+  return "Sphinx of black quartz, judge my vow!".repeat(3);
 }
 
 function composeParagraph(...pangrams) {
@@ -56,14 +56,18 @@ function addLinkParagraphs() {
   // I bet there's a decent recursive solution for the splitting. We are
   // splitting so we can insert the links, so technically splitting and
   // removing the character at an index.
-  let splitMarkers = [];
-  hallucinations.forEach((hallucination) => {
-    for (let i = 0; i < paragraph.length; i++) {
-      if (paragraph.charAt(i) === hallucination.charAt(0)) {
-        splitMarkers.push(i);
+  let splitMarkers = {};
+  for (let i = 0; i < paragraph.length; i++) {
+    let paragraphChar = paragraph.charAt(i);
+    hallucinations.forEach((hallucination, index) => {
+      if (i in splitMarkers) { return }
+      let hallucinationChar = hallucination.charAt(0);
+      if (paragraphChar === hallucinationChar) {
+        splitMarkers[i] = paragraphChar;
+        hallucinations.splice(index, 1);
       }
-    }
-  });
+    });
+  }
 
   // RIP: I need sleep.
 
