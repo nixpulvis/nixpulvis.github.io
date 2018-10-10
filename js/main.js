@@ -1,23 +1,6 @@
 // TODO: Make this dynamic
 const HEADER_HEIGHT = 90;
 
-function scroll_past_header() {
-  // Don't scroll if we're on the home page,
-  // or if we're past the point anyway.
-  if (window.location.pathname === "/" ||
-      window.pageYOffset >= HEADER_HEIGHT)
-  {
-    return;
-  }
-
-  // Scroll with a smooth animation so the user can see there's a nav header
-  // above them.
-  window.scrollTo({
-    top: HEADER_HEIGHT,
-    behavior: "smooth"
-  })
-}
-
 window.onload = () => {
   // Toggle my hidden, ugly mug.
   document.getElementById("lambda").addEventListener("click", (e) => {
@@ -35,3 +18,34 @@ window.onload = () => {
   });
 };
 
+function scroll_past_header() {
+  // Don't scroll if we're on the home page,
+  // or if we're past the point anyway.
+  if (window.location.pathname !== "/" &&
+      window.pageYOffset < HEADER_HEIGHT)
+  {
+    let lastScroll = localStorage.getItem("lastScroll");
+    if (lastScroll >= HEADER_HEIGHT) {
+      // The user has already scrolled past the nav, don't jump back, just
+      // to scroll back down.
+      window.scrollTo(0, HEADER_HEIGHT);
+    } else {
+      // Scroll with a smooth animation so the user can see there's a nav
+      // header above them.
+      window.scrollTo({
+        top: HEADER_HEIGHT,
+        behavior: "smooth"
+      });
+    }
+  }
+
+  // Setup a listener on all links off this page to update the y offset. This
+  // is used to determine if we need to scroll past the nav header on
+  // subsequent loads.
+  let elements = document.getElementsByTagName("a");
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].onclick = function() {
+      localStorage.setItem("lastScroll", window.pageYOffset);
+    }
+  }
+}
