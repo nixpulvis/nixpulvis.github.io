@@ -11,9 +11,11 @@ and convince you to do your photo editing by typing `lighten(0, 0,
 100, 100, 50%)`. A shell **is** the right tool for more tasks than many
 people think (a topic for another day).
 
-In this post I want to explain what a shell is, and build a very simple one.
-The shell we create will not be fast, or even good, but it'll work better than
-you might think ~50 lines of Ruby would.
+This is part 1 of a series I'll be writing on the creation of [`oursh`][oursh],
+a modern POSIX compatible shell written in Rust. In this post I want to explain
+what a shell is, and build a very simple one.  The shell we create will not be
+fast, or even good, but it'll work better than you might think ~50 lines of
+Ruby would.
 
 ### Shell Basics
 
@@ -200,6 +202,7 @@ of work before we're anywhere near having a standalone POSIX shell ready for
 the "real world". There's also many other topics worth exploring, like `ENV`
 variables, job control, user groups, glob syntax, locale, and much more.
 
+[oursh]:   https://github.com/nixpulvis/oursh
 [install]: https://www.ruby-lang.org/en/documentation/installation/
 [loop]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-loop
 [gets]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-gets
