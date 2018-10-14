@@ -202,7 +202,7 @@ of work before we're anywhere near having a standalone POSIX shell ready for
 the "real world". There's also many other topics worth exploring, like `ENV`
 variables, job control, user groups, glob syntax, locale, and much more.
 
-[oursh]:   https://github.com/nixpulvis/oursh
+[oursh]:   https://nixpulvis.com/oursh/oursh
 [install]: https://www.ruby-lang.org/en/documentation/installation/
 [loop]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-loop
 [gets]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-gets
