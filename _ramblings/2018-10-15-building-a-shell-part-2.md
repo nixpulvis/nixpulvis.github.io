@@ -40,9 +40,10 @@ them.
 
 Installing Rust is very easy. Visit their [official website][rust] or simply
 run `brew install rustup`, or `pacman -S rustup`, etc. Once you have `rustup`
-from inside the oursh project directory run `cargo build` to compile the code
-and produce a working shell. From there (assuming everything works), running
-the shell can be done with `cargo` as well.
+installed, either install `oursh` globally with `cargo install oursh` or, from,
+inside the oursh project directory run `cargo build` to compile the code and
+produce a working shell. From there (assuming everything works), running the
+shell can be done with `cargo` as well.
 
 ```sh
 cargo run
