@@ -58,8 +58,23 @@ oursh-0.3$
 ```
 
 Play around with it, it's a real shell. If you want even more Rust between you
-and your OS I recomend [Alacritty][alacritty], a GPU-accelerated terminal
-also writen in Rust.
+and your OS I recommend [Alacritty][alacritty], a GPU-accelerated terminal
+also written in Rust.
+
+Before we dive into things, let me give you a taste of something I'm really
+excited about. I'm calling them *shebang blocks* after the `#!` symbol you use
+to specify the interpreter at the start of a script. These do the same thing
+but are embedded in the shell's recursive grammar, just see for yourself.
+
+```
+PI={#!/usr/bin/env node; console.log(Math.PI)}
+{#!/usr/bin/env ruby; require 'server'; Server.start}&
+```
+
+NOTE: This feature is currently experimental, but currently working. You can
+try it for yourself by compiling with `cargo run --features=bridge`. The syntax
+is also tempararily changed to `{#!/usr/bin/env ruby# puts 1}`, but this is
+just a hack.
 
 ### `commit` [`a7142d8959c352937bbe2ad0f11f5cb286db3aa8`][a7142d8]
 
