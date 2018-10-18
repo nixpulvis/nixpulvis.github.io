@@ -164,9 +164,9 @@ TODO: oursh flag for running with the BasicProgram.
 
 A formal _grammar_ is a set of rules for creating _non-terminals_ from
 _terminals_, where the terminals represent the set of characters (or tokens) in
-the _language_. A set of tokens in known as an _alphabet_. A non-terminal
-represents some production based on underlying non-terminals and terminals, in
-this way allowing for recursive definitions.
+the _language_. A set of tokens in a language is known as an _alphabet_. A
+non-terminal represents some production based on underlying non-terminals and
+terminals, in this way allowing for recursive definitions.
 
 ##### [`extern crate lalrpop;`][lalrpop]
 
