@@ -57,7 +57,7 @@ git clone https://github.com/nixpulvis/oursh
 
 Then install Rust by either, visiting their [official website][rust] or simply
 running `brew install rustup`, `pacman -S rustup`, etc. Once you have
-`rustup` installed, from inside the oursh project directory cargo has many
+`rustup` installed, from inside the oursh project directory `cargo` has many
 commands at your disposal.
 
 ```unix
