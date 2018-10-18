@@ -135,14 +135,15 @@ grammar, POSIX shell scripts and Rust.
 A _script_ is, in general, some text which is _interpreted_ by a program on a
 computer. A _shell_, like the one we're building (or `bash`, `sh`, ...), is one
 such interpreter. You can pass a shell script to it and it will correctly
-execute the program. A POSIX shell program is typically just known as "shell
+execute the program. A POSIX shell program is typically just known as a "shell
 script", though other types of shell scripts exist; like [fish][fish] scripts.
-For convenience, we'll simply refer to a POSIX compatible shell as `sh`. The
-first implementation of `sh` was by Ken Thompson around 1971, which is why you
-may also hear this refered to as a Thompson shell. The next major development
-was in 1979 with the Bourne shell, also known as `sh`, which was a rewrite by
-Stephen Bourne at Bell Labs. The most commmon shell these days is `bash`, which
-stands for Bourne-Again shell.
+For convenience, we'll simply refer to a POSIX compatible shell as `sh`.
+
+The first implementation of `sh` was by Ken Thompson around 1971, which is why
+you may also hear this refered to as a Thompson shell. The next major
+development was in 1979 with the Bourne shell, also known as `sh`, which was a
+rewrite by Stephen Bourne at Bell Labs. The most commmon shell these days is
+`bash`, which stands for Bourne-Again shell.
 
 Now finally, for sum Rust code...
 
