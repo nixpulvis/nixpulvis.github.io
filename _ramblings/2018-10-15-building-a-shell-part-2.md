@@ -30,22 +30,53 @@ SUM:                            19            173            580           1037
 ```
 
 Ok, not 50... but again just like last time I think you'll be surprised what
-1,000 lines of Rust can get you.
-
-### Rust Basics
-
-To really get what's going on, I *strongly* urge you to download Rust and
-compile `oursh` yourself. You can run examples from this post as we go through
-them.
-
-Installing Rust is very easy. Visit their [official website][rust] or simply
-run `brew install rustup`, or `pacman -S rustup`, etc. Once you have `rustup`
-installed, either install `oursh` globally with `cargo install oursh` or, from,
-inside the oursh project directory run `cargo build` to compile the code and
-produce a working shell. From there (assuming everything works), running the
-shell can be done with `cargo` as well.
+1,000 lines of Rust can get you. For example, these shell programs all
+currently work.
 
 ```sh
+ls -la
+cat README.md | wc
+git add -u
+true || false && true && echo reached
+! true && echo not reached
+{ sleep 1; date; }&
+```
+
+### Build it to Believe
+
+Before we begin, in order to really get what's going on, I **strongly** urge
+you to download Rust and compile `oursh` yourself. You can run examples from
+this post as we go through them. Otherwise, just use `bash` and skip this
+section.
+
+First clone the repository from GitHub into your local directory.
+
+```sh
+git clone https://github.com/nixpulvis/oursh
+```
+
+Then install Rust by either, visiting their [official website][rust] or simply
+running `brew install rustup`, `pacman -S rustup`, etc. Once you have
+`rustup` installed, from inside the oursh project directory cargo has many
+commands at your disposal.
+
+```unix
+cargo build  # Just compile
+cargo run    # Compile and run oursh
+cargo test   # Compile and run the test suite
+```
+
+If you're lazy (like me), here's a script to copy-paste. This, in a way is the
+power of UNIX.
+
+```sh
+# macOS
+brew install rustup
+# Arch Linux
+pacman -S rustup
+
+git clone https://github.com/nixpulvis/oursh
+cd oursh
 cargo run
 ```
 
@@ -61,87 +92,209 @@ Play around with it, it's a real shell. If you want even more Rust between you
 and your OS I recommend [Alacritty][alacritty], a GPU-accelerated terminal
 also written in Rust.
 
-Before we dive into things, let me give you a taste of something I'm really
-excited about. I'm calling them *shebang blocks* after the `#!` symbol you use
-to specify the interpreter at the start of a script. These do the same thing
-but are embedded in the shell's recursive grammar, just see for yourself.
+
+### Shell Language
+
+Before we dive into the dense topic of language, let me give you a taste of
+something I'm really excited about, which is only possible with some knowledge
+of the following material. I'm calling them _[shebang][shebang] blocks_ after
+the `#!` symbol you can use to specify an interpreter at the start of a script
+file. These do the same thing but are embedded in the shell's recursive
+grammar, just see for yourself.
 
 ```
-PI={#!/usr/bin/env node; console.log(Math.PI)}
+# Print my cat's name (π) from Ruby.
+{#!/usr/bin/env ruby; puts Math::PI}
+# Same thing, just syntactic sugar.
+{#!ruby; puts Math::PI}
+{#!node; console.log(Math.PI)}
+{#!racket; #lang racket (println pi)}
+
+# Save π to the ENV var $PI.
+PI={#!/usr/bin/env node; console.log(Math.PI)}; echo $PI
+
+# Start a Ruby server in the background.
 {#!/usr/bin/env ruby; require 'server'; Server.start}&
 ```
 
-NOTE: This feature is currently experimental, but currently working. You can
-try it for yourself by compiling with `cargo run --features=bridge`. The syntax
-is also tempararily changed to `{#!/usr/bin/env ruby# puts 1}`, but this is
-just a hack.
+This feature is currently experimental, but working. You can try it for
+yourself by compiling with `cargo run --features=bridge`.
 
-### `commit` [`a7142d8959c352937bbe2ad0f11f5cb286db3aa8`][a7142d8]
+OK, now back to your regularly scheduled series on programming languages,
+grammar and POSIX shell scripts.
 
-```rust
-use std::io::{self, Read, Write};
-use std::process::{Command, Output};
-use std::str;
-// Our shell, for the greater good. Ready and waiting.
-fn main() {
-    // Standard input file descriptor (0), used for user input from the user
-    // of the shell.
-    let mut stdin = io::stdin();
-    // Standard output file descriptor (1), used to display program output to
-    // the user of the shell.
-    let mut stdout = io::stdout();
-    // STDIN, input buffer, used to `read` text into for further processing.
-    // TODO: Full fledged parser will be neato.
-    let mut input = [0; 24];
-    loop {
-        // XXX: Blindly drop the contents of input, again this will be better
-        // with a real parser.
-        input = [0; 24];
-        // Print a boring static prompt.
-        print!("oursh> ");
-        stdout.lock().flush();
-        loop {
-            // TODO: Enable raw access to STDIN, so we can read as the user
-            // types. By default the underlying file is line buffered. This
-            // will allow us to process history, syntax, and more!
-            // Read what's avalible to us.
-            stdin.read(&mut input).expect("error reading STDIN");
-            // Once we've read a complete "program" (§2.10.2) we handle it,
-            // until then we keep reading. Once we have a proper parser this
-            // wont look like a huge hack.
-            let vec: Vec<&[u8]> = input.splitn(2, |b| *b == '\n' as u8).collect();
-            match &vec[..] {
-                [line, rest] => {
-                    let program = str::from_utf8(&line).expect("error reading utf8");
-                    let mut output = handle_program(program);
-                    stdout.write(&output.stdout).expect("error writing to STDOUT");
-                    break
-                }
-                _ => {},
-            }
-        }
-    }
+A _script_ is, in general, some text which is _interpreted_ by a program on a
+computer. A _shell_, like the one we're building (or `bash`, `sh`, ...), is one
+such interpreter. You can pass a shell script to it and it will correctly
+execute the program. A POSIX shell program is typically just known as "shell
+script", though other types of shell scripts exist; like [fish][fish] scripts.
+For convenience, we'll simply refer to a POSIX compatible shell as `sh`.
+
+Now finally, for sum Rust code...
+
+##### [`use oursh::program::basic::Program;`][basic::Program]
+
+This is the most basic implementation of a `Program` within oursh. The only
+thing `BasicProgram` is able to do is run commands like `ls` or `git status`,
+but nothing more complex like `cat $1 | wc -c`, or new like `{#!ruby; p 1}`.
+
+TODO: oursh flag for running with the BasicProgram.
+
+
+##### Formal Grammar Review
+
+A formal _grammar_ is a set of rules for creating _non-terminals_ from
+_terminals_, where the terminals represent the set of characters (or tokens) in
+the _language_. A set of tokens in known as an _alphabet_. A non-terminal
+represents some production based on underlying non-terminals and terminals, in
+this way allowing for recursive definitions.
+
+##### [`extern crate lalrpop;`][lalrpop]
+
+LALRPOP is a **parser generator**, which is essentially a framework for
+creating parsers for some kinds of languages. In this case, LALRPOP runs in a
+build phase before the compiler and generates a valid Rust parser module. The
+parser is defined to correctly parse the grammar defined in a corresponding
+`*.lalrpop` file. To understand what this means we need to understand what we
+mean by _parser_.
+
+A parser's job is to take in a stream of tokens (things like `#`,`"`, `}`,
+`WORD`, etc) and produce an AST. Tokens are the terminals, while the grammar
+description `*.lalrpop` file defines the non-terminal rules. Before we look
+at the grammar rules, let's look at our AST definition.
+
+##### [`use oursh::program::posix::ast::Program;`][posix::ast::Program]
+
+Internally, `posix::ast::Program` uses the parser module generated
+automatically in it's `parse` function.
+
+```rs
+let program = Program::parse(b"! true || false" as &[u8])?;
+println!("{:#?}", program);
+-----
+Program(
+    [
+        Or(
+            Not(
+                Simple(
+                    [
+                        Word(
+                            "true"
+                        )
+                    ]
+                )
+            ),
+            Simple(
+                [
+                    Word(
+                        "false"
+                    )
+                ]
+            )
+        )
+    ]
+)
+```
+
+The only major piece left to explain is the [grammar
+description][posix.lalrpop] file. There [are][lalrpop-full-expr] a
+[lot][lalrpop-lexer] of [details][lalrpop-macros] to go over with
+the LALRPOP parser generator, but luckily it's simple enough to understand the
+basics.
+
+These are the needed rules inside `posix.lalrpop` to parse the above AST. I've
+only left out the `Program` rule for brevity.
+
+```rs
+Commands: ast::Command = {
+    // ...
+    <cs: Commands> "&&" <p: Pipeline> => {
+        ast::Command::And(box cs, box p)
+    },
+    <cs: Commands> "||" <p: Pipeline> => {
+        ast::Command::Or(box cs, box p)
+    },
+    // ...
+    Pipeline => <>,
 }
-// Obviously very wrong. Most notably this blocks until the command completes.
-fn handle_program(program: &str) -> Output {
-    Command::new(program)
-        .output()
-        .expect("error executing program")
+```
+
+```rs
+Pipeline: ast::Command = {
+  "!" <ps: PipelineSeq> => {
+    ast::Command::Not(box ps)
+  },
+  Pipeline => <>,
 }
+
+PipelineSeq: ast::Command = {
+  <ps: PipelineSeq> "|" <c: Command> => {
+    ast::Command::Pipeline(box ps, box c)
+  },
+  <c: Command> => c,
+}
+
+Command: ast::Command = Word+ => {
+    ast::Command::Simple(<>)
+};
+
+// TODO #8: Custom lexer plus proper rules needed.
+// XXX: This is WRONG.
+Word: ast::Word = r#"[a-zA-Z0-9-_]+"# => {
+    ast::Word(<>.into())
+};
+```
+
+
+
+
+
+
+
+
+<details>
+  <summary>
+    If parsers are your thing, you may also be interested in a
+    parser-combinator I wrote for students at NEU's introduction computer
+    science class. It's writen in Racket, and comes with a fully baked JSON
+    parser.
+  </summary>
+  <p>
+    <a href="https://github.com/nixpulvis/parser-combinator">
+      <code>(require parser-combinator/json)</code>
+    </a>
+  </p>
+  <p>
+    TODO
+  </p>
+</details>
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```
 
 ### `extern crate termion;`
 ##### Cursors
 ##### History
 ##### Completion
-
-### `extern crate lalrpop;`
-##### Formal Grammar Review
-##### Basic Programs
-##### POSIX Programs
-##### Meta Programs (just `{#}` syntax)
-
-### `extern crate docopt;`
 
 ### Testing
 ##### Unit Tests
@@ -152,39 +305,22 @@ fn handle_program(program: &str) -> Output {
 - Proper job runtime, with status, backgrounding, and chained pipes
 - Variables, functions, and the program environments
 
+[a7142d8]:       https://github.com/nixpulvis/oursh/commit/a7142d8
+[alacritty]:     https://github.com/jwilm/alacritty
+[docopt]:        http://docopt.org/
+[explainshell]:  https://explainshell.com
+[fish]:          https://fishshell.com
+[oursh]:         https://nixpulvis.com/oursh/oursh
+[part1]:         2018-07-11-building-a-shell-part-1
+[rust]:          https://www.rust-lang.org/en-US
+[shebang]:       https://en.wikipedia.org/wiki/Shebang_(Unix)
+[termion]:       https://gitlab.redox-os.org/redox-os/termion
 
+[lalrpop-full-expr]: http://lalrpop.github.io/lalrpop/tutorial/005_full_expressions.html
+[lalrpop-lexer]:     http://lalrpop.github.io/lalrpop/tutorial/004_controlling_lexer.html
+[lalrpop-macros]:    http://lalrpop.github.io/lalrpop/tutorial/007_macros.html
+[posix.lalrpop]:     https://github.com/nixpulvis/oursh/blob/master/src/program/posix.lalrpop
 
-
-
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```
-
-
-[oursh]:     https://nixpulvis.com/oursh/oursh
-[part1]:     2018-07-11-building-a-shell-part-1
-[a7142d8]:   https://github.com/nixpulvis/oursh/commit/a7142d8
-[lalrpop]:   https://github.com/lalrpop/lalrpop
-[docopt]:    http://docopt.org/
-[termion]:   https://gitlab.redox-os.org/redox-os/termion
-[rust]:      https://www.rust-lang.org/en-US
-[alacritty]: https://github.com/jwilm/alacritty
+[basic::Program]:      https://nixpulvis.com/oursh/oursh/program/basic/struct.Program
+[posix::ast::Program]: https://nixpulvis.com/oursh/oursh/program/posix/ast/struct.Program
+[lalrpop]:             https://docs.rs/lalrpop/0.16.0/lalrpop

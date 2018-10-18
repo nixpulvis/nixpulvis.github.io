@@ -25,6 +25,15 @@ blockquote {
   padding: 5px 10px;
 }
 
+details {
+  cursor: pointer;
+  padding: 10px;
+}
+
+details p:last-child {
+  margin-bottom: 0;
+}
+
 hr {
   border: 0;
   border-bottom: 1px dashed black;
@@ -106,6 +115,34 @@ footer a {
 h2 small {
   display: block;
   font-size: 16px;
+}
+
+h1 a,
+h1 a:link,
+h1 a:active,
+h1 a:visited
+h2 a,
+h2 a:link,
+h2 a:active,
+h2 a:visited
+h3 a,
+h3 a:link,
+h3 a:active,
+h3 a:visited
+h4 a,
+h4 a:link,
+h4 a:active,
+h4 a:visited
+h5 a,
+h5 a:link,
+h5 a:active,
+h5 a:visited,
+h6 a,
+h6 a:link,
+h6 a:active,
+h6 a:visited
+{
+  color: #282c34 !important;
 }
 
 nav ul {
