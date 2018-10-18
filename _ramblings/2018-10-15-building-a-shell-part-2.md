@@ -101,10 +101,14 @@ the `#!` symbol you can use to specify an interpreter at the start of a script
 file. These do the same thing but are embedded in the shell's recursive
 grammar, just see for yourself.
 
+Print my cat's name (π) from Ruby.
+
 ```
-# Print my cat's name (π) from Ruby.
 {#!/usr/bin/env ruby; puts Math::PI}
-# Same thing, just syntactic sugar.
+```
+
+Same thing, just syntactic sugar.
+```
 {#!ruby; puts Math::PI}
 {#!node; console.log(Math.PI)}
 {#!racket; #lang racket (println pi)}
