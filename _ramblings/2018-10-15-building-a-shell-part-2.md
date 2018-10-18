@@ -92,8 +92,7 @@ Play around with it, it's a real shell. If you want even more Rust between you
 and your OS I recommend [Alacritty][alacritty], a GPU-accelerated terminal
 also written in Rust.
 
-
-### Shell Language
+### Something New, Before a lot of Old
 
 Before we dive into the dense topic of language, let me give you a taste of
 something I'm really excited about, which is only possible with some knowledge
@@ -109,7 +108,14 @@ grammar, just see for yourself.
 {#!ruby; puts Math::PI}
 {#!node; console.log(Math.PI)}
 {#!racket; #lang racket (println pi)}
+```
 
+This feature is currently experimental, but working. You can try it for
+yourself by compiling with `cargo run --features=bridge`. These more advanced
+commands will also Just Work once I get to implementing background programs
+([#6][issue-6]) and environments/variables ([#27][issue-27]).
+
+```
 # Save π to the ENV var $PI.
 PI={#!/usr/bin/env node; console.log(Math.PI)}; echo $PI
 
@@ -117,18 +123,22 @@ PI={#!/usr/bin/env node; console.log(Math.PI)}; echo $PI
 {#!/usr/bin/env ruby; require 'server'; Server.start}&
 ```
 
-This feature is currently experimental, but working. You can try it for
-yourself by compiling with `cargo run --features=bridge`.
-
 OK, now back to your regularly scheduled series on programming languages,
-grammar and POSIX shell scripts.
+grammar, POSIX shell scripts and Rust.
+
+### Shell Language
 
 A _script_ is, in general, some text which is _interpreted_ by a program on a
 computer. A _shell_, like the one we're building (or `bash`, `sh`, ...), is one
 such interpreter. You can pass a shell script to it and it will correctly
 execute the program. A POSIX shell program is typically just known as "shell
 script", though other types of shell scripts exist; like [fish][fish] scripts.
-For convenience, we'll simply refer to a POSIX compatible shell as `sh`.
+For convenience, we'll simply refer to a POSIX compatible shell as `sh`. The
+first implementation of `sh` was by Ken Thompson around 1971, which is why you
+may also hear this refered to as a Thompson shell. The next major development
+was in 1979 with the Bourne shell, also known as `sh`, which was a rewrite by
+Stephen Bourne at Bell Labs. The most commmon shell these days is `bash`, which
+stands for Bourne-Again shell.
 
 Now finally, for sum Rust code...
 
@@ -158,10 +168,23 @@ parser is defined to correctly parse the grammar defined in a corresponding
 `*.lalrpop` file. To understand what this means we need to understand what we
 mean by _parser_.
 
+The AST is in our case mainly one `struct` and one heavily recursive `enum`.
+The main goal of the AST is to preserve the needed information from the text
+to easily map to the execution semantics. For example consider this example
+from grade school: `1 + 2 * 3`. We typically learn a rule called PEMDAS to
+remember the order of _precedence_ so we correctly read the previous
+expression as `1 + (2 * 3)`.  Similarly, we have `true && false || true`, which
+could be parsed one of two ways:
+
+```sh
+(false && true) || true  #=> true
+false && (true || true)  #=> false
+```
+
 A parser's job is to take in a stream of tokens (things like `#`,`"`, `}`,
 `WORD`, etc) and produce an AST. Tokens are the terminals, while the grammar
-description `*.lalrpop` file defines the non-terminal rules. Before we look
-at the grammar rules, let's look at our AST definition.
+description `*.lalrpop` file defines the non-terminal rules. Before we look at
+the grammar rules, let's look at our AST definition.
 
 ##### [`use oursh::program::posix::ast::Program;`][posix::ast::Program]
 
@@ -245,12 +268,7 @@ Word: ast::Word = r#"[a-zA-Z0-9-_]+"# => {
 };
 ```
 
-
-
-
-
-
-
+TODO: Explain a bit about the recursion going on here.
 
 <details>
   <summary>
@@ -269,47 +287,37 @@ Word: ast::Word = r#"[a-zA-Z0-9-_]+"# => {
   </p>
 </details>
 
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```
-
-### `extern crate termion;`
-##### Cursors
-##### History
-##### Completion
-
 ### Testing
-##### Unit Tests
-##### Integration Tests
+
+Just a quick note on testing, because it's an important part of this project.
+Rust's macro system does a great job allowing developers to write clean and
+fast tests. Here are a few integration tests from this project's suite.
+
+```rs
+assert_oursh!("head README.md -n 1", "# oursh\n");
+assert_oursh!("false && echo 1", "");
+assert_oursh!("false || echo 1", "1\n");
+assert_oursh!("{ echo pi; echo e; }", "pi\ne\n");
+assert_oursh!("{#!/usr/bin/env ruby; puts 1}", "1\n");
+```
 
 ### Next Steps
-- Custom LALRPOP Lexer
-- Proper job runtime, with status, backgrounding, and chained pipes
-- Variables, functions, and the program environments
+
+- Write a custom LALRPOP lexer to allow the grammar to recognize whitespace,
+  this is currently blocking a number of other features/bugs.
+- Add a proper job runtime, with status, backgrounding, and chained pipes. I'm
+  still not 100% sure how to best implement this.
+- Programs need variables, functions, and the program environments.
+
+TODO: Short description of the next post.
 
 [a7142d8]:       https://github.com/nixpulvis/oursh/commit/a7142d8
 [alacritty]:     https://github.com/jwilm/alacritty
 [docopt]:        http://docopt.org/
 [explainshell]:  https://explainshell.com
 [fish]:          https://fishshell.com
+[issue-27]:      https://github.com/nixpulvis/oursh/issues/27
+[issue-6]:       https://github.com/nixpulvis/oursh/issues/6
 [oursh]:         https://nixpulvis.com/oursh/oursh
 [part1]:         2018-07-11-building-a-shell-part-1
 [rust]:          https://www.rust-lang.org/en-US
