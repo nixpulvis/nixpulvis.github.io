@@ -153,6 +153,10 @@ This is the most basic implementation of a `Program` within oursh. The only
 thing `BasicProgram` is able to do is run commands like `ls` or `git status`,
 but nothing more complex like `cat $1 | wc -c`, or new like `{#!ruby; p 1}`.
 
+This implementation doesn't use an fancy parsers, and simply reads a full line
+and splits it by spaces, passing the result directly through to `exec` on
+`run`.
+
 TODO: oursh flag for running with the BasicProgram.
 
 
