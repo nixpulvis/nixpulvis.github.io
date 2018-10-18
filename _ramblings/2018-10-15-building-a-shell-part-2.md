@@ -121,10 +121,10 @@ commands will also Just Work once I get to implementing background programs
 
 ```
 # Save π to the ENV var $PI.
-PI={#!/usr/bin/env node; console.log(Math.PI)}; echo $PI
+PI={#!node; console.log(Math.PI)}; echo $PI
 
 # Start a Ruby server in the background.
-{#!/usr/bin/env ruby; require 'server'; Server.start}&
+{#!ruby; require 'server'; Server.start}&
 ```
 
 OK, now back to your regularly scheduled series on programming languages,
@@ -298,7 +298,7 @@ assert_oursh!("head README.md -n 1", "# oursh\n");
 assert_oursh!("false && echo 1", "");
 assert_oursh!("false || echo 1", "1\n");
 assert_oursh!("{ echo pi; echo e; }", "pi\ne\n");
-assert_oursh!("{#!/usr/bin/env ruby; puts 1}", "1\n");
+assert_oursh!("{#!ruby; puts 1}", "1\n");
 ```
 
 ### Next Steps
