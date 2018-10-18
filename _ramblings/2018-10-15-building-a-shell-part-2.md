@@ -207,11 +207,18 @@ println!("{:#?}", program);
 Program(
     [
         Or(
-            Not(
+            And(
                 Simple(
                     [
                         Word(
                             "true"
+                        )
+                    ]
+                ),
+                Simple(
+                    [
+                        Word(
+                            "false"
                         )
                     ]
                 )
@@ -219,7 +226,7 @@ Program(
             Simple(
                 [
                     Word(
-                        "false"
+                        "true"
                     )
                 ]
             )
@@ -234,9 +241,7 @@ description][posix.lalrpop] file. There [are][lalrpop-full-expr] a
 the LALRPOP parser generator, but luckily it's simple enough to understand the
 basics.
 
-These are the needed rules inside `posix.lalrpop` to parse the above AST. I've
-only left out the `Program` rule for brevity.
-
+These are the needed rules inside `posix.lalrpop` to parse the above AST.
 ```rs
 Commands: ast::Command = {
     // ...
@@ -249,22 +254,8 @@ Commands: ast::Command = {
     // ...
     Pipeline => <>,
 }
-```
 
-```rs
-Pipeline: ast::Command = {
-  "!" <ps: PipelineSeq> => {
-    ast::Command::Not(box ps)
-  },
-  Pipeline => <>,
-}
-
-PipelineSeq: ast::Command = {
-  <ps: PipelineSeq> "|" <c: Command> => {
-    ast::Command::Pipeline(box ps, box c)
-  },
-  <c: Command> => c,
-}
+// ...
 
 Command: ast::Command = Word+ => {
     ast::Command::Simple(<>)
