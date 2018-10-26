@@ -268,9 +268,16 @@ Simple: ast::Command = {
 }
 ```
 
-TODO: Explain a bit about the recursion going on here.
+`Commands` and `Simple` are _non-terminal_ productions that return (when
+parsed) `ast:Command` types, which you can see above how they are built. As you
+can see, `Commands` is recursively referenced in the `&&` and `||` rules.
 
-TODO: Explain the lexer (a bit) and how a WORD is generated.
+Words are created by the _lexer_, a tool designed to consume the input text,
+and iterate over chunks called _tokens_. Tokens, as already mentioned, are
+the terminals of the language. `WORD`, `&&` and `||` from the above grammar
+rules, are our terminal tokens. `WORD`s are generated after reading a character
+that is allowed to start a word, until the word is considered finished. This
+could, for example allow for words like `foo!`, despite `!` also being a token.
 
 <details>
   <summary>
