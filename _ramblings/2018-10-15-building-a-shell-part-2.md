@@ -21,16 +21,15 @@ everything, and the growing test suite this is the output of `cloc`.
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Rust                            12            166            580            987
-Fish Shell                       2              7              0             43
-Bourne Shell                     5              0              0              7
+Rust                            15            268            677           1747
+Bourne Shell                     2              0              0              3
 -------------------------------------------------------------------------------
-SUM:                            19            173            580           1037
+SUM:                            17            268            677           1750
 -------------------------------------------------------------------------------
 ```
 
 Ok, not 50... but again just like last time I think you'll be surprised what
-1,000 lines of Rust can get you. For example, these shell programs all
+2,000 lines of Rust can get you. For example, these shell programs all
 currently work.
 
 ```sh
