@@ -247,12 +247,12 @@ These are the needed rules inside `posix.lalrpop` to parse the above AST.
 ```rust
 // Programs are constructed in other grammar rules...
 
-Commands: ast::Command = {
+Command: ast::Command = {
     // ...
-    <cs: Commands> "&&" <p: Pipeline> => {
+    <cs: Command> "&&" <p: Pipeline> => {
         ast::Command::And(box cs, box p)
     },
-    <cs: Commands> "||" <p: Pipeline> => {
+    <cs: Command> "||" <p: Pipeline> => {
         ast::Command::Or(box cs, box p)
     },
     // ...
@@ -268,9 +268,9 @@ Simple: ast::Command = {
 }
 ```
 
-`Commands` and `Simple` are _non-terminal_ productions that return (when
+`Command` and `Simple` are _non-terminal_ productions that return (when
 parsed) `ast:Command` types, which you can see above how they are built. As you
-can see, `Commands` is recursively referenced in the `&&` and `||` rules.
+can see, `Command` is recursively referenced in the `&&` and `||` rules.
 
 Words are created by the _lexer_, a tool designed to consume the input text,
 and iterate over chunks called _tokens_. Tokens, as already mentioned, are
