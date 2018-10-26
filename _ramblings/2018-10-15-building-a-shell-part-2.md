@@ -313,17 +313,30 @@ assert_oursh!("{#!ruby; puts 1}", "1\n");
 ### Next Steps
 
 - Add a proper job runtime, with status, backgrounding, and chained pipes. I'm
-  still not 100% sure how to best implement this.
-- Programs need variables, functions, and the program environments.
+  still not 100% sure how to best implement this ([#6][issue-6]).
+- More complete builtin support ([#24][issue-24]).
+- The runtime can't handle nested pipelines ([#12][issue-12]).
+- The parser needs to support IO redirection syntax ([#26][issue-26]).
+- Programs need variables, environments, and functions ([#27][issue-27],
+  [#43][issue-43]).
+- The lexer needs to handle qoutes correctly ([#28][issue-28]).
+- Plenty of `repl` issues.
 
-TODO: Short description of the next post.
+In the next post in this series we'll look at some of the other features of
+this Rust project, including the CLI argument parser `docopt`, the terminal
+control library `termion`, `nix` and more.
 
 [a7142d8]:       https://github.com/nixpulvis/oursh/commit/a7142d8
 [alacritty]:     https://github.com/jwilm/alacritty
 [docopt]:        http://docopt.org/
 [explainshell]:  https://explainshell.com
 [fish]:          https://fishshell.com
+[issue-43]:      https://github.com/nixpulvis/oursh/issues/43
+[issue-28]:      https://github.com/nixpulvis/oursh/issues/28
 [issue-27]:      https://github.com/nixpulvis/oursh/issues/27
+[issue-26]:      https://github.com/nixpulvis/oursh/issues/26
+[issue-24]:      https://github.com/nixpulvis/oursh/issues/26
+[issue-12]:      https://github.com/nixpulvis/oursh/issues/26
 [issue-6]:       https://github.com/nixpulvis/oursh/issues/6
 [oursh]:         https://nixpulvis.com/oursh/oursh
 [part1]:         2018-07-11-building-a-shell-part-1
