@@ -157,7 +157,10 @@ This implementation doesn't use an fancy parsers, and simply reads a full line
 and splits it by spaces, passing the result directly through to `exec` on
 `run`.
 
-TODO: oursh flag for running with the BasicProgram.
+```sh
+# Run oursh using alternate (basic currently) program parsing.
+cargo run -- -#
+```
 
 
 ##### Formal Grammar Review
@@ -257,18 +260,16 @@ Commands: ast::Command = {
 
 // ...
 
-Command: ast::Command = Word+ => {
-    ast::Command::Simple(<>)
-};
-
-// TODO #8: Custom lexer plus proper rules needed.
-// XXX: This is WRONG.
-Word: ast::Word = r#"[a-zA-Z0-9-_]+"# => {
-    ast::Word(<>.into())
-};
+Simple: ast::Command = {
+    "WORD"+ => ast::Command::Simple(<>.iter().map(|w| {
+        ast::Word(w.to_string())
+    }).collect())
+}
 ```
 
 TODO: Explain a bit about the recursion going on here.
+
+TODO: Explain the lexer (a bit) and how a WORD is generated.
 
 <details>
   <summary>
@@ -303,8 +304,6 @@ assert_oursh!("{#!ruby; puts 1}", "1\n");
 
 ### Next Steps
 
-- Write a custom LALRPOP lexer to allow the grammar to recognize whitespace,
-  this is currently blocking a number of other features/bugs.
 - Add a proper job runtime, with status, backgrounding, and chained pipes. I'm
   still not 100% sure how to best implement this.
 - Programs need variables, functions, and the program environments.
