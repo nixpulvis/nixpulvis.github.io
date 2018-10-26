@@ -202,7 +202,7 @@ the grammar rules, let's look at our AST definition.
 Internally, `posix::ast::Program` uses the parser module generated
 automatically in it's `parse` function.
 
-```rs
+```rust
 let program = Program::parse(b"! true || false" as &[u8])?;
 println!("{:#?}", program);
 -----
@@ -244,7 +244,9 @@ the LALRPOP parser generator, but luckily it's simple enough to understand the
 basics.
 
 These are the needed rules inside `posix.lalrpop` to parse the above AST.
-```rs
+```rust
+// Programs are constructed in other grammar rules...
+
 Commands: ast::Command = {
     // ...
     <cs: Commands> "&&" <p: Pipeline> => {
@@ -257,7 +259,7 @@ Commands: ast::Command = {
     Pipeline => <>,
 }
 
-// ...
+// Other command rules are defined below.
 
 Simple: ast::Command = {
     "WORD"+ => ast::Command::Simple(<>.iter().map(|w| {
@@ -293,7 +295,7 @@ Just a quick note on testing, because it's an important part of this project.
 Rust's macro system does a great job allowing developers to write clean and
 fast tests. Here are a few integration tests from this project's suite.
 
-```rs
+```rust
 assert_oursh!("head README.md -n 1", "# oursh\n");
 assert_oursh!("false && echo 1", "");
 assert_oursh!("false || echo 1", "1\n");
