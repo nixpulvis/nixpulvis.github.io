@@ -268,9 +268,9 @@ Simple: ast::Command = {
 }
 ```
 
-`Command` and `Simple` are _non-terminal_ productions that return (when
-parsed) `ast:Command` types, which you can see above how they are built. As you
-can see, `Command` is recursively referenced in the `&&` and `||` rules.
+`Command` and `Simple` are _non-terminal_ productions that return (when parsed)
+`ast:Command` types. As you can see, `Command` is recursively referenced in the
+`&&` and `||` rules, allowing for `... && ... || ...`.
 
 Words are created by the _lexer_, a tool designed to consume the input text,
 and iterate over chunks called _tokens_. Tokens, as already mentioned, are
