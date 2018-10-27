@@ -1,7 +1,6 @@
 ---
 title: Building a Shell - Part 2
 layout: rambling
-draft: true
 ---
 
 This is part 2 of a series I'll be writing on the creation of [`oursh`][oursh],
@@ -114,9 +113,9 @@ Same thing, just syntactic sugar.
 ```
 
 This feature is currently experimental, but working. You can try it for
-yourself by compiling with `cargo run --features=bridge`. These more advanced
-commands will also Just Work once I get to implementing background programs
-([#6][issue-6]) and environments/variables ([#27][issue-27]).
+yourself by compiling with `cargo run --features=shebang-block`. These more
+advanced commands will also Just Work once I get to implementing background
+programs ([#6][issue-6]) and environments/variables ([#27][issue-27]).
 
 ```
 # Save π to the ENV var $PI.
@@ -179,23 +178,24 @@ parser is defined to correctly parse the grammar defined in a corresponding
 `*.lalrpop` file. To understand what this means we need to understand what we
 mean by _parser_.
 
-The AST is in our case mainly one `struct` and one heavily recursive `enum`.
-The main goal of the AST is to preserve the needed information from the text
-to easily map to the execution semantics. For example consider this example
-from grade school: `1 + 2 * 3`. We typically learn a rule called PEMDAS to
-remember the order of _precedence_ so we correctly read the previous
-expression as `1 + (2 * 3)`.  Similarly, we have `true && false || true`, which
-could be parsed one of two ways:
+A parser's job is to take in a stream of tokens (things like `#`,`"`, `}`,
+`WORD`, etc) and produce an AST. Tokens are the terminals, while the grammar
+description `*.lalrpop` file defines the non-terminal rules.
+
+Our AST is mainly one `struct` and one heavily recursive `enum`.  The main goal
+of the AST is to preserve the needed information from the text to easily map to
+the execution semantics. For example consider this example from grade school:
+`1 + 2 * 3`. We typically learn a rule called PEMDAS to remember the order of
+_precedence_ so we correctly read the previous expression as `1 + (2 * 3)`.
+Similarly, we have `true && false || true`, which could be parsed one of two
+ways:
 
 ```sh
 (false && true) || true  #=> true
 false && (true || true)  #=> false
 ```
 
-A parser's job is to take in a stream of tokens (things like `#`,`"`, `}`,
-`WORD`, etc) and produce an AST. Tokens are the terminals, while the grammar
-description `*.lalrpop` file defines the non-terminal rules. Before we look at
-the grammar rules, let's look at our AST definition.
+Before we look at the grammar rules, let's look at our AST definition.
 
 ##### [`use oursh::program::posix::ast::Program;`][posix::ast::Program]
 
@@ -203,7 +203,7 @@ Internally, `posix::ast::Program` uses the parser module generated
 automatically in it's `parse` function.
 
 ```rust
-let program = Program::parse(b"! true || false" as &[u8])?;
+let program = Program::parse(b"false && true || true" as &[u8])?;
 println!("{:#?}", program);
 -----
 Program(
@@ -213,14 +213,14 @@ Program(
                 Simple(
                     [
                         Word(
-                            "true"
+                            "false"
                         )
                     ]
                 ),
                 Simple(
                     [
                         Word(
-                            "false"
+                            "true"
                         )
                     ]
                 )
@@ -236,6 +236,9 @@ Program(
     ]
 )
 ```
+
+As you can see we correctly parse `false && true || true` as `(false && true)
+|| true`, so this program will return true (or exit code 0).
 
 The only major piece left to explain is the [grammar
 description][posix.lalrpop] file. There [are][lalrpop-full-expr] a
@@ -273,11 +276,11 @@ Simple: ast::Command = {
 `&&` and `||` rules, allowing for `... && ... || ...`.
 
 Words are created by the _lexer_, a tool designed to consume the input text,
-and iterate over chunks called _tokens_. Tokens, as already mentioned, are
-the terminals of the language. `WORD`, `&&` and `||` from the above grammar
-rules, are our terminal tokens. `WORD`s are generated after reading a character
-that is allowed to start a word, until the word is considered finished. This
-could, for example allow for words like `foo!`, despite `!` also being a token.
+and iterate over chunks called _tokens_. Tokens, as already mentioned, are the
+terminals of the language. `WORD`, `&&` and `||` from the above grammar rules,
+are our terminal tokens. `WORD`s are generated after reading a character that
+is allowed to start a word, until the word is considered finished. This allows
+for words like `foo!`, despite `!` also being a token.
 
 <details>
   <summary>
@@ -312,8 +315,8 @@ assert_oursh!("{#!ruby; puts 1}", "1\n");
 
 ### Next Steps
 
-- Add a proper job runtime, with status, backgrounding, and chained pipes. I'm
-  still not 100% sure how to best implement this ([#6][issue-6]).
+- Add a proper job runtime, with status, backgrounding. I'm still not 100%
+  sure how to best implement this ([#6][issue-6]).
 - More complete builtin support ([#24][issue-24]).
 - The runtime can't handle nested pipelines ([#12][issue-12]).
 - The parser needs to support IO redirection syntax ([#26][issue-26]).
