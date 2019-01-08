@@ -1,6 +1,7 @@
 ---
 title: Splitting Cats and Dogs
 layout: rambling
+draft: true
 ---
 
 Often when you're programming you find the need to split things up a bit. This
