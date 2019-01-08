@@ -23,11 +23,9 @@ Remember, stay DRY (Don't Repeat Yourself).
 Grouping shouldn't require too much thought, aside from a **name** for the way
 in which the functions are grouped. It can often be all to easy to end up with
 needless wrapper classes, or other added machinery. Another good acronym to
-keep around is, KISS (Keep It Simple, Stupid). A bit aggressive, but that's OK,
-this is important shit.
+keep around is, KISS (Keep It Simple, Stupid).
 
 Consider an example:
-
 
 ```ruby
 class Dog
@@ -67,7 +65,7 @@ Here's a couple options:
 
 ```ruby
 class Dog
-  # Communication Methods #
+  # Communicative Methods #
   #########################
 
   def bark
@@ -78,7 +76,7 @@ class Dog
     # ...
   end
 
-  # Sustenance Methods #
+  # Consumptive Methods #
   ######################
 
   def eat
@@ -101,7 +99,7 @@ end
 # Or, even better in my book.
 
 class Dog
-  module Communication
+  module Communicative
     def bark
       # ...
     end
@@ -111,7 +109,7 @@ class Dog
     end
   end
 
-  module Sustenance
+  module Consumptive
     def eat
       # ...
     end
@@ -129,8 +127,8 @@ class Dog
     end
   end
 
-  include Communication
-  include Sustenance
+  include Communicative
+  include Consumptive
 end
 ```
 
@@ -153,13 +151,13 @@ also helps keep testing focused.
 
 Let's consider what happens when we want to add a new `Cat` class to our
 program. The first thing we should notice is that we can share all of the
-`Sustenance` functionality, since just like dogs, cats also eat, drink, and the
+`Consumptive` functionality, since just like dogs, cats also eat, drink, and the
 rest.
 
-Here's a complete implementation of the `Sustenance` module we'll share:
+Here's a complete implementation of the `Consumptive` module we'll share:
 
 ```ruby
-module Sustenance
+module Consumptive
   def initialize
     @stomach = []
     super
@@ -202,25 +200,25 @@ spooky action at a distance out of our programs!
 
 Now everything is wrapped up nicely inside this module, and all we have to do
 is include it, like we did when we used a `module` for grouping before. The
-only difference is that the `Sustenance` module now must be visible to both the
+only difference is that the `Consumptive` module now must be visible to both the
 `Cat` and `Dog` classes.
 
 ```ruby
 class Dog
-  include Sustenance
+  include Consumptive
 
   # ...
 end
 
 class Cat
-  include Sustenance
+  include Consumptive
 end
 ```
 
 ### Testing
 
 With all this in mind, let's see how we test the `Dog` class and the
-`Sustenance` module. Each should only test the parts they are concerned with
+`Consumptive` module. Each should only test the parts they are concerned with
 directly.
 
 First, since all of this code should run, let's `require` Ruby's testing
@@ -231,7 +229,7 @@ require 'minitest/autorun'
 ```
 
 Next, we can define the `Dog` spesific tests. These are free to do anything
-they'd like with the dog, but shouldn't test `Sustenance` since that's defined
+they'd like with the dog, but shouldn't test `Consumptive` since that's defined
 elsewhere.
 
 ```ruby
@@ -249,15 +247,15 @@ class TestDog < Minitest::Test
 end
 ```
 
-Finally, we can test the `Sustenance` module. We want to test this functionality
-without relying on our `Dog` or `Cat` since they aren't the concern of this
-module. A dummy, class can be created just for our test, making it very clear
-what's going on.
+Finally, we can test the `Consumptive` module. We want to test this
+functionality without relying on our `Dog` or `Cat` since they aren't the
+concern of this module. A dummy, class can be created just for our test, making
+it very clear what's going on.
 
 ```ruby
-class TestSustenance < Minitest::Test
+class TestConsumptive < Minitest::Test
   class TestAnimal
-    include Sustenance
+    include Consumptive
     attr_reader :stomach
   end
 
@@ -296,15 +294,32 @@ end
 These tests don't cover enough cases, but you get the idea. We seem to have
 a functioning set of animals on our hands!
 
-### Conventions
+### Naming Conventions
 
-TODO: Conventions vs the World, i.e. my convention says to put things here, but
-      I want to put things there.
+OK, so depending on who you ask we may have broken some rules here... First of
+all, people may be expecting to see a `module` in it's own file. Well that one
+is easy to fix, just move it there... though remember to preserve it's
+namespace. For example, `Dog::Communicative` could be relocated to
+`dog/communicative.rb` as:
 
-### Footnote for Rails Programmers
+```ruby
+class Dog
+  module Communicative
+    # ...
+  end
+end
+```
 
-If you're a Rails programmer you've surely run into a `Concern` or two. In fact
-concerns are really just a nice set of helpers (a DSL even) for a plain ol'
-Ruby `module`. Let's see how this looks.
+Another convention is to name your concerns (`modules`) as something-able. This
+is a great huristic, but may not always be reasonable. I've intentionally
+broken this pattern here. Keep in mind, not everyone is as passionate as _you_
+about finding the perfect name, and while the better job we do at naming the
+easier it will be to read, it's never going to be perfect.
 
-TODO: Concerns
+Just try to remember this:
+
+- A `class` is a **noun**
+- A `module` is an **adjective**
+- A `method` is a **verb**
+
+TODO: Closing words
