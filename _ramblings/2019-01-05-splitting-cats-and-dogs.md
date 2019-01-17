@@ -21,10 +21,10 @@ Remember, stay DRY (Don't Repeat Yourself).
 
 ### Grouping
 
-Grouping shouldn't require too much thought, aside from a **name** for the way
-in which the functions are grouped. It can often be all to easy to end up with
-needless wrapper classes, or other added machinery. Another good acronym to
-keep around is, KISS (Keep It Simple, Stupid).
+Grouping shouldn't require too much thought, aside from a cohesive **name** for
+the way in which the functions belong together. It can often be all to easy to
+end up with needless wrapper classes, or other added machinery. Another good
+acronym to keep around is, KISS (Keep It Simple, Stupid).
 
 Consider an example:
 
@@ -250,7 +250,7 @@ end
 
 Finally, we can test the `Consumptive` module. We want to test this
 functionality without relying on our `Dog` or `Cat` since they aren't the
-concern of this module. A dummy, class can be created just for our test, making
+concern of this module. A dummy class can be created just for our test, making
 it very clear what's going on.
 
 ```ruby
