@@ -141,14 +141,16 @@ you'll need to think more, though a `module` may still be the solution.
 
 ### Sharing
 
-Sharing is about *abstraction*. It's about defining an interface, and letting
+Sharing is about **abstraction**. It's about defining an interface, and letting
 users rely on it. Sharing code lets you keep things DRY and maintainable, and
 also helps keep testing focused.
 
-> It's a fun fact that in theoretical computer science, the term abstraction
-> and function can be used interchangably. The dual, also called an elimination
-> rule, is _application_, or calling the function. With only these two things
-> you've got yourself a turing complete language. Cool!
+> It's a fun fact that in theoretical computer science, the term _abstraction_
+> and function can be used interchangably. The dual, is _application_, or
+> calling the function. With only these two things you've got yourself a turing
+> complete language called λ calculus.
+>
+> [Cool!](https://gist.github.com/nixpulvis/ff6de652a7fe4122e063)
 
 Let's consider what happens when we want to add a new `Cat` class to our
 program. The first thing we should notice is that we can share all of the
@@ -199,10 +201,15 @@ idea to keep the use of these as close to each other as possible. It's very
 hard to reason about a module that's touching another module's state. Keep
 spooky action at a distance out of our programs!
 
-Now everything is wrapped up nicely inside this module, and all we have to do
-is include it, like we did when we used a `module` for grouping before. The
-only difference is that the `Consumptive` module now must be visible to both the
-`Cat` and `Dog` classes.
+Some languages even make it impossible to inspect the state of another object's
+guts (`@stomach` if you will), this can be a very good property. Ruby is a
+little more liberal, requiring you to be more disciplined. With great power
+comes great responsibility.
+
+Well, now that everything is wrapped up nicely inside this module, all we have
+to do is include it. This looks just like it did when we used a `module` for
+grouping before. The only difference is that the `Consumptive` module now must
+be visible to both the `Cat` and `Dog` classes.
 
 ```ruby
 class Dog
@@ -323,4 +330,6 @@ Just try to remember this:
 - A `module` is an **adjective**
 - A `method` is a **verb**
 
-TODO: Closing words
+Hopefully in the process of thinking through how to split up your programs
+you'll discover elegant abstractions, and clean implementations. Or at least as
+clean as a bunch of functions that deal with `poop` can ever be.
