@@ -135,7 +135,7 @@ end
 
 People often view a `module` as a way to share functionality, but here we're
 just using it to group similar functions. The main thing we've done is make it
-clear which functions are related, and therefor **a good idea to read
+clear which functions are related, and therefore **a good idea to read
 together**.  If you want to share some part of your program's design, then
 you'll need to think more, though a `module` may still be the solution.
 
