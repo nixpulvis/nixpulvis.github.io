@@ -8,7 +8,8 @@ title: Chunky Bacon
 S[p](problems)[h](hackers-band)inx o[f](fairy-tale) b[l](love-hate)ack qua[r](right)[t](turn)[z](zuckerburg),
 jud[g](gaze)e [m](maxim)y [v](vermont)o[w](wild)!
 
-The quick bro[w](who)n [f](fga)ox jum[p](passion)s over a lazy dog.
+The quick bro[w](who)n [f](fga)ox
+jum[p](passion)s over a lazy dog.
 
 [War](war)/
     [Typed Fantasy Land](https://github.com/promises-aplus/promises-spec/issues/94)
