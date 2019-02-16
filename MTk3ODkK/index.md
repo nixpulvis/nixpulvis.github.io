@@ -5,7 +5,7 @@ title: Chunky Bacon
 ---
 [![](/img/cavity.jpg)](https://poignant.guide/)
 
-S[p](problems)[h](hackers-band)inx o[f](fairy-tale) b[l](love-hate)ack qua[r](right)t[z](zuckerburg),
+S[p](problems)[h](hackers-band)inx o[f](fairy-tale) b[l](love-hate)ack qua[r](right)[t](turn)[z](zuckerburg),
 jud[g](gaze)e [m](maxim)y [v](vermont)o[w](wild)!
 
 The quick bro[w](who)n [f](fga)ox jum[p](passion)s over a lazy dog.
