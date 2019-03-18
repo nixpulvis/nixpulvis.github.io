@@ -5,8 +5,8 @@ layout: rambling
 
 This is part 2 of a series I'll be writing on the creation of [`oursh`][oursh],
 a modern POSIX compatible shell written in Rust. If you haven't read [Part
-1][part1], and want a breif overview of shell terminology and functionality I
-recomend reading it, otherwise this will be the first post on the Rust project.
+1][part1], and want a brief overview of shell terminology and functionality I
+recommend reading it, otherwise this will be the first post on the Rust project.
 
 In this post I want to dive into the skeleton of the project so far.  Last time
 we made a shell in 58 lines of Ruby. I then started the `oursh` project in
@@ -138,9 +138,9 @@ script", though other types of shell scripts exist; like [fish][fish] scripts.
 For convenience, we'll simply refer to a POSIX compatible shell as `sh`.
 
 The first implementation of `sh` was by Ken Thompson around 1971, which is why
-you may also hear this refered to as a Thompson shell. The next major
+you may also hear this referred to as a Thompson shell. The next major
 development was in 1979 with the Bourne shell, also known as `sh`, which was a
-rewrite by Stephen Bourne at Bell Labs. The most commmon shell these days is
+rewrite by Stephen Bourne at Bell Labs. The most common shell these days is
 `bash`, which stands for Bourne-Again shell.
 
 Now finally, for some Rust code...
