@@ -5,3 +5,6 @@ collections:
     projects:
         output: true
         permalink: /:collection/:name
+    musings:
+        output: true
+        permalink: /:collection/:name
