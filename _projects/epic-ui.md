@@ -1,9 +1,9 @@
 ---
 layout: project
 title: Epic UI
-repos:
-- https://github.com/nixpulvis/EUI
+references:
 - https://github.com/nixpulvis/EpicUI-2.0
+- https://github.com/nixpulvis/EUI
 ---
 
 I used to be an avid World of Warcraft player, raiding bosses many times a

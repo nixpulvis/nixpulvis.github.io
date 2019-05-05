@@ -24,9 +24,9 @@ the projects themselves.
         <li class="project">
             <a href="{{ project.url }}">{{ project.title }}</a>
             {{ project.excerpt }}
-            <ul class="repos">
-            {% for repo in project.repos %}
-                <li><a href="{{repo}}">{{ repo }}</a></li>
+            <ul class="references">
+            {% for reference in project.references %}
+                <li><a href="{{reference}}">{{ reference }}</a></li>
             {% endfor %}
             </ul>
         </li>
@@ -40,9 +40,9 @@ the projects themselves.
         <li class="project draft">
             <a href="{{ project.url }}">{{ project.title }}</a>
             {{ project.excerpt }}
-            <ul class="repos">
-            {% for repo in project.repos %}
-                <li><a href="{{repo}}">{{ repo }}</a></li>
+            <ul class="references">
+            {% for reference in project.references %}
+                <li><a href="{{reference}}">{{ reference }}</a></li>
             {% endfor %}
             </ul>
         </li>

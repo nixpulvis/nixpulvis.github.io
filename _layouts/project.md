@@ -4,9 +4,9 @@ layout: default
 
 <h2>{{ page.title }}</h2>
 
-<ul class="repos">
-{% for repo in page.repos %}
-    <li><a href="{{repo}}">{{ repo }}</a></li>
+<ul class="references">
+{% for reference in page.references %}
+    <li><a href="{{reference}}">{{ reference }}</a></li>
 {% endfor %}
 </ul>
 
