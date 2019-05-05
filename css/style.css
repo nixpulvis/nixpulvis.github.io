@@ -159,6 +159,11 @@ nav ul li {
   margin-right: 5px;
 }
 
+nav .treble-cleft {
+  font-size: 10px;
+  text-decoration: none;
+}
+
 /* Rambling and Project Styles */
 
 li.draft {
