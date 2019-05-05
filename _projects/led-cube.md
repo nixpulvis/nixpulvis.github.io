@@ -1,6 +1,9 @@
 ---
 layout: project
 draft: true
+references:
+- https://github.com/nixpulvis/led-cube
+- https://github.com/nixpulvis/avrm
 ---
 
 I've wanted to build an LED cube for a while now, and I finnally did. This

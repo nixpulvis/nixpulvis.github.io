@@ -159,9 +159,34 @@ nav ul li {
   margin-right: 5px;
 }
 
+/* Rambling and Project Styles */
+
+li.draft {
+  opacity: 0.25;
+}
+
+/* Project Styles */
+
+.projects {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.projects li.project {
+  margin-bottom: 20px;
+}
+
+.project a.name {
+  font-size: 25px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
 .references {
   background: #eee;
   border: 1px dashed black;
+  border-radius: 5px;
   font-size: 14px;
   list-style: none;
   padding: 10px;
@@ -170,8 +195,4 @@ nav ul li {
 
 .references li:before {
   content: '- ';
-}
-
-li.draft {
-  opacity: 0.25;
 }

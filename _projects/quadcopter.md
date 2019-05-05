@@ -1,6 +1,8 @@
 ---
 layout: project
 draft: true
+references:
+- https://github.com/nixpulvis/quadcopter
 ---
 
 Quadcopters are amazing flying devices, able to move somewhat freely in our

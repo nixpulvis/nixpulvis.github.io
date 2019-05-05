@@ -1,6 +1,8 @@
 ---
 layout: project
 draft: true
+references:
+- https://github.com/nixpulvis/synth
 ---
 
 I own a Korg MS-20 Mini, and have been using it to learn a bit more about music

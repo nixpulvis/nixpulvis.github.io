@@ -1,6 +1,8 @@
 ---
 layout: project
 draft: true
+references:
+- https://github.com/nixpulvis/game_of_life
 ---
 
 Conway's Game of Life is a cult classic amungst programmers. It's a beautiful

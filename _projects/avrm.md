@@ -1,6 +1,11 @@
 ---
 layout: project
 draft: true
+references:
+- https://github.com/nixpulvis/avrm
+- https://github.com/nixpulvis/max7221
+- https://github.com/nixpulvis/ds1307
+- https://github.com/nixpulvis/nrf24l01
 ---
 
 I write a decent bit of code for AVRs, those tiny little processors that power

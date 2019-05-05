@@ -1,6 +1,9 @@
 ---
 layout: project
 draft: true
+references:
+- https://github.com/nixpulvis/parser-combinator
+- https://github.com/nixpulvis/parser-combinator/blob/master/lab8.pdf
 ---
 
 Lexers and Parsers are at the core of every language. The main goal is to turn

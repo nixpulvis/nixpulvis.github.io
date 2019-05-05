@@ -1,6 +1,8 @@
 ---
 layout: project
 draft: true
+references:
+- https://github.com/nixpulvis/maze_gl
 ---
 
 A friend of mine once asked if we could build something in OpenGL just to see
