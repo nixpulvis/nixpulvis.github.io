@@ -30,6 +30,8 @@ $$
 e^{ix} = \cos(x) + i \sin(x)
 $$
 
+![](/img/fourier_independent.png)
+![](/img/fourier_harmonic.png)
 ![](/img/fourier.gif)
 
 Euler's identity can be geometrically interpreted as saying that rotating any
@@ -112,8 +114,8 @@ end
 
 $$
 \begin{align}
-n! &= \prod_{i=1}^n i \\
-   &= n \cdot (n - 1)!
+  n! &= \prod_{i=1}^n i \\
+     &= n \cdot (n - 1)!
 \end{align}
 $$
 
@@ -121,8 +123,8 @@ $$
 
 $$
 \begin{align}
-T_n &= \sum_{k=1}^n k    \\
-    &= \frac{n(n+1)}{2} \\
-    &= \binom{n+1}{2}
+  T_n &= \sum_{k=1}^n k    \\
+      &= \frac{n(n+1)}{2} \\
+      &= \binom{n+1}{2}
 \end{align}
 $$
