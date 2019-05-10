@@ -27,12 +27,68 @@ If you can't see the "whole" picture yet (can anyone?), this might help. Our
 cyclic circular sidekicks, $$\sin$$ and $$\cos$$ are here to enlighten us.
 
 $$
-e^{ix} = \cos(x) + i \sin(x)
+\begin{align}
+        e^{i \theta} &= \cos(\theta) + i \sin(\theta) \\\\
+  \frac{\sin(\theta)}{\pi} &= \frac{e^{i \theta} - \cos(\theta)}{i\pi}
+\end{align}
 $$
 
-![](/img/fourier_independent.png)
-![](/img/fourier_harmonic.png)
-![](/img/fourier.gif)
+Substitute $$\pi$$ for $$\theta$$.
+
+$$
+\begin{align}
+  \frac{\sin(\pi)}{\pi} &= \frac{e^{i \pi} - \cos(\pi)}{i\pi} \\
+                        &= \frac{0}{i\pi} \\
+                        &= 0
+\end{align}
+$$
+
+```
+Plot[
+        sin(theta)/pi,
+  (3/2) sin(theta)/pi,
+  2     sin(theta)/pi,
+  (5/2) sin(theta)/pi
+]
+```
+![](/img/fourier_euler.png)
+
+Unlike the Euler series we above, which is purely constructive, a **square
+wave** can be constructed with the Fourier series:
+
+$$
+\sin(2 \pi \theta),
+\frac{1}{3} \sin(6 \pi \theta),
+\frac{1}{5} \sin(10 \pi \theta),
+...
+$$
+```
+Plot[
+        sin(2 pi theta),
+  (1/3) sin(6 pi theta),
+  (1/5) sin(10 pi theta)
+]
+```
+![](/img/fourier_square.png)
+![](/img/fourier_square.gif)
+
+And a **saw wave** can be constructed by another:
+
+$$
+\sin(\pi \theta),
+\sin(\frac{\pi \theta}{2}),
+\sin(\frac{\pi \theta}{4}),
+\ldots
+$$
+```
+Plot[
+  sin(pi theta),
+  sin((pi theta) / 2),
+  sin((pi theta) / 4)
+]
+```
+![](/img/fourier_saw.png)
+![](/img/fourier_saw.gif)
 
 Euler's identity can be geometrically interpreted as saying that rotating any
 point $$\pi$$ radians around an origin of a complex plane has the same effect
