@@ -24,7 +24,7 @@ e^{\frac{5i\pi}{2}} = (e^{\frac{i\pi}{2}})^5 = i^5 = i
 $$
 
 If you can't see the "whole" picture yet (can anyone?), this might help. Our
-cyclic circular sidekicks $$\sin$$ and $$\cos$$ are here to enlighten us.
+cyclic circular sidekicks, $$\sin$$ and $$\cos$$ are here to enlighten us.
 
 $$
 e^{ix} = \cos(x) + i \sin(x)
