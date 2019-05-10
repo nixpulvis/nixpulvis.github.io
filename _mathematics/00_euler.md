@@ -26,33 +26,36 @@ $$
 If you can't see the "whole" picture yet (can anyone?), this might help. Our
 cyclic circular sidekicks, $$\sin$$ and $$\cos$$ are here to enlighten us.
 
+Euler's identity is a special case of _Euler's formula_, which states:
+
+$$
+e^{i \theta} = \cos(\theta) + i \sin(\theta)
+$$
+
+Substitute $$\pi$$ (or in general, $$n\pi$$) for $$\theta$$ and we get back our
+identity.
+
 $$
 \begin{align}
-              e^{i \theta} &= \cos(\theta) + i \sin(\theta) \\\\
-  \frac{\sin(\theta)}{\pi} &= \frac{e^{i \theta} - \cos(\theta)}{i\pi}
+  \cos(\pi) + i \sin(\pi) = -1 + 0 =\ & e^{i \pi} = i^2 \\
+                                     & e^{i \pi} + 1 = 0
 \end{align}
 $$
 
-Substitute $$\pi$$ for $$\theta$$.
-
-$$
-\frac{\sin(\pi)}{\pi} = \frac{e^{i \pi} - \cos(\pi)}{i\pi}
-                      = \frac{0}{i\pi}
-                      = 0
-$$
-
-```
-Plot[
-        sin(theta)/pi,
-  (3/2) sin(theta)/pi,
-  2     sin(theta)/pi,
-  (5/2) sin(theta)/pi
-]
-```
-![](/img/fourier_euler.png)
-
 <details>
   <summary><strong>Tangent on Fourier Series</strong></summary>
+<p>
+  <pre><code>
+  Plot[
+          sin(theta)/pi,
+    (3/2) sin(theta)/pi,
+    2     sin(theta)/pi,
+    (5/2) sin(theta)/pi
+  ]
+  </code></pre>
+
+  <img src="/img/fourier_euler.png" />
+</p>
 <p>
   Unlike the Euler series we above, which is purely constructive, a <b>square
   wave</b> can be constructed with the Fourier series:
