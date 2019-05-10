@@ -4,15 +4,86 @@ layout: default
 draft: true
 ---
 
+## Overview of Mathematics
+
+Mathematics makes use of symbols and names somewhat liberally, allowing for a
+certain amount of conciseness and expressiveness, but not always
+disambiguation. Notion can be context sensitive, be careful.
+
+Also, this is **not** a guide, or a lesson. I'm mostly trying to catalog useful
+notation and expressions.
+
+**Reader Be Warned**
+
+1. [Logic](#logic)
+    1. Symbols
+    2. Rules
+    3. Proofs
+2. [Mathematics](#mathematics)
+    1. Notation
+        1. Objects
+        2. Operations
+        3. Conventions
+    2. Subjects
+        1. Algebra
+        2. Calculus
+        3. Linear Algebra
+        4. Statistics
+        5. Combinatorics
+        6. Set/Group/Category Theory
+        7. Real Analysis*
+3. Programming
+
+---
+
 # Logic
 
-Basically start with `true` and `false`, then lots more.
+Logic is the foundation of all reasoning and thought. Though, not all logics
+are created equal.
 
-$$
-\forall x \in X, \quad \exists i \leq \epsilon
-$$
+Formal logic denotes a collection of symbols and rules for these symbols. Used
+carefully, one can start here and build whole models of mathematics and thus
+anything.
+
+### Symbols
+
+##### Negation: $$\neg A$$, $$!A$$
+"Not" is written as $$\neg$$ (or $$!$$ by programmers). For example, all roads
+do **not** lead to Rome. Let's call this proposition $$\neg R$$.
+
+##### Equivalence: $$A \equiv B$$, $$A \leftrightarrow B$$
+We could say that all roads _do_ in fact lead to Rome, and that would be $$\neg
+\neg R \equiv R$$. This could also be written as $$\neg \neg R \leftrightarrow
+R$$ (or even $$\neg \neg R \sim R$$ in Kleene's "Mathematical Logic").
+
+##### Junction: $$A \land B$$, $$A \lor B$$
+"And" and "Or" are written as $$\land$$, and $$\lor$$, respectively. We
+obviously can't claim $$R \land \neg R$$ is true.
+
+##### Implication: $$A \Rightarrow B$$, $$A \rightarrow B$$
+_(also $$A \supset B$$ in Kleene's "Mathematical Logic")_
+
+##### Existentialization: $$\exists A$$
+##### Universilization: $$\forall A$$
+
+##### Proof: $$\vdash A$$
+##### Entailment: $$\vDash A$$
+We can now formally state in our observer language that $$\nvDash R \land \neg
+R$$, for example.
+
+##### Approximation: $$\sim A$$, $$\approx A$$, $$O$$
+Somewhere along the way to Rome I might ask, "How long has it been since we
+left camp?", which, unless someone or something was perfectly counting, could
+only be met with $$\sim 12$$ hours. It might also be useful to write $$t
+\approx 12$$. Looking over at the travelers along side us, we recognize a few
+from hours ago when we left. We could say our distance ($$d_1$$) and their
+distance ($$d_2$$) are related as $$d_1(t) \sim d_2(x)$$, or even $$O(d_1(t)) =
+O(d_2(t))$$.
+
 
 # Mathematics
+
+We use $$=$$ to express, for example that in $$a = a$$, $$a$$ is identical.
 
 ## Numbers
 
