@@ -1,7 +1,6 @@
 ---
 title: Web, Shit . Oh
 layout: rambling
-draft: true
 ---
 
 Oh shit... What have we done. The promise of rich interactive websites turned
