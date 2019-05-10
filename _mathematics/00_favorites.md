@@ -3,17 +3,17 @@ title: Favorites
 layout: default
 ---
 
-### Eulers Identity
+### Euler's Identity
 
 $$
-e^{i\pi} + 1 = 0
+e^{i\pi} + 1 = 0 \\
 $$
 
-- [$$0$$][0]
-- [$$1$$][1]
-- [$$π = 3.141\ldots$$][π]
-- [$$e = 2.718\ldots$$][e]
-- [$$i = \sqrt{-1}$$][i]
+This equation is supremely beautiful and bewildering. It uses 5 **very**
+fundamental objects: $$0$$, $$1$$, $$\pi = 3.141\ldots$$, $$e = 2.718\ldots$$,
+and $$i = \sqrt{-1}$$, along with 4 operations: $$a + b$$ (addition), $$a b$$
+(multiplication), $$a^b$$ (exponentiation), and finally $$a = b$$ (equality,
+identity).
 
 $$
                        e^{\frac{i\pi}{2}}    = i  \\
@@ -21,6 +21,30 @@ e^{i\pi}            = (e^{\frac{i\pi}{2}})^2 = i^2 = -1  \\
 e^{\frac{3i\pi}{2}} = (e^{\frac{i\pi}{2}})^3 = i^3 = -i  \\
 e^{2i\pi}           = (e^{\frac{i\pi}{2}})^4 = i^4 = 1 \\
 e^{\frac{5i\pi}{2}} = (e^{\frac{i\pi}{2}})^5 = i^5 = i
+$$
+
+If you can't see the "whole" picture yet (can anyone?), this might help. Our
+cyclic circular sidekicks $$\sin$$ and $$\cos$$ are here to enlighten us.
+
+$$
+e^{ix} = \cos(x) + i \sin(x)
+$$
+
+![](/img/fourier.gif)
+
+Euler's identity can be geometrically interpreted as saying that rotating any
+point $$\pi$$ radians around an origin of a complex plane has the same effect
+as reflecting the point across the origin.
+
+More generally, for the $$n$$th roots of unity, we can write Euler's
+Identity as the $$n = 2$$ case of the equation:
+
+$$
+\sum_{k=0}^{n-1} e^{2\pi i\frac{k}{n}} = 0 \\
+$$
+
+$$
+\therefore \because
 $$
 
 ### Fibonacci Numbers
@@ -37,8 +61,9 @@ $$
 \end{align}
 $$
 
-A close form solution can be found and is rather interesting, since $$\varphi$$
-is the golden ratio (a solution to the equation $$x^2 - x - 1 = 0$$).
+A closed form solution can be found and is rather interesting, since
+$$\varphi$$ is the golden ratio (a solution to the equation $$x^2 - x - 1 =
+0$$).
 
 $$
 F_n = \frac{\varphi^n - \psi^n}{\varphi - \psi}
@@ -101,10 +126,3 @@ T_n &= \sum_{k=1}^n k    \\
     &= \binom{n+1}{2}
 \end{align}
 $$
-
-
-[0]: https://en.wikipedia.org/wiki/0_(number)
-[1]: https://en.wikipedia.org/wiki/1_(number)
-[π]: https://en.wikipedia.org/wiki/Pi
-[e]: https://en.wikipedia.org/wiki/E_(mathematical_constant)
-[i]: https://en.wikipedia.org/wiki/Imaginary_unit
