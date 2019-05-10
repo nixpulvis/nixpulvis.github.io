@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="/css/syntax.css">
     <link rel="stylesheet" href="{{ page.style }}" />
     <script src="/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
     <script src="/js/main.js"></script>
     {% for script in page.scripts %}
       <script src="{{ script }}"></script>
@@ -26,9 +29,10 @@
       <a href="/" class="identity">nixpulvis</a>
       <nav>
         <ul>
-          <li><a class="note" href="/musings">♪</a></li>
           <li><a href="/projects">Projects</a></li>
           <li><a href="/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/math">Σ</a></li>
+          <li class="icon"><a href="/musings">♪</a></li>
         </ul>
       </nav>
     </header>

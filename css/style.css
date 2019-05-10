@@ -85,6 +85,12 @@ and (max-device-width : 600px) {
   color: inherit;
 }
 
+
+#me {
+  position: absolute;
+  right: 80px;
+}
+
 header {
   padding: 10px 0;
   border-bottom: 1px dashed black;
@@ -159,7 +165,7 @@ nav ul li {
   margin-right: 5px;
 }
 
-nav .note {
+nav .icon a {
   text-decoration: none;
 }
 
