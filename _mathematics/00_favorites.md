@@ -53,42 +53,53 @@ Plot[
 ```
 ![](/img/fourier_euler.png)
 
-Unlike the Euler series we above, which is purely constructive, a **square
-wave** can be constructed with the Fourier series:
+<details>
+  <summary><strong>Tangent on Fourier Series</strong></summary>
+<p>
+  Unlike the Euler series we above, which is purely constructive, a <b>square
+  wave</b> can be constructed with the Fourier series:
 
-$$
-\sin(2 \pi \theta),
-\frac{1}{3} \sin(6 \pi \theta),
-\frac{1}{5} \sin(10 \pi \theta),
-...
-$$
-```
-Plot[
-        sin(2 pi theta),
-  (1/3) sin(6 pi theta),
-  (1/5) sin(10 pi theta)
-]
-```
-![](/img/fourier_square.png)
-![](/img/fourier_square.gif)
+  $$
+  \sin(2 \pi \theta),
+  \frac{1}{3} \sin(6 \pi \theta),
+  \frac{1}{5} \sin(10 \pi \theta),
+  ...
+  $$
 
-And a **saw wave** can be constructed by another:
+  <pre><code>
+  Plot[
+          sin(2 pi theta),
+    (1/3) sin(6 pi theta),
+    (1/5) sin(10 pi theta)
+  ]
+  </code></pre>
 
-$$
-\sin(\pi \theta),
-\sin(\frac{\pi \theta}{2}),
-\sin(\frac{\pi \theta}{4}),
-\ldots
-$$
-```
-Plot[
-  sin(pi theta),
-  sin((pi theta) / 2),
-  sin((pi theta) / 4)
-]
-```
-![](/img/fourier_saw.png)
-![](/img/fourier_saw.gif)
+  <img src="/img/fourier_square.png" />
+  <img src="/img/fourier_square.gif" />
+</p>
+
+<p>
+  And a <b>saw wave</b> can be constructed by another:
+
+  $$
+  \sin(\pi \theta),
+  \sin(\frac{\pi \theta}{2}),
+  \sin(\frac{\pi \theta}{4}),
+  \ldots
+  $$
+
+  <pre><code>
+  Plot[
+    sin(pi theta),
+    sin((pi theta) / 2),
+    sin((pi theta) / 4)
+  ]
+  </code></pre>
+
+  <img src="/img/fourier_saw.png" />
+  <img src="/img/fourier_saw.gif" />
+</p>
+</details>
 
 Euler's identity can be geometrically interpreted as saying that rotating any
 point $$\pi$$ radians around an origin of a complex plane has the same effect

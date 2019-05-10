@@ -32,6 +32,8 @@ blockquote {
 details {
   cursor: pointer;
   padding: 10px;
+  border: 1px dashed black;
+  border-radius: 5px;
 }
 
 details p:last-child {
