@@ -9,8 +9,7 @@ title: Mathematics
 > sets, using numbers and symbols.
 
 <ul>
-{% assign mathematics = site.mathematics | sort: 'date' | reverse %}
-{% for math in mathematics %}
+{% for math in site.mathematics %}
   {% if math.draft %}
     <li class="draft">
   {% else %}

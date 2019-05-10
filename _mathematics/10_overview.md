@@ -1,5 +1,5 @@
 ---
-title: Math Overview
+title: Overview
 layout: default
 draft: true
 ---
