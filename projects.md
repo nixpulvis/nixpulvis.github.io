@@ -44,7 +44,11 @@ the projects themselves.
 {% for project in site.projects %}
     {% if project.draft %}
         <li class="project draft">
-            <a class="name" href="{{ project.url }}">{{ project.title }}</a>
+            <h2>
+                <a class="name" href="{{ project.url }}">
+                    {{ project.title }}
+                </a>
+            </h2>
             {{ project.excerpt }}
             {% if project.references[0] %}
                 <ul class="references">
