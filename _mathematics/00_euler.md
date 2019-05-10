@@ -28,7 +28,7 @@ cyclic circular sidekicks, $$\sin$$ and $$\cos$$ are here to enlighten us.
 
 $$
 \begin{align}
-        e^{i \theta} &= \cos(\theta) + i \sin(\theta) \\\\
+              e^{i \theta} &= \cos(\theta) + i \sin(\theta) \\\\
   \frac{\sin(\theta)}{\pi} &= \frac{e^{i \theta} - \cos(\theta)}{i\pi}
 \end{align}
 $$
@@ -36,11 +36,9 @@ $$
 Substitute $$\pi$$ for $$\theta$$.
 
 $$
-\begin{align}
-  \frac{\sin(\pi)}{\pi} &= \frac{e^{i \pi} - \cos(\pi)}{i\pi} \\
-                        &= \frac{0}{i\pi} \\
-                        &= 0
-\end{align}
+\frac{\sin(\pi)}{\pi} = \frac{e^{i \pi} - \cos(\pi)}{i\pi}
+                      = \frac{0}{i\pi}
+                      = 0
 $$
 
 ```
@@ -110,8 +108,5 @@ Identity as the $$n = 2$$ case of the equation:
 
 $$
 \sum_{k=0}^{n-1} e^{2\pi i\frac{k}{n}} = 0 \\
-$$
-
-$$
 \therefore \because
 $$
