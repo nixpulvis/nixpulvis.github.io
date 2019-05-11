@@ -6,7 +6,7 @@ layout: default
 # Euler's Identity
 
 $$
-e^{i\pi} + 1 = 0 \\
+e^{\pi i} + 1 = 0
 $$
 
 This equation is supremely beautiful and bewildering. It uses 5 **very**
@@ -16,11 +16,11 @@ and $$i = \sqrt{-1}$$, along with 4 operations: $$a + b$$ (addition), $$a b$$
 identity).
 
 $$
-                       e^{\frac{i\pi}{2}}    = i  \\
-e^{i\pi}            = (e^{\frac{i\pi}{2}})^2 = i^2 = -1  \\
-e^{\frac{3i\pi}{2}} = (e^{\frac{i\pi}{2}})^3 = i^3 = -i  \\
-e^{2i\pi}           = (e^{\frac{i\pi}{2}})^4 = i^4 = 1 \\
-e^{\frac{5i\pi}{2}} = (e^{\frac{i\pi}{2}})^5 = i^5 = i
+                        e^{\frac{\pi i}{2}}    = i  \\
+e^{\pi i}            = (e^{\frac{\pi i}{2}})^2 = i^2 = -1  \\
+e^{\frac{3\pi i}{2}} = (e^{\frac{\pi i}{2}})^3 = i^3 = -i  \\
+e^{2\pi i}           = (e^{\frac{\pi i}{2}})^4 = i^4 = 1 \\
+e^{\frac{5\pi i}{2}} = (e^{\frac{\pi i}{2}})^5 = i^5 = i
 $$
 
 If you can't see the "whole" picture yet (can anyone?), this might help. Our
@@ -37,8 +37,8 @@ identity.
 
 $$
 \begin{align}
-  \cos(\pi) + i \sin(\pi) = -1 + 0 =\ & e^{i \pi} = i^2 \\
-                                     & e^{i \pi} + 1 = 0
+  \cos(\pi) + i \sin(\pi) = -1 + 0 =\ & e^{\pi i} = i^2 \\
+                                     & e^{\pi i} + 1 = 0
 \end{align}
 $$
 
@@ -106,14 +106,17 @@ Euler's identity can be geometrically interpreted as saying that rotating any
 point $$\pi$$ radians around an origin of a complex plane has the same effect
 as reflecting the point across the origin.
 
-More generally, for the $$n$$th roots of unity, we can write Euler's
-Identity as the $$n = 2$$ case of the equation:
+More generally, Euler's Identity is a second-root of unity, meaning that it is
+a solution for $$z$$ in the equation $$z^n = 1$$ where $$n = 2$$.
+
+This is the definition for the $$n$$th root of unity.
 
 $$
-\sum_{k=0}^{n-1} e^{2\pi i\frac{k}{n}} = 0 \\
-\therefore \because
+\sum_{k=0}^{n-1} e^{2\pi i\frac{k}{n}} = 0
 $$
 
+You'll notice we can't simply remove the $$\sum$$ here when $$n = 2$$, since
+we'd get $$e^{\pi i} = 0$$, but in fact $$e^{\pi i} = -1$$.
 
 <details>
   <summary>
