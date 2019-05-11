@@ -16,6 +16,12 @@ body {
 
 pre {
   overflow-x: auto;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+
+pre::-webkit-scrollbar {
+  display: none;
 }
 
 code {
@@ -36,7 +42,7 @@ details {
   border-radius: 5px;
 }
 
-details p:last-child {
+details :last-child {
   margin-bottom: 0;
 }
 

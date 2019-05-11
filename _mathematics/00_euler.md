@@ -120,23 +120,17 @@ $$
     Wanna compute <strong><i>e</i></strong> in
     <a href="http://nixpulvis.com/brainfuck">Brainfuck</a>?
   </summary>
-
-<p>
 $$
 \hphantom{nothing} \\
 e = 2.718281828459\ldots
 $$
-</p>
 
-<p>
 <pre><code>
 git clone https://github.com/nixpulvis/brainfuck
 cd brainfuck
 cargo run fixtures/e.bf
 </code></pre>
-</p>
 
-<p>
 <pre><code>
 >>>>++>+>++>+>>++<+[
   [>[>>[>>>>]<<<<[[>>>>+<<<<-]<<<<]>>>>>>]+<]>-
@@ -178,5 +172,4 @@ implementations trouble, including some of mine.
 (c) 2016 Daniel B. Cristofani
 http://brainfuck.org/
 </code></pre>
-</p>
 </details>
