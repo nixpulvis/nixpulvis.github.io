@@ -43,7 +43,7 @@ $$
 $$
 
 <details>
-  <summary><strong>Tangent on Fourier Series</strong></summary>
+  <summary>Tangent on Fourier Series</summary>
 <p>
   <pre><code>
   Plot[
@@ -113,3 +113,70 @@ $$
 \sum_{k=0}^{n-1} e^{2\pi i\frac{k}{n}} = 0 \\
 \therefore \because
 $$
+
+
+<details>
+  <summary>
+    Wanna compute <strong><i>e</i></strong> in
+    <a href="http://nixpulvis.com/brainfuck">Brainfuck</a>?
+  </summary>
+
+<p>
+$$
+\hphantom{nothing} \\
+e = 2.718281828459\ldots
+$$
+</p>
+
+<p>
+<pre><code>
+git clone https://github.com/nixpulvis/brainfuck
+cd brainfuck
+cargo run fixtures/e.bf
+</code></pre>
+</p>
+
+<p>
+<pre><code>
+>>>>++>+>++>+>>++<+[
+  [>[>>[>>>>]<<<<[[>>>>+<<<<-]<<<<]>>>>>>]+<]>-
+  >>--[+[+++<<<<--]++>>>>--]+[>>>>]<<<<[<<+<+<]<<[
+    >>>>>>[[<<<<+>>>>-]>>>>]<<<<<<<<[<<<<]
+    >>-[<<+>>-]+<<[->>>>[-[+>>>>-]-<<-[>>>>-]++>>+[-<<<<+]+>>>>]<<<<[<<<<]]
+    >[-[<+>-]]+<[->>>>[-[+>>>>-]-<<<-[>>>>-]++>>>+[-<<<<+]+>>>>]<<<<[<<<<]]<<
+  ]>>>+[>>>>]-[+<<<<--]++[<<<<]>>>+[
+    >-[
+      >>[--[++>>+>>--]-<[-[-[+++<<<<-]+>>>>-]]++>+[-<<<<+]++>>+>>]
+      <<[>[<-<<<]+<]>->>>
+    ]+>[>>>>]-[+<<<<--]++<[
+      [>>>>]<<<<[
+        -[->--[<->+]++<[[>-<+]++[<<<<]+>>+>>-]++<<<<-]
+        >-[+[<+[<<<<]>]<+>]+<[->->>>[-]]+<<<<
+      ]
+    ]>[<<<<]>[
+      -[
+        -[
+          +++++[>++++++++<-]>-.>>>-[<<<----.<]<[<<]>>[-]>->>+[
+            [>>>>]+[-[->>>>+>>>>>>>>-[-[+++<<<<[-]]+>>>>-]++[<<<<]]+<<<<]>>>
+          ]+<+<<
+        ]>[
+          -[
+            ->[--[++>>>>--]->[-[-[+++<<<<-]+>>>>-]]++<+[-<<<<+]++>>>>]
+            <<<<[>[<<<<]+<]>->>
+          ]<
+        ]>>>>[--[++>>>>--]-<--[+++>>>>--]+>+[-<<<<+]++>>>>]<<<<<[<<<<]<
+      ]>[>+<<++<]<
+    ]>[+>[--[++>>>>--]->--[+++>>>>--]+<+[-<<<<+]++>>>>]<<<[<<<<]]>>
+  ]>
+]
+
+This program computes the transcendental number e, in decimal. Because this is
+infinitely long, this program doesn't terminate on its own; you will have to
+kill it. The fact that it doesn't output any linefeeds may also give certain
+implementations trouble, including some of mine.
+
+(c) 2016 Daniel B. Cristofani
+http://brainfuck.org/
+</code></pre>
+</p>
+</details>

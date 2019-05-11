@@ -59,6 +59,10 @@ def factorial(n)
 end
 ```
 
+$$
+E = mc^2
+$$
+
 Press <kbd>A</kbd> to do something.
 
 Press <kbd>Ctrl+a</kbd> to do something else.
