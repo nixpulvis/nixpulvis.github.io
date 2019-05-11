@@ -22,7 +22,7 @@ notation and expressions.
 2. [Mathematics](#mathematics)
     1. Notation
         1. Objects
-        2. Operations
+        2. Operations & Expressions
         3. Conventions
     2. Subjects
         1. Algebra
@@ -33,6 +33,8 @@ notation and expressions.
         6. Set/Group/Category Theory
         7. Real Analysis*
 3. Programming
+4. Graphics and Plotting
+5. Abstraction & Application
 
 ---
 
@@ -68,8 +70,8 @@ _(also $$A \supset B$$ in Kleene's "Mathematical Logic")_
 
 ##### Proof: $$\vdash A$$
 ##### Entailment: $$\vDash A$$
-We can now formally state in our observer language that $$\nvDash R \land \neg
-R$$, for example.
+We can now formally state in our observer language, $$\nvDash R \land \neg R$$,
+for example.
 
 ##### Approximation: $$\sim A$$, $$\approx A$$, $$O$$
 Somewhere along the way to Rome I might ask, "How long has it been since we
@@ -83,9 +85,9 @@ O(d_2(t))$$.
 
 # Mathematics
 
-We use $$=$$ to express, for example that in $$a = a$$, $$a$$ is identical.
+### Notation
 
-## Numbers
+##### Objects
 
 Numbers are the primary objects of math. You can use numbers to count, for
 example, $$1, 2, 3$$, Go! You can use numbers for measures of units, for
@@ -93,22 +95,22 @@ example, the current temperature $$65°F$$.
 
 Fractions are for frogs, $$\frac{3}{7}$$, ribbit.
 
-## Expressions
+##### Operations & Expressions
 
 Math is full of various operations you can write into valid (or invalid)
 mathematical notation. Values can be computed, like $$\pi^3$$, or $$\sqrt[3]
 2$$.
 
-## Equations
+##### Equations
 
-All hail the mighty equal sign, $$=$$. Simply put, the equal sign relates two
-different forms to the same underlying truth. We call this an equation.
+All hail the mighty equal sign, $$=$$. Simply put, the equal sign says two
+things are identical, or equal. We call this an equation.
 
 A really obvious equation might be $$2 + 2 = 4$$, while we can represent
 something as complex as the concept of a limit as simply as $$1 =
 0.9999999\dots$$ or $$1 = 0.\overline{999}$$.
 
-### Variables
+##### Variables
 
 Many equations have letters in them, which can allow a fixed value to change
 with the variable, for example $$x^2$$ grows quickly, but $$2^x$$ even faster.
@@ -120,30 +122,144 @@ $$
 k_{n+1} = n^2 + k_n^2 - k_{n-1}
 $$
 
-## Summation and Product Notation
+## Summation and Production
 
 $$
-\sum_{k=1}^n k^2 = \frac{1}{2} n (n+1)
-$$
-
-$$
-\prod_{i=a}^{b} f(i)
+\sum_{i=0}^n f(i) \hspace{5em} \prod_{i=1}^n g(i)
 $$
 
 ## Vectors and Matrices
 
+Vectors come in a many forms. For example as a $$\vec{v}$$ or as three (in this
+case) coefficients along with component unit vectors starting with $$\hat{i},
+\hat{j}, \hat{k}, \ldots$$.
+
 $$
-\vec{o} = [1, 2, -1]
+\vec{v} = [10, 25, -37.2]
+        = 10\hat{i} + 25\hat{j} - 37.2\hat{k}
+$$
+
+Vectors may also be written in matrix form as $$A$$ or $$B$$.
+
+$$
+\begin{align}
+A_n &\in [a_1, a_2, \ldots, a_n] \\
+B_n &\in [b_1, b_2, \ldots, b_n] \\\\
+A + B      &= (a_1 + b_1, a_2 + b_2, \ldots, a_n + b_n) \\
+A \times B &= \hat{n} \left\|A\right\| \left\|B\right\| \sin(\theta)
+  \hspace{3em}\rlap{\in \mathbb{R}^3} \\
+A \cdot B  &= \sum_{i=1}^n a_i b_i \\
+\end{align}
+$$
+
+Matrices are just vectors of vectors.
+
+$$
+A =
+  \begin{pmatrix}
+    a_{11}  & a_{12} & \cdots & a_{1n} \\
+    a_{21}  & a_{22} & \cdots & a_{2n} \\
+    \vdots  & \vdots & \ddots & \vdots \\
+    a_{m1}  & a_{m2} & \cdots & a_{mn}
+ \end{pmatrix} \\
+$$
+
+Transpose
+
+$$
+(A^T)_{ij} = A_{ji}
 $$
 
 $$
-A_{m,n} =
+(A^T)^T = A
+$$
+
+Addition
+
+$$
+A + B =
  \begin{pmatrix}
-  a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
-  a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
-  \vdots  & \vdots  & \ddots & \vdots  \\
-  a_{m,1} & a_{m,2} & \cdots & a_{m,n}
- \end{pmatrix}
+  a_{11} + b_{11} & a_{12} + b_{12} & \cdots & a_{1n} + b_{1n} \\
+  a_{21} + b_{21} & a_{22} + b_{22} & \cdots & a_{2n} + b_{2n} \\
+  \vdots          & \vdots          & \ddots & \vdots          \\
+  a_{m1} + b_{m1} & a_{m2} + b_{m2} & \cdots & a_{mn} + b_{mn}
+ \end{pmatrix} \\
+$$
+
+$$
+\begin{align}
+A + 0     &= A \\
+A + B     &= B + A \\
+A + B + C &= (A + B) + C = A + (B + C) \\
+(A + B)^T &= A^T + B^T
+\end{align}
+$$
+
+Scalar Multiplication
+
+$$
+\lambda A =
+ \begin{pmatrix}
+  \lambda a_{11} & \lambda a_{12} & \cdots & \lambda a_{1n} \\
+  \lambda a_{21} & \lambda a_{22} & \cdots & \lambda a_{2n} \\
+  \vdots         & \vdots         & \ddots & \vdots         \\
+  \lambda a_{m1} & \lambda a_{m2} & \cdots & \lambda a_{mn}
+ \end{pmatrix} \\\\
+$$
+
+$$
+\begin{align}
+        y &= Ax \hspace{5em}x\in\mathbb{R}^n, \hspace{.5em}y\in\mathbb{R}^m \\
+\lambda A &\neq A \lambda
+\end{align}
+$$
+
+Matrix Multiplication
+
+$$
+AB = \sum_{k=1}^p a_{ik} b_{kj} \hspace{4em}i = 1, \ldots, m,
+                                \hspace{.5em}j = 1, \ldots, n
+$$
+
+$$
+\begin{align}
+0A       &= 0, A0 = 0 \\
+IA       &= A, AI = A \\
+ABC      &= (AB)C = A(BC) \\
+A(B + C) &= AB + AC \\
+(AB)^T   &= B^T A^T \\
+\end{align}
+$$
+
+Exponentiation
+
+$$
+\begin{align}
+A^0     &= I \\
+A^k     &= \prod_{i=1}^k A \\\\
+\end{align}
+$$
+
+$$
+A^k A^l = A^{k+l} \\
+$$
+
+Inverse
+
+$$
+\begin{align}
+A^{-1} A         &= I \\
+(A^{-1})^{-1}    &= A
+\end{align}
+$$
+
+$$
+\begin{align}
+(AB)^{-1}        &= B^{-1} A^{-1} \\
+(A^T)^{-1}       &= (A^{-1})^T \\
+I^{-1}           &= I \\
+(\lambda A)^{-1} &= (1/\lambda) A^{-1}
+\end{align}
 $$
 
 ## Combinatorics
