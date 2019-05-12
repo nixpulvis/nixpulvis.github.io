@@ -42,17 +42,14 @@ $$
 \sum_{i=1}^n F_i = F_{n+2} - 1
 $$
 
-### Rust
+### Simplest Recursive Solution, in Racket
 
-```rust
-fn fibonacci(n: u32) -> u32 {
-    match n {
-        0 => 0,
-        1 => 1,
-        _ => fibonacci(n - 1) +
-             fibonacci(n - 2),
-    }
-}
+```racket
+(define (fib n)
+  (cond [(or (= n 0)
+             (= n 1)) n]
+        [else (+ (fib (- n 1))
+                 (fib (- n 2)))]))
 ```
 
 ### Tail Recursive, in Elixir
@@ -63,6 +60,16 @@ defmodule Math do
   def fib_acc(a, b, 0) do a + b end
   def fib_acc(a, b, n) do fib_acc(b, a+b, n-1) end
 end
+```
+
+### Iterative, in Rust
+
+```rust
+fn fib(n: u64) -> u64 {
+    let mut f = (n, 0, 1);
+    while f.0 > 0 { f = (f.0 - 1, f.2, f.1 + f.2) }
+    return f.1;
+}
 ```
 
 ### [Brainfuck](http://nixpulvis.com/brainfuck)
