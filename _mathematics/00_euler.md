@@ -19,8 +19,14 @@ $$
                         e^{\frac{\pi i}{2}}    = i  \\
 e^{\pi i}            = (e^{\frac{\pi i}{2}})^2 = i^2 = -1  \\
 e^{\frac{3\pi i}{2}} = (e^{\frac{\pi i}{2}})^3 = i^3 = -i  \\
-e^{2\pi i}           = (e^{\frac{\pi i}{2}})^4 = i^4 = 1 \\
-e^{\frac{5\pi i}{2}} = (e^{\frac{\pi i}{2}})^5 = i^5 = i
+e^{2\pi i}           = (e^{\frac{\pi i}{2}})^4 = i^4 = 1
+$$
+
+Then it repeats...
+
+$$
+e^{\frac{5\pi i}{2}} = (e^{\frac{\pi i}{2}})^5 = i^5 = i \\
+\vdots
 $$
 
 If you can't see the "whole" picture yet (can anyone?), this might help. Our
@@ -38,7 +44,7 @@ identity.
 $$
 \begin{align}
   \cos(\pi) + i \sin(\pi) = -1 + 0 =\ & e^{\pi i} = i^2 \\
-                                     & e^{\pi i} + 1 = 0
+                                      & e^{\pi i} + 1 = 0
 \end{align}
 $$
 
@@ -106,13 +112,24 @@ Euler's identity can be geometrically interpreted as saying that rotating any
 point $$\pi$$ radians around an origin of a complex plane has the same effect
 as reflecting the point across the origin.
 
-More generally, Euler's Identity is a second-root of unity, meaning that it is
-a solution for $$z$$ in the equation $$z^n = 1$$ where $$n = 2$$.
+Fundamentally, Euler's Identity is a root of unity, meaning that it is a
+solution for $$z$$ in the equation $$z^n = 1$$.
 
-This is the definition for the $$n$$th root of unity.
+$$
+z = e^{2\pi i} = i^4
+$$
+
+This is the definition for a more general identity which states that the
+$$n$$th roots of unity, for $$n \gt 1$$, add up to $$0$$.
 
 $$
 \sum_{k=0}^{n-1} e^{2\pi i\frac{k}{n}} = 0
+$$
+
+Euler's identity is the $$n = 2$$ case of this equation.
+
+$$
+e^0 + e^{\pi i} = e^{\pi i} + 1 = 0
 $$
 
 <details>
