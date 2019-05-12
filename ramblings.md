@@ -11,7 +11,13 @@ If you find something you like here, I've done my job. Otherwise, be gone with
 you.
 
 <ul>
-{% assign ramblings = site.ramblings | sort: 'date' | reverse %}
+{%
+assign ramblings = site.ramblings
+                 | concat: site.mathematics
+                 | sort: 'date'
+                 | reverse
+%}
+
 {% for rambling in ramblings %}
     {% if rambling.draft %}
         <li class="draft">

@@ -1,6 +1,7 @@
 ---
 title: Euler's Identity
 layout: default
+date: 2019-05-12
 ---
 
 # Euler's Identity
@@ -50,62 +51,9 @@ $$
 
 <details>
   <summary>Tangent on Fourier Series</summary>
-<p>
-  <pre><code>
-  Plot[
-          sin(theta)/pi,
-    (3/2) sin(theta)/pi,
-    2     sin(theta)/pi,
-    (5/2) sin(theta)/pi
-  ]
-  </code></pre>
-
-  <img src="/img/fourier_euler.png" />
-</p>
-<p>
-  Unlike the Euler series we above, which is purely constructive, a <b>square
-  wave</b> can be constructed with the Fourier series:
-
-  $$
-  \sin(2 \pi \theta),
-  \frac{1}{3} \sin(6 \pi \theta),
-  \frac{1}{5} \sin(10 \pi \theta),
-  ...
-  $$
-
-  <pre><code>
-  Plot[
-          sin(2 pi theta),
-    (1/3) sin(6 pi theta),
-    (1/5) sin(10 pi theta)
-  ]
-  </code></pre>
-
-  <img src="/img/fourier_square.png" />
-  <img src="/img/fourier_square.gif" />
-</p>
-
-<p>
-  And a <b>saw wave</b> can be constructed by another:
-
-  $$
-  \sin(\pi \theta),
-  \sin(\frac{\pi \theta}{2}),
-  \sin(\frac{\pi \theta}{4}),
-  \ldots
-  $$
-
-  <pre><code>
-  Plot[
-    sin(pi theta),
-    sin((pi theta) / 2),
-    sin((pi theta) / 4)
-  ]
-  </code></pre>
-
-  <img src="/img/fourier_saw.png" />
-  <img src="/img/fourier_saw.gif" />
-</p>
+  <div markdown="1">
+{% include_relative 001_fourier.md %}
+  </div>
 </details>
 
 Euler's identity can be geometrically interpreted as saying that rotating any
