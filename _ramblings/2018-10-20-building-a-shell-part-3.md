@@ -11,9 +11,18 @@ the remaining main components of `oursh`'s initial design.
 
 ### Program Arguments
 
-Like any other UNIX program, `oursh` can take CLI flags and arguments. We are
-using [`docopt`][docopt] for parsing a standardized help string into an
+Like any other UNIX program, `oursh` can take CLI flags and arguments.
+
+TODO: More of an overview of CLI opt terminology.
+
+We are using [`docopt`][docopt] for parsing a standardized help string into an
 `ArgvMap` we can use in `oursh`.
+
+
+#### Docopt
+
+TODO: Quick overview of docopt.
+
 
 Here is the current `docopt` usage string:
 
@@ -125,6 +134,39 @@ And, running `cargo run -- --ast -v -c 'echo $0 $1 $2' ls 1 2` will yield this
 <file> => Plain(None)
 ```
 
+#### `sh` and `bash`
+
+Just looking at the `man` page for `sh` and `bash` we can see `oursh` mirrors
+the command structure closely.
+
+> ```
+> NAME
+>        sh — shell, the standard command language interpreter
+>
+> SYNOPSIS
+>        sh [−abCefhimnuvx] [−o option]... [+abCefhimnuvx] [+o option]...
+>            [command_file [argument...]]
+>
+>        sh −c [−abCefhimnuvx] [−o option]... [+abCefhimnuvx] [+o option]...
+>            command_string [command_name [argument...]]
+>
+>        sh −s [−abCefhimnuvx] [−o option]... [+abCefhimnuvx] [+o option]...
+>            [argument...]
+> ```
+
+> ```
+> NAME
+>        bash - GNU Bourne-Again SHell
+>
+> SYNOPSIS
+>        bash [options] [command_string | file]
+> ```
+
+
+Though many flags are different, important ones are the same.
+
+TODO: Overview of basic `sh`/`bash` CLI options (flags, args, etc)
+
 When you pass a _command_ with `-c` it simply parses and runs the command, no
 fancy terminal interactions are needed.
 
@@ -163,18 +205,67 @@ Similarly, when `STDIN` isn't a TTY device (more of this later), which can
 happen for example like `echo date | oursh`, we can simply read from `STDIN`
 without `termion` either.
 
-### Raw Mode
+### The REPL
+
+An interactive shell runs `repl::start` to give users access to the shell in
+real time, otherwise a shell is non-interactive and can use the following
+implementation:
+
+```rust
+// Fill a string buffer from STDIN.
+let mut text = String::new();
+stdin.lock().read_to_string(&mut text).unwrap();
+
+// Run the program.
+match parse_and_run(&args)(&text) {
+    Ok(u) => Ok(u),
+    Err(Error::Read) => {
+        process::exit(1);
+    },
+    Err(Error::Parse) => {
+        process::exit(2);
+    },
+    Err(Error::Runtime) => {
+        // TODO: Exit with the last status code?
+        process::exit(127);
+    }
+}
+```
+
+([#5][#5])
+
+#### TTY
+#### Raw Mode
+
 
 However, when `oursh` is launched it enters [raw mode][raw-mode] to further
 control the keyboard (and potentially even mouse). This is a cargo "feature"
-meaning this can be contitionaly compiled. It's a default feature, so to
+meaning this can be conditionally compiled. It's a default feature, so to
 disable it, run oursh with `cargo run --no-default-features`.
 
 When running `oursh` interactively we'll use [`termion`][termion] to help
 control the terminal. `termion` gives us raw mode, various styles and colors.
 
-([#5][#5])
+#### No Raw Mode
 
+The implementation for `repl::start` without raw mode is pretty simple:
+
+```rust
+#[cfg(not(feature = "raw"))]
+for line in stdin.lock().lines() {
+    let text = line.unwrap();
+
+    if runner(&text).is_ok() {
+        #[cfg(feature = "history")]
+        {
+            history.add(&text, 1);
+            history.reset_index();
+        }
+    }
+
+    prompt.display(&mut stdout);
+}
+```
 
 [#5]: https://github.com/nixpulvis/oursh/issues/5
 [#27]: https://github.com/nixpulvis/oursh/issues/27

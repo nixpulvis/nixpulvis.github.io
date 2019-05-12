@@ -16,6 +16,7 @@ body {
 
 pre {
   overflow-x: auto;
+  margin: 0;
 }
 
 code {
