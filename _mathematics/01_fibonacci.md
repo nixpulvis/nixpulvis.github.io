@@ -19,23 +19,6 @@ $$
 \end{align}
 $$
 
-A closed form solution can be found and is rather interesting, since
-$$\varphi$$ is the golden ratio (a solution to the equation $$x^2 - x - 1 =
-0$$).
-
-$$
-F_n = \frac{\varphi^n - \psi^n}{\varphi - \psi}
-    = \frac{\varphi^n - \psi^n}{\sqrt 5}
-$$
-
-$$
-\psi = \frac{1 - \sqrt 5}{2} = -\frac{1}{\varphi}
-$$
-
-$$
-\varphi = \frac{1 + \sqrt 5}{2} \approx 1.6180
-$$
-
 Naturally, the sum of the first $$n$$ numbers of the sequence can be found
 rather easily if you know $$F_{n+2}$$.
 
@@ -43,7 +26,12 @@ $$
 \sum_{i=1}^n F_i = F_{n+2} - 1
 $$
 
+---
+
 ### Simplest Recursive Solution, in Racket
+
+Translating the definition of $$F_n$$ directly into a recursive function yields
+a working implementation, but it's not optimized for performance.
 
 ```racket
 (define (fib n)
@@ -51,27 +39,148 @@ $$
              (= n 1)) n]
         [else (+ (fib (- n 1))
                  (fib (- n 2)))]))
+
+(map fib '(0 1 2 3 4 5 6 7 8 9))
+         '(0 1 1 2 3 5 8 13 21 34)
+
+; Takes too long...
+(fib 100)
 ```
+
+---
 
 ### Tail Recursive, in Elixir
 
+Tail calls are often optimized away from the stack, and as a result of the
+different algorithmic structure, runs much **much** faster on my machine.
+
 ```elixir
 defmodule Math do
-  def fib(n) do fib_acc(1, 0, n) end
-  def fib_acc(a, b, 0) do a + b end
-  def fib_acc(a, b, n) do fib_acc(b, a+b, n-1) end
+  def fib(n) do
+    fib_acc(0, 1, n)
+  end
+
+  def fib_acc(a, b, 0) do a end
+  def fib_acc(a, b, n) do
+    fib_acc(b, a+b, n-1)
+  end
 end
+
+Enum.map([0, 1, 2, 3, 4, 5, 6, 7,  8,  9], &Math.fib/1)
+         [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+
+# Very fast.
+Math.fib(100)
+354224848179261915075
+
+# Still fast.
+Math.fib(trunc(1.0e5))
+...number too big to display
+
+# Slow again for me...
+Math.fib(trunc(1.0e6))
 ```
+
+---
 
 ### Iterative, in Rust
 
+Like the tail resursive function, a simple `while` loop can acomplish the same
+goal, and this time we'll use an optimized big number library to allow us to
+get past $$F_{10^5}$$.
+
 ```rust
-fn fib(n: u64) -> u64 {
-    let mut f = (n, 0, 1);
-    while f.0 > 0 { f = (f.0 - 1, f.2, f.1 + f.2) }
-    return f.1;
+extern crate num_bigint;
+extern crate num_traits;
+
+fn fib(n: BigUint) -> BigUint {
+  let zero = BigUint::zero();
+  let one = BigUint::one();
+  let mut f = (n, zero.clone(), one.clone());
+  while f.0 > zero {
+    f = (f.0 - one.clone(), f.2.clone(), f.1 + f.2)
+  }
+  return f.1;
+}
+
+fn main() {
+  println!("{}", fib(BigUint::from(13 as u64)));
+
+  // Print some big numbers.
+  println!("{}", fib(BigUint::from(100 as u64)));
+  println!("{}", fib(BigUint::from(1.0e5 as u64)));
+
+  // Careful, while this program will likely work, the output may
+  // overwhelm the process reading STDOUT.
+  println!("{}", fib(BigUint::from(1.0e6 as u64)));
 }
 ```
+
+---
+
+### Closed Form Solution
+
+A closed form solution [can be
+found](http://gozips.uakron.edu/~crm23/fibonacci/fibonacci.htm) and is rather
+interesting, since $$\varphi$$ is the golden ratio (a solution to the equation
+$$x^2 - x - 1 = 0$$).
+
+$$
+\begin{align}
+\varphi &= \frac{1 + \sqrt 5}{2} \approx 1.6180 \\
+\psi    &= \frac{1 - \sqrt 5}{2} = -\frac{1}{\varphi} \\
+F_n     &= \frac{\varphi^n - \psi^n}{\varphi - \psi}
+         = \frac{\varphi^n - \psi^n}{\sqrt 5}
+\end{align}
+$$
+
+$$
+= \frac{1}{\sqrt{5}} \left[\left(\frac{1 + \sqrt{5}}{2}\right)^n -
+                           \left(\frac{1 - \sqrt{5}}{2}\right)^n\right] \\
+$$
+
+
+Don't belive it? Calculate any $$F_n$$ and check, even try $$F_{10^{10}}$$
+yourself:
+
+```
+Input:
+n = 10^10,
+phi = (1 + sqrt(5))/2,
+psi = - 1/phi,
+(phi^n - psi^n) / sqrt(5)
+
+Result:
+```
+$$
+1.413521976921693 \times 10^{2089876402}
+$$
+
+[_calculate_](https://www.wolframalpha.com/input/?i=n+%3D+1.0+x+10%5E10,+phi+%3D+(1+%2B+sqrt(5))%2F2,+psi+%3D+-+1%2Fphi,+(phi%5En+-+psi%5En)+%2F+sqrt(5))
+
+
+```rust
+mod closed {
+  pub fn fib(n: f64) -> f64 {
+    (1.0 / 5f64.sqrt()) * (((1.0 + 5f64.sqrt()) / 2.0).powf(n) -
+                           ((1.0 - 5f64.sqrt()) / 2.0).powf(n))
+  }
+}
+
+// This works great, however fails at n = 72.
+fn main() {
+  for n in 0..100 {
+    assert_eq!(fib(BigUint::from(n as u64)),
+               BigUint::from(closed::fib(n as f64) as u64),
+               "testing {}", n);
+  }
+}
+```
+
+Next we should try and use `BigDecimal` types and see if we can get past
+$$F_{72}$$ without IEEE 754 floats.
+
+---
 
 ### [Brainfuck](http://nixpulvis.com/brainfuck)
 
