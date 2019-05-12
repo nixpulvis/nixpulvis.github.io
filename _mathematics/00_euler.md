@@ -115,9 +115,6 @@ $$
 \sum_{k=0}^{n-1} e^{2\pi i\frac{k}{n}} = 0
 $$
 
-You'll notice we can't simply remove the $$\sum$$ here when $$n = 2$$, since
-we'd get $$e^{\pi i} = 0$$, but in fact $$e^{\pi i} = -1$$.
-
 <details>
   <summary>
     Wanna compute <strong><i>e</i></strong> in
