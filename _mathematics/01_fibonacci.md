@@ -2,7 +2,6 @@
 title: Fibonacci's Sequence
 layout: default
 date: 2019-05-10
-draft: true
 ---
 
 # Fibonacci Sequence
@@ -178,7 +177,7 @@ fn main() {
 }
 ```
 
-Next we should try and use `BigDecimal` types and see if we can get past
+Next, we should try and use `BigDecimal` types and see if we can get past
 $$F_{72}$$ without IEEE 754 floats.
 
 ---
