@@ -1,7 +1,6 @@
 ---
 title: Overview
 layout: default
-published: false
 ---
 
 ## Overview of Mathematics
