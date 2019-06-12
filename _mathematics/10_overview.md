@@ -5,6 +5,9 @@ layout: default
 
 ## Overview of Mathematics
 
+<svg></svg>
+<script src="/js/plots.js"></script>
+
 Mathematics makes use of symbols and names somewhat liberally, allowing for a
 certain amount of conciseness and expressiveness, but not always
 disambiguation. Notion can be context sensitive, be careful.
