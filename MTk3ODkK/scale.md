@@ -7,7 +7,7 @@ As the political environment starts to tip the Richter scale, I
 find we're just scratching the surface. We'd love to measure the
 struggle of the common man, or any animal for that matter; prove
 the meaning in all the hardships and struggles we face. A Mohs
-scale, if you will, for the hardness of a _person_.  Instead of
+scale, if you will, for the hardness of a _person_. Instead of
 measuring the resistance to scratches a mineral can withstand, a
 measure for the amount one is torn away by adversarial
 interaction.
@@ -25,7 +25,7 @@ the longest.
 
 Hardness gets portrayed as a very masculine concept. It's
 attached to physical strength, sweat, and blood. But that's not
-really it at all.  Hardness is a stoic resolve. It's the
+really it at all. Hardness is a stoic resolve. It's the
 confidence to argue with someone you don't agree with, and the
 humility to admit when you're wrong.  It's the ability to simply
 remain in the face of adversity. While it may manifest as
@@ -50,4 +50,5 @@ windows, or even engineered into computers. And it feels like
 there's more sand caught between my toes after a day at the beach
 than diamonds on the entire earth.
 
-Remember that.
+We are the sand, and we must resist resistance, and seek silicon-like
+supremacy.
