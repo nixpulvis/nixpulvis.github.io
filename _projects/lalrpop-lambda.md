@@ -25,8 +25,8 @@ physics equation, almost certainly as wavelength. Despite how cool light is, it
 wasn't until took my first class at Northeastern University and I learned about
 the _function_ that I've started holding the λ above all.
 
-The λ-calculus is **so very interesting** to me, because like [e^{\pi i + 1 =
-0}][eulers], it is incredibly fundamental. Unlike Euler's identity however,
+The λ-calculus is **so very interesting** to me, because like [$$e^{\pi i + 1 =
+0}$$][euler], it is incredibly fundamental. Unlike Euler's identity however,
 this calculus is actually at it's core, very easy to understand.
 
 All you have are three components:
@@ -144,6 +144,6 @@ c_add(1).(2)
 
 
 [1]: ...
-[documentation]: ...
-[lalrpop]: ...
-[eulers]: /math/01-eulers
+[documentation]: https://docs.rs/lalrpop-lambda
+[euler]: /math/00-euler
+[lalrpop]: https://github.com/lalrpop/lalrpop
