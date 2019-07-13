@@ -27,13 +27,14 @@ me writing Rust or soldering something.
 If you would like to read more of my [rambling](/ramblings) or about a
 [project](/projects) I've done, please do!
 
-I’m from Colorado, went to school in Boston, moved to Silicon Valley, then back
-to Colorado to be a ski bum for a bit, now I'm working at Forward Financing in
-Boston.
-
-I graduated from Northeastern University with a Bachelor's in Computer and
-Information Science. I'm planning on going back to school with a focus on PL
-[soon™](https://gaming.stackexchange.com/questions/23112/where-did-soon-originate).
+I’m originally from Colorado, and moved to Boston to attend Northeastern
+University, graduating with a Bachelor's in Computer and Information Science.
+Afterwards I moved to Silicon Valley to work for Apple, before falling out of
+love with the coast, and Apple's ecosystem. Now I'm back at NU working on
+[secure computation][seccomp] and [Rust][rust].
 
 You can view my [resume](/resume.pdf) for more information.
 
+
+[rust]: https://www.rust-lang.org/
+[seccomp]: https://en.wikipedia.org/wiki/Secure_multi-party_computation
