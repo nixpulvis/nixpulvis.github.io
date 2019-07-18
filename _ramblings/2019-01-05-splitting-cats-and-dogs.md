@@ -147,9 +147,7 @@ also helps keep testing focused.
 > It's a fun fact that in theoretical computer science, the term _abstraction_
 > and function can be used interchangably. The dual, is _application_, or
 > calling the function. With only these two things you've got yourself a turing
-> complete language called λ calculus.
->
-> [Cool!](https://gist.github.com/nixpulvis/ff6de652a7fe4122e063)
+> complete language called the [λ-calculus](/projects/lambda-calculus).
 
 Let's consider what happens when we want to add a new `Cat` class to our
 program. The first thing we should notice is that we can share all of the
