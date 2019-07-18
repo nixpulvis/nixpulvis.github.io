@@ -1,13 +1,34 @@
 ---
+title: The λ-calculus
 layout: project
 references:
 - https://github.com/nixpulvis/lalrpop-lambda
 - https://github.com/nixpulvis/lambash
 ---
 
-This project both parses and reduces the λ-calculus. For example `(λx.x) 1`
-will reduce to `1`. in addition to the string parser, a set of Rust macros:
-`var!`, `abs!` (`λ!`), and `app!` (`γ!`) are provided.
+λ-calculus one of the most fundamental programing languages, being made up of
+only **three primative types** of objects. It's the basis for functional
+programming, and is just as powerful as any other programming language. I've
+created a parser and reducer for this language which, for example, will reduce
+`(λx.x) 1` to `1`. In addition to a parser, which consumes arbitrary text, a
+set of Rust macros: `var!`, `abs!` (`λ!`), and `app!` (`γ!`) are provided.
+
+The λ-calculus is so very interesting to me, because like [$$e^{\pi i + 1 =
+0}$$][euler], it is incredibly fundamental. Unlike Euler's identity however,
+this calculus is at it's core, actually very easy to understand.
+
+All you have are three components:
+
+- Names (e.g. `x`, or `y`)
+- Abstractions (e.g. `f(x) = x`)
+- Applications (e.g. `f(g(x))`)
+
+For more detailed documentation of both this project, and the λ-calculus, read
+the [source documentation][documentation]. This page serves as a more personal
+account of my development, and both a (slightly) more approachable introduction
+to the λ-calculus, and some of the flexibility of Rust.
+
+### A Brief History of λ
 
 The λ-calculus was originally proposed as a tool for use in the construction of
 mathematics, however it's be proven equivalent to all known programming
@@ -15,25 +36,12 @@ languages [[1]][1]. The practical implications of this are called the
 "Church-Turing thesis" or simply the **computability thesis** (_complexity_ is
 another story).
 
-For more detailed documentation of both this project, and the λ-calculus, read
-the [documentation][documentation]. This page serves as a more personal account
-of my development, and both a (slightly) more approachable introduction to the
-λ-calculus, and some of the flexibility of Rust.
-
 I probably first heard about the λ back in grade school in some passing
 physics equation, almost certainly as wavelength. Despite how cool light is, it
 wasn't until took my first class at Northeastern University and I learned about
 the _function_ that I've started holding the λ above all.
 
-The λ-calculus is **so very interesting** to me, because like [$$e^{\pi i + 1 =
-0}$$][euler], it is incredibly fundamental. Unlike Euler's identity however,
-this calculus is actually at it's core, very easy to understand.
-
-All you have are three components:
-
-- Names (i.e. variables or bindings)
-- Abstractions (i.e. functions like f(x))
-- Applications (e.g. f(g(x)))
+TODO: Church Separates from State
 
 ### Basic Syntax
 
@@ -85,6 +93,24 @@ y
 
 TODO: Visualize the multiple paths to `y`, reduction strategies.
 ```
+
+```
+(λx.λy.(y x)) first last -> last first
+```
+
+Even though all you seem to be able to do with this language is perform symbolic
+naming operations, it turns out that's all you need to be able to do. In fact,
+with just this, you can write non-terminating reductions, for example the
+$$Ω$$ expression (called a combinator in this context):
+
+
+```
+Ω := (λx.x x) (λx.x x)
+  -> (λx.x x) (λx.x x)
+  -> (λx.x x) (λx.x x)
+  -> ...
+```
+
 
 - alpha
 - beta
@@ -141,6 +167,10 @@ end
 c_add(1).(2)
 => 3
 ```
+
+### The Simply Typed λ-calculus
+
+TODO: Add this section after we have a type checker implemented.
 
 
 [1]: ...
