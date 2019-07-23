@@ -8,6 +8,9 @@ collections:
     projects:
         output: true
         permalink: /:collection/:name
+    research:
+        output: true
+        permalink: /:collection/:name
     ramblings:
         output: true
         permalink: /:collection/:name

@@ -30,11 +30,7 @@ If you would like to read more of my [rambling](/ramblings) or about a
 I’m originally from Colorado, and moved to Boston to attend Northeastern
 University, graduating with a Bachelor's in Computer and Information Science.
 Afterwards I moved to Silicon Valley to work for Apple, before falling out of
-love with the coast, and Apple's ecosystem. Now I'm back at NU working on
-[secure computation][seccomp] and [Rust][rust].
+love with the coast, and Apple's ecosystem. Now I'm back at NU
+[researching](/research) secure computation and Rust.
 
 You can view my [resume](/resume.pdf) for more information.
-
-
-[rust]: https://www.rust-lang.org/
-[seccomp]: https://en.wikipedia.org/wiki/Secure_multi-party_computation
