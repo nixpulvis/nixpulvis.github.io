@@ -165,7 +165,7 @@ h2 small {
 /* } */
 
 nav ul {
-  margin: 0;
+  margin: -10px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -173,6 +173,10 @@ nav ul {
 nav ul li {
   display: inline-block;
   margin-right: 5px;
+}
+
+nav .icon {
+  max-height: 24px;
 }
 
 nav .icon a {

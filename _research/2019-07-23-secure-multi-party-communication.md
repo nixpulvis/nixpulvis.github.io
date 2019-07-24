@@ -12,28 +12,6 @@ draft: true
 > $$\lambda_o$$ is an extension of $$\lambda_\div$$, however it doesn't need to
 > export the idea of a $$\div$$ flipping primitive.
 
-
-### $$\lambda_\div$$ the Uncertainty Calculus
-
-$$
-\lambda a \ b . \div \ a \ b \\
-50\% \rightarrow a \ b \\
-50\% \rightarrow b \ a
-$$
-
-Below the order of operations $$f \ g$$ is certain, while the order of $$a \
-b$$ is uncertain.
-
-$$
-\lambda f \ g \ a \ b . f \ g \div a \ b \\
-$$
-
-Full expressions can be wrapped and made uncertain.
-
-$$
-\lambda \_ . \div \ (\lambda a \ b . a \ b) \ (\lambda a \ b . b \ a)
-$$
-
 ### Secure Two Party Communication (S2PC)
 
 Here we consider the two party case, between Alice ($$\color{blue}{A}$$) and
@@ -103,4 +81,44 @@ $$
 \color{blue}{place(x, \left\{x,\color{red}y,\color{green}z\}\right)} \\
 \color{red}{place(y, \left\{\color{blue}x,y,\color{green}z\}\right)} \\
 \color{green}{place(z, \left\{\color{blue}x,\color{red}y,z\}\right)}
+$$
+
+### $$\lambda_\div$$ the Uncertainty Calculus
+
+$$
+\div \ a \\
+50\% \rightarrow a \\
+50\% \rightarrow \_
+$$
+
+$$
+\div \div a \\
+25\% \rightarrow a \\
+75\% \rightarrow \_
+$$
+
+$$
+\div \ a \ b \\
+50\% \rightarrow a \ b \\
+50\% \rightarrow b \ a
+$$
+
+$$
+a \div b \\
+\div \div \ a \ b \\
+50\% \rightarrow a \ b \\
+50\% \rightarrow b \ a
+$$
+
+Below the order of operations $$f \ g$$ is certain, while the order of $$a \
+b$$ is uncertain.
+
+$$
+\lambda f \ g \ a \ b . f \ g \div a \ b \\
+$$
+
+Full expressions can be wrapped and made uncertain.
+
+$$
+\lambda \_ . \div \ (\lambda a \ b . a \ b) \ (\lambda a \ b . b \ a)
 $$
