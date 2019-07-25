@@ -18,7 +18,7 @@ Here we consider the two party case, between Alice ($$\color{blue}{A}$$) and
 Bob ($$\color{red}{B}$$).
 
 Both $$\color{blue}A$$ and $$\color{red}B$$ can create values which may only
-be revealed or used in _authentication contexts_ which they permit.
+be revealed or used in _authentication contexts_ which they control.
 
 $$
 \color{blue}{\bullet} \ a = \color{blue}{f(x,\color{red} y)} \\
@@ -29,11 +29,19 @@ The syntax in Rust is a work in progress, but the idea is roughly to allow
 creating new `obliv@x` qualified values which are secure to a single party `x`.
 
 ```rust
-// Implicit authentication party.
+// Implicit authentication party. The value 1337 is never stored
+// after compile time.
 let a = obliv 1337;
 
 // Explicit authentication party.
-let b = obliv@me "password".into_string();
+let b = obliv@me 26;
+
+// Oblivious owned types are stored in encrypted form.
+let password: obliv String = obliv "1234".to_owned();
+
+// Oblivious referances do not encrypt the underlying data,
+// and only make it's address and access paterns obscure.
+let password: obliv &str = obliv "1234";
 ```
 
 Operations on `obliv` values are handled differently to ensure no information
