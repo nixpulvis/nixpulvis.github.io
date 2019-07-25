@@ -5,9 +5,9 @@ draft: true
 ---
 
 > Abstract: Towards a minimal language for multi-party communication and
-> computations. I (we?) define **two** new languages: $$\lambda_\div$$, an untyped
-> and typed language for probabilistic computation, and $$\lambda_o$$ for
-> multi-party probabilistically obscure communication.
+> computations. I (we?) define **two** new languages: $$\lambda_\div$$, an
+> untyped and typed language for probabilistic computation, and $$\lambda_o$$
+> for multi-party probabilistically obscure communication.
 >
 > $$\lambda_o$$ is an extension of $$\lambda_\div$$, however it doesn't need to
 > export the idea of a $$\div$$ flipping primitive.
@@ -15,27 +15,85 @@ draft: true
 ### Secure Two Party Communication (S2PC)
 
 Here we consider the two party case, between Alice ($$\color{blue}{A}$$) and
-Bob ($$\color{red}{B}$$). Generally, both parties will have an input to the
-function $$\lambda_o$$, here we'll call $$\color{blue} A$$'s input $$\color{blue}
-x$$ and $$\color{red} B$$'s input $$\color{red} y$$.
+Bob ($$\color{red}{B}$$).
 
+Both $$\color{blue}A$$ and $$\color{red}B$$ can create values which may only
+be revealed or used in _authentication contexts_ which they permit.
+
+$$
+\color{blue}{\bullet} \ a = \color{blue}{f(x,\color{red} y)} \\
+\color{red}{\bullet} \ b = \color{red}{g(\color{blue}x,y)}
+$$
+
+The syntax in Rust is a work in progress, but the idea is roughly to allow
+creating new `obliv@x` qualified values which are secure to a single party `x`.
+
+```rust
+// Implicit authentication party.
+let a = obliv 1337;
+
+// Explicit authentication party.
+let b = obliv@me "password".into_string();
+```
+
+Operations on `obliv` values are handled differently to ensure no information
+is leaked while computing with them. In this example, `>` just happens to use
+`@x` as the garbler so the returned value is `obliv@x`.
+
+```rust
+let c = a > b;  // c: obliv@x bool
+```
+
+Finally to reveal the value and use it with insecure (traditional) computations
+you must be _authenticated_ as `x`.
+
+```rust
+// Only allowed if the current scope is permitted to @x.
+println!("{}", *c)
+
+// Options for how to handle implicit derefs for obliv values:
+//
+// - Compile time error?
+// - Panic?
+// - Print no information about the value?
+// - Deref is we have access
+// - Some combination of the above
+println!("{}", c);
+```
+
+Generally, both parties will have an input to a function $$\lambda_o$$, here
+we'll call $$\color{blue} A$$'s input $$\color{blue} x$$ and $$\color{red}
+B$$'s input $$\color{red} y$$. Before either party can pass their inputs to
+$$\lambda_o$$ they must create an _authentication context_ with $$\bullet \
+e$$.
 
 $$
 (\lambda_o \ \color{blue}{x} \ \color{red}{y} \ . e) \
-\color{blue}{i_1} \
-\color{red}{i_2}
-\rightarrow e[\color{blue}{i_1}/\color{blue} x,\color{red}{i_2}/\color{red} y]
+\color{blue}{\bullet}a \
+\color{red}{\bullet}b
+\rightarrow e[a/\color{blue} x,b/\color{red} y]
 $$
 
-We have up to two possible implementations for $$e$$: $$\color{blue}{e_1},
-\color{red}{e_2}$$. This allows for each party to perform arbitrary
-computations on the oblivious data.
+We have up to three possible implementations for $$e$$: $$e$$,
+$$\color{blue}{\bullet \ e}$$ and $$\color{red}{\bullet \ e}$$. This allows for
+each party to perform arbitrary computations on the oblivious data, or to fix
+the garbling up front so no one party controls it. For example here the
+expression $$e$$ was garbled by $$\color{blue}A$$.
+
+$$
+(\lambda_o \ \color{blue}{x} \ \color{red}{y} \ . \color{blue}{\bullet}\ e) \
+\color{blue}{\bullet}a \
+\color{red}{\bullet}b
+\rightarrow \color{blue}{\bullet \
+e[\color{black}a/\color{blue}x,\color{black}b/\color{red}y]}
+$$
 
 Traditional function notation can be colored to indicate the same notion.
 
 $$
-\color{blue}{e_1} = \color{blue}{f(x,\color{red} y)} \\
-\color{red}{e_2}  = \color{red}{g(\color{blue}x,y)}
+\color{blue}{\bullet \ e \ x \ \color{red}{y}} = \color{blue}{f(x,\color{red}
+y)} \\
+\color{red}{\bullet e \ \color{blue}{x} \ y} = \color{red}{g(\color{blue}x,y)}
 $$
 
 We see that each party, $$\color{blue} A$$ and $$\color{red} B$$, have a unique
@@ -45,8 +103,15 @@ are oblivious to the other party's data in these computations. We denote this
 is [obliv-rust]() as follows:
 
 ```rust
-f(obliv x, obliv y);
-g(obliv x, obliv y);
+// TODO: The garbler could be the return party?
+fn f<@1,@2>(x: obliv@1 u64, y: obliv@2 u64) -> obliv@1 bool;
+
+// TODO: Who garbled things? Implicitly create a new return party
+// and reveal the result?
+fn g<@1,@2,T,U>(obliv x, obliv y) -> (T, U);
+
+// Don't care who's who.
+fn h(obliv x, obliv y) -> bool;
 ```
 
 One example pair of $$\color{blue} f$$ and $$\color{red} g$$ functions is a
