@@ -99,9 +99,9 @@ $$
 Traditional function notation can be colored to indicate the same notion.
 
 $$
-\color{blue}{\bullet \ e \ x \ \color{red}{y}} = \color{blue}{f(x,\color{red}
+\color{blue}{\bullet} \ e \ \color{blue}x \ \color{red}y = \color{blue}{f(x,\color{red}
 y)} \\
-\color{red}{\bullet e \ \color{blue}{x} \ y} = \color{red}{g(\color{blue}x,y)}
+\color{red}{\bullet} e \ \color{blue}x \ \color{red}y = \color{red}{g(\color{blue}x,y)}
 $$
 
 We see that each party, $$\color{blue} A$$ and $$\color{red} B$$, have a unique
@@ -116,7 +116,7 @@ fn f<@1,@2>(x: obliv@1 u64, y: obliv@2 u64) -> obliv@1 bool;
 
 // TODO: Who garbled things? Implicitly create a new return party
 // and reveal the result?
-fn g<@1,@2,T,U>(obliv x, obliv y) -> (T, U);
+fn g<@1,@2,T,U>(obliv@1 x, obliv@2 y) -> (T, U);
 
 // Don't care who's who.
 fn h(obliv x, obliv y) -> bool;
@@ -130,13 +130,15 @@ projection function $$\color{red}{p}$$ (oblivious to anything else about the
 database), which takes an oblivious index $$\color{blue} i$$.
 
 $$
-\lambda_o \ \color{blue}{i} \ \color{red}{p} \ . \color{red}{p} \ \color{blue}{i}
+\Gamma \vdash \lambda_o \ \color{blue}{i} \ \color{red}{p} \ . \color{red}{p} \ \color{blue}{i} : \sigma_o \rightarrow (\sigma_o \rightarrow \tau_o) \rightarrow \tau_o \\
+\cong \\
+\Gamma \vdash \lambda_o \ \color{blue}{i} \ \color{red}{p} \ . \color{red}{p} \ \color{blue}{i} : \sigma_o \times (\sigma_o \times \tau_o) \rightarrow \tau_o
 $$
 
 Or as a solution to Yao's Millionare Problem:
 
 $$
-\lambda_o \ \color{blue}{a} \ \color{red}{b} \ . \color{blue}{a} > \color{red}{b}
+\Gamma, >: \mathbb{Z} \times \mathbb{Z} \rightarrow \{0,1\} \ \vdash (\lambda_o \ \color{blue}a \ \color{red}b \ . \color{blue}a > \color{red}b) \ 42 \ 1337  : \{0,1\}
 $$
 
 It's worth noting that the $$>$$ operator in the figure above is written in
