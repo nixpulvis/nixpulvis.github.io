@@ -17,57 +17,46 @@ draft: true
 Here we consider the two party case, between Alice ($$\color{blue}{A}$$) and
 Bob ($$\color{red}{B}$$).
 
-Both $$\color{blue}A$$ and $$\color{red}B$$ can create values which may only
-be revealed or used in _authentication contexts_ which they control.
-
-$$
-\color{blue}{\bullet} \ a = \color{blue}{f(x,\color{red} y)} \\
-\color{red}{\bullet} \ b = \color{red}{g(\color{blue}x,y)}
-$$
-
 The syntax in Rust is a work in progress, but the idea is roughly to allow
-creating new `obliv@x` qualified values which are secure to a single party `x`.
+creating new `Oblivious<T,P>` qualified values which are secure to a single
+party `P`, where both $$\color{blue}{A}$$ and $$\color{red}{B}$$ are elements
+of `P`.
 
 ```rust
-// Implicit authentication party. The value 1337 is never stored
+// Explicit authentication party. The value 26 is never stored
 // after compile time.
-let a = obliv 1337;
+let a = conceal!(26, @me);
 
-// Explicit authentication party.
-let b = obliv@me 26;
+// Implicit authentication party, which cannot reveal any values.
+let b = conceal!(1337);
 
 // Oblivious owned types are stored in encrypted form.
-let password: obliv String = obliv "1234".to_owned();
+let password: Oblivious<String> = conceal!("1234".to_owned());
 
-// Oblivious referances do not encrypt the underlying data,
-// and only make it's address and access paterns obscure.
-let password: obliv &str = obliv "1234";
+// Oblivious references do not encrypt the underlying data,
+// and only make it's address and access patterns obscure.
+let password: Oblivious<&str> = conceal!("1234");
 ```
 
-Operations on `obliv` values are handled differently to ensure no information
-is leaked while computing with them. In this example, `>` just happens to use
-`@x` as the garbler so the returned value is `obliv@x`.
+Operations on `Oblivious<T>` values are handled differently to ensure no
+information is leaked while computing with them.
 
 ```rust
-let c = a > b;  // c: obliv@x bool
+let c: Oblivious<bool> = a > b;
 ```
 
-Finally to reveal the value and use it with insecure (traditional) computations
-you must be _authenticated_ as `x`.
+Finally you must reveal the value to use it with insecure (traditional)
+computations. Here we say that `@me` must be _authenticated_ to reveal `c`.
 
 ```rust
-// Only allowed if the current scope is permitted to @x.
-println!("{}", *c)
+// Only @me can read the value of `c`.
+let d = reveal!(c, @me);
 
-// Options for how to handle implicit derefs for obliv values:
-//
-// - Compile time error?
-// - Panic?
-// - Print no information about the value?
-// - Deref is we have access
-// - Some combination of the above
-println!("{}", c);
+// Any party can read the value of `c`.
+let e = reveal!(c);
 ```
+
+### Theory
 
 Generally, both parties will have an input to a function $$\lambda_o$$, here
 we'll call $$\color{blue} A$$'s input $$\color{blue} x$$ and $$\color{red}
