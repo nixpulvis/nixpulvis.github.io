@@ -82,9 +82,31 @@ e^0 + e^{\pi i} = e^{\pi i} + 1 = 0
 $$
 
 <details>
-  <summary>
-    Wanna compute <strong><i>e</i></strong> in
-    <a href="http://nixpulvis.com/brainfuck">Brainfuck</a>?
+  <summary>A fun fact from a friend.</summary>
+  <div markdown="1">
+My friend Ryan showed me an interesting approximation of $$e$$ which uses
+numbers $$1, 2, 3, 4, 5, 6, 7, 8, 9$$ each once:
+
+$$
+e \approx \left(1 + 9^{-4^{6 \times 7}}\right)^{3^{2^{85}}}
+$$
+
+This may be less surprising when we see that:
+
+$$
+e = \lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n
+$$
+
+so we have $$n \gets 3^{2^{85}} \approx \left(9^{-4^{6 \times 7}}\right)^{-1}$$,
+which gives an approximation of $$e$$.
+
+https://www2.stetson.edu/~efriedma/mathmagic/0804.html
+  </div>
+</details>
+
+<details>
+  <summary>Wanna compute <strong><i>e</i></strong> in
+<a href="http://nixpulvis.com/brainfuck">Brainfuck</a>?
   </summary>
 $$
 \hphantom{nothing} \\
