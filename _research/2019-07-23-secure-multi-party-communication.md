@@ -10,102 +10,174 @@ draft: true
 > code inside insecure code, **as well as** insecure code inside of secure
 > code.
 
+## N Party, M Protocol, Computations
 
-### Secure Two Party Communication (S2PC)
+### Rust Example: 2-Program
 
-Here we consider the two party case, between Alice ($$\color{blue}{A}$$) and
-Bob ($$\color{red}{B}$$).
-
-The syntax in Rust is a work in progress, but the idea is roughly to allow
-creating new `Oblivious<T,P>` qualified values which are secure to a single
-party `P`, where both $$\color{blue}{A}$$ and $$\color{red}{B}$$ are elements
-of `P`.
+Two seperate programs can be run. In this case the seperate programs are run as
+threads in a test harness, however it's possible to think of these as being
+seperate implementations as well.
 
 ```rust
-// Explicit authentication party. The value 26 is never stored
-// after compile time.
-let a = conceal!(26, @me);
+// `u32, u32 -> Party`
+use obliv::oldest;
 
-// Implicit authentication party, which cannot reveal any values.
-let b = conceal!(1337);
+// garbler?
+fn A() {
+    let mut obliv = obliv! {
+        A <= 56734,
+        B?
+    }.unwrap();
 
-// Oblivious owned types are stored in encrypted form.
-let password: Oblivious<String> = conceal!("1234".to_owned());
+    // Return value (can you rerun a protocol? &mut?).
+    let output = obliv.run(oldest, 10);
+    assert_eq!(output, B);  // consistent tests!
+}
 
-// Oblivious references do not encrypt the underlying data,
-// and only make it's address and access patterns obscure.
-let password: Oblivious<&str> = conceal!("1234");
+// evaluator?
+fn B() {
+    let mut obliv = obliv! {
+        A => 56734,  // could be nixpulvis.com.
+        B?
+    }.unwrap();
+
+    let output = obliv.run(oldest, 20);
+    assert_eq!(output, B);  // consistent tests!
+}
+
+/// Runs a two-party Yao's garbled circuit algorithm using
+/// obliv-rust's local mode?
+#[test]
+fn test_native() {
+    // Server in 2 party direct communication is the one accepts.
+    // (require block?)
+    let server = thread::spawn(A);
+    B();
+    server.join().unwrap();
+}
 ```
 
-Operations on `Oblivious<T>` values are handled differently to ensure no
-information is leaked while computing with them.
+### Rust Example: 2-Process 1-Program
+
+A single program could be run on a single machine (in this case) or multiple
+machines, with many processes.
 
 ```rust
-let c: Oblivious<bool> = a > b;
+// same `u32, u32 -> Party` function.
+use obliv::oldest;
+
+fn main() {
+    let party = read_cli("--party={A,B} [--send] [--recv] AGE");
+
+    let mut obliv = if party.send {
+      obliv!(party.label => party.address)
+    } else {
+      obliv!(party.label <= party.address)
+    }.unwrap();
+
+    let output = obliv.run(oldest, party.age);
+    println!("Oldest is: {}", output);
+}
 ```
 
-Finally you must reveal the value to use it with insecure (traditional)
-computations. Here we say that `@me` must be _authenticated_ to reveal `c`.
+### Party Permutations
 
-```rust
-// Only @me can read the value of `c`.
-let d = reveal!(c, @me);
+2 party communication is? fundamentally asymmetric:
 
-// Any party can read the value of `c`.
-let e = reveal!(c);
-```
+    A -> B
 
-We see that each party, $$\color{blue} A$$ and $$\color{red} B$$, have a unique
-function, $$\color{blue} f$$ and $$\color{red} g$$ respectively. However it is
-possible to define $$e = \color{blue}{f}$$ = $$\color{red}{g}$$ These functions
-are oblivious to the other party's data in these computations. We denote this
-is [obliv-rust]() as follows:
+... but can introduce symmetric communication:
 
-```rust
-// TODO: The garbler could be the return party?
-fn f<@1,@2>(x: obliv@1 u64, y: obliv@2 u64) -> obliv@1 bool;
+    A <-> B
 
-// TODO: Who garbled things? Implicitly create a new return party
-// and reveal the result?
-fn g<@1,@2,T,U>(obliv@1 x, obliv@2 y) -> (T, U);
+3 party communication can *also* be arguably symmetric:
 
-// Don't care who's who.
-fn h(obliv x, obliv y) -> bool;
-```
+    A -> B <- C
 
-One example pair of $$\color{blue} f$$ and $$\color{red} g$$ functions is a
-classic problem of Oblivious Transfer (OT). In this case, $$\color{blue} A$$
-wants to access a specific element from $$\color{red} B$$'s database, without
-him knowing what element was retrieved. For this example, we'll use a database
-projection function $$\color{red}{p}$$ (oblivious to anything else about the
-database), which takes an oblivious index $$\color{blue} i$$.
+... and can host symmetric 2 party communication:
+
+    A <-> B <-> C
+
+3 party communication can *also* be asymmetric:
+
+    A -> B -> C
+
+4 party communication can be asymmetric in a number of ways...
+
+Permutations of size 4, level 2:
+
+    A -> B
+      -> C
+      -> D
+
+    A -> B
+      -> D
+      -> C
+
+    A -> C
+      -> B
+      -> D
+
+    ...
+
+Some options for size 4, level 3:
+
+    A -> B -> D
+      -> C ->
+
+    A -> B -> D
+      -> C
+
+    A -> B -> C
+           -> D
+
+And obviously the permutations of level 4:
+
+    A -> B -> C -> D
+    B -> C -> D -> A
+    ...
+
+4 party communication can host a number of symmetric schemes:
+
+    A <-> B
+      <-> C
+      <-> D
+
+    A <-> B <-> D
+      <-> C
+
+### Protocol Execution
+
+We have two possible choices:
+
+1. Order of secure operations defines wiring
+2. Binding names define wiring (invent labels for each send and recv?)
+
+### Crazy IDE Idea
+
+OK, so I was giving more thought to the issue of making protocol code nicer to
+read in an editor... But I didn't love the idea of requiring real GUI like
+features (arrows, dragging, etc). But I don't mind the idea of color, and I was
+reviewing some earlier notes, and I think I like the looks of a paint bucket
+$$\bullet$$, and something like $$\lambda_{\bullet}$$ in general:
 
 $$
-\Gamma \vdash \lambda_o \ \color{blue}{i} \ \color{red}{p} \ . \color{red}{p} \ \color{blue}{i} : \sigma_o \rightarrow (\sigma_o \rightarrow \tau_o) \rightarrow \tau_o \\
-\cong \\
-\Gamma \vdash \lambda_o \ \color{blue}{i} \ \color{red}{p} \ . \color{red}{p} \ \color{blue}{i} : \sigma_o \times (\sigma_o \times \tau_o) \rightarrow \tau_o
+(\lambda_{\bullet} \ \color{blue}{x} \ \color{red}{y} \ . \color{blue}{\bullet}\ e) \
+\color{blue}{\bullet}a \
+\color{red}{\bullet}b
+\rightarrow \color{blue}{\bullet \
+e[\color{black}a/\color{blue}x,\color{black}b/\color{red}y]}
 $$
 
-Or as a solution to Yao's Millionare Problem:
-
 $$
-\Gamma, >: \mathbb{Z} \times \mathbb{Z} \rightarrow \{0,1\} \ \vdash (\lambda_o \ \color{blue}a \ \color{red}b \ . \color{blue}a > \color{red}b) \ 42 \ 1337  : \{0,1\}
-$$
-
-It's worth noting that the $$>$$ operator in the figure above is written in
-black because it's "baked in" to the protocol.
-
-### S3PC
-
-This notion expands naturally for a third member of the computation, Carrol
-($$\color{green} C$$). Similar to the S2PC case above, we can define a
-$$\lambda_o$$, which now takes three arguments and tells each member what
-position in line they are in a group.
-
-$$
-\lambda_o \ \color{blue}{x} \ \color{red}{y} \ \color{green}{z} \ . \\
-\color{blue}{place(x, \left\{x,\color{red}y,\color{green}z\}\right)} \\
-\color{red}{place(y, \left\{\color{blue}x,y,\color{green}z\}\right)} \\
-\color{green}{place(z, \left\{\color{blue}x,\color{red}y,z\}\right)}
+\begin{align*}
+e \ \color{blue}x \ \color{red}y &= f(\color{blue}x,\color{red}y) \\
+\color{blue}{\bullet} \ e \ \color{blue}x \ \color{red}y &= \color{blue}{f(x,\color{red}y)} \\
+\color{red}{\bullet} \ e \ \color{blue}x \ \color{red}y &= \color{red}{f(\color{blue}x,y)}
+\end{align*}
 $$
 
+This is ideal for the editor, since I fear coloring in general is too hard for
+deeply dependent protocols since every mix of "black" functions is really a
+seperate coloring. For Rust syntax highlighting, I'll need support for the main
+schemes.
