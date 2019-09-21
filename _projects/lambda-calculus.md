@@ -41,7 +41,9 @@ physics equation, almost certainly as wavelength. Despite how cool light is, it
 wasn't until took my first class at Northeastern University and I learned about
 the _function_ that I've started holding the λ above all.
 
-TODO: Church Separates from State
+TODO: Church Separates from State.
+TODO: λ as security parameter.
+
 
 ### Basic Syntax
 
