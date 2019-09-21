@@ -19,7 +19,7 @@ threads in a test harness, however it's possible to think of these as being
 seperate implementations as well.
 
 ```rust
-// `u32, u32 -> Party`
+// `u32, u32 -> @`  TODO: How to handle party-arity (lol).
 use obliv::oldest;
 
 // garbler?
@@ -63,7 +63,7 @@ A single program could be run on a single machine (in this case) or multiple
 machines, with many processes.
 
 ```rust
-// same `u32, u32 -> Party` function.
+// same `u32, u32 -> @` function.
 use obliv::oldest;
 
 fn main() {
@@ -145,6 +145,37 @@ And obviously the permutations of level 4:
 
     A <-> B <-> D
       <-> C
+
+### Oblivious Function Definition
+
+We add two new elements to the Rust syntax: `obliv` and `@`. The `obliv`
+keyword introduces new semantics to be aware of to the programmer (secure
+computations take time, and change things). Meanwhile, the syntax `@` is a type
+for _parties_, and `T @ P` is type `T` coined by `P`.
+
+```rust
+pub obliv fn oldest(x: u32 @ A, y: u32 @ B) -> @ {
+    obliv if x > y { A } else { B }
+}
+```
+
+To call one of these `obliv` functions you can do one of two things:
+
+```rust
+#[test]
+fn two_argument_oldest() {
+    assert_eq!(B, oldest(10 @ A, 20 @ B));
+}
+```
+
+##### Hybrid Aspect
+
+```rust
+pub obliv fn oldest(x: u32 @ A, y: u32 @ B) -> @ {
+    obliv if x > y { A } else { B }
+}
+```
+TODO
 
 ### Protocol Execution
 
