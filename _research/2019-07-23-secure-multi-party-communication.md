@@ -154,7 +154,7 @@ computations take time, and change things). Meanwhile, the syntax `@` is a type
 for _parties_, and `T @ P` is type `T` coined by `P`.
 
 ```rust
-pub obliv fn oldest(x: u32 @ A, y: u32 @ B) -> @ {
+pub obliv fn oldest(x: u32 @A, y: u32 @B) -> @ {
     obliv if x > y { A } else { B }
 }
 ```
@@ -164,15 +164,45 @@ To call one of these `obliv` functions you can do one of two things:
 ```rust
 #[test]
 fn two_argument_oldest() {
-    assert_eq!(B, oldest(10 @ A, 20 @ B));
+    assert_eq!(B, oldest(10 @A, 20 @B));
 }
 ```
 
 ##### Hybrid Aspect
 
 ```rust
-pub obliv fn oldest(x: u32 @ A, y: u32 @ B) -> @ {
-    obliv if x > y { A } else { B }
+pub obliv fn oldest<P:{@A, @B}>(x: u32 @A, y: u32 @B) -> P {
+    let result = obliv if x > y { @A } else { @B }
+
+    // Print some local code, why not?
+
+    aware @ A {
+        println!("hi I'm A");
+    }
+
+    aware @ B {
+        println!("hi I'm B");
+    }
+
+    // Or again as:
+    announce_2();
+    // Backwards?
+    announce_2::<@B,@A>();
+
+    // Dangerous
+    aware @ A {
+        println!("A stealing x: {}, y: {}", x, y);
+    }
+}
+
+pub fn announce_2<@A, @B>() {
+    aware @A {
+        println!("hi I'm A");
+    }
+
+    aware @B {
+        println!("hi I'm B");
+    }
 }
 ```
 TODO
