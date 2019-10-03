@@ -10,13 +10,70 @@ draft: true
 > code inside insecure code, **as well as** insecure code inside of secure
 > code.
 
+## Yao's Millionaire Problem
+
+One of the classic examples of an MPC problem is the millionaire's problem.
+It's typically concerned with two friends at dinner deciding how to pay. They
+agree whoever has the most money should pay, but **do not** want to tell each
+other (or anyone else for that matter) how much money they have.
+
+```rust
+// TODO: Protocol initialization.
+
+// Insecure local code cast into oblivion.
+let mut a_worth = obliv 1362;
+let mut b_worth = obliv 4626291;
+
+// Remove `amount` from the given reference to a `wallet`. This is done without
+// leaking any information about what either value is. For convenience, this
+// function also returns the expected tip based on the amount.
+obliv fn pay(amount: obliv u64, wallet: &mut obliv u64) -> obliv u64 {
+    // TODO: How to avoid leaking knowledge of the size of the type. If we're
+    // computing on a u8, it's clear nobody is very rich, or the units aren't
+    // $.
+    *wallet -= amount;
+    (amount as f64 * 0.2).round() as u64
+}
+
+// The amount either A or B will `pay`.
+let bill = 245;
+
+// Obliviously compare A's worth with B's, and call `pay` with the corresponding
+// reference. If A has more worth than B, A pays for dinner and B pays the tip,
+// and visa-versa if B has more worth than A.
+obliv if a_worth > b_worth {
+    let tip = pay(bill, &mut a_worth);
+    pay(tip, &mut b_worth);
+} else {
+    let tip = pay(bill, &mut b_worth);
+    pay(tip, &mut a_worth);
+}
+
+// Refactor
+
+let (payer, tipper) = obliv if a_worth > b_worth {
+    (&mut a_worth, &mut b_worth)
+} else {
+    (&mut b_worth, &mut a_worth)
+}
+let tip = pay(bill, payer);
+pay(tip, tipper);
+```
+
 ## N Party, M Protocol, Computations
+
+Next we begin to deal with how computations can compute on the parties involved
+in the protocol more directly. Since it's safe to say every party must have
+a unique identifier within the context of the protocol.
+
+We start with the simple case of a single, two party MPC, then show how this
+works with more complex interactions of parties and protocols.
 
 ### Rust Example: 2-Program
 
-Two seperate programs can be run. In this case the seperate programs are run as
+Two separate programs can be run. In this case the separate programs are run as
 threads in a test harness, however it's possible to think of these as being
-seperate implementations as well.
+separate implementations as well.
 
 ```rust
 // `u32, u32 -> @`  TODO: How to handle party-arity (lol).
@@ -80,8 +137,9 @@ fn main() {
 }
 ```
 
-### Party Permutations
-
+<details>
+  <summary>Plenty of Party Permutations</summary>
+  <div markdown="1">
 2 party communication is? fundamentally asymmetric:
 
     A -> B
@@ -145,6 +203,8 @@ And obviously the permutations of level 4:
 
     A <-> B <-> D
       <-> C
+  </div>
+</details>
 
 ### Oblivious Function Definition
 
