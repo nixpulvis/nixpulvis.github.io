@@ -81,17 +81,12 @@ Functions are themselves values in the λ-calculus, making it what we call a
 _higher order language_, allowing us to write more complex reductions.
 
 ```
-(λf.λg.λx.(f (g x))) (λx.x) (λx.x) y
-->
-(λg.λx.((λx.x) (g x))) (λx.x) y
-->
-(λx.((λx.x) ((λx.x) x))) y
-->
-(λx.((λx.x) x)) y
-->
-(λx.x) y
-->
-y
+<- (λf.λg.λx.(f (g x))) (λx.x) (λx.x) y
+-> (λg.λx.((λx.x) (g x))) (λx.x) y
+-> (λx.((λx.x) ((λx.x) x))) y
+-> (λx.((λx.x) x)) y
+-> (λx.x) y
+-> y
 
 TODO: Visualize the multiple paths to `y`, reduction strategies.
 ```
@@ -149,11 +144,11 @@ in order.
 
 ```
 (λx y.(add x y)) 1 2
--> curry
+-curry>
 ((λx.λy.(add x y)) 1) 2
--> beta
+-beta>
 (λy.(add 1 y)) 2
--> beta
+-beta>
 (add 1 2)
 ```
 
