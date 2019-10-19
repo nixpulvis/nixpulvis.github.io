@@ -2,6 +2,7 @@
 title: Secure Multi-Party Communication & Rust
 layout: research
 draft: true
+hidden: true
 ---
 
 > Abstract: We show extensions to Rust (and the formal Oxide) for secure
