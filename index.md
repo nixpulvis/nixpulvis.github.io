@@ -14,7 +14,6 @@ let pulvis = powder || dust;
 Welcome to my slice of the internet. If you'd like to find me elsewhere, here
 are some more places to look:
 
-- 202.701.4368
 - <mailto:nathan@nixpulvis.com>
 - [GitHub](https://github.com/nixpulvis)
 - [Twitter](https://twitter.com/nixpulvis)
