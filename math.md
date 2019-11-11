@@ -10,12 +10,16 @@ title: Mathematics
 
 <ul>
 {% for math in site.mathematics %}
-  {% if math.draft %}
-    <li class="draft">
-  {% else %}
-    <li>
-  {% endif %}
-      <a href="{{ math.url }}">{{ math.title }}</a>
-    </li>
+    {% if math.draft %}
+        <li class="draft">
+            <a href="{{ math.url }}">{{ math.title }}</a>
+            drafted on {{ math.date | date: "%B %d, %Y" }}.
+        </li>
+    {% else %}
+        <li>
+            <a href="{{ math.url }}">{{ math.title }}</a>
+            published on {{ math.date | date: "%B %d, %Y" }}.
+        </li>
+    {% endif %}
 {% endfor %}
 </ul>

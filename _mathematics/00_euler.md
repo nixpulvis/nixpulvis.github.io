@@ -1,11 +1,8 @@
 ---
 title: Euler's Identity
-layout: default
-date: 2019-05-12
-draft: true
+layout: notes
+date: 2019-10-30
 ---
-
-# Euler's Identity
 
 $$
 e^{\pi i} + 1 = 0
