@@ -9,7 +9,7 @@ S[p](problems)[h](hackers-band)inx o[f](fairy-tale) b[l](love-hate)ack qua[r](ri
 jud[g](gaze)e [m](maxim)y [v](vermont)o[w](wild)!
 
 The quick bro[w](who)n [f](fga)ox
-ju[m](mountain-view)[p](passion)[s](scale) over a lazy dog.
+ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy dog.
 
 [War](war)/
     [Typed Fantasy Land](https://github.com/promises-aplus/promises-spec/issues/94)
