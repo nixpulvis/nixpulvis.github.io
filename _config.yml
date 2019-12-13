@@ -1,20 +1,17 @@
 # TODO: Fixup these collections.
 collections:
-    article:
-        output: true
-        permalink: /:collection/:name
     mathematics:
         output: true
         permalink: /math/:name
     musings:
         output: true
         permalink: /:collection/:name
-    notes:
-        output: true
-        permalink: /:collection/:name
     projects:
         output: true
         permalink: /:collection/:name
     ramblings:
+        output: true
+        permalink: /:collection/:name
+    research:
         output: true
         permalink: /:collection/:name

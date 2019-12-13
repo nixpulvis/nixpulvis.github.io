@@ -6,18 +6,18 @@ layout: default
 # Research
 
 <ul>
-{% for research in site.research %}
-    {% if research.draft %}
+{% for article in site.articles %}
+    {% if article.draft %}
         <li class="draft">
-            <a href="{{ research.url }}">{{ research.title }}</a>
-            {{ research.content | number_of_words }} words
-            drafted on {{ research.date | date: "%B %d, %Y" }}.
+            <a href="{{ article.url }}">{{ article.title }}</a>
+            {{ article.content | number_of_words }} words
+            drafted on {{ article.date | date: "%B %d, %Y" }}.
         </li>
     {% else %}
         <li>
-            <a href="{{ research.url }}">{{ research.title }}</a>
-            {{ research.content | number_of_words }} words
-            published on {{ research.date | date: "%B %d, %Y" }}.
+            <a href="{{ article.url }}">{{ article.title }}</a>
+            {{ article.content | number_of_words }} words
+            published on {{ article.date | date: "%B %d, %Y" }}.
         </li>
     {% endif %}
 {% endfor %}
