@@ -20,6 +20,9 @@ the projects themselves.
 
 <ul class="projects finished">
 {% for project in site.projects %}
+    {% if project.hidden %}
+        {% continue %}
+    {% endif %}
     {% unless project.draft %}
         <li class="project">
             <a class="name" href="{{ project.url }}">

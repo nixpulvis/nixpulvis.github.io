@@ -38,7 +38,8 @@ In addition to the base layout types above, there are a few options that may be
 specified in the YAML front-matter.
 
 - `draft: <bool>` - Indicate that this post is unfinished (grayed out)
-- `published: <bool>` - Hide/show the post
+- `hidden: <bool>` - Hide/show the post from index page
+- `published: <bool>` - Do/don't generate the page entirely
 
 Additional options may exist for some layouts, and should be documented at
 some point.
