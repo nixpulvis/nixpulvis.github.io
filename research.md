@@ -7,9 +7,6 @@ layout: default
 
 <ul>
 {% for research in site.research %}
-    {% if research.hidden %}
-        {% continue %}
-    {% endif %}
     {% if research.draft %}
         <li class="draft">
             <a href="{{ research.url }}">{{ research.title }}</a>

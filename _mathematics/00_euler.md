@@ -1,6 +1,6 @@
 ---
 title: Euler's Identity
-layout: notes
+layout: article
 date: 2019-10-30
 ---
 

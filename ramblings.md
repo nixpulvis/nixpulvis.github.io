@@ -19,9 +19,6 @@ assign ramblings = site.ramblings
 %}
 
 {% for rambling in ramblings %}
-    {% if rambling.hidden %}
-        {% continue %}
-    {% endif %}
     {% if rambling.draft %}
         <li class="draft">
             <a href="{{ rambling.url }}">{{ rambling.title }}</a>

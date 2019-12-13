@@ -1,7 +1,8 @@
 ---
 title: Factorials & Triangular Numbers
-layout: notes
+layout: article
 draft: true
+published: false
 ---
 
 $$

@@ -1,7 +1,8 @@
 ---
 title: Overview of Mathematics
-layout: default
+layout: article
 draft: true
+published: false
 ---
 
 ## Overview of Mathematics

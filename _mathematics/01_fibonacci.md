@@ -1,6 +1,6 @@
 ---
 title: Fibonacci's Sequence
-layout: notes
+layout: article
 date: 2019-05-10
 ---
 

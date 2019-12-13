@@ -24,17 +24,21 @@ jekyll serve
 The main additions to this site are projects, and ramblings. Creating and
 editing these is *very* easy thanks to Jekyll.
 
-#### Projects
+#### Layouts
 
-To create a project, make a new file in the `_projects` directory with the name
-of the file, and extension `.md`. The only required YAML front matter attribute
-is `layout: project`. Otherwise, you may set `draft: true` to make the project
-appear greyed out to viewers, or `published: false` to completely hide it.
+Each post should have a layout specified in the YAML front-matter, otherwise
+the `default` will be used. There are a number of layouts to choose from:
 
-#### Ramblings
+- `project` - A living document for something I may or may not work on again
+- `rambling` - A potentially meaningful set of words
+- `note` - A non-updated (except in extreme cases) document
+- `article` - Something formally worth publishing
 
-To create a rambling simply make a new file in the `_ramblings/` directory, and
-name it with the format `YYYY-MM-DD-the-title.md`. There is only one required
-YAML front matter attribute, `layout: rambling`. Otherwise, you may set `draft:
-true` to make the post appear greyed out to viewers, or `published: false` to
-completely hide it.
+In addition to the base layout types above, there are a few options that may be
+specified in the YAML front-matter.
+
+- `draft: <bool>` - Indicate that this post is unfinished (grayed out)
+- `published: <bool>` - Hide/show the post
+
+Additional options may exist for some layouts, and should be documented at
+some point.
