@@ -9,7 +9,13 @@ title: Mathematics
 > sets, using numbers and symbols.
 
 <ul>
-{% for math in site.mathematics %}
+{%
+assign mathematics = site.mathematics
+                 | sort: 'date'
+                 | reverse
+%}
+
+{% for math in mathematics %}
     {% if math.draft %}
         <li class="draft">
             <a href="{{ math.url }}">{{ math.title }}</a>
