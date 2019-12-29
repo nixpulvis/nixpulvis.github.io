@@ -49,6 +49,3 @@ But together the sand can be molded into castles, or melted into
 windows, or even engineered into computers. And it feels like
 there's more sand caught between my toes after a day at the beach
 than diamonds on the entire earth.
-
-We are the sand, and we must resist resistance, and seek silicon-like
-supremacy.
