@@ -33,7 +33,7 @@ all know it. All this is ass backwards dynamic "functionality", I don't want
 it. Just give me a piece of fucking paper with some god damn content on it, and
 let me read in peace.
 
-![](/2019-02-10-web-shit-point-oh_i_am_developer.png)
+![](/img/ramblings/2018-08-11-web-shit-point-oh_i_am_developer.png)
 
 P.S. Hopefully y'all can still even get to this page, and the ISPs haven't
 started offering "economy" plans to limited blessed holy grounds of the
