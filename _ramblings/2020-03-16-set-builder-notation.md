@@ -47,7 +47,7 @@ $$
 
 I like to think someone would stop at this point and restructure the equations.
 Why am I operating on $$x$$ in $$\sqrt[3]{x}$$ before I even know what $$x$$
-is. A quick glance, and you don't even notice it anymore, it's lost in the
+is?! A quick glance, and you don't even notice it anymore, it's lost in the
 noise on the right.
 
 Finally, we come to what Python starts letting you do with their surprisingly
