@@ -6,8 +6,9 @@ I'm not a fan of set builder notation, and let me explain why...
 
 I mean, it beats a lot of other things mathematicians were probably doing
 before they agreed to it, but that could be said about pretty much anything.
-Just look at how many people love writing JavaScript, and how god awful that
-language is. I'd expect a bit more from math notation, but I digress.
+Just look at how many people love writing Python, and how god awful that
+language is (at least syntactically). I'd expect a bit more from math notation,
+but I digress.
 
 We can read a set $$\{\ e : x \in \mathbb{D}\ \}$$ as "$$\ e$$ such that $$x$$
 is in $$\mathbb{D}\ $$". Here $$e$$ is an expression which has $$x$$ bound
