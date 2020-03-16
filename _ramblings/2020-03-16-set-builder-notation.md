@@ -32,7 +32,7 @@ $$
 \{\ \sqrt{x} - 2 : x ∈ [1,10) \ \}
 $$
 
-Suddenly the domain of of the set and $$x$$ aren't necessarily the same, yet we
+Suddenly the domain of the set and $$x$$ aren't necessarily the same, yet we
 would probably assume something reasonable, right? These must all be $$\in
 \mathbb{R}$$, or something. Still we've tried to lead with what we care about,
 the $$\sqrt{x} - 2$$ in this case. But suddenly the right side matters a lot
