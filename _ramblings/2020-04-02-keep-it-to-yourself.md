@@ -1,5 +1,6 @@
 ---
 layout: rambling
+hidden: true
 ---
 
 Keeping yourself secure in the modern age of digital computers and the internet
@@ -7,19 +8,46 @@ is a daunting task. While I like to think I'm somewhat sophisticated in this
 regard, surely there are flaws in my approach, begging to be exploited and
 abused. This is somewhat unavoidable, so as a general rule of thumb, **don't be
 malicious**. The following is my current best practices for things that involve
-information security. It will cover the following topics:
+information security.
 
-1. [Key Management](#key-management)
-2. ["Slave" Password Management](#slave-password-management)
-3. [Backups](#backups)
-4. [PII Management](#pii-management)
+---
+### Table of Contents
+
+**Section 1**  
+First we define our master password(s), then we build up a GPG key structure,
+finally we use the GPG keys to secure a secret database of other passwords,
+keys, and anything else.
+1. [The Master Password(s)](#the-master-password)
+2. [Key Management](#key-management)
+    - [GPG Keys](#gpg-keys)
+        - [Smart Cards / Security Tokens](#smart-cards--security-tokens)
+        - [Subkeys](#gpg-keys)
+    - [SSH Keys](#ssh-keys)
+3. [Password Management](#slave-password-management)
+    - [`pass`](#pass)
+    - [One-time Passwords](#one-time-passwords)
+
+**Section 2**  
+Next, we look at best practices for common kinds of personal information.
+1. [General Backups](#backups)
+2. [Personal Private Information](#personal-private-information)
+3. [Secure Online Communication](#secure-online-communication)
+
+---
+
+### The Master Password(s)
+
+- Master Password
+- PINs
+
+### Key Management
 
 Key management through PGP is the main security concern, from which we can
 build the rest somewhat easily. Luckily SmartCards can be purchased easily
 these days, and make some of this much more trustworthy than it may have been
 in the past.
 
-### Key Management
+#### GPG Keys
 
 At the heart of my setup lies PGP (Pretty Good Privacy), a suite of encryption
 technology with well supported CLI and hardware applications. PGP allows
@@ -32,7 +60,7 @@ The primary private GPG key itself must be stored safely somewhere, like on a
 keychain, and [rotated from time to
 time](https://sungo.wtf/2016/11/23/gpg-strong-keys-rotation-and-keybase.html).
 
-#### SmartCards
+##### Smart Cards / Security Tokens
 
 I own both a YubiKey 5C and 5C Nano, each with a distinct physical use case.
 The traditional 5C fits onto my keychain (like with my house keys), and I can
@@ -47,22 +75,32 @@ keys, so care must be taken to ensure data allows either key as needed.
 
 - TODO: YubiKey setup process
 
-#### Conventional GPG Keys
+##### Subkeys
 
 In addition to SmartCard keys, conventional GPG keys can be generated and used.
 
 - TODO: How to create these, and when to use them?
 - TODO: Sub-key structure.
 
-### "Slave" Password Management
+#### SSH (<u>S</u>ecure <u>Sh</u>ell) Keys
+
+SSH keys should named, with the following format: `nixpulvis@<hostname>`. Each
+key will be saved by name in a `pass` directory called `SSH`. This way we can
+control access to individual hosts.
+
+- TODO: Implement this.
+- TODO: Note it's stored in `pass`, more on below.
+
+
+### Password Management
 
 Once we have our key management taken care of and our master password(s) /
-PIN(s) are memorized, we can rely on `pass` for managing "slave" passwords and
-other secret data. Both our primary GPG key, and a backup will be used for this
-password store. These passwords are generally generated, and therefor not
-memorized.  **Some kinds of accounts may be best to memorize still**, just make
-sure they aren't the same password as the master passwords from our key
-management.
+PIN(s) are memorized, we can rely on `pass` for managing various other
+passwords and other secret data. Both our primary GPG key, and a backup will be
+used for this password store. These passwords are generally generated, and
+therefor not memorized.  **Some kinds of accounts may be best to memorize
+still**, just make sure they aren't the same password as the master passwords
+from our key management.
 
 - TODO: Backup (stored in clear in a safe?) GPG key
 
@@ -101,14 +139,6 @@ accounts/<url>/<username> -> <password>
 pass -c accounts/accounts.adafruit.com/nixpulvis
 ```
 
-#### SSH (Secure Shell)
-
-SSH keys should named, with the following format: `nixpulvis@<hostname>`. Each
-key will be saved by name in a `pass` directory called `SSH`. This way we can
-control access to individual hosts.
-
-- TODO: Implement this.
-
 #### Storage
 
 The `.password-store` data will live on each machine, an encrypted USB drive
@@ -122,6 +152,8 @@ leak information, or other non-standard `pass` practices. It's best to simply
 avoid storing the password store anywhere in the clear.
 
 - TODO: Master (in the head) passwords, re: smartcard backup
+
+---
 
 ### Backups
 
@@ -160,7 +192,7 @@ backup/<device>/key -> <borg_key>
 - Network write time fluctuates
 - Automatic
 
-### PII Management
+### Personal Private Information
 
 PII (Personally Identifiable Information) like my SSN, healthcare IDs and other
 various sensitive information should be included in `pass` and nowhere else...
