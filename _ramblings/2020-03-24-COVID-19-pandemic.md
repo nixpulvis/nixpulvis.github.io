@@ -28,8 +28,10 @@ of my understanding.
 - The test is uncomfortable, but isn't so bad [[3]][nose-test]
 - Face masks aren't as effective as they might seem [[4]][face-masks]
   - Healthcare workers are in much greater need than we are [[5]][getusppe]
-  - They are mostly useful if you're coughing or sneezing, in which case you
-    shouldn't be outside anyway
+  - ~~They are mostly useful if you're coughing or sneezing, in which case you
+    shouldn't be outside anyway~~
+  - Guidelines now say to wear a facemask of some kind (I'm
+    using a bandana) whenever you go out
 - It's spread via surface contact, droplets and the air [[6]][transmission]
   - Higher probability of infection from contact with a droplet than loose
     airborne particles
@@ -44,7 +46,7 @@ of my understanding.
   - Trump needs to **shut the fuck up**
     
     Never before in the history of our nation have we had to litterally cut the
-    words of the President off the media to protect the public, it's
+    words of the President off the media to protect the public; it's
     unimaginable.
 
 ### What I Don't Know
