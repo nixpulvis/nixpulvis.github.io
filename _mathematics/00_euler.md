@@ -54,9 +54,11 @@ $$
   </div>
 </details>
 
-Euler's identity can be geometrically interpreted as saying that rotating any
-point $$\pi$$ radians around an origin of a complex plane has the same effect
-as reflecting the point across the origin.
+> Euler's identity can be geometrically interpreted as saying that rotating any
+> point $$\pi$$ radians around an origin of a complex plane has the same effect
+> as reflecting the point across the origin.
+>  
+> -- [Wikipedia](https://en.wikipedia.org/wiki/Euler's_identity#Geometric_interpretation)
 
 Fundamentally, Euler's Identity is a root of unity, meaning that it is a
 solution for $$z$$ in the equation $$z^n = 1$$.

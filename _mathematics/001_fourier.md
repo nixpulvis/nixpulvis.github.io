@@ -9,7 +9,7 @@ Plot[
 
 ![](/img/fourier_euler.png)
 
-Unlike the Euler series we above, which is purely constructive, a <b>square
+Unlike the "Euler series" we above, which is purely constructive, a <b>square
 wave</b> can be constructed with the Fourier series:
 
 $$
