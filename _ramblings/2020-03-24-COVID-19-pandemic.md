@@ -31,12 +31,12 @@ of my understanding.
   - ~~They are mostly useful if you're coughing or sneezing, in which case you
     shouldn't be outside anyway~~
   - Guidelines now say to wear a facemask of some kind (I'm
-    using a bandana) whenever you go out
+    using ~~a bandana~~ 1/3 N95 masks that my Mom sent me ❤) whenever you go out
 - It's spread via surface contact, droplets and the air [[6]][transmission]
   - Higher probability of infection from contact with a droplet than loose
     airborne particles
   - Can stay alive on surfaces for a few days, depending on the material
-- We are likely entering a economic recession [[7]][recession]
+- We are likely entering an economic recession [[7]][recession]
 - The United States (where I live) is doing a piss poor job
   - We should be testing random samples of the population, since many infected
     are asymptomatic
