@@ -657,3 +657,9 @@ li.draft {
     margin-top: 70px;
   }
 }
+
+.nixpulvis {
+  background: #161616;
+  color: #cacaca;
+  font: 18px monospace;
+}
