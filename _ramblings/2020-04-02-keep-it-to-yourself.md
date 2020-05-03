@@ -3,6 +3,10 @@ layout: rambling
 draft: true
 ---
 
+NOTE: modhex <root PW>
+NOTE: ykman otp static 2
+NOTE: ykpersonalize -u -1 -o -fast-trig
+
 Keeping yourself secure in the modern age of digital computers and the internet
 is a daunting task. While I like to think I'm somewhat sophisticated in this
 regard, surely there are flaws in my approach, begging to be exploited and
