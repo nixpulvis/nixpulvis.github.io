@@ -8,7 +8,7 @@ title: Chunky Bacon
 S[p](problems)[h](hackers-band)[i](ibwtwbtl)[n](netopoly)x o[f](fairy-tale) b[l](love-hate)[a](abhi)ck qua[r](right)[t](turn)[z](zuckerburg),
 jud[g](gaze)[e](everyday) [m](maxim)y [v](vermont)o[w](wild)!
 
-The quick bro[w](who)n [f](fga)ox
+The quick b[r](rhyme)o[w](who)n [f](fga)ox
 ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy dog.
 
 [War](war)/
