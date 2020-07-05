@@ -60,6 +60,9 @@ The primary private GPG key itself must be stored safely somewhere, like on a
 keychain, and [rotated from time to
 time](https://sungo.wtf/2016/11/23/gpg-strong-keys-rotation-and-keybase.html).
 
+NOTE: Rotating keys requires syncing gpg data, which requires all machines to
+receive a copy of the local data. This is cumbersome, but seemingly needed.
+
 ##### Smart Cards / Security Tokens
 
 I own both a YubiKey 5C and 5C Nano, each with a distinct physical use case.
