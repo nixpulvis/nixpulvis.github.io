@@ -16,6 +16,7 @@ ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy dog.
     [FactoryGirl](https://github.com/thoughtbot/factory_bot/issues/921)
     [HTTParty](https://github.com/jnunemaker/httparty/pull/321)
     [Docker Compose](https://github.com/docker/compose/issues/745)
+    [A Riddle Wrapped In An Enigma](https://eprint.iacr.org/2015/1018.pdf)
 
          (λ(f)(λ
          (x)(((x(λ(
