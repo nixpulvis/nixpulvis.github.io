@@ -1,6 +1,6 @@
 ---
 layout: rambling
-hidden: true
+draft: true
 ---
 
 Keeping yourself secure in the modern age of digital computers and the internet
