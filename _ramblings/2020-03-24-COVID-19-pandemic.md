@@ -26,12 +26,11 @@ of my understanding.
 - I'll could be practicing "social distancing" for upwards of a year
   [[2]][vox-social-distancing]
 - The test is uncomfortable, but isn't so bad [[3]][nose-test]
-- Face masks aren't as effective as they might seem [[4]][face-masks]
+- Face masks aren't as effective as they might seem [[4] (outdated)][face-masks]
   - Healthcare workers are in much greater need than we are [[5]][getusppe]
   - ~~They are mostly useful if you're coughing or sneezing, in which case you
     shouldn't be outside anyway~~
-  - Guidelines now say to wear a facemask of some kind (I'm
-    using ~~a bandana~~ 1/3 N95 masks that my Mom sent me ❤) whenever you go out
+  - Guidelines now say to wear a facemask of some kind whenever you go out
 - It's spread via surface contact, droplets and the air [[6]][transmission]
   - Higher probability of infection from contact with a droplet than loose
     airborne particles
