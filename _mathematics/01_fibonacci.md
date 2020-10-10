@@ -180,7 +180,7 @@ $$F_{72}$$ without IEEE 754 floats.
 
 ---
 
-### [Brainfuck](http://nixpulvis.com/brainfuck)
+### [Brainfuck](https://nixpulvis.com/brainfuck)
 
 ```b
 >++++++++++>+>+[

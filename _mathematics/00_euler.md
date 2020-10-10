@@ -105,7 +105,7 @@ which gives an approximation of $$e$$.
 
 <details>
   <summary>Wanna compute <strong><i>e</i></strong> in
-<a href="http://nixpulvis.com/brainfuck">Brainfuck</a>?
+<a href="https://nixpulvis.com/brainfuck">Brainfuck</a>?
   </summary>
 $$
 \hphantom{nothing} \\
