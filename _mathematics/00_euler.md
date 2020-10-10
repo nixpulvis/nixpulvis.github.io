@@ -84,7 +84,7 @@ $$
   <summary>A fun fact from a friend.</summary>
   <div markdown="1">
 My friend Ryan showed me an interesting approximation of $$e$$ which uses
-numbers $$1, 2, 3, 4, 5, 6, 7, 8, 9$$ each once [1]:
+numbers $$1, 2, 3, 4, 5, 6, 7, 8, 9$$ each once:
 
 $$
 e \approx \left(1 + 9^{-4^{6 \times 7}}\right)^{3^{2^{85}}}
@@ -98,8 +98,6 @@ $$
 
 so we have $$n \gets 3^{2^{85}} \approx \left(9^{-4^{6 \times 7}}\right)^{-1}$$,
 which gives an approximation of $$e$$.
-
-[[1]](https://www2.stetson.edu/~efriedma/mathmagic/0804.html)
   </div>
 </details>
 
