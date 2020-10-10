@@ -69,20 +69,4 @@ One more thing, what about **chained** array comprehensions?
 ```
 
 My head hurts looking at this code. Where is `x` bound? Where is `b` bound?
-It's all so unclear, it really makes my wonder how Python is so popular... But
-then I remember JavaScript, and it all makes a little more sense.
-
----
-
-Meanwhile, in Rust things are done properly. We also have something like a
-"such that" which is the `where` clause, however you still must at least
-introduce the name up front. For example:
-
-```rust
-fn foo<A>(..., a: A, ...) where A: ...
-```
-
-This solves the problem of name resolution while I try and read this function.
-Since there's always a namespace you're operating within, I must have a way to
-know if `A` is local, or coming in from elsewhere. Without the leading `<A>`
-I'd be left wondering what `a: A` means for far too long.
+It's all so unclear, it really makes my wonder...
