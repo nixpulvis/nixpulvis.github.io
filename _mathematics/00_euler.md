@@ -90,14 +90,14 @@ $$
 e \approx \left(1 + 9^{-4^{6 \times 7}}\right)^{3^{2^{85}}}
 $$
 
-This may be less surprising when we see that:
+This may be less surprising if we recall that $$e$$ can be defined as:
 
 $$
 e = \lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n
 $$
 
-so we have $$n \gets 3^{2^{85}} \approx \left(9^{-4^{6 \times 7}}\right)^{-1}$$,
-which gives an approximation of $$e$$.
+So we have $$n \gets 3^{2^{85}} \approx \left(9^{-4^{6 \times 7}}\right)^{-1}$$,
+which substituting in the above, gives an approximation of $$e$$.
   </div>
 </details>
 

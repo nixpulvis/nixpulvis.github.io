@@ -1,3 +1,5 @@
+TODO: This information is only a sketch, and as such is somewhat sketchy.
+
 ```
 Plot[
         sin(theta)/pi,
