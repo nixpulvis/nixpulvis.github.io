@@ -47,6 +47,16 @@ details :last-child {
   margin-bottom: 0;
 }
 
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 3px 5px;
+}
+
 hr {
   border: 0;
   border-bottom: 1px dashed black;
@@ -115,6 +125,11 @@ img {
   display: block;
   margin: 0 auto;
   max-width: 100%;
+}
+
+figcaption {
+  font-style: italic;
+  text-align: center;
 }
 
 .content {
