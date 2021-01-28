@@ -1,5 +1,6 @@
 ---
 title: The Current Mirror
+draft: true
 layout: rambling
 ---
 
@@ -7,9 +8,10 @@ When designing many electrical circuits, it is often useful to have a fixed
 source (or sink) of current. This requirement lead me to the discovery of the
 current mirror, which can be used to implement a fixed current, amongst other
 things. As the name suggests, a current mirror _mirrors_ the current on one
-path to another. One can then use a specific application of the current mirror
-to fix the current on the first path, thus holding the current on the other
-path steady over changing conditions.
+path to another. By fixing the current on the left path we hold the current on
+the right path steady over changing conditions.
+
+<!-- TODO: Why must we fix the left path? -->
 
 <figure class="image">
   <img src="/img/ramblings/current-mirror/mirror.png" />
@@ -26,6 +28,7 @@ Resistance Temperature Detector (RTD), which depends on a fixed current in
 order to measure the voltage with an Analog to Digital Converter (ADC). But,
 more on that project another time...
 
+<!-- TODO: This paragraph needs help. -->
 <!-- TODO: Link to a post on the temperature controller project. -->
 
 ### Preliminaries
@@ -33,7 +36,8 @@ more on that project another time...
 Before we can understand the workings of the current mirror, we must first
 understand some basics of diodes and transistors. The arrows/triangles in the
 symbols below should help remind you of the relationship between these
-components.
+components. It may help to first realize that the left transistor from the
+current mirror schematic above is actually acting like a diode.
 
 <figure class="image">
   <img src="/img/ramblings/current-mirror/diode_transistor.png" />
@@ -42,19 +46,28 @@ components.
 
 #### Diodes
 
-To some of you, the most familiar kind of diode will be the Light-emitting
-Diode, however we're not interested in generating light for this application of
-a diode. Instead, we are interesting in a property of all diodes.
+Diodes are like one-way valves. Current flow in the _forward_ direction is
+relatively uninhibited, while passing current in the _reverse_ direction is
+impeded until it reaches what's known as it's _breakdown voltage_.
 
-Anode = P
-Cathode = N
+Diodes, much like the BJTs we'll look at next, are made of two types of
+material regions. Current flows from a _p-type_ material, through a depleted
+region, into an _n-type_ material. This is called a "PN" junction. Another name
+for the p-type and n-type terminals are _anode_ and _cathode_, respectively.
+
+For some readers, the most familiar kind of diode will be the Light-emitting
+Diode, however we're not interested in generating light for this application of
+a diode.
 
 <figure class="image">
   <img src="/img/ramblings/current-mirror/led.png" />
   <figcaption>The schematic symbol for an LED.</figcaption>
 </figure>
 
-TODO: Explain NP (or PN) junction of a diode leading into transistors.
+What we are interested in is the fact that a diode, when fully forward-biased
+has a static voltage drop (0.7 V is a common value). This is because once the
+voltage is high enough, the diode's depletion region has been effectively
+shrunk to nonexistence.
 
 #### Transistors
 
@@ -65,10 +78,10 @@ make use of a metal-oxide-semiconductor field-effect transistor (MOS-FET) or
 even an Operational Amplifier (Op-Amp) to implement a current mirror.
 
 There are two kinds of BJTs: n-type NPN transistors and p-type PNP transistors.
-The "N" and "P" components of the name refer to the polarity of the material
-used in the construction of the transistor. A NPN transistor consists of a
-positive region sandwiched between two negative regions, and visa-versa for the
-PNP transistor.
+Like the diode, the "N" and "P" components of the name refer to the polarity of
+the material used in the construction of the transistor. A NPN transistor
+consists of a positive region sandwiched between two negative regions, and
+visa-versa for the PNP transistor.
 
 <figure class="image">
   <img src="/img/ramblings/current-mirror/pnp_npn.png" />
@@ -82,14 +95,18 @@ of their shared base, cause the current flowing through the emitters to be the
 same regardless of the load resistance. This is set by the resistance (`Rs`
 below) which is constrained by the saturation requirement for the transistors.
 For this circuit to work well the transistors (`Q1` & `Q2`) must be as similar
-as possible.
+as possible. This is why we do not simply use a diode instead of a
+diode-connected transistor, since the base characteristics must match.
 
 TODO: Saturation or active mode?
 
 #### Experimental Configuration 1
 
 First we tested a very basic current mirror configuration with a couple random
-BJT transistors which were lying around.
+BJT transistors which were lying around. These transistors are not designed for
+this purpose and surely have some variance in their $$\beta$$ values. However,
+we should still expect the current across `Rn` to stay relatively near that of
+`Rs`.
 
 ![](/img/ramblings/current-mirror/source.png)
 
@@ -101,13 +118,13 @@ The measurement of each experiment is the voltage across the resistors. We only
 recorded the voltage across `Rs` once, since it is constant.
 
 <table>
-  {% for row in site.data.ramblings.current-mirror.pnp %}
+  {% for row in site.data.ramblings.current-mirror.source %}
     {% if forloop.first %}
     <tr>
-      {% for pair in row %}
-        <th>{{ pair[0] }}</th>
-      {% endfor %}
-      <th>Ω/V = Current (mA)</th>
+      <th>Label</th>
+      <th><code>Rn</code> Value (Ω)</th>
+      <th>Measurement (V)</th>
+      <th>Current (mA)</th>
     </tr>
     {% endif %}
 
@@ -120,6 +137,12 @@ recorded the voltage across `Rs` once, since it is constant.
   {% endfor %}
 </table>
 
+Indeed, the current through `Rn` increased by a factor of $$2\times$$ while the
+resistance decreased by a factor of $$10\times$$. Without the current mirror,
+it would follow Ohm's Law ($$I = V \div R$$) and the current would increase
+by $$10\times$$ as well. So, while our homemade current mirror is not perfect,
+it is semi-functional and might earn a place in a funhouse's room of mirrors.
+
 #### Experimental Configuration 2
 
 Unlike the first experiment where we simply rely on the properties of two
@@ -130,12 +153,12 @@ transistors.
 ![](/img/ramblings/current-mirror/sink.png)
 
 <table>
-  {% for row in site.data.ramblings.current-mirror.npn %}
+  {% for row in site.data.ramblings.current-mirror.sink %}
     {% if forloop.first %}
     <tr>
-      {% for pair in row %}
-        <th>{{ pair[0] }}</th>
-      {% endfor %}
+      <th>Label</th>
+      <th><code>Rn</code> Value (Ω)</th>
+      <th>Measurement (V)</th>
       <th>Current (mA)</th>
     </tr>
     {% endif %}
@@ -144,7 +167,11 @@ transistors.
       {% for pair in row %}
         <td>{{ pair[1] }}</td>
       {% endfor %}
-      <td>{{row["Voltage (V)"] | divided_by: row["Resistance (Ω)"] | times: 1000 | round: 2}}</td>
+      {% if forloop.last == false %}
+      <td>{{row["Voltage (V)"] | divided_by: row["Resistance (Ω)"] | times: 1000 | round: 3}}</td>
+      {% else %}
+      <td>N/A</td>
+      {% endif %}
     </tr>
   {% endfor %}
 </table>
