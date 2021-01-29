@@ -11,6 +11,8 @@ things. As the name suggests, a current mirror _mirrors_ the current on one
 path to another. By fixing the current on the left path we hold the current on
 the right path steady over changing conditions.
 
+<!-- TODO: Explain why sourcing current, and sourcing a "known" amount of current is -->
+<!-- different. -->
 <!-- TODO: Why must we fix the left path? -->
 
 <figure class="image">
@@ -88,6 +90,46 @@ visa-versa for the PNP transistor.
   <figcaption>The schematic symbols for the two kinds of BJT.</figcaption>
 </figure>
 
+There are three currents for each transistor we label:
+- $$I_E$$, the current through the emitter
+- $$I_B$$, the current through the base
+- $$I_C$$, the current through the collector 
+
+The ratios $$\alpha = I_C / I_E$$ and $$\beta = I_C / I_B$$ are properties of
+the specific transistors and can be found in the datasheet of the appropriate
+part. The datasheet may provide the parameter "DC Current Gain" with the symbol
+$$h_FE$$ (denoting a hybrid parameter), which is what we use for $$\beta$$.
+The reason for the discrepancy in notation is that, while we treat $$\beta$$ as
+a constant for our purposes, in reality the value is effected by many things
+like temperature, signal frequency, and current itself.
+
+One important rule for transistors is that $$I_E = I_C + I_B$$. Therefor,
+$$\alpha= \beta / (\beta + 1)$$. This should also start to build your intuition
+for how the current mirror works, since both transistors bases are connected.
+More on that in a moment though...
+
+To understand the role of the base in a transistor, let's consider an example:
+
+$$
+\beta = 100 \\
+I_B = 5mA \\
+I_C = \beta I_B = 0.5A
+$$
+
+So, the base current ($$I_B$$) has effectivly set the collector current
+($$I_C$$) with a gain of $$100 \times$$.
+
+##### Saturation
+
+Sometimes, the goal isn't to provide presice, fixed amounts of current, but to
+simply use a transistor as a switch. To accomplish this, the transistor is put
+into what's called _saturation_, by making $$V_CE < V_BE$$. Now our equation
+$$I_C = \beta I_B$$ from above no longer holds and is replaced by $$I_C < \beta
+I_B$$.
+
+In the case of the diode-connected transistor, since the collector and base are
+connected, we have 
+
 ### Putting it Together
 
 A current mirror is a circuit configuration of two transistors which, by virtue
@@ -139,7 +181,7 @@ recorded the voltage across `Rs` once, since it is constant.
 
 Indeed, the current through `Rn` increased by a factor of $$2\times$$ while the
 resistance decreased by a factor of $$10\times$$. Without the current mirror,
-it would follow Ohm's Law ($$I = V \div R$$) and the current would increase
+it would follow Ohm's Law ($$I = V / R$$) and the current would increase
 by $$10\times$$ as well. So, while our homemade current mirror is not perfect,
 it is semi-functional and might earn a place in a funhouse's room of mirrors.
 
