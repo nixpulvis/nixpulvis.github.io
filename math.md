@@ -19,12 +19,16 @@ assign mathematics = site.mathematics
     {% if math.draft %}
         <li class="draft">
             <a href="{{ math.url }}">{{ math.title }}</a>
-            drafted on {{ math.date | date: "%B %d, %Y" }}.
+            <small>
+                drafted on {{ math.date | date: "%B %d, %Y" }}.
+            </small>
         </li>
     {% else %}
         <li>
             <a href="{{ math.url }}">{{ math.title }}</a>
-            published on {{ math.date | date: "%B %d, %Y" }}.
+            <small>
+                published on {{ math.date | date: "%B %d, %Y" }}.
+            </small>
         </li>
     {% endif %}
 {% endfor %}
