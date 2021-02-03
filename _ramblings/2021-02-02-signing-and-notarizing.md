@@ -1,6 +1,5 @@
 ---
 layout: rambling
-title: Software Packaging - On Signing and Notarizing
 ---
 
 As I've been a contributor to
