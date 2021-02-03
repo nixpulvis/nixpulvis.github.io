@@ -144,13 +144,14 @@ post can be understood as a conflation of development and distribution.
 
 **Distribution support is not the same as the software support itself.**
 
-Just as some software may not be included in a package manager of some specific
-flavor of Linux, some software may or may not be packaged with signatures
+Just as some software may not be included in a package manager of specific
+flavors of Linux, some software may or may not be packaged with signatures
 and/or notarizations. In both cases, the underlying software can still be fully
 compatible with the platform, even being tested effectively (developers generally
 compile from source themselves). Both package manager submission and package
-security features are separate from the application itself. In many cases, the
-packager is even a separate person from the development team.
+security features are separate from the development of the application itself.
+In many cases, the packager is even a separate person from the development
+team.
 
 It may be fair to say that both software support and distribution support fall
 into the category of "fitting in with the ecosystem". For some software, this
@@ -173,5 +174,6 @@ bit different than you expect.
 Of course in the case of Alacritty, **it is open source**, so there's never
 anything stopping you from pulling down a version and building it yourself.
 This is how I install it, and is probably the best way to do things in general.
-If build times are a concern of yours, then there may be hoops to jump through,
-but that's not stopping you from using the software either.
+If build times are a concern of yours, then there may be hoops to jump through
+(like passing homebrew's `--no-quarantine` flag), but that's not stopping you
+from using the software either.
