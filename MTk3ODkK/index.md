@@ -3,7 +3,7 @@ layout: default
 style: /css/MTk3ODkK.css
 title: Chunky Bacon
 ---
-[![](/img/cavity.jpg)](https://poignant.guide/)
+[![](/img/cavity.png)](https://poignant.guide/)
 
 [S](seen)[p](problems)[h](hackers-band)[i](ibwtwbtl)[n](netopoly)x o[f](fairy-tale) b[l](love-hate)[a](abhi)ck qu[a](arent)[r](right)[t](turn)[z](zuckerburg),
 jud[g](gaze)[e](everyday) [m](maxim)y [v](vermont)o[w](wild)!
