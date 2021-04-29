@@ -19,7 +19,7 @@ their owners. I wait outside for _my_ order to be taken, since
 I'm not allowed in. Finally after what feels like eons, I order
 a "large iced americano, with a little cream". I rush to blurt
 it all out, because my guilt is now overflowing. Each second I
-occupy this spot, I force others to remain distant from
+occupy this spot, I force others to remain distant from their
 precious coffees. I pay $4, rarely tip, and scuffle off to the
 bench, where I sit alone, waiting for my own.
 
@@ -31,7 +31,7 @@ pick up their coffees. I watch them scan the landscape of
 drinks for the ones made just for them. Uniquely labeled "Dave"
 and "Sarah", always managing to be the last vessel they check.
 They can feel the presence of my gaze as they exclaim with a
-slight gasp as they grab their cup. I wonder to myself if the
+slight gasp and grab their cup. I wonder to myself if the
 coffees get sad waiting to be claimed. Mine doesn't get the
 chance. They call my name and I'm up and gone. I've
 accomplished my goal; coffee acquired. I retreat to my
