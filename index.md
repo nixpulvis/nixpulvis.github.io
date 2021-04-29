@@ -21,8 +21,8 @@ as well.
 
 I’m originally from Colorado and moved to Boston to attend Northeastern
 University, graduating with a Bachelor's in Computer and Information Science.
-Afterwards I moved to Silicon Valley to work for Apple's iPhone Hardware team.
-However, I fell out of love with Apple and the west coast in general.  Now I'm
-getting back into academia and [research](/research).
+Afterwards I moved to Silicon Valley to work for Apple's iPhone Hardware team,
+grew displeased with Apple and the Bay Area and moved back to Boston.
+
 
 You can view my [resume](/resume.pdf) for more information.
