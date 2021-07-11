@@ -26,15 +26,16 @@ of my understanding.
 - I'll could be practicing "social distancing" for upwards of a year
   [[2]][vox-social-distancing]
 - The test is uncomfortable, but isn't so bad [[3]][nose-test]
-- Face masks aren't as effective as they might seem [[4]][face-masks]
+- Face masks aren't as effective as they might seem [[4] (outdated)][face-masks]
   - Healthcare workers are in much greater need than we are [[5]][getusppe]
-  - They are mostly useful if you're coughing or sneezing, in which case you
-    shouldn't be outside anyway
+  - ~~They are mostly useful if you're coughing or sneezing, in which case you
+    shouldn't be outside anyway~~
+  - Guidelines now say to wear a facemask of some kind whenever you go out
 - It's spread via surface contact, droplets and the air [[6]][transmission]
   - Higher probability of infection from contact with a droplet than loose
     airborne particles
   - Can stay alive on surfaces for a few days, depending on the material
-- We are likely entering a economic recession [[7]][recession]
+- We are likely entering an economic recession [[7]][recession]
 - The United States (where I live) is doing a piss poor job
   - We should be testing random samples of the population, since many infected
     are asymptomatic
@@ -44,7 +45,7 @@ of my understanding.
   - Trump needs to **shut the fuck up**
     
     Never before in the history of our nation have we had to litterally cut the
-    words of the President off the media to protect the public, it's
+    words of the President off the media to protect the public; it's
     unimaginable.
 
 ### What I Don't Know

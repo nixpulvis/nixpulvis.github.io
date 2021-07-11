@@ -25,14 +25,18 @@ assign ramblings = site.ramblings
     {% if rambling.draft %}
         <li class="draft">
             <a href="{{ rambling.url }}">{{ rambling.title }}</a>
-            {{ rambling.content | number_of_words }} words
-            drafted on {{ rambling.date | date: "%B %d, %Y" }}.
+            <small>
+                {{ rambling.content | number_of_words }} words
+                drafted on {{ rambling.date | date: "%B %d, %Y" }}.
+            </small>
         </li>
     {% else %}
         <li>
             <a href="{{ rambling.url }}">{{ rambling.title }}</a>
-            {{ rambling.content | number_of_words }} words
-            published on {{ rambling.date | date: "%B %d, %Y" }}.
+            <small>
+                {{ rambling.content | number_of_words }} words
+                published on {{ rambling.date | date: "%B %d, %Y" }}.
+            </small>
         </li>
     {% endif %}
 {% endfor %}

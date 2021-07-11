@@ -284,18 +284,18 @@ for words like `foo!`, despite `!` also being a token.
 
 <details>
   <summary>
+    Deep Dive: Parser Combinators
+  </summary>
+  <p>
     If parsers are your thing, you may also be interested in a
-    parser-combinator I wrote for students at NEU's introduction computer
+    parser-combinator I wrote for students in NEU's introduction computer
     science class. It's writen in Racket, and comes with a fully baked JSON
     parser.
-  </summary>
+  </p>
   <p>
     <a href="https://github.com/nixpulvis/parser-combinator">
       <code>(require parser-combinator/json)</code>
     </a>
-  </p>
-  <p>
-    TODO
   </p>
 </details>
 

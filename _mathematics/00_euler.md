@@ -54,9 +54,11 @@ $$
   </div>
 </details>
 
-Euler's identity can be geometrically interpreted as saying that rotating any
-point $$\pi$$ radians around an origin of a complex plane has the same effect
-as reflecting the point across the origin.
+> Euler's identity can be geometrically interpreted as saying that rotating any
+> point $$\pi$$ radians around an origin of a complex plane has the same effect
+> as reflecting the point across the origin.
+>  
+> -- [Wikipedia](https://en.wikipedia.org/wiki/Euler's_identity#Geometric_interpretation)
 
 Fundamentally, Euler's Identity is a root of unity, meaning that it is a
 solution for $$z$$ in the equation $$z^n = 1$$.
@@ -82,28 +84,26 @@ $$
   <summary>A fun fact from a friend.</summary>
   <div markdown="1">
 My friend Ryan showed me an interesting approximation of $$e$$ which uses
-numbers $$1, 2, 3, 4, 5, 6, 7, 8, 9$$ each once [1]:
+numbers $$1, 2, 3, 4, 5, 6, 7, 8, 9$$ each once:
 
 $$
 e \approx \left(1 + 9^{-4^{6 \times 7}}\right)^{3^{2^{85}}}
 $$
 
-This may be less surprising when we see that:
+This may be less surprising if we recall that $$e$$ can be defined as:
 
 $$
 e = \lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n
 $$
 
-so we have $$n \gets 3^{2^{85}} \approx \left(9^{-4^{6 \times 7}}\right)^{-1}$$,
-which gives an approximation of $$e$$.
-
-[[1]](https://www2.stetson.edu/~efriedma/mathmagic/0804.html)
+So we have $$n \gets 3^{2^{85}} \approx \left(9^{-4^{6 \times 7}}\right)^{-1}$$,
+which substituting in the above, gives an approximation of $$e$$.
   </div>
 </details>
 
 <details>
   <summary>Wanna compute <strong><i>e</i></strong> in
-<a href="http://nixpulvis.com/brainfuck">Brainfuck</a>?
+<a href="https://nixpulvis.com/brainfuck">Brainfuck</a>?
   </summary>
 $$
 \hphantom{nothing} \\

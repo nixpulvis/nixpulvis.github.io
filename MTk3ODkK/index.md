@@ -5,10 +5,10 @@ title: Chunky Bacon
 ---
 [![](/img/cavity.jpg)](https://poignant.guide/)
 
-S[p](problems)[h](hackers-band)[i](ibwtwbtl)[n](netopoly)x o[f](fairy-tale) b[l](love-hate)[a](abhi)ck qua[r](right)[t](turn)[z](zuckerburg),
+[S](seen)[p](problems)[h](hackers-band)[i](ibwtwbtl)[n](netopoly)x o[f](fairy-tale) b[l](love-hate)[a](abhi)ck qu[a](arent)[r](right)[t](turn)[z](zuckerburg),
 jud[g](gaze)[e](everyday) [m](maxim)y [v](vermont)o[w](wild)!
 
-The quick bro[w](who)n [f](fga)ox
+[T](the-well)he quick b[r](rhyme)o[w](who)n [f](fga)ox
 ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy dog.
 
 [War](war)/
@@ -16,6 +16,7 @@ ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy dog.
     [FactoryGirl](https://github.com/thoughtbot/factory_bot/issues/921)
     [HTTParty](https://github.com/jnunemaker/httparty/pull/321)
     [Docker Compose](https://github.com/docker/compose/issues/745)
+    [A Riddle Wrapped In An Enigma](https://eprint.iacr.org/2015/1018.pdf)
 
          (λ(f)(λ
          (x)(((x(λ(

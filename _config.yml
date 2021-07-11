@@ -15,3 +15,5 @@ collections:
     research:
         output: true
         permalink: /:collection/:name
+    references:
+        output: true

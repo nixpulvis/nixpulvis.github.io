@@ -7,11 +7,10 @@ I'm not a fan of set builder notation, and let me explain why...
 I mean, it beats a lot of other things mathematicians were probably doing
 before they agreed to it, but that could be said about pretty much anything.
 Just look at how many people love writing Python, and how god awful that
-language is (at least syntactically). I'd expect a bit more from math notation,
-but I digress.
+language is. I'd expect a bit more from math notation, but I digress.
 
 We can read a set $$\{\ e : x \in \mathbb{D}\ \}$$ as "$$\ e$$ such that $$x$$
-is in $$\mathbb{D}\ $$". Here $$e$$ is an expression which has $$x$$ bound
+is in $$\mathbb{D}\, $$". Here $$e$$ is an expression which has $$x$$ bound
 within it.
 
 To fully explain my position, let's start by looking at a good use of set
@@ -70,20 +69,4 @@ One more thing, what about **chained** array comprehensions?
 ```
 
 My head hurts looking at this code. Where is `x` bound? Where is `b` bound?
-It's all so unclear, it really makes my wonder how Python is so popular... But
-then I remember JavaScript, and it all makes a little more sense.
-
----
-
-Meanwhile, in Rust things are done properly. We also have something like a
-"such that" which is the `where` clause, however you still must at least
-introduce the name up front. For example:
-
-```rust
-fn foo<A>(..., a: A, ...) where A: ...
-```
-
-This solves the problem of name resolution while I try and read this function.
-Since there's always a namespace you're operating within, I must have a way to
-know if `A` is local, or coming in from elsewhere. Without the leading `<A>`
-I'd be left wondering what `a: A` means for far too long.
+It's all so unclear, it really makes my wonder...
