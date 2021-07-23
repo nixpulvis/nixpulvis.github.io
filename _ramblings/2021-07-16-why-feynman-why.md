@@ -1,6 +1,6 @@
 ---
+title: Why Feynman, Why?
 layout: rambling
-draft: true
 ---
 
 > “Physics is like sex: sure, it may give some practical results, but that's
@@ -15,8 +15,8 @@ against various topics of conversation:
 > Don't ask **why** in science.
 
 Unless I'm mistaken, I believe this tale originates with [this
-clip](https://youtu.be/Q1lL-hXO27Q) from an interview on the BBC TV series 'Fun
-to Imagine' (1983).
+clip](https://youtu.be/Q1lL-hXO27Q) from an interview on the [BBC TV series
+'Fun to Imagine' (1983)](https://www.bbc.co.uk/programmes/p0198zc1).
 
 **He never actually says don't ask why**, he simply demonstrates the rabbit
 hole you enter when you start asking these questions. In fact, he makes a point
@@ -26,11 +26,11 @@ about the concept.
 > You’ll notice, in this example, that the more I ask why, the deeper a thing
 > is, the more interesting it gets.
 >
-> -- paraphrased from above clip @ 3:39
+> -- paraphrased from above [clip @ 3:39](https://youtu.be/Q1lL-hXO27Q?t=219)
 
 So where's the problem with why coming from? I suspect it's the following
-quote, which was the only enlarged and repeated quote in the whole [2012 fs
-blog post](https://fs.blog/2012/01/richard-feynman-on-why-questions).
+quote, which was the only enlarged and repeated quote in the whole [fs
+blog post (2012)](https://fs.blog/2012/01/richard-feynman-on-why-questions).
 
 > “But the problem, you see, when you ask why something happens, how does a
 > person answer why something happens?”
