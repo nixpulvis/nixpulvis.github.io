@@ -47,6 +47,7 @@ a sdkalsdaskfasjkda skj f;ajsk fjas fkjasf a
 sfakslf ak;fs ka;s fka;s fj;a sfa' sf
  amfkla's f;la flka
 
+![](/img/freak_display/arduino-pinout.png)
 
 <img src="/img/freak_display/msgeq7.jpeg"
      height=100
@@ -64,7 +65,7 @@ This is a slightly simplified version of the soon to be completed `loop`
 function for the Freak Display.
 
 ```c
-void main() {
+void loop() {
   int spectrums[DISPLAY_DEPTH][BANDS];
   read_msgeq7(spectrums[0]);
   clone(spectrums);
@@ -73,6 +74,8 @@ void main() {
 ```
 
 ### `read_msgeq7`
+
+![](/img/freak_display/msgeq7-schematic.png)
 
 In order from first to last, the bands are centered around the following
 acoustic frequencies: 63Hz, 160Hz, 400Hz, 1kHz, 2.5kHz, 6.25kHz, 16kHz.
@@ -238,9 +241,10 @@ unsigned int max_index(int spectrum[BANDS]) {
 
 ![](/img/freak_display/box.jpeg)
 
-
-
 ## Next Steps
+
+<img src="/img/freak_display/schematic.png"
+     style="transform: rotate(90deg); margin: 2em 0 2.5em" />
 
 - Think about display mode inputs
 - Investigate power and hardware requirements for back LED strips
