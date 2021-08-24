@@ -9,7 +9,7 @@ title: Chunky Bacon
 jud[g](gaze)[e](everyday) [m](maxim)y [v](vermont)o[w](wild)!
 
 [T](the-well)he quick b[r](rhyme)o[w](who)n [f](fga)ox
-ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy dog.
+ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy do[g](goodboy).
 
 [War](war)/
     [Typed Fantasy Land](https://github.com/promises-aplus/promises-spec/issues/94)
