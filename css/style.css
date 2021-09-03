@@ -203,3 +203,13 @@ li.draft {
 .references li:before {
   content: '- ';
 }
+
+@media print {
+  header {
+    display: none;
+  }
+
+  footer {
+    display: none;
+  }
+}
