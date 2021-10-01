@@ -24,8 +24,8 @@ which should give rise to more specific hypotheses for study.  I do not expect
 to receive a direct answer to these questions, but I hope they help keep me on
 the right path.
 
-- Does the world really need more languages or simply the right ones?  How can
-- we, the developers and users alike, assert more control over our
+- Does the world really need more languages or simply the right ones?
+- How can we, the developers and users alike, assert more control over our
   software?
 - How can software meet modern hardware in more sustainable and practical ways?
 
