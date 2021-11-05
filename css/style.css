@@ -132,6 +132,13 @@ footer a {
   text-decoration: none;
 }
 
+footer .copyleft {
+  display: inline-block;
+  font-size: 12px;
+  vertical-align: text-top;
+  transform: scale(-1, 1);
+}
+
 h2 small {
   display: block;
   font-size: 16px;
