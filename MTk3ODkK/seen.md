@@ -5,7 +5,7 @@ style: /css/MTk3ODkK.css
 
 I refuse to be invisible.
 
-During the last long months, time has slipped away.
+During the last long months, time has simply slipped away.
 I can feel the tide pulling me with it.
 Way out to sea, forgotten and lost forever.
 Like an ancient message in a bottle.
@@ -36,6 +36,9 @@ coffees get sad waiting to be claimed. Mine doesn't get the
 chance. They call my name and I'm up and gone. I've
 accomplished my goal; coffee acquired. I retreat to my
 apartment, still waiting to imbibe my beverage.
+
+&nbsp;
+&nbsp;
 
 As long as each day passes
 and each coffee is drunk,
