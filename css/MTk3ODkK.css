@@ -11,8 +11,13 @@ a {
   color: #ccc;
 }
 
-header, blockquote {
+header {
   border-color: #ccc;
+}
+
+blockquote {
+  background: #282828;
+  border-color: #050505;
 }
 
 .content {
