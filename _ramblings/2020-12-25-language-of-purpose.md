@@ -1,5 +1,6 @@
 ---
 layout: rambling
+draft: true
 ---
 
 I believe language is how we come to understand the world we live in.  While
