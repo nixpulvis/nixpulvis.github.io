@@ -121,6 +121,11 @@ img {
   flex: 1 0 auto;
 }
 
+.gallery img {
+  border: 1px solid black;
+  padding: 8px;
+}
+
 footer {
   margin-top: 50px;
   padding: 10px 0;
