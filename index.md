@@ -25,29 +25,3 @@ Afterwards I moved to Silicon Valley to work for Apple's iPhone Hardware team,
 grew displeased with Apple and the Bay Area and moved back to Boston.
 
 View my [resume](/resume.pdf) for some more information.
-
------
-
-##### Incomplete List of iPhone Problems as of 2022-02-3
-
-- [Headphone Limits](https://discussions.apple.com/thread/252113205)
-    - WHAT THE ACTUAL FUCK!
-- Lack of 3.5mm audio jack
-    - This deserves a longer justification, but suffice to say, music is worth
-      the DAC inside my iPhone
-- Camera bulge and case lip
-    - I just want my phone to lie flat on a surface, is that too much to ask
-      for
-- Screen notch
-    - This wouldn't have to be such a big problem if iOS would simple treat the
-      area outside the rectangle as something like the doomed touchbar;
-      completely separate from the rest of the screen
-    - Nobody wants to scroll and zoom around this fucking thing
-- [Contact hell](/ramblings/2021-01-14-ios-contact-hell)
-    - What happened to vCards just working?
-- Voice control can't be disabled?
-    - In my experience, it never understands me anyway; instead it calls people
-      random causing anxiety and stress
-- ...
-
-
