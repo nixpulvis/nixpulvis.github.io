@@ -24,7 +24,11 @@ University, graduating with a Bachelor's in Computer and Information Science.
 Afterwards I moved to Silicon Valley to work for Apple's iPhone Hardware team,
 grew displeased with Apple and the Bay Area and moved back to Boston.
 
-##### iPhone Problems (work in progress...)
+View my [resume](/resume.pdf) for some more information.
+
+-----
+
+##### Incomplete List of iPhone Problems as of 2022-02-3
 
 - [Headphone Limits](https://discussions.apple.com/thread/252113205)
     - WHAT THE ACTUAL FUCK!
@@ -46,4 +50,4 @@ grew displeased with Apple and the Bay Area and moved back to Boston.
       random causing anxiety and stress
 - ...
 
-You can view my [resume](/resume.pdf) for more information.
+
