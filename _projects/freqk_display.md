@@ -1,8 +1,8 @@
 ---
-title: Freak Display (7 band audio EQ)
+title: Freqk Display (7 band audio EQ)
 layout: project
 references:
-- https://github.com/nixpulvis/freak_display
+- https://github.com/nixpulvis/freqk_display
 ---
 
 I own a Korg MS-20 Mini, and have been using it to learn a bit more about music
@@ -15,7 +15,7 @@ frequency bands (4 LEDs) of our audible spectrum, log scale.
 We have 28 LEDs along the width of the synth, going 15 deep back away from the
 keys. Six on top and nine down the back.
 
-![](/img/freak_display/korg-ms20.jpeg)
+![](/img/freqk_display/korg-ms20.jpeg)
 
 ```c
 #define DISPLAY_WIDTH 28
@@ -28,7 +28,7 @@ keys. Six on top and nine down the back.
 
 TODO: Arduino pro mini...
 
-<img src="/img/freak_display/arduino.jpeg"
+<img src="/img/freqk_display/arduino.jpeg"
      height=250 
      style="float:right; margin-left: 1em;" />
 
@@ -47,9 +47,9 @@ a sdkalsdaskfasjkda skj f;ajsk fjas fkjasf a
 sfakslf ak;fs ka;s fka;s fj;a sfa' sf
  amfkla's f;la flka
 
-![](/img/freak_display/arduino-pinout.png)
+![](/img/freqk_display/arduino-pinout.png)
 
-<img src="/img/freak_display/msgeq7.jpeg"
+<img src="/img/freqk_display/msgeq7.jpeg"
      height=100
      style="float: left; margin-right: 1em; transform: rotate(-90deg);" />
 
@@ -62,7 +62,7 @@ The MSGEQ7 has 7 bands which it samples for analog values.
 ### Main Loop (Overview)
 
 This is a slightly simplified version of the soon to be completed `loop`
-function for the Freak Display.
+function for the Freqk Display.
 
 ```c
 void loop() {
@@ -75,12 +75,12 @@ void loop() {
 
 ### `read_msgeq7`
 
-![](/img/freak_display/msgeq7-schematic.png)
+![](/img/freqk_display/msgeq7-schematic.png)
 
 In order from first to last, the bands are centered around the following
 acoustic frequencies: 63Hz, 160Hz, 400Hz, 1kHz, 2.5kHz, 6.25kHz, 16kHz.
 
-![](/img/freak_display/msgeq7-timing.png)
+![](/img/freqk_display/msgeq7-timing.png)
 
 ```c
 void read_msgeq7(int spectrum[BANDS]) {
@@ -150,8 +150,8 @@ void shift(int spectrums[DISPLAY_DEPTH][BANDS]) {
 
 ### `update_display`
 
-<img src="/img/freak_display/28x6.jpeg" width="95%" />
-![](/img/freak_display/msgeq7-response.png)
+<img src="/img/freqk_display/28x6.jpeg" width="95%" />
+![](/img/freqk_display/msgeq7-response.png)
 
 ```c
 void update_display(int spectrums[DISPLAY_DEPTH][BANDS]) {
@@ -184,7 +184,7 @@ void update_display(int spectrums[DISPLAY_DEPTH][BANDS]) {
 
 ### Colors
 
-<img src="/img/freak_display/grid.jpeg" width=300 />
+<img src="/img/freqk_display/grid.jpeg" width=300 />
 
 ```c
 #define COLOR COLOR_MIXED
@@ -239,11 +239,11 @@ unsigned int max_index(int spectrum[BANDS]) {
 
 ### Setup and Loop (Revisited)
 
-![](/img/freak_display/box.jpeg)
+![](/img/freqk_display/box.jpeg)
 
 ## Next Steps
 
-<img src="/img/freak_display/schematic.png"
+<img src="/img/freqk_display/schematic.png"
      style="transform: rotate(90deg); margin: 2em 0 2.5em" />
 
 - Think about display mode inputs
