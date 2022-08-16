@@ -225,4 +225,12 @@ li.draft {
   footer {
     display: none;
   }
+
+  .content {
+    color: black;
+  }
+
+  h2:first-child {
+    margin-top: 70px;
+  }
 }
