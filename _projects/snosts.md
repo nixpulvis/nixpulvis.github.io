@@ -14,7 +14,7 @@ them snosts, as a play on _snow host_.
 - [ ] `kimaugruk`
 - [ ] `kaiyoglak`
 - [ ] `kiksrukak`
-- [ ] `katiksunik`
+- [ ] `katiksunik` (Public Server) @ 138.68.119.8 / London
 - [ ] `katikaugnik`
 
 ### Desktop
