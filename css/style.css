@@ -231,6 +231,10 @@ li.draft {
     color: black;
   }
 
+  .content code {
+    font-family: monospace;
+  }
+
   blockquote {
     border-left: 3px solid black;
     background-color: white;
