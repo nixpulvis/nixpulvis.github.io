@@ -226,11 +226,22 @@ li.draft {
     display: none;
   }
 
-  .content {
+  .content * {
+    font-family: serif;
     color: black;
   }
 
+  blockquote {
+    border-left: 3px solid black;
+    background-color: white;
+  }
+
   h2:first-child {
+    margin-top: 0;
+  }
+
+  /* TODO: How to handle safari? */
+  @page {
     margin-top: 70px;
   }
 }
