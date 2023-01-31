@@ -1,5 +1,5 @@
 ---
-title: Aetion Tech Talk - Freqk Display
+title: The Freqk Display
 layout: rambling
 ---
 
