@@ -121,10 +121,14 @@ img {
   flex: 1 0 auto;
 }
 
-.gallery img {
-  border: 1px solid black;
-  padding: 2%;
-  max-width: 96%;
+/* .gif-grid {
+  margin: 0 auto;
+} */
+
+.gif-grid img {
+  display: inline;
+  max-width: none;
+  margin: none;
 }
 
 footer {
@@ -140,8 +144,10 @@ footer a {
 
 footer .copyleft {
   display: inline-block;
-  font-size: 12px;
-  vertical-align: text-top;
+  margin-right: -3px;
+  padding-bottom: 3px;
+  font-size: 10px;
+  vertical-align: middle;
   transform: scale(-1, 1);
 }
 
