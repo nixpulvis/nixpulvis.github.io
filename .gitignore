@@ -1,2 +1,5 @@
 _site/
+vendor/
+.bundle
 fortunes/*.dat
+**/.DS_Store
