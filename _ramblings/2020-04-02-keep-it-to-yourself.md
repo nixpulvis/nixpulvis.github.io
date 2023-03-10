@@ -32,7 +32,7 @@ we may want to.
     - [GPG Keys](#gpg-keys)
         - [Smart Cards / Security Tokens](#smart-cards--security-tokens)
         - [Subkeys](#gpg-keys)
-    - [SSH Keys](#ssh-keys)
+    - [SSH Keys](#ssh-secure-shell-keys)
 3. [Password Management](#slave-password-management)
     - [`pass`](#pass)
     - [One-time Passwords](#one-time-passwords)
@@ -194,6 +194,36 @@ control access to individual hosts.
 
 - TODO: Implement this.
 - TODO: Note it's stored in `pass`, more on below.
+
+Resident "discoverable" keys can be stored on a security key which supports the
+FIDO standard.
+
+**Generate an SSH key as a resident FIDO key:**
+The `-t ${KEY_TYPE}-sk` tells `ssh-keygen` to use the smart card to generate
+the key.
+```sh
+NAME=mykey
+KEY_TYPE=ed25519
+ssh-keygen \
+   -f ~/.ssh/id_${KEY_TYPE}_sk_rk_${NAME} \
+   -t ${KEY_TYPE}-sk \
+   -O resident \
+   -O application=ssh:${NAME} \
+   -O verify-required
+```
+
+**List FIDO keys:**
+```sh
+ykman fido credentials list
+```
+The "RP ID" should be `ssh:...` as you set above. You can ignore the user and
+display names.
+
+**Recover resident SSH keys from FIDO SK:**
+```sh
+cd ~/.ssh
+ssh-keygen -K
+```
 
 
 ### Password Management
