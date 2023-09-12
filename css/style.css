@@ -121,14 +121,14 @@ img {
   flex: 1 0 auto;
 }
 
-/* .gif-grid {
-  margin: 0 auto;
-} */
+.gif-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
 .gif-grid img {
-  display: inline;
-  max-width: none;
-  margin: none;
+  margin-top: 10px;
 }
 
 footer {
