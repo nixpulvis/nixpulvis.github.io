@@ -2,62 +2,17 @@
 title: (S)MPC & An Uncertain Calculus
 layout: article
 draft: true
-published: false
 ---
 
 > Abstract: Towards a minimal language for multi-party communication and
-> computations. I (we?) define **two** new languages: $$\lambda_\div$$, an
-> untyped and typed language for probabilistic computation, and $$\lambda_o$$
-> for multi-party probabilistically obscure communication.
+> computations. I (we?) define **two** new languages: $$\lambda_\div$$, a
+> language for probabilistic computation, and $$\lambda_o$$ a language for
+> multi-party secure computation.
 >
 > $$\lambda_o$$ is an extension of $$\lambda_\div$$, however it doesn't need to
 > export the idea of a $$\div$$ flipping primitive.
 
 ### Secure Two Party Communication (S2PC)
-
-Here we consider the two party case, between Alice ($$\color{blue}{A}$$) and
-Bob ($$\color{red}{B}$$).
-
-The syntax in Rust is a work in progress, but the idea is roughly to allow
-creating new `Oblivious<T,P>` qualified values which are secure to a single
-party `P`, where both $$\color{blue}{A}$$ and $$\color{red}{B}$$ are elements
-of `P`.
-
-```rust
-// Explicit authentication party. The value 26 is never stored
-// after compile time.
-let a = conceal!(26, @me);
-
-// Implicit authentication party, which cannot reveal any values.
-let b = conceal!(1337);
-
-// Oblivious owned types are stored in encrypted form.
-let password: Oblivious<String> = conceal!("1234".to_owned());
-
-// Oblivious references do not encrypt the underlying data,
-// and only make it's address and access patterns obscure.
-let password: Oblivious<&str> = conceal!("1234");
-```
-
-Operations on `Oblivious<T>` values are handled differently to ensure no
-information is leaked while computing with them.
-
-```rust
-let c: Oblivious<bool> = a > b;
-```
-
-Finally you must reveal the value to use it with insecure (traditional)
-computations. Here we say that `@me` must be _authenticated_ to reveal `c`.
-
-```rust
-// Only @me can read the value of `c`.
-let d = reveal!(c, @me);
-
-// Any party can read the value of `c`.
-let e = reveal!(c);
-```
-
-### Theory
 
 Generally, both parties will have an input to a function $$\lambda_o$$, here
 we'll call $$\color{blue} A$$'s input $$\color{blue} x$$ and $$\color{red}
@@ -89,35 +44,22 @@ $$
 Traditional function notation can be colored to indicate the same notion.
 
 $$
-\color{blue}{\bullet} \ e \ \color{blue}x \ \color{red}y = \color{blue}{f(x,\color{red}
+\color{blue}{\bullet} \ f \ \color{blue}x \ \color{red}y = \color{blue}{f(x,\color{red}
 y)} \\
-\color{red}{\bullet} e \ \color{blue}x \ \color{red}y = \color{red}{g(\color{blue}x,y)}
+\color{red}{\bullet} g \ \color{blue}x \ \color{red}y = \color{red}{g(\color{blue}x,y)}
 $$
 
-We see that each party, $$\color{blue} A$$ and $$\color{red} B$$, have a unique
-function, $$\color{blue} f$$ and $$\color{red} g$$ respectively. However it is
-possible to define $$e = \color{blue}{f}$$ = $$\color{red}{g}$$ These functions
-are oblivious to the other party's data in these computations. We denote this
-is [obliv-rust]() as follows:
-
-```rust
-// TODO: The garbler could be the return party?
-fn f<@1,@2>(x: obliv@1 u64, y: obliv@2 u64) -> obliv@1 bool;
-
-// TODO: Who garbled things? Implicitly create a new return party
-// and reveal the result?
-fn g<@1,@2,T,U>(obliv@1 x, obliv@2 y) -> (T, U);
-
-// Don't care who's who.
-fn h(obliv x, obliv y) -> bool;
-```
+We see that each party, $$\color{blue} A$$ and $$\color{red} B$$, have unique
+functions, $$\color{blue} f$$ and $$\color{red} g$$ respectively. However it is
+also possible to define $$e = \color{blue}{f} \cup \color{red}{g}$$. These
+functions are oblivious to the other party's data but follow consistent use.
 
 One example pair of $$\color{blue} f$$ and $$\color{red} g$$ functions is a
 classic problem of Oblivious Transfer (OT). In this case, $$\color{blue} A$$
 wants to access a specific element from $$\color{red} B$$'s database, without
-him knowing what element was retrieved. For this example, we'll use a database
-projection function $$\color{red}{p}$$ (oblivious to anything else about the
-database), which takes an oblivious index $$\color{blue} i$$.
+$$\color{red} B$$ knowing what element was retrieved. For this example, we'll
+use a database projection function $$\color{red}{p}$$ (oblivious to anything
+else about the database), which takes an oblivious index $$\color{blue} i$$.
 
 $$
 \Gamma \vdash \lambda_o \ \color{blue}{i} \ \color{red}{p} \ . \color{red}{p} \ \color{blue}{i} : \sigma_o \rightarrow (\sigma_o \rightarrow \tau_o) \rightarrow \tau_o \\
@@ -128,7 +70,7 @@ $$
 Or as a solution to Yao's Millionare Problem:
 
 $$
-\Gamma, >: \mathbb{Z} \times \mathbb{Z} \rightarrow \{0,1\} \ \vdash (\lambda_o \ \color{blue}a \ \color{red}b \ . \color{blue}a > \color{red}b) \ 42 \ 1337  : \{0,1\}
+\Gamma, >: \mathbb{Z} \times \mathbb{Z} \rightarrow \{0,1\} \ \vdash (\lambda_o \ \color{blue}a \ \color{red}b \ . \color{blue}a > \color{red}b)
 $$
 
 It's worth noting that the $$>$$ operator in the figure above is written in
@@ -187,3 +129,5 @@ Full expressions can be wrapped and made uncertain.
 $$
 \lambda \_ . \div \ (\lambda a \ b . a \ b) \ (\lambda a \ b . b \ a)
 $$
+
+Much more work is clearly needed on this idea...
