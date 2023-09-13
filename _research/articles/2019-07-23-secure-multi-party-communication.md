@@ -1,7 +1,6 @@
 ---
 title: Secure Multi-Party Communication & Rust
 layout: article
-draft: true
 ---
 
 > **Abstract:** We show an extension to Rust for secure multi-party computation,

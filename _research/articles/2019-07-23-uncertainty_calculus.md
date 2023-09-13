@@ -1,7 +1,6 @@
 ---
 title: (S)MPC & An Uncertain Calculus
 layout: article
-draft: true
 ---
 
 > Abstract: Towards a minimal language for multi-party communication and
