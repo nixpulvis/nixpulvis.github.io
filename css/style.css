@@ -65,6 +65,49 @@ kbd {
   letter-spacing: 1px;
 }
 
+table {
+  text-align: left;
+  border-collapse: collapse;
+}
+
+table tr:nth-child(even) {
+  background-color: #ccc;
+}
+
+table th {
+  border: 1px solid black;
+  color: #eee;
+  background-color: #666;
+}
+
+table th, table td {
+  border: 1px solid black;
+  padding: 5px 10px;
+}
+
+form input,
+form textarea,
+form fieldset,
+form select,
+form button
+{
+  display: block;
+  margin-bottom: 10px;
+}
+
+form input[type=text], form textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+form input[type=radio] {
+  display: inline-block;
+}
+
+form input[type=submit], form button {
+  margin-top: 15px;
+}
+
 .hidden {
   visibility: hidden;
 }

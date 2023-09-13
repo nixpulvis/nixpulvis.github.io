@@ -103,10 +103,35 @@ Content column 1 | Content column 2
 ![](img/dust.jpg)
 
 <form>
-    <input type="text" />
-    <textarea></textarea>
-    <input type="radio" />
-    <input type="radio" />
+    <label for="textInput">Text:</label>
+    <input id="textInput" type="text" />
+    <label for="textareaInput">Textarea:</label>
+    <textarea id="textareaInput"></textarea>
+    <fieldset>
+        <legend>Make a choice:</legend>
+        <input id="aRadio" type="radio" />
+        <label for="aRadio">A</label>
+        <br />
+        <input id="bRadio" type="radio" />
+        <label for="bRadio">B</label>
+    </fieldset>
+    <label for="langs">Choose a language:</label>
+    <select id="langs">
+      <option value="ruby">Ruby</option>
+      <option value="rust">Rust</option>
+      <option value="racket">Racket</option>
+      <option value="R">R</option>
+    </select> 
+    <label for="langs">Enter a browser:</label>
+    <input list="browsers" />
+    <datalist id="browsers">
+        <option value="Internet Explorer" />
+        <option value="Firefox" />
+        <option value="Chrome" />
+        <option value="Opera" />
+        <option value="Safari" />
+    </datalist>
+    <button type="button">Click</button>
     <input type="submit" />
 </form>
 
