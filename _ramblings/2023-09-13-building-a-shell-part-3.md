@@ -41,6 +41,53 @@ command line parser from the `USAGE` string itself. This is a noble and lofty
 goal, which ensures that the `--help` information is kept in sync with the
 project, because it defines the arguments themselves.
 
+I was originally going to write up a comparison of `docopt` and `clap` in the
+hopes that I would be able to choose between them more easily. However, after
+thinking through the requirements of the command line argument parser a bit
+more, I'm starting to think it might actually be easier to write my own, even
+possibly leveraging LALRPOP yet again! That would be really cool actually. So
+first, let's look at what exactly we're trying to parse. Starting with the
+[`bash` invocation][bash-invoke] description online. Here's the synopsis:
+
+```sh
+bash [long-opt] [-ir] [-abefhkmnptuvxdBCDHP] [-o option]
+    [-O shopt_option] [argument …]
+
+bash [long-opt] [-abefhkmnptuvxdBCDHP] [-o option]
+    [-O shopt_option] -c string [argument …]
+
+bash [long-opt] -s [-abefhkmnptuvxdBCDHP] [-o option]
+    [-O shopt_option] [argument …]
+```
+
+Let's see... First we notice that `[long-opt]` is always parsed first, before
+anything else. That should be easy to make consistent across the three
+invocation forms. We can also see that the set of single letter flags are the
+same, followed by `[-o option] [-O shopt_option]` each time.
+
+So the general syntax is: first parse long options (e.g. `--init-file
+filename`) and the `-ir` and `-s` flags, then parse short `set` options (e.g.
+`-x`, an option I use a lot to debug/trace my shell programs) and then the
+complete `-+o` options for `set`. Next, we parse options for `shopt` itself
+with `-O`. Finally, we parse `-c string` and `argument ...` which are passed
+through to the running program in `$@`. 
+
+Here are a few examples to help make the semantics more clear:
+
+```sh
+# Run a shell script from file with an argument.
+oursh /path/to/script.sh 123
+# Equivalent to running `oursh` without arguments.
+oursh -s
+# Run the shell with a couple arguments.
+oursh -s 123 456
+# Run a command string with an argument.
+oursh -c "echo $@" hello world
+```
+
+This shouldn't be hard to write a grammar for...
+
+
 ### Terminal Features
 
 ### You `nix`?
@@ -48,14 +95,15 @@ project, because it defines the arguments themselves.
 What about windows?
 
 
-[docopt]:     https://nixpulvis.com/oursh/docopt
-[gh-issues]:  https://github.com/nixpulvis/oursh/issues
-[issue-5]:    https://github.com/nixpulvis/oursh/issues/5
-[issue-6]:    https://github.com/nixpulvis/oursh/issues/6
-[nix]:        https://nixpulvis.com/oursh/nix/
-[oursh]:      https://nixpulvis.com/oursh/oursh/
-[part2]:      2018-10-15-building-a-shell-part-2
-[pr-64]:      https://github.com/nixpulvis/oursh/pull/64
-[pr-68]:      https://github.com/nixpulvis/oursh/pull/68
-[repl]:      https://nixpulvis.com/oursh/oursh/repl
-[termion]:    https://nixpulvis.com/oursh/termion
+[docopt]:       https://nixpulvis.com/oursh/docopt
+[gh-issues]:    https://github.com/nixpulvis/oursh/issues
+[issue-5]:      https://github.com/nixpulvis/oursh/issues/5
+[issue-6]:      https://github.com/nixpulvis/oursh/issues/6
+[nix]:          https://nixpulvis.com/oursh/nix/
+[oursh]:        https://nixpulvis.com/oursh/oursh/
+[part2]:        2018-10-15-building-a-shell-part-2
+[pr-64]:        https://github.com/nixpulvis/oursh/pull/64
+[pr-68]:        https://github.com/nixpulvis/oursh/pull/68
+[repl]:         https://nixpulvis.com/oursh/oursh/repl
+[termion]:      https://nixpulvis.com/oursh/termion
+[bash-invoke]:  https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Invoking-Bash
