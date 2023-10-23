@@ -8,7 +8,8 @@ title: About
 -----
 
 - <mailto:nathan@nixpulvis.com>
-- [GitHub](https://github.com/nixpulvis)
+- <https://www.instagram.com/nixpulvis>
+- <https://github.com/nixpulvis>
 
 -----
 
