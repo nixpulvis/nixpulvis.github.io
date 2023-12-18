@@ -46,6 +46,6 @@ final puddle, rich with sediment I'd rather not think about.
 When it's time to go, my car's engine begs for the same treatment. Gulping for
 air as it combusts it's own juicy fuel. I can almost feel the hard
 chalkboard-like chill of the metal cylinders as the petroleum rushes through
-it's cavities.  Much like the caffeine in my blood, the mid-octane gasoline
+it's cavities.  Much like the caffeine in my blood, the low-octane gasoline
 brings life to the car. We wait for warmth before we set off for the day. A day
 of wondering and exploring.
