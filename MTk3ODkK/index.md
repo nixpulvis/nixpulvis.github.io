@@ -16,7 +16,6 @@ ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy do[g](goodboy).
     [FactoryGirl](https://github.com/thoughtbot/factory_bot/issues/921)
     [HTTParty](https://github.com/jnunemaker/httparty/pull/321)
     [Docker Compose](https://github.com/docker/compose/issues/745)
-    [eOS](https://github.com/krisives/elementary-os-extras/issues/1)
     [Alacritty Tabs](https://github.com/alacritty/alacritty/issues/3129)
 Mystery/
     [A Riddle Wrapped In An Enigma](https://eprint.iacr.org/2015/1018.pdf)
