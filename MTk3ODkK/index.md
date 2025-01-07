@@ -19,6 +19,7 @@ ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy do[g](goodboy).
     [Alacritty Tabs](https://github.com/alacritty/alacritty/issues/3129)
 Mystery/
     [A Riddle Wrapped In An Enigma](https://eprint.iacr.org/2015/1018.pdf)
+[Dreams/](dreams/)
 
 Love/
     [Fairy Tale](fairy-tale)
