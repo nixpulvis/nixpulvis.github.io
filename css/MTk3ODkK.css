@@ -22,7 +22,8 @@ blockquote {
 
 .content {
   font-family: "Computer Modern Typewriter";
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow: auto;
   padding: 30px 0;
 }
 

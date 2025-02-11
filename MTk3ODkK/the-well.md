@@ -4,12 +4,10 @@ style: /css/MTk3ODkK.css
 ---
 
 I look down a well.
-The cylinder fades, and the features become less proclaimed.
-Each stone remains the same.
+The cylinder fades, and the features become less proclaimed. Each stone remains the same.
 
 I reach for the bucket.
-Tied together with care; swung grossly from it's pivot.
-Simply a loose rod and some extra length.
+Tied together with care; swung grossly from it's pivot. Simply a loose rod and some extra length.
 
 I feel the release from gravity.
 The wall begins to blur in front of me.
