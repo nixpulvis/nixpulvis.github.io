@@ -143,6 +143,12 @@ and (max-device-width : 600px) {
   right: 80px;
 }
 
+.nixpulvis {
+  background: #161616;
+  color: #cacaca;
+  font: 18px monospace;
+}
+
 header {
   padding: 10px 0;
   border-bottom: 1px dashed black;
