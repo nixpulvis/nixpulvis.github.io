@@ -11,6 +11,39 @@ title: Chunky Bacon
 [T](the-well)[h](hole)[e](the-eternal-depression) quick b[r](rhyme)o[w](who)n [f](fga)ox
 ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy do[g](goodboy).
 
+<span class="gif-grid">
+![](/img/index/800x600a.gif)
+![](/img/index/aviation1.gif)
+![](/img/index/coffnow.gif)
+![](/img/index/cogs.gif)
+![](/img/index/coreboot.gif)
+![](/img/index/deviantart4.gif)
+[![](/img/index/discord2.gif)](https://discord.gg/wuxnqkrx)
+![](/img/index/dolby_digital.gif)
+![](/img/index/donate.gif)
+![](/img/index/dos.gif)
+![](/img/index/free.gif)
+![](/img/index/freeware2.gif)
+![](/img/index/freewareguide.gif)
+![](/img/index/freewareguide2.gif)
+![](/img/index/fscripts.gif)
+![](/img/index/geocities.gif)
+[![](/img/index/korg.gif)](/projects/freqk)
+![](/img/index/latex.gif)
+![](/img/index/mathcom.gif)
+![](/img/index/moz2.gif)
+![](/img/index/publicdomain.gif)
+![](/img/index/signguestbook.gif)
+![](/img/index/smile.gif)
+![](/img/index/under-con.gif)
+![](/img/index/vcss-blue.gif)
+![](/img/index/vi_now.gif)
+![](/img/index/vxhtml10.gif)
+![](/img/index/wip_anim.gif)
+![](/img/index/www.gif)
+![](/img/index/yu-gi-oh_extreme.gif)
+</span>
+
 [Thumb Wars](war)/
     [Typed Fantasy Land](https://github.com/promises-aplus/promises-spec/issues/94)
     [FactoryGirl](https://github.com/thoughtbot/factory_bot/issues/921)
