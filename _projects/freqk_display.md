@@ -2,7 +2,7 @@
 title: Freqk Display (7 band audio EQ)
 layout: project
 references:
-- https://github.com/nixpulvis/freqk_display
+- https://github.com/nixpulvis/freqk
 ---
 
 I own a Korg MS-20 Mini, and have been using it to learn a bit more about music
@@ -11,6 +11,15 @@ The primary way we interact with sound is with our ears, but electronic tools
 can also be made to "hear" and then display that information visually. I've
 built an LED display (on top of the synth) to visualize the intensity of 7
 frequency bands (4 LEDs) of our audible spectrum, log scale.
+
+### Demonstration and Explaination
+
+<iframe width="560" height="315"
+src="https://www.youtube.com/embed/yq7Y-EA3SVI" title="YouTube video player"
+frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+### Details
 
 We have 28 LEDs along the width of the synth, going 15 deep back away from the
 keys. Six on top and nine down the back.
@@ -25,11 +34,11 @@ keys. Six on top and nine down the back.
 #define DISPLAY_DEPTH (DISPLAY_TOP_DEPTH + DISPLAY_BACK_DEPTH)
 ```
 
-
-TODO: Arduino pro mini...
+Using the Arduino has many advantages, but eventually I'd like to use the board
+we etched by hand.
 
 <img src="/img/freqk_display/arduino.jpeg"
-     height=250 
+     height=250
      style="float:right; margin-left: 1em;" />
 
 ```c
@@ -38,14 +47,6 @@ TODO: Arduino pro mini...
 #define RESET_PIN 9
 #define DISPLAY_PIN 8
 ```
-
-Using the Arduino has many advantogous, but eventually I'd like to use the
-board we etched by hand.
-
-bloa kd aksd kjas dkjasd
-a sdkalsdaskfasjkda skj f;ajsk fjas fkjasf a
-sfakslf ak;fs ka;s fka;s fj;a sfa' sf
- amfkla's f;la flka
 
 ![](/img/freqk_display/arduino-pinout.png)
 
@@ -61,8 +62,8 @@ The MSGEQ7 has 7 bands which it samples for analog values.
 
 ### Main Loop (Overview)
 
-This is a slightly simplified version of the soon to be completed `loop`
-function for the Freqk Display.
+This is a slightly simplified version of the `loop` function for the Freqk
+Display.
 
 ```c
 void loop() {
