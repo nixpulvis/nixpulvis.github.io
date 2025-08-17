@@ -104,3 +104,9 @@ thought I'd unbury it a bit in case someone else finds it interesting. I've
 also trimmed the contents of the original post a bit to remove the stuff
 related to MPC, which is completely outside the scope of this post, and expanded
 on a few things.
+
+Since I posted this I've implemented the basic idea in
+https://github.com/nixpulvis/grapl. Some people have also given me feedback
+about the difficulty describing ad-hoc edges and arbitrary cyclic structures.
+I'm considering some extensions to make this easier, but nothing final yet.
+I'll try to update this post to point to the implementation if/when I finish it.
