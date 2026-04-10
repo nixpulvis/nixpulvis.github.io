@@ -1,0 +1,11 @@
+<h1>Music</h1>
+
+<p>We can now display music notation (&#9836;) on this site, more to come.</p>
+
+<ul class="musings">
+<% @pages.each do |page| %>
+  <li class="musing">
+    <a class="name" href="<%= page_path(page) %>"><%= page[:title] %></a>
+  </li>
+<% end %>
+</ul>

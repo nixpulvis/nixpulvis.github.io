@@ -1,0 +1,49 @@
+<h1>Research</h1>
+
+<ul>
+<% @articles.each do |page| %>
+    <% if page[:draft] %>
+        <li class="draft">
+            <a href="<%= page_path(page) %>"><%= page[:title] %></a>
+            <small>
+                <%= word_count(page[:body]) %> words
+                drafted on <%= format_date(page[:published_at]) %>.
+            </small>
+        </li>
+    <% else %>
+        <li>
+            <a href="<%= page_path(page) %>"><%= page[:title] %></a>
+            <small>
+                <%= word_count(page[:body]) %> words
+                published on <%= format_date(page[:published_at]) %>.
+            </small>
+        </li>
+    <% end %>
+<% end %>
+</ul>
+
+<% unless @notes.empty? %>
+<h3>Notes</h3>
+
+<ul>
+<% @notes.each do |page| %>
+    <% if page[:draft] %>
+        <li class="draft">
+            <a href="<%= page_path(page) %>"><%= page[:title] %></a>
+            <small>
+                <%= word_count(page[:body]) %> words
+                drafted on <%= format_date(page[:published_at]) %>.
+            </small>
+        </li>
+    <% else %>
+        <li>
+            <a href="<%= page_path(page) %>"><%= page[:title] %></a>
+            <small>
+                <%= word_count(page[:body]) %> words
+                published on <%= format_date(page[:published_at]) %>.
+            </small>
+        </li>
+    <% end %>
+<% end %>
+</ul>
+<% end %>

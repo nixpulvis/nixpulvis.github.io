@@ -1,0 +1,26 @@
+<h1>Mathematics</h1>
+
+<blockquote>
+<p>The study of the measurement, properties, and relationships of quantities and
+sets, using numbers and symbols.</p>
+</blockquote>
+
+<ul>
+<% @pages.each do |page| %>
+    <% if page[:draft] %>
+        <li class="draft">
+            <a href="<%= page_path(page) %>"><%= page[:title] %></a>
+            <small>
+                drafted on <%= format_date(page[:published_at]) %>.
+            </small>
+        </li>
+    <% else %>
+        <li>
+            <a href="<%= page_path(page) %>"><%= page[:title] %></a>
+            <small>
+                published on <%= format_date(page[:published_at]) %>.
+            </small>
+        </li>
+    <% end %>
+<% end %>
+</ul>

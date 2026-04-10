@@ -1,0 +1,28 @@
+<h1>Ramblings</h1>
+
+<p>Here in lies a collection of words both technical and opinionated. I make no
+promise of complete clearity, nor do I wish to ramble to the point of insanity.
+If you find something you like here, I've done my job. Otherwise, be gone with
+you.</p>
+
+<ul>
+<% @pages.each do |page| %>
+    <% if page[:draft] %>
+        <li class="draft">
+            <a href="<%= page_path(page) %>"><%= page[:title] %></a>
+            <small>
+                <%= word_count(page[:body]) %> words
+                drafted on <%= format_date(page[:published_at]) %>.
+            </small>
+        </li>
+    <% else %>
+        <li>
+            <a href="<%= page_path(page) %>"><%= page[:title] %></a>
+            <small>
+                <%= word_count(page[:body]) %> words
+                published on <%= format_date(page[:published_at]) %>.
+            </small>
+        </li>
+    <% end %>
+<% end %>
+</ul>

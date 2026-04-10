@@ -1,0 +1,14 @@
+<h2>
+    <%= @page[:title] %>
+    <small>
+        <%= word_count(@page[:body]) %> words
+        <% if @page[:draft] %>
+            drafted
+        <% else %>
+            published
+        <% end %>
+        on <%= format_date(@page[:published_at]) %>.
+    </small>
+</h2>
+
+<%= @content %>

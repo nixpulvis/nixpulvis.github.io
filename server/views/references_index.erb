@@ -1,0 +1,7 @@
+<h1>References</h1>
+
+<ul>
+<% @pages.each do |page| %>
+    <li><a href="<%= page_path(page) %>"><%= page[:title] %></a></li>
+<% end %>
+</ul>

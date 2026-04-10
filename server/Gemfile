@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+
+gem 'sinatra'
+gem 'puma'
+gem 'sequel'
+gem 'sqlite3'
+gem 'bcrypt'
+gem 'warden'
+gem 'rack-session'
+gem 'kramdown'
+gem 'kramdown-parser-gfm'
+gem 'rouge'

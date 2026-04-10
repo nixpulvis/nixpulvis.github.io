@@ -1,0 +1,11 @@
+<h2><%= @page[:title] %></h2>
+
+<% if @meta['references'] && !@meta['references'].empty? %>
+<ul class="references">
+<% @meta['references'].each do |ref| %>
+    <li><a href="<%= ref %>"><%= ref %></a></li>
+<% end %>
+</ul>
+<% end %>
+
+<%= @content %>

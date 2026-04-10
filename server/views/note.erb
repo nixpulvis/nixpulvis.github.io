@@ -1,0 +1,9 @@
+<h2>
+    <%= @page[:title] %>
+    <small>
+        written by Nathan Lilienthal
+        on <%= format_date(@page[:published_at]) %>.
+    </small>
+</h2>
+
+<%= @content %>
