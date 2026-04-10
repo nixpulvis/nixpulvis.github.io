@@ -9,7 +9,7 @@ require 'rouge'
 require 'json'
 require 'fileutils'
 
-DB = Sequel.connect("sqlite://#{File.join(__dir__, 'db', 'site.db')}")
+DB = Sequel.connect(ENV.fetch('DATABASE_URL', "sqlite://#{File.join(__dir__, 'db', 'site.db')}"))
 
 # Warden password strategy
 Warden::Strategies.add(:password) do

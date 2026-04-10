@@ -1,4 +1,4 @@
-.PHONY: db seed convert restore backup server clean
+.PHONY: db seed convert restore backup server test clean
 
 db:
 	ruby db/migrate.rb
@@ -17,6 +17,9 @@ backup:
 
 server: db
 	bundle exec puma -C config.ru
+
+test:
+	bundle exec ruby test/app_test.rb
 
 clean:
 	rm -f db/site.db

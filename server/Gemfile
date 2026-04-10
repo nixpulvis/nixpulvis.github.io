@@ -10,3 +10,8 @@ gem 'rack-session'
 gem 'kramdown'
 gem 'kramdown-parser-gfm'
 gem 'rouge'
+
+group :test do
+  gem 'rack-test'
+  gem 'minitest'
+end
