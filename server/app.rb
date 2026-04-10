@@ -1,3 +1,16 @@
+# Sinatra CMS application for nixpulvis.com
+#
+# Replaces Jekyll's static site generation with a dynamic server backed by
+# SQLite. Content is stored as markdown in a `pages` table, rendered at
+# request time with kramdown/Rouge. Authentication via Warden/bcrypt
+# gates write operations (fortune posting, media uploads).
+#
+# Routes mirror the original Jekyll permalink structure:
+#   /ramblings/:slug, /projects/:slug, /math/:slug,
+#   /research/:slug, /references/:slug, /musings/:slug
+#
+# The DATABASE_URL env var overrides the default SQLite path (used by tests).
+
 require 'sinatra/base'
 require 'sequel'
 require 'bcrypt'
@@ -60,6 +73,8 @@ class App < Sinatra::Base
       warden.user
     end
 
+    # Render GitHub-Flavored Markdown to HTML with Rouge syntax highlighting.
+    # This replaces Jekyll's kramdown build step with on-the-fly rendering.
     def render_markdown(text)
       Kramdown::Document.new(
         text,
@@ -76,6 +91,8 @@ class App < Sinatra::Base
       text.split(/\s+/).first(words).join(' ')
     end
 
+    # Build URL path for a page, matching the Jekyll permalink scheme from _config.yml.
+    # Mathematics uses /math/:name, standalone pages live at the root.
     def page_path(page)
       collection = page[:collection]
       slug = page[:slug]
@@ -86,6 +103,7 @@ class App < Sinatra::Base
       end
     end
 
+    # Deserialize the JSON metadata column (references, scripts, style, etc.)
     def parse_metadata(page)
       page[:metadata] ? JSON.parse(page[:metadata]) : {}
     rescue JSON::ParserError
@@ -115,6 +133,8 @@ class App < Sinatra::Base
   end
 
   # --- Upload route ---
+  # Saves files to public/uploads/YYYY/MM/filename, served statically by
+  # Sinatra (or nginx in production). Returns the URL path to the uploaded file.
 
   post '/uploads' do
     authenticate!
@@ -133,6 +153,8 @@ class App < Sinatra::Base
   end
 
   # --- Fortune routes ---
+  # Fortunes are plain text files in ../fortunes/ (one per year), delimited by
+  # "%\n". Reading is public; adding new fortunes requires authentication.
 
   get '/fortunes' do
     @title = 'Fortunes'
@@ -165,8 +187,12 @@ class App < Sinatra::Base
   end
 
   # --- Collection index routes ---
+  # These mirror the Jekyll collection index pages (ramblings.md, projects.md, etc.)
+  # with the same filtering (hidden, draft) and sorting behavior.
 
   get '/ramblings' do
+    # Ramblings index includes both ramblings and mathematics, matching the
+    # original Jekyll template which concatenates and sorts both collections.
     @title = 'Ramblings'
     @pages = DB[:pages]
       .where(collection: ['ramblings', 'mathematics'])
@@ -196,6 +222,9 @@ class App < Sinatra::Base
     erb :mathematics_index
   end
 
+  # Research is split into articles and notes (mirroring the Jekyll _research/articles/
+  # and _research/notes/ subdirectory structure). The subcollection is stored in metadata
+  # during convert, or inferred from slug patterns as a fallback.
   get '/research' do
     @title = 'Research'
     @articles = DB[:pages]
@@ -208,7 +237,6 @@ class App < Sinatra::Base
       .where(Sequel.like(:slug, '%note%') | Sequel.like(:metadata, '%"subcollection":"notes"%'))
       .order(Sequel.desc(:published_at))
       .all
-    # Fallback: if subcollection tagging isn't set, just show all
     if @articles.empty? && @notes.empty?
       @articles = DB[:pages]
         .where(collection: 'research', hidden: false)
@@ -231,6 +259,9 @@ class App < Sinatra::Base
   end
 
   # --- Content routes ---
+  # Individual pages are fetched by collection + slug, rendered through kramdown,
+  # and wrapped in the layout matching the page's `layout` column (rambling, article,
+  # project, note, reference, or page). The ERB template name matches the layout.
 
   get '/math/:slug' do
     @page = DB[:pages].where(collection: 'mathematics', slug: params[:slug]).first
@@ -250,6 +281,8 @@ class App < Sinatra::Base
     erb @page[:layout].to_sym
   end
 
+  # Homepage falls back to an empty page if no index record exists in the DB,
+  # allowing the server to boot before content is imported.
   get '/' do
     @page = DB[:pages].where(collection: 'standalone', slug: 'index').first
     if @page

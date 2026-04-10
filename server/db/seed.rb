@@ -1,3 +1,8 @@
+# Create the initial admin user for Warden authentication.
+# Idempotent -- skips if the user already exists.
+#
+# Usage: ADMIN_USER=me ADMIN_PASS=secret ruby db/seed.rb
+
 require 'sequel'
 require 'bcrypt'
 

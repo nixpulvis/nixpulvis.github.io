@@ -1,6 +1,18 @@
 #!/usr/bin/env ruby
-# Reads Jekyll files from the parent repo and writes them as backup markdown
-# files under db/backups/content/. Also copies images and fortunes.
+# One-time conversion of the Jekyll site into the backup format that
+# db/restore.rb can load into the database.
+#
+# Reads:
+#   ../_ramblings/*.md, ../_projects/*.md, etc.  (Jekyll collections)
+#   ../img/, ../css/, ../js/                     (static assets)
+#   ../fortunes/                                 (fortune text files)
+#
+# Writes:
+#   db/backups/content/<collection>/<slug>.md    (YAML front-matter + markdown)
+#   db/backups/site/assets/{img,css,js}/         (static asset copies)
+#   db/backups/fortunes/                         (fortune file copies)
+#
+# Usage: ruby db/convert.rb
 
 require 'yaml'
 require 'fileutils'
@@ -9,6 +21,8 @@ require 'date'
 REPO_ROOT  = File.expand_path('../../..', __FILE__)
 BACKUP_DIR = File.join(__dir__, 'backups')
 
+# Maps Jekyll collection directories to their DB collection name and default
+# layout. Research has two subdirectories that become subcollections.
 COLLECTIONS = {
   '_ramblings'  => { collection: 'ramblings',   default_layout: 'rambling' },
   '_projects'   => { collection: 'projects',     default_layout: 'project' },
@@ -22,6 +36,7 @@ COLLECTIONS = {
 # Standalone pages (not in collections)
 STANDALONE_PAGES = %w[index.md about.md playground.md musings.md]
 
+# Split a Jekyll file into its YAML front-matter hash and markdown body.
 def parse_jekyll_file(path)
   content = File.read(path)
   if content =~ /\A---\s*\n(.*?\n)---\s*\n(.*)\z/m
@@ -34,12 +49,13 @@ def parse_jekyll_file(path)
   [front_matter, body]
 end
 
+# Jekyll filenames encode the date: 2018-02-05-hello-world.md -> hello-world
 def slug_from_filename(filename)
-  # Strip date prefix and extension: 2018-02-05-hello-world.md -> hello-world
   name = File.basename(filename, File.extname(filename))
   name.sub(/^\d{4}-\d{2}-\d{2}-/, '')
 end
 
+# Extract the date from a Jekyll-style dated filename, if present.
 def date_from_filename(filename)
   name = File.basename(filename)
   if name =~ /^(\d{4}-\d{2}-\d{2})/
@@ -66,14 +82,14 @@ def convert_collection(source_dir, config)
     published = front_matter.delete('published')
     date = front_matter.delete('date') || date_from_filename(path)
 
-    # If published is explicitly false, treat as draft
+    # Jekyll's `published: false` is equivalent to our `draft: true`
     draft = true if published == false
 
-    # Build metadata hash for extras (references, scripts, style, etc.)
+    # Everything not consumed above goes into the metadata JSON blob.
+    # This preserves layout-specific front-matter like `references` (projects),
+    # `scripts` / `style` (custom JS/CSS pages), and `subcollection` (research).
     metadata = front_matter.reject { |k, _| k == 'permalink' }
     metadata['subcollection'] = config[:subcollection] if config[:subcollection]
-
-    # Write backup file with YAML front-matter
     output = {
       'collection' => collection,
       'slug' => slug,

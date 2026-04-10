@@ -1,6 +1,16 @@
 #!/usr/bin/env ruby
-# Restores database content from backup markdown files in db/backups/content/.
-# Also restores uploads and fortunes.
+# Populate the database from backup markdown files produced by either
+# db/convert.rb (initial Jekyll import) or db/backup.rb (ongoing snapshots).
+#
+# For each .md file in db/backups/content/<collection>/:
+#   - Parses YAML front-matter for page attributes
+#   - Upserts into the pages table (updates existing, inserts new)
+#
+# Also restores:
+#   - Uploaded media from db/backups/site/uploads/ -> public/uploads/
+#   - Fortune files from db/backups/fortunes/ -> ../fortunes/
+#
+# Requires migrations to have been run first (make db).
 #
 # Usage: ruby db/restore.rb
 

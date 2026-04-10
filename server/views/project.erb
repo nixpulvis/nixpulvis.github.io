@@ -1,3 +1,6 @@
+<%# Project layout: title and reference links from metadata.
+     Mirrors _layouts/project.md. References are URLs stored in the
+     metadata JSON (e.g. GitHub repos related to the project). %>
 <h2><%= @page[:title] %></h2>
 
 <% if @meta['references'] && !@meta['references'].empty? %>

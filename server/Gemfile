@@ -1,12 +1,19 @@
 source 'https://rubygems.org'
 
+# Web framework and server
 gem 'sinatra'
 gem 'puma'
+
+# Database
 gem 'sequel'
 gem 'sqlite3'
+
+# Authentication
 gem 'bcrypt'
 gem 'warden'
 gem 'rack-session'
+
+# Markdown rendering (replaces Jekyll's build step)
 gem 'kramdown'
 gem 'kramdown-parser-gfm'
 gem 'rouge'

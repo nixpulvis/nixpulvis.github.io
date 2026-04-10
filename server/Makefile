@@ -1,3 +1,16 @@
+# Server Makefile
+#
+# Typical workflow for initial setup from Jekyll content:
+#   make convert   # parse Jekyll files into db/backups/content/
+#   make db        # run Sequel migrations to create tables
+#   make restore   # load backup markdown into the database
+#   make seed      # create admin user (requires ADMIN_USER/ADMIN_PASS)
+#   make server    # start Puma
+#
+# For ongoing use:
+#   make backup    # export DB to static site + markdown + tarball
+#   make test      # run the test suite
+
 .PHONY: db seed convert restore backup server test clean
 
 db:

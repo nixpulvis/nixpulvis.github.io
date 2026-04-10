@@ -1,11 +1,17 @@
 #!/usr/bin/env ruby
-# Generates a complete backup:
-#   db/backups/content/  - raw markdown with YAML front-matter (for restore)
-#   db/backups/site/     - rendered static site (browsable offline)
-#   db/backups/fortunes/ - fortune files
-#   db/backups/backup.tar.gz - tarball of everything
+# Unified backup: exports the entire site into a self-contained snapshot.
 #
-# Usage: ruby db/backup.rb [--push]
+# The backup serves three purposes:
+#   1. Browsable offline  -- db/backups/site/ is a complete rendered static site
+#   2. Restorable         -- db/backups/content/ has raw markdown (feed to db/restore.rb)
+#   3. Portable           -- db/backups/backup.tar.gz bundles everything
+#
+# The rendered static site includes all assets, uploads, and HTML pages so
+# you can open index.html in a browser without a server.
+#
+# Usage:
+#   ruby db/backup.rb           # generate backup locally
+#   ruby db/backup.rb --push    # also commit and push the backup to git
 
 require 'sequel'
 require 'kramdown'
@@ -19,8 +25,8 @@ require 'date'
 
 DB = Sequel.connect("sqlite://#{File.join(__dir__, 'site.db')}")
 
-BACKUP_DIR = File.join(__dir__, 'backups')
-SITE_DIR   = File.join(BACKUP_DIR, 'site')
+BACKUP_DIR  = File.join(__dir__, 'backups')
+SITE_DIR    = File.join(BACKUP_DIR, 'site')
 CONTENT_DIR = File.join(BACKUP_DIR, 'content')
 
 def render_markdown(text)
@@ -50,6 +56,7 @@ def page_path(page)
   end
 end
 
+# Map a page record to its output file path in the static site backup.
 def static_path(page)
   case page[:collection]
   when 'mathematics' then "math/#{page[:slug]}.html"
@@ -70,11 +77,12 @@ def render_layout(title:, content:, meta: {})
   layout_template.result(binding { content })
 end
 
+# Render a page record to a complete HTML document by running it through
+# the same ERB templates the live server uses (inner template + layout).
 def render_page_in_layout(page)
   meta = parse_metadata(page)
   body_html = render_markdown(page[:body])
 
-  # Render the inner template
   template_name = page[:layout] || 'page'
   template_path = File.join(__dir__, '..', 'views', "#{template_name}.erb")
   template_path = File.join(__dir__, '..', 'views', 'page.erb') unless File.exist?(template_path)
@@ -86,15 +94,12 @@ def render_page_in_layout(page)
 
   inner = ERB.new(File.read(template_path)).result(binding)
 
-  # Wrap in layout
   layout_path = File.join(__dir__, '..', 'views', 'layout.erb')
   layout_erb = File.read(layout_path)
-
-  # Use a simple yield-based approach
   ERB.new(layout_erb).result(binding { inner })
 end
 
-# --- Export raw markdown ---
+# --- Export raw markdown (for restore) ---
 
 def export_content
   puts "Exporting raw markdown..."
@@ -125,7 +130,7 @@ def export_content
   end
 end
 
-# --- Render static site ---
+# --- Render static site (for offline browsing) ---
 
 def export_site
   puts "Rendering static site..."

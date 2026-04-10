@@ -1,3 +1,12 @@
+# Test suite for the Sinatra CMS application.
+#
+# Uses an isolated SQLite database in /tmp (via DATABASE_URL) so tests
+# never touch the real site.db. Migrations run once at load time;
+# each test gets a clean slate via delete-all in setup.
+#
+# Run: ruby test/app_test.rb
+#   or: make test
+
 require 'minitest/autorun'
 require 'rack/test'
 require 'sequel'
@@ -8,14 +17,12 @@ require 'tmpdir'
 require 'fileutils'
 require 'tempfile'
 
-# Set up test DB before loading app
 TEST_DB_PATH = File.join(Dir.tmpdir, "nixpulvis_test_#{$$}.db")
 ENV['DATABASE_URL'] = "sqlite://#{TEST_DB_PATH}"
-
 ENV['RACK_ENV'] = 'test'
+
 require_relative '../app'
 
-# Run migrations once at load time
 Sequel::Migrator.run(DB, File.join(__dir__, '..', 'db', 'migrations'))
 
 class AppTest < Minitest::Test
