@@ -1,0 +1,8 @@
+<%# Fortunes index: lists available fortune years as links. %>
+<h1>Fortunes</h1>
+
+<ul>
+<% @years.each do |year| %>
+    <li><a href="/fortunes/<%= year %>"><%= year %></a></li>
+<% end %>
+</ul>

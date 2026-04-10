@@ -1,0 +1,35 @@
+<%# Projects index: finished projects first, then drafts. Mirrors projects.md.
+     Each project shows its title and an excerpt of the body. %>
+<h1>Projects</h1>
+
+<p>I work on projects from time to time, and try to post about them here. If you
+learn something, that's great. If you are inspired, that's even better. Half
+the motivation to write up information about my projects is to force myself to
+think/build clearly.</p>
+
+<blockquote>
+<p>The reward of a thing well done is having done it.</p>
+<p>-- <cite>Ralph Waldo Emerson</cite></p>
+</blockquote>
+
+<p>Please be aware, unlike my <a href="/ramblings">Ramblings</a>, these projects are living
+documents. I may update them without notice to add detail or track changes to
+the projects themselves.</p>
+
+<ul class="projects finished">
+<% @finished.each do |project| %>
+    <li class="project">
+        <a class="name" href="<%= page_path(project) %>"><%= project[:title] %></a>
+        <%= render_markdown(excerpt(project[:body])) %>
+    </li>
+<% end %>
+</ul>
+
+<ul class="projects drafted">
+<% @drafted.each do |project| %>
+    <li class="project draft">
+        <a class="name" href="<%= page_path(project) %>"><%= project[:title] %></a>
+        <%= render_markdown(excerpt(project[:body])) %>
+    </li>
+<% end %>
+</ul>

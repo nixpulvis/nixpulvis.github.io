@@ -1,0 +1,56 @@
+<%# Main layout wrapper. Mirrors _layouts/default.html from the Jekyll site.
+     Variables: @title, @meta (optional hash with 'style' and 'scripts' keys). %>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - <%= @title || 'home' %></title>
+    <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <% if @meta && @meta['style'] %>
+      <link rel="stylesheet" href="<%= @meta['style'] %>" />
+    <% end %>
+    <script src="/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/js/main.js"></script>
+    <% if @meta && @meta['scripts'] %>
+      <% @meta['scripts'].each do |script| %>
+        <script src="<%= script %>"></script>
+      <% end %>
+    <% end %>
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/img/cat-lambda.png" />
+      <img id="me" src="/img/me.jpg" class="hidden" />
+      <a href="/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/references">&amp;</a></li>
+          <li class="icon"><a href="/musings">&#9834;</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><%= yield %></div>
+
+    <footer>
+      <a href="/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">&copy;</a>
+      <%= Time.now.year %>
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>&#9166;</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

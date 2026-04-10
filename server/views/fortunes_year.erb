@@ -1,0 +1,15 @@
+<%# Individual fortune year: lists all fortunes and shows an add form when logged in. %>
+<h1>Fortunes &mdash; <%= @year %></h1>
+
+<% if authenticated? %>
+<form method="post" action="/fortunes/<%= @year %>">
+    <textarea name="fortune" rows="3" placeholder="A new fortune..."></textarea>
+    <button type="submit">Add Fortune</button>
+</form>
+<% end %>
+
+<ul>
+<% @fortunes.each do |fortune| %>
+    <li><pre><%= fortune.strip %></pre></li>
+<% end %>
+</ul>

@@ -1,0 +1,16 @@
+<%# Rambling layout: title, word count, draft/published status, and date.
+     Mirrors _layouts/rambling.md. Used by the ramblings collection. %>
+<h2>
+    <%= @page[:title] %>
+    <small>
+        <%= word_count(@page[:body]) %> words
+        <% if @page[:draft] %>
+            drafted
+        <% else %>
+            published
+        <% end %>
+        on <%= format_date(@page[:published_at]) %>.
+    </small>
+</h2>
+
+<%= @content %>
