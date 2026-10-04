@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - The λ-calculus</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-34/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-34/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-34/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-34/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-34/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-34/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-34/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-34/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-34/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-34/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-34/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-34/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-34/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-34/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2>The λ-calculus</h2>
+
+<ul class="references">
+
+    <li><a href="https://github.com/nixpulvis/lalrpop-lambda">https://github.com/nixpulvis/lalrpop-lambda</a></li>
+
+    <li><a href="https://github.com/nixpulvis/lambash">https://github.com/nixpulvis/lambash</a></li>
+
+</ul>
+
+<p>λ-calculus one of the most fundamental programing languages, being made up of
+only <strong>three primative types</strong> of objects. It’s the basis for functional
+programming, and is just as powerful as any other programming language. I’ve
+created a parser and reducer for this language which, for example, will reduce
+<code class="language-plaintext highlighter-rouge">(λx.x) 1</code> to <code class="language-plaintext highlighter-rouge">1</code>. In addition to a parser, which consumes arbitrary text, a
+set of Rust macros: <code class="language-plaintext highlighter-rouge">var!</code>, <code class="language-plaintext highlighter-rouge">abs!</code> (<code class="language-plaintext highlighter-rouge">λ!</code>), and <code class="language-plaintext highlighter-rouge">app!</code> (<code class="language-plaintext highlighter-rouge">γ!</code>) are provided.</p>
+
+<p>The λ-calculus is so very interesting to me, because like <a href="/pr-preview/pr-34/math/00-euler">\(e^{\pi i + 1 =
+0}\)</a>, it is incredibly fundamental. Unlike Euler’s identity however,
+this calculus is at it’s core, actually very easy to understand.</p>
+
+<p>All you have are three components:</p>
+
+<ul>
+  <li>Names (e.g. <code class="language-plaintext highlighter-rouge">x</code>, or <code class="language-plaintext highlighter-rouge">y</code>)</li>
+  <li>Abstractions (e.g. <code class="language-plaintext highlighter-rouge">f(x) = x</code>)</li>
+  <li>Applications (e.g. <code class="language-plaintext highlighter-rouge">f(g(x))</code>)</li>
+</ul>
+
+<p>For more detailed documentation of both this project, and the λ-calculus, read
+the <a href="https://docs.rs/lalrpop-lambda">source documentation</a>. This page serves as a more personal
+account of my development, and both a (slightly) more approachable introduction
+to the λ-calculus, and some of the flexibility of Rust.</p>
+
+<h3 id="a-brief-history-of-λ">A Brief History of λ</h3>
+
+<p>The λ-calculus was originally proposed as a tool for use in the construction of
+mathematics, however it’s be proven equivalent to all known programming
+languages <a href="...">[1]</a>. The practical implications of this are called the
+“Church-Turing thesis” or simply the <strong>computability thesis</strong> (<em>complexity</em> is
+another story).</p>
+
+<p>I probably first heard about the λ back in grade school in some passing
+physics equation, almost certainly as wavelength. Despite how cool light is, it
+wasn’t until took my first class at Northeastern University and I learned about
+the <em>function</em> that I’ve started holding the λ above all.</p>
+
+<p>TODO: Church Separates from State.
+TODO: λ as security parameter.</p>
+
+<h3 id="basic-syntax">Basic Syntax</h3>
+
+<p>There are a few grammars for the lambda calculus floating around out there, and
+we are also specifically aiming to support the simply typed λ-calculus, so we
+have our own parser (<a href="https://github.com/lalrpop/lalrpop">LALRPOP</a>) with an unambiguous grammar to support
+this.</p>
+
+<p>Below are some basic examples covering the different forms available in this
+grammar. Here the left hand side of <code class="language-plaintext highlighter-rouge">-&gt;</code> <em>parses</em> into the right hand side.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x       -&gt; x
+x y     -&gt; (x y)
+(y x)   -&gt; (y x)
+λ       -&gt; (λ_._)
+λx      -&gt; (λx._)
+λx.x    -&gt; (λx.x)
+λx.(x)  -&gt; (λx.x)
+λx.x x  -&gt; (λx.(x x))
+(a b c) -&gt; ((a b) c)
+</code></pre></div></div>
+
+<h3 id="reductions">Reductions</h3>
+
+<p>Here the left hand side of <code class="language-plaintext highlighter-rouge">-&gt;</code> <em>reduces</em> to the right hand side. The beta
+reduction corresponds to calling a function to get it’s result. The simplest
+example is applying a single argument to the identity function, seen below:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(λx.x) y -&gt; y
+</code></pre></div></div>
+
+<p>Functions are themselves values in the λ-calculus, making it what we call a
+<em>higher order language</em>, allowing us to write more complex reductions.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;- (λf.λg.λx.(f (g x))) (λx.x) (λx.x) y
+-&gt; (λg.λx.((λx.x) (g x))) (λx.x) y
+-&gt; (λx.((λx.x) ((λx.x) x))) y
+-&gt; (λx.((λx.x) x)) y
+-&gt; (λx.x) y
+-&gt; y
+
+TODO: Visualize the multiple paths to `y`, reduction strategies.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(λx.λy.(y x)) first last -&gt; last first
+</code></pre></div></div>
+
+<p>Even though all you seem to be able to do with this language is perform symbolic
+naming operations, it turns out that’s all you need to be able to do. In fact,
+with just this, you can write non-terminating reductions, for example the
+\(Ω\) expression (called a combinator in this context):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Ω := (λx.x x) (λx.x x)
+  -&gt; (λx.x x) (λx.x x)
+  -&gt; (λx.x x) (λx.x x)
+  -&gt; ...
+</code></pre></div></div>
+
+<ul>
+  <li>alpha</li>
+  <li>beta</li>
+  <li>eta</li>
+</ul>
+
+<h4 id="alpha">alpha</h4>
+
+<h4 id="beta">beta</h4>
+
+<h6 id="small-step-semantics">Small Step Semantics</h6>
+<h6 id="large-step-semantics">Large Step Semantics</h6>
+<h6 id="reduction-strategies">Reduction Strategies</h6>
+
+<ul>
+  <li>Normal order</li>
+  <li>Applicative Order</li>
+  <li>Call by name</li>
+  <li>Call by value</li>
+  <li>…</li>
+</ul>
+
+<h3 id="currying">Currying</h3>
+
+<p>Our grammar also supports currying, which allows us to write multi-argument
+functions on a language that fundamentally only allows one. This is done with
+the following scheme:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>λx y -&gt; λx.λy
+</code></pre></div></div>
+
+<p>This reads nicely, lambda x y is the same as lambda x, lambda y. To “call” a
+curried function simply call the result of each function call with the arguments
+in order.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(λx y.(add x y)) 1 2
+-curry&gt;
+((λx.λy.(add x y)) 1) 2
+-beta&gt;
+(λy.(add 1 y)) 2
+-beta&gt;
+(add 1 2)
+</code></pre></div></div>
+
+<p>This works in any reasonable programming language with functions and arguments.
+In Ruby for example, you can write an <code class="language-plaintext highlighter-rouge">add</code> function like this if you’re so
+inclined.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">c_add</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">b</span><span class="o">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="n">c_add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="mi">3</span>
+</code></pre></div></div>
+
+<h3 id="the-simply-typed-λ-calculus">The Simply Typed λ-calculus</h3>
+
+<p>TODO: Add this section after we have a type checker implemented.</p>
+
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-34/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

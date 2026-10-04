@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - "Borrowing" a Better WiFi Signal</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-34/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-34/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-34/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-34/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-34/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-34/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-34/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-34/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-34/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-34/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-34/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-34/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-34/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-34/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2>
+    "Borrowing" a Better WiFi Signal
+    <small>
+        911 words
+        
+            drafted
+        
+        on February 15, 2018.
+    </small>
+</h2>
+
+<p>Let me start by saying that “stealing” WiFi (or anything for that matter) is
+wrong, and bad. Please don’t do it. But if you happen to find yourself
+“borrowing” someone elses WiFi with permission, i.e. they gave you the password,
+then the next step is clearly improving the link quality.</p>
+
+<h3 id="attenuate-like-hell">Attenuate like Hell</h3>
+
+<p>I’m currently living in the mountains of Colorado, in a place that doesn’t have
+it’s own ISP hookup. One of our neighbors is nice enough to let us borrow thier
+WiFi though, so all is not lost. If I had to guess I’d say that I’m about 100ft
+from the access point (AP), and about 6 or so walls stand in the way. It’s not
+an ideal RF setup by any means, but it works.</p>
+
+<p>The AP is broadcasting at 2412MHz (channel 1 of the 2.4GHz band), the bandwidth
+is 20MHz.
+TODO: Other link stats.
+TODO: wavemon screenshot.</p>
+
+<p>However, it’s nowhere near good enough. Enter the world of fancy antennas. In
+the RF antenna world there exists a device named “Yagi”, after one of it’s
+creators. A Yagi is a directional antenna which operates with a single driven
+element, a reflecting element, and many directing elements. These are the same
+design as many household TV antennas from the old days.</p>
+
+<p><img src="" alt="" /></p>
+
+<p>I’m not going to get into the design of these things, because frankly that’s
+above my pay-grade at the moment, but there are a few key things to know about
+these antennas:</p>
+
+<ul>
+  <li>They are directional, TODO: angles?</li>
+  <li>The antenna should be arranged to match the polarization of the AP.</li>
+  <li>The frequency range (bandwidth) is very narrow, so there’s no way a 2.4GHz
+antenna will work on the 5GHz band.</li>
+</ul>
+
+<p>So I bought <a href="amazon">one</a>, and a <a href="amazon">USB WiFi adapter</a> to go along with it. I
+chose the adapter to meet the following requirments:</p>
+
+<ul>
+  <li>802.11n, 802.11ac isn’t needed because we’re only dealing with the 2.4GHz
+band.</li>
+  <li>Drivers must be included with Linux by default.</li>
+  <li>External antenna connection (typically SMA).</li>
+</ul>
+
+<p>I After ordering the wrong kind of SMA adapter I finnaly got the <a href="amazon">right</a>
+one, and we’re in business. Simply moving from my laptop’s built-in WiFi to this
+new setup improved signal level by TODO, and link quality by TODO.</p>
+
+<p>TODO: another wavemon screenshot.</p>
+
+<h3 id="share-the-world">Share the World</h3>
+
+<p>It’s one thing to have access to a nice, fast network on a single computer, but
+I want my roomates to be able to benifit from this high quality link as well.
+Enter the <a href="wiki">NAT</a>.</p>
+
+<p>Building a NAT device isn’t too hard. I’ve got an extra Rasperry Pi (v1) lying
+around running [ArchARM], so we’ll work with that, but these techiques should
+work for any modern Linux machine.</p>
+
+<p>TODO: more words, and links to GitHub sources.</p>
+
+<h4 id="manually-configure">Manually Configure</h4>
+
+<p>First let’s connect to the WiFi network, and make sure it’s working.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>netctl start &lt;profile&gt;
+…
+ping 8.8.8.8
+</code></pre></div></div>
+
+<p>We need to tell the kernal to route packets accross network interfaces. For
+more information about kernal ip forwarding start with
+<a href="https://unix.stackexchange.com/questions/14056/what-is-kernel-ip-forwarding">this Stack Overflow post</a>.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sysctl net.ipv4.ip_forward<span class="o">=</span>1
+</code></pre></div></div>
+
+<p>Once we’ve enabled packet forwarding, we need to setup the NAT between
+the wireless interface, and the Pi’s ethernet interface.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>iptables <span class="nt">-t</span> nat <span class="nt">-A</span> POSTROUTING <span class="nt">-o</span> <span class="nv">$from</span> <span class="nt">-j</span> MASQUERADE
+iptables <span class="nt">-A</span> FORWARD <span class="nt">-m</span> conntrack <span class="nt">--ctstate</span> RELATED,ESTABLISHED <span class="nt">-j</span> ACCEPT
+iptables <span class="nt">-A</span> FORWARD <span class="nt">-i</span> <span class="nv">$to</span> <span class="nt">-o</span> <span class="nv">$from</span> <span class="nt">-j</span> ACCEPT
+</code></pre></div></div>
+
+<p>Finally, we enable <a href="wiki">DHCP</a> to allow clients to negociate for an IP address
+on the new local network.</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/dhcpd.conf
+</span><span class="n">option</span> <span class="n">domain</span>-<span class="n">name</span>-<span class="n">servers</span> <span class="m">8</span>.<span class="m">8</span>.<span class="m">8</span>.<span class="m">8</span>, <span class="m">8</span>.<span class="m">8</span>.<span class="m">4</span>.<span class="m">4</span>;
+<span class="n">option</span> <span class="n">subnet</span>-<span class="n">mask</span> <span class="m">255</span>.<span class="m">255</span>.<span class="m">255</span>.<span class="m">0</span>;
+<span class="n">option</span> <span class="n">routers</span> <span class="m">192</span>.<span class="m">168</span>.<span class="m">0</span>.<span class="m">1</span>;
+<span class="n">subnet</span> <span class="m">192</span>.<span class="m">168</span>.<span class="m">0</span>.<span class="m">0</span> <span class="n">netmask</span> <span class="m">255</span>.<span class="m">255</span>.<span class="m">255</span>.<span class="m">0</span> {
+  <span class="n">range</span> <span class="m">192</span>.<span class="m">168</span>.<span class="m">0</span>.<span class="m">150</span> <span class="m">192</span>.<span class="m">168</span>.<span class="m">0</span>.<span class="m">250</span>;
+}
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl start dhcpd4@<span class="nv">$to</span>.service
+</code></pre></div></div>
+
+<p>With that all said and done we should be able to connect a computer via ethernet
+and access the internet. Woot!</p>
+
+<h4 id="systemd-unit">Systemd Unit</h4>
+
+<p>Ideally we should be able to simply power up the pi (or whatever machine) and
+have all the needed networking configuration happen automatically. This is the
+domain of systemd services and targets.</p>
+
+<p>TODO: Actually figure this all out…</p>
+
+<h4 id="setup-our-own-wireless-network">Setup our own Wireless Network</h4>
+
+<p>All that’s left is to connect the ethernet cable from the pi to a functional
+wireless router, and we’ve got our own WiFi network with good connectivity.</p>
+
+<p>The observent reader will notice that we now have two NATs, the NAT between
+our WiFi borrower, and the NAT for our personal WiFi hotspot. It’s NATs all the
+way down!</p>
+
+<h3 id="going-futher-literally">Going Futher (literally…)</h3>
+
+<p>One thing that I’m now dying to test is how far a 2.4GHz signal can go, with
+modern, FCC complient hardware like I have. If I were to buy another one of
+these antennas and point them at each other, how many meters, or kilometers
+could it go.</p>
+
+<p>Another factor in all this is the TX (sending) power.
+TODO: a bit of info on this.</p>
+
+<p>With an optimal setup, I’ve heard of people beaming WiFi over a kilometer, so
+this could be fun indeed! Tune in next time…</p>
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-34/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

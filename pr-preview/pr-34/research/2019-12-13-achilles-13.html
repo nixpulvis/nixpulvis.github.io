@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Achilles' Tent Notes &#35;13</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-34/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-34/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-34/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-34/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-34/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-34/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-34/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-34/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-34/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-34/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-34/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-34/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-34/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-34/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2>
+    Achilles' Tent Notes &#35;13
+    <small>
+        written by Nathan Lilienthal
+        on December 13, 2019.
+    </small>
+</h2>
+
+<ul>
+  <li><a href="/pr-preview/pr-34/research/2019-10-13-achilles-8">Achilles’ Tent Notes #8</a></li>
+  <li><a href="/pr-preview/pr-34/research/2019-10-15-achilles-9">Achilles’ Tent Notes #9</a></li>
+  <li><a href="/pr-preview/pr-34/research/2019-10-28-achilles-10">Achilles’ Tent Notes #10</a></li>
+  <li><a href="/pr-preview/pr-34/research/2019-11-11-achilles-11">Achilles’ Tent Notes #11</a></li>
+  <li><a href="/pr-preview/pr-34/research/2019-12-02-achilles-12">Achilles’ Tent Notes #12</a></li>
+  <li><a href="/pr-preview/pr-34/research/2019-12-13-achilles-13"><strong>Achilles’ Tent Notes #13</strong></a></li>
+</ul>
+
+<hr />
+
+<h3 id="party-perspectives-p---">Party Perspectives <code class="language-plaintext highlighter-rouge">@P { ... }</code></h3>
+
+<p>When writing classic local programs (e.g. Rust 2018) all bindings have affinity
+to the only local party, you (or <code class="language-plaintext highlighter-rouge">@me</code>). To bridge the gap into the MPC
+context, we allow <code class="language-plaintext highlighter-rouge">global!</code> blocks <code class="language-plaintext highlighter-rouge">@P { e }</code> to only evaluate into <code class="language-plaintext highlighter-rouge">Some(e)</code>
+if the party running the block locally is <code class="language-plaintext highlighter-rouge">@P</code>.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ideal syntax?</span>
+<span class="k">let</span> <span class="n">r</span><span class="p">:</span> <span class="nb">i32</span><span class="o">@</span><span class="n">A</span> <span class="o">=</span> <span class="o">@</span><span class="n">A</span> <span class="p">{</span> <span class="nf">rand</span><span class="p">()</span> <span class="p">};</span>
+
+<span class="c1">// Macro syntax? Closer to what exists today.</span>
+<span class="k">let</span> <span class="n">r</span><span class="p">:</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="nb">i32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nd">global!</span><span class="p">(</span><span class="o">@</span><span class="n">A</span><span class="p">,</span> <span class="nf">rand</span><span class="p">());</span>
+</code></pre></div></div>
+
+<p>This composes with <code class="language-plaintext highlighter-rouge">conceal</code> which can accept an <code class="language-plaintext highlighter-rouge">Option&lt;T&gt;</code> from a party.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">s</span><span class="p">:</span> <span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">i32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">A</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">conceal!</code> also gives shorthand for creating and consuming the <code class="language-plaintext highlighter-rouge">Option</code> at
+once.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">s</span><span class="p">:</span> <span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">i32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">A</span> <span class="p">{</span> <span class="nf">rand</span><span class="p">()</span> <span class="p">});</span>
+</code></pre></div></div>
+
+<p>The following would fail to type check, since <code class="language-plaintext highlighter-rouge">r</code> is only <code class="language-plaintext highlighter-rouge">Some</code> for <code class="language-plaintext highlighter-rouge">@A</code>, but
+we’re saying here that <code class="language-plaintext highlighter-rouge">@B</code> is providing this value. This implies that
+<code class="language-plaintext highlighter-rouge">Option&lt;i32&gt;</code> really isn’t going to work, we need <code class="language-plaintext highlighter-rouge">i32@P</code>, which acts like an
+optional.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">s</span><span class="p">:</span> <span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">i32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">B</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>To participate in a protocol where we do not know the block which the other
+party is executing, we can use <code class="language-plaintext highlighter-rouge">concealed!(@P &lt;= @B)</code>, which is shorthand for
+<code class="language-plaintext highlighter-rouge">conceal!(@P &lt;= @B, None)</code>.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">s</span><span class="p">:</span> <span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">i32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nd">concealed!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">B</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This allows <code class="language-plaintext highlighter-rouge">@A</code> and <code class="language-plaintext highlighter-rouge">@B</code> to write partially separated code. For example below,
+<code class="language-plaintext highlighter-rouge">@A</code> calls <code class="language-plaintext highlighter-rouge">rand</code> for <code class="language-plaintext highlighter-rouge">s</code>, and <code class="language-plaintext highlighter-rouge">@B</code> calls <code class="language-plaintext highlighter-rouge">prompt</code> (perhaps reading from STDIN)
+for <code class="language-plaintext highlighter-rouge">t</code>, without each other knowing about how these binding’s values were
+generated.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// @A's code:</span>
+<span class="k">let</span> <span class="n">s</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">A</span> <span class="p">{</span> <span class="nf">rand</span><span class="p">()</span> <span class="p">});</span>
+<span class="k">let</span> <span class="n">t</span> <span class="o">=</span> <span class="nd">concealed!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">B</span><span class="p">);</span>
+
+<span class="c1">// @B's code:</span>
+<span class="k">let</span> <span class="n">s</span> <span class="o">=</span> <span class="nd">concealed!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">A</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">t</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">B</span> <span class="p">{</span> <span class="nf">prompt</span><span class="p">()</span> <span class="p">});</span>
+</code></pre></div></div>
+
+<p>Which could be rewritten to expose the <code class="language-plaintext highlighter-rouge">rand</code> and <code class="language-plaintext highlighter-rouge">read</code> calls globally as a
+single source program once more.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">s</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">A</span> <span class="p">{</span> <span class="nf">rand</span><span class="p">()</span> <span class="p">});</span>
+<span class="k">let</span> <span class="n">t</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">B</span> <span class="p">{</span> <span class="nf">prompt</span><span class="p">()</span> <span class="p">});</span>
+</code></pre></div></div>
+
+<p>Finally, we want to <code class="language-plaintext highlighter-rouge">reveal</code> some information from <code class="language-plaintext highlighter-rouge">@P</code> to another party <code class="language-plaintext highlighter-rouge">@A</code>.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">o</span><span class="p">:</span> <span class="nb">i32</span><span class="o">@</span><span class="n">A</span> <span class="o">=</span> <span class="nd">reveal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="k">=&gt;</span> <span class="o">@</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="n">t</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="special-me-party">Special <code class="language-plaintext highlighter-rouge">@me</code> Party</h3>
+
+<p>TODO: More thought needs to be given to where <code class="language-plaintext highlighter-rouge">@P</code> should show up in this
+example below. I’m starting to wonder if it’s something that belongs on the
+reference, related to the lifetimes.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">is_mine</span><span class="o">&lt;@</span><span class="n">P</span><span class="p">,</span> <span class="nv">'a</span><span class="p">,</span> <span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="n">T</span> <span class="o">@</span><span class="n">P</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">bool</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="o">@</span><span class="n">P</span> <span class="o">==</span> <span class="o">@</span><span class="n">me</span> <span class="p">{</span>
+        <span class="k">true</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">false</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Always true.</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nd">assert!</span><span class="p">(</span><span class="nf">is_mine</span><span class="p">(</span><span class="o">&amp;</span><span class="n">x</span><span class="p">));</span>
+
+<span class="c1">// Fails for `@B`.</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="o">@</span><span class="n">A</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">};</span>
+<span class="nd">assert!</span><span class="p">(</span><span class="nf">is_mine</span><span class="p">(</span><span class="o">&amp;</span><span class="n">x</span><span class="p">));</span>
+</code></pre></div></div>
+
+<h3 id="example-invertperm-function">Example <code class="language-plaintext highlighter-rouge">invertPerm</code> Function</h3>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// TODO: Purpose statements for the four helper functions.</span>
+<span class="k">fn</span> <span class="nf">randomPermutation</span><span class="p">()</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">fn</span> <span class="nf">invertPermutation</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="nb">usize</span><span class="p">])</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">fn</span> <span class="nf">waksmanBits</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">fn</span> <span class="nf">waksmanPerm</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;&gt;</span><span class="p">)</span>
+    <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+
+<span class="k">fn</span> <span class="n">invertPerm</span><span class="o">&lt;@</span><span class="n">P</span><span class="p">,</span> <span class="o">@</span><span class="n">A</span><span class="p">,</span> <span class="o">@</span><span class="n">B</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;&gt;</span><span class="p">)</span>
+    <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;&gt;</span>
+    <span class="k">where</span> <span class="o">@</span><span class="n">P</span><span class="p">:</span> <span class="o">@</span><span class="n">A</span> <span class="o">+</span> <span class="o">@</span><span class="n">B</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">pa_waksman</span><span class="p">)</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">A</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">lpa</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nf">randomPermutation</span><span class="p">();</span>
+        <span class="k">let</span> <span class="n">lpa_waksman</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nf">waksmansBits</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lpa</span><span class="p">);</span>
+        <span class="p">(</span><span class="n">lpa</span><span class="p">,</span> <span class="n">lpa_waksman</span><span class="p">)</span>
+    <span class="p">});</span>
+
+    <span class="k">let</span> <span class="n">pb</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;&gt;</span> <span class="o">=</span> <span class="nf">waksmanPerm</span><span class="p">(</span><span class="o">&amp;</span><span class="n">x</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pa_waksman</span><span class="p">);</span>
+    <span class="k">let</span> <span class="n">pb_local</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">@</span><span class="n">B</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">pb</span><span class="nf">.map</span><span class="p">(|</span><span class="n">e</span><span class="p">|</span> <span class="nd">reveal!</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="o">@</span><span class="n">P</span> <span class="k">=&gt;</span> <span class="o">@</span><span class="n">B</span><span class="p">))</span><span class="nf">.collect</span><span class="p">();</span>
+
+    <span class="k">let</span> <span class="n">pbinv_waksman</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="o">@</span><span class="n">P</span> <span class="o">&lt;=</span> <span class="o">@</span><span class="n">B</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">pbinv</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">usize</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nf">invertPermutation</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pb_local</span><span class="p">);</span>
+        <span class="nf">waksmanBits</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pbinv</span><span class="p">)</span>
+    <span class="p">});</span>
+
+    <span class="nf">waksmanPerm</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pa</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pbinv_waksman</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-34/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

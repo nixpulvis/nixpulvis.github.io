@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Racket Contracts With Blame</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-34/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-34/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-34/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-34/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-34/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-34/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-34/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-34/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-34/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-34/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-34/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-34/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-34/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-34/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2>
+    Racket Contracts With Blame
+    <small>
+        2369 words
+        
+            drafted
+        
+        on February 18, 2018.
+    </small>
+</h2>
+
+<p>The idea of a contract isn’t all that different from a type, since both are
+used to describe the shape of data. However, due to the dynamic nature of
+contracts they can describe much more than just shape. The three main
+differences are that:</p>
+
+<ol>
+  <li>Contracts are dynamic, telling you what went wrong at run-time.</li>
+  <li>Contracts are opt-in. Without getting into gradual type systems, this is
+generally not the case with type systems.</li>
+  <li>In general, a contract system is a system of predicate checks with smart
+errors.</li>
+</ol>
+
+<p><em>I strongly recommend following along with these examples either in
+DrRacket, or the <code class="language-plaintext highlighter-rouge">racket</code> REPL.</em></p>
+
+<p>In learning to program Racket you may not write a single contract, but you will
+definetly use them. This is because most of the functions (and data) you’ll
+build with have contracts, and when something goes wrong it’s the contracts
+that will tell you where. This is because contracts in Racket know how to blame
+the correct party, providing you with very helpful error messages.  Consider
+the following, where I try to add one to a string:</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">add1</span> <span class="s">"foo"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>I get a run-time error, much like a type error.</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; add1: contract violation</span>
+<span class="c1">;   expected: number?</span>
+<span class="c1">;   given: "hi"</span>
+</code></pre></div></div>
+
+<p>This is because <code class="language-plaintext highlighter-rouge">add1</code> has the following contract assigned to it:</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">-&gt;</span> <span class="nv">number?</span> <span class="nv">number?</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This looks like a more <em>normal</em> type if you remember that Racket is a prefix
+notation language. If it helps you, think of that contract as <code class="language-plaintext highlighter-rouge">number? -&gt;
+number?</code>. In the rest of this post, I want to dive into contracts in more
+depth.</p>
+
+<h3 id="defining-data-with-a-contract">Defining Data with a Contract</h3>
+
+<p>Typically contracts are attached at module bounderies. A module in Racket can
+<code class="language-plaintext highlighter-rouge">provide</code> an item for use in other modules, and attach a contract to each item
+in the process. However, it is also posible to create data with contracts
+within a module. These are contracts with <em>nested contract bounderies</em>. We’ll
+be using these in this post, to avoid talking about modules too much.</p>
+
+<p>We’ll be using <code class="language-plaintext highlighter-rouge">define/contract</code> to define an item with a contract directly. We
+can define items just like with <code class="language-plaintext highlighter-rouge">define</code> but with an additional <code class="language-plaintext highlighter-rouge">contract-expr</code>
+as it’s 2nd argument. For example:</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Define `add2` with a contract of it's own.</span>
+<span class="p">(</span><span class="nf">define/contract</span> <span class="p">(</span><span class="nf">add2</span> <span class="nv">n</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">-&gt;</span> <span class="nv">number?</span> <span class="nv">number?</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">+</span> <span class="nv">n</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nf">add2</span> <span class="mi">0</span><span class="p">)</span>
+<span class="mi">2</span>
+
+<span class="p">(</span><span class="nf">add2</span> <span class="s">"foo"</span><span class="p">)</span>
+<span class="c1">; add2: contract violation</span>
+<span class="c1">;   expected: number?</span>
+<span class="c1">;   given: "foo"</span>
+<span class="c1">;   in: the 1st argument of</span>
+<span class="c1">;       (-&gt; number? number?)</span>
+<span class="c1">;   contract from: (function add2)</span>
+<span class="c1">;   blaming: top-level</span>
+<span class="c1">;    (assuming the contract is correct)</span>
+</code></pre></div></div>
+
+<p>Compared to a <code class="language-plaintext highlighter-rouge">define</code> implementation of <code class="language-plaintext highlighter-rouge">add2</code>:</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Define a plain old `add2` without it's own contract.</span>
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">add2</span> <span class="nv">n</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">+</span> <span class="nv">n</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nf">add2</span> <span class="mi">0</span><span class="p">)</span>
+<span class="mi">2</span>
+
+<span class="p">(</span><span class="nf">add2</span> <span class="s">"foo"</span><span class="p">)</span>
+<span class="c1">; +: contract violation</span>
+<span class="c1">;   expected: number?</span>
+<span class="c1">;   given: "foo"</span>
+<span class="c1">;   argument position: 1st</span>
+</code></pre></div></div>
+
+<p>As you can see, both definitions of <code class="language-plaintext highlighter-rouge">add2</code> correctly operate on <code class="language-plaintext highlighter-rouge">0</code>, and both
+definitions correctly error when given <code class="language-plaintext highlighter-rouge">"foo"</code>, the important difference is
+which party is blamed. In the <code class="language-plaintext highlighter-rouge">define</code> example there is no new contract, and
+it’s the contract of <code class="language-plaintext highlighter-rouge">+</code> which detects the error. In our definition with
+<code class="language-plaintext highlighter-rouge">define/contract</code> it’s the attached <code class="language-plaintext highlighter-rouge">(-&gt; number? number?)</code> contract which
+catches our error.</p>
+
+<h3 id="flat-contracts">Flat Contracts</h3>
+
+<p>Before we look at function contracts any more, let’s first start by looking at
+the simplest kind of contract. A flat contract is one of:</p>
+
+<ul>
+  <li>Symbols, booleans, keywords, <code class="language-plaintext highlighter-rouge">null</code>.</li>
+  <li>Strings, Characters.</li>
+  <li>Numbers</li>
+  <li>Regular Expressions</li>
+  <li>Predicate functions, i.e. <code class="language-plaintext highlighter-rouge">(-&gt; any/c boolean?)</code>.</li>
+</ul>
+
+<p>These are the <em>trival</em> cases of contracts. Let’s take a quick look at creating
+data using flat contracts.</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">define/contract</span> <span class="nv">happy?</span> <span class="no">#t</span> <span class="p">(</span><span class="k">or</span> <span class="no">#t</span> <span class="no">#f</span><span class="p">))</span>
+<span class="nv">happy?</span>
+<span class="no">#t</span>
+
+<span class="p">(</span><span class="nf">define/contract</span> <span class="nv">happy?</span> <span class="no">#t</span> <span class="p">(</span><span class="k">and</span> <span class="no">#t</span> <span class="no">#f</span><span class="p">))</span>
+<span class="c1">; happy?: broke its own contract</span>
+<span class="c1">;   promised: #t</span>
+<span class="c1">;   produced: #f</span>
+<span class="c1">;   in: #t</span>
+<span class="c1">;   contract from: (definition happy?)</span>
+<span class="c1">;   blaming: (definition happy?)</span>
+<span class="c1">;    (assuming the contract is correct)</span>
+</code></pre></div></div>
+
+<p>As you can see, the contract system caught us when we tried to say that
+<code class="language-plaintext highlighter-rouge">happy?</code> was contractually obligated to be <code class="language-plaintext highlighter-rouge">#t</code>, but we assigned <code class="language-plaintext highlighter-rouge">(and #t
+#f)</code>. Strings, numbers, and regexs all work as you’d expect. Predicate
+functions are also pretty straightforward, and provide an easy way to check
+whatever condition you’d like.</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Define our own contract predicate.</span>
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">natural+?</span> <span class="nv">n</span><span class="p">)</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">n</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nf">define/contract</span> <span class="nv">one</span> <span class="nv">natural+?</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">(</span><span class="nf">define/contract</span> <span class="nv">zero</span> <span class="nv">natural+?</span> <span class="mi">0</span><span class="p">)</span>
+<span class="c1">; zero: broke its own contract</span>
+<span class="c1">;   promised: natural+?</span>
+<span class="c1">;   produced: 0</span>
+<span class="c1">;   in: natural+?</span>
+<span class="c1">;   contract from: (definition zero)</span>
+<span class="c1">;   blaming: (definition zero)</span>
+<span class="c1">;    (assuming the contract is correct)</span>
+</code></pre></div></div>
+
+<p>Pretty simple, and it’s nice to be able to talk about our assumptions in code.</p>
+
+<h3 id="chaperone-and-impersonator-contracts">Chaperone and Impersonator Contracts</h3>
+
+<p>The most important kind of contract left out of the flat contracts is <code class="language-plaintext highlighter-rouge">-&gt;</code>. This
+form of contract is also known as a contract combinator, since it takes many
+contracts as arguments and returns a new contract. Any contract created with
+<code class="language-plaintext highlighter-rouge">-&gt;</code> (for example <code class="language-plaintext highlighter-rouge">(-&gt; number? number?)</code>) is a chaperone contract.</p>
+
+<h4 id="immutable-and-mutable-wrappers">Immutable and Mutable Wrappers</h4>
+
+<p>Before I get into chaperone and impersonator contracts, first let me explain
+impersonators and chaperones beifly. Both are a way to wrap data, where a
+chaperone is allowed to view the data, and an impersonator is allowed to modify
+it.</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">define</span> <span class="nv">impersonated-add1</span>
+  <span class="p">(</span><span class="nb">impersonate-procedure</span> <span class="nv">add1</span>
+    <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">n</span><span class="p">)</span> <span class="mi">41</span><span class="p">)))</span>
+
+<span class="c1">; Notice how we update the value that gets passed to `add1`.</span>
+<span class="p">(</span><span class="nf">impersonated-add1</span> <span class="mi">0</span><span class="p">)</span>
+<span class="mi">42</span>
+
+<span class="p">(</span><span class="k">define</span> <span class="nv">chaperoned-add1</span>
+  <span class="p">(</span><span class="nb">chaperone-procedure</span> <span class="nv">add1</span>
+    <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">n</span><span class="p">)</span> <span class="mi">41</span><span class="p">)))</span>
+
+<span class="c1">; A chaperone is not allowed to modify the input to `add1`.</span>
+<span class="p">(</span><span class="nf">chaperoned-add1</span> <span class="mi">0</span><span class="p">)</span>
+<span class="c1">; procedure chaperone: non-chaperone result;</span>
+<span class="c1">;  received a argument that is not a chaperone of the original argument</span>
+<span class="c1">;   original: 0</span>
+<span class="c1">;   received: 41</span>
+</code></pre></div></div>
+
+<p>An important fact about these kinds of wrappers is that they are <code class="language-plaintext highlighter-rouge">equal?</code> to
+thier wrapped functions, whereas most functions aren’t <code class="language-plaintext highlighter-rouge">equal?</code> to anything
+else.</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">equal?</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="nv">x</span><span class="p">))</span>
+<span class="no">#f</span>
+<span class="p">(</span><span class="nb">equal?</span> <span class="nv">impersonated-add1</span> <span class="nv">add1</span><span class="p">)</span>
+<span class="no">#t</span>
+<span class="p">(</span><span class="nb">equal?</span> <span class="nv">chaperoned-add1</span> <span class="nv">add1</span><span class="p">)</span>
+<span class="no">#t</span>
+</code></pre></div></div>
+
+<p>Below I create a chaperone of the <code class="language-plaintext highlighter-rouge">add1</code> function that prints it’s inputs
+and outputs (taken from the Racket documentation).</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">post-wrap</span> <span class="nv">n</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">printf</span> <span class="s">"returned: ~s\n"</span> <span class="nv">n</span><span class="p">)</span> <span class="nv">n</span><span class="p">)</span>
+
+<span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">wrap</span> <span class="nv">n</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">printf</span> <span class="s">"given: ~s\n"</span> <span class="nv">n</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">values</span> <span class="nv">post-wrap</span> <span class="nv">n</span><span class="p">))</span>
+
+<span class="p">(</span><span class="k">define</span> <span class="nv">print-add1</span>
+  <span class="p">(</span><span class="nb">chaperone-procedure</span> <span class="nv">add1</span> <span class="nv">wrap</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>As you can see <code class="language-plaintext highlighter-rouge">chaperone-procedure</code> can wrap both before and after the
+original function is called. This pattern is perfect for creating a contract on
+functions (and other kinds of composite data), since a contract for a function
+must check the contracts for it’s arguments and results.</p>
+
+<h4 id="back-to-contracts">Back to Contracts</h4>
+
+<p>So we’ve seen what impersonators and chaperones are, but where do they show up
+as contracts?</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">define</span> <span class="nv">contracts</span>
+  <span class="o">`</span><span class="p">(</span><span class="nb">number?</span>
+   <span class="o">,</span><span class="p">(</span><span class="nf">-&gt;</span> <span class="nv">number?</span> <span class="nv">number?</span><span class="p">)</span>
+   <span class="o">,</span><span class="p">(</span><span class="k">let</span> <span class="p">([</span><span class="nf">a</span> <span class="p">(</span><span class="nf">new-∀/c</span> <span class="no">#f</span><span class="p">)])</span>
+         <span class="p">(</span><span class="nf">-&gt;</span> <span class="nv">a</span> <span class="nv">a</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nb">map</span> <span class="nv">flat-contract?</span> <span class="nv">contracts</span><span class="p">)</span>
+<span class="o">'</span><span class="p">(</span><span class="nf">#t</span> <span class="no">#f</span> <span class="no">#f</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">map</span> <span class="nv">chaperone-contract?</span> <span class="nv">contracts</span><span class="p">)</span>
+<span class="o">'</span><span class="p">(</span><span class="nf">#t</span> <span class="no">#t</span> <span class="no">#f</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">map</span> <span class="nv">impersonator-contract?</span> <span class="nv">contracts</span><span class="p">)</span>
+<span class="o">'</span><span class="p">(</span><span class="nf">#f</span> <span class="no">#f</span> <span class="no">#t</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>As you can see function contracts (<code class="language-plaintext highlighter-rouge">-&gt;</code>) are chaperones and polymorphic
+contracts are impersonators. There are a few other examples of each, but this
+is a good start. I’m going to skip over the polymorphic contracts <code class="language-plaintext highlighter-rouge">new-∀/c</code> and
+<code class="language-plaintext highlighter-rouge">new-∃/c</code> for now.</p>
+
+<p>As we’ve already seen in the first section, we can attched <code class="language-plaintext highlighter-rouge">-&gt;</code> contracts to
+functions to protect their domain, and range. But now I want to look at this
+a bit more carefully. One aspect of contracts we’ve glossed over a bit is
+<strong>blame</strong>, which we will now come to understand better.</p>
+
+<p>Let’s start by defining a function with a partially broken implementation (i.e.
+fails it’s contract under some inputs).</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">define/contract</span> <span class="p">(</span><span class="nf">broken</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">-&gt;</span> <span class="p">(</span><span class="nf">&gt;=/c</span> <span class="mi">10</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">&gt;=/c</span> <span class="mi">5</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">&gt;/c</span> <span class="mi">15</span><span class="p">))</span>
+  <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nf">broken</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">)</span>
+<span class="c1">; broken: contract violation</span>
+<span class="c1">;   expected: (&gt;=/c 10)</span>
+<span class="c1">;   given: 0</span>
+<span class="c1">;   in: the 1st argument of</span>
+<span class="c1">;       (-&gt; (&gt;=/c 10) (&gt;=/c 5) (&gt;/c 15))</span>
+<span class="c1">;   contract from: (function broken)</span>
+<span class="c1">;   blaming: top-level</span>
+<span class="c1">;    (assuming the contract is correct)</span>
+
+<span class="p">(</span><span class="nf">broken</span> <span class="mi">10</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1">; broken: broke its own contract</span>
+<span class="c1">;   promised: a number strictly greater than 15</span>
+<span class="c1">;   produced: 15</span>
+<span class="c1">;   in: the range of</span>
+<span class="c1">;       (-&gt; (&gt;=/c 10) (&gt;=/c 5) (&gt;/c 15))</span>
+<span class="c1">;   contract from: (function broken)</span>
+<span class="c1">;   blaming: (function broken)</span>
+<span class="c1">;    (assuming the contract is correct)</span>
+</code></pre></div></div>
+
+<p>As you can see, <code class="language-plaintext highlighter-rouge">(broken 0 0)</code> didn’t supply valid arguments, and the contract
+violation tells us that, and <em>blames</em> the top level (the REPL in this case),
+since it was the fault of mine when I tried to supply <code class="language-plaintext highlighter-rouge">0</code> as arguements.
+However, when I provided valid arguments in <code class="language-plaintext highlighter-rouge">(broken 10 5)</code> the function
+performed the <code class="language-plaintext highlighter-rouge">(+ 10 5)</code> arithmatic, and broke it’s own contract. This is
+clearly the fault of the function, not the top level, and the violation tell us
+that as well.</p>
+
+<p>Things can get a little confusing when we remember functions are first class in
+Racket, and we can pass them around as data.</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Filters a list given a predicate function.</span>
+<span class="p">(</span><span class="nf">define/contract</span> <span class="p">(</span><span class="nf">filter</span> <span class="nv">f</span> <span class="nv">l</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">parametric-&gt;/c</span> <span class="p">[</span><span class="nf">X</span><span class="p">]</span>
+    <span class="p">(</span><span class="nf">-&gt;</span> <span class="p">(</span><span class="nf">-&gt;</span> <span class="nv">X</span> <span class="nv">boolean?</span><span class="p">)</span>
+        <span class="p">(</span><span class="nf">listof</span> <span class="nv">X</span><span class="p">)</span>
+        <span class="p">(</span><span class="nf">listof</span> <span class="nv">X</span><span class="p">)))</span>
+  <span class="p">(</span><span class="nf">foldr</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">a</span> <span class="nv">bs</span><span class="p">)</span> <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">a</span><span class="p">)</span> <span class="p">(</span><span class="nb">cons</span> <span class="nv">a</span> <span class="nv">bs</span><span class="p">)</span> <span class="nv">bs</span><span class="p">))</span>
+         <span class="o">'</span><span class="p">()</span>
+         <span class="nv">l</span><span class="p">))</span>
+
+<span class="p">(</span><span class="nf">filter</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">x</span> <span class="mi">1</span><span class="p">))</span> <span class="o">'</span><span class="p">(</span><span class="nf">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">))</span>
+<span class="o">'</span><span class="p">(</span><span class="nf">2</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">(</span><span class="nf">filter</span> <span class="nv">odd?</span> <span class="o">'</span><span class="p">(</span><span class="nf">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">))</span>
+<span class="o">'</span><span class="p">(</span><span class="nf">1</span> <span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>But what who’s fault is it when I pass <code class="language-plaintext highlighter-rouge">+</code> as the predicate function to filter?
+Mine! of course. More specifically, it’d be the top level in the following
+example:</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">filter</span> <span class="nv">+</span> <span class="o">'</span><span class="p">(</span><span class="nf">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">))</span>
+<span class="c1">; filter: contract violation</span>
+<span class="c1">;   expected: boolean?</span>
+<span class="c1">;   given: 3</span>
+<span class="c1">;   in: the range of</span>
+<span class="c1">;       the 1st argument of</span>
+<span class="c1">;       (parametric-&gt;/c</span>
+<span class="c1">;        (X)</span>
+<span class="c1">;        (-&gt; (-&gt; X boolean?) (listof X) (listof X)))</span>
+<span class="c1">;   contract from: (function filter)</span>
+<span class="c1">;   blaming: top-level</span>
+<span class="c1">;    (assuming the contract is correct)</span>
+</code></pre></div></div>
+
+<p>Racket’s contract system is smart enough to know that even though the predicate
+function failed within our <code class="language-plaintext highlighter-rouge">filter</code> function, it was passed into the filter
+function as an argument, and therefor it’s still the caller’s fault.</p>
+
+<p>Before we dig into the internals of the contract system a bit I thought I’d
+show of one of Racket’s coolest type of contract, the <code class="language-plaintext highlighter-rouge">-&gt;i</code> function contract.
+In short, this contract combinator allows you to write a contract where each
+argument and the result can depend on each other. Let’s look at another example
+from the Racket reference.</p>
+
+<div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">-&gt;i</span> <span class="p">([</span><span class="nf">x</span> <span class="nv">number?</span><span class="p">]</span>
+      <span class="p">[</span><span class="nf">y</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nf">&gt;=/c</span> <span class="nv">x</span><span class="p">)])</span>
+     <span class="p">[</span><span class="nf">result</span> <span class="p">(</span><span class="nf">x</span> <span class="nv">y</span><span class="p">)</span> <span class="p">(</span><span class="nf">&gt;=/c</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))])</span>
+</code></pre></div></div>
+
+<p>This is a contract which ensures <code class="language-plaintext highlighter-rouge">y</code> is greater than <code class="language-plaintext highlighter-rouge">x</code> and that the result is
+always the sum of the two. This is very powerful, and comes at the cost of
+delaying execution of the contracts until the function itself returns.</p>
+
+<h3 id="contract-make-contract-and-other-juicy-details"><code class="language-plaintext highlighter-rouge">contract</code>, <code class="language-plaintext highlighter-rouge">make-contract</code> and Other Juicy Details</h3>
+
+<p>TODO…</p>
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-34/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>
