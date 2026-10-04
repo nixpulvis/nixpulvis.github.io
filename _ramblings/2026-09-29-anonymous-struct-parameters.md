@@ -14,15 +14,22 @@ correspondence between positional arguments with tuples and named arguments with
 structs, which was cute, but ultimately not good syntax.
 
 But the point stands, Rust already has a named, reorderable, defaultable
-construct... the `struct`. I'm not the only one who thinks so. scottmcm has
-[pointed out][scottmcm-2023-irlo] that named arguments only need an inferred
-struct literal and a way to declare an anonymous struct in a function signature,
-and [RFC 3444][rfc-3444] already proposes an inferred literal, but goes further
-than we need.
+construct... the `struct`. I'm not the only one who thinks so. In the 2020
+[named arguments pre-RFC][pre-rfc-2020], CAD97 [argued][cad97-2020] that making
+options structs more ergonomic was a better short-term goal than full named
+arguments, and the [RFC][rfc-2964] it became was [closed][rfc-2964-close], with
+the lang team asking for a roadmap first. scottmcm has since [pointed
+out][scottmcm-2023-irlo] that named arguments only need an inferred struct
+literal and a way to declare an anonymous struct in a function signature. [RFC
+3444][rfc-3444] already proposes an inferred literal, but goes further than we
+need and also doesn't cover anonymous structs in function signatures.
 
-So let's talk about struct args instead of named arguments specifically for a
-minute. For this idea, I'll be introducing new syntax in stages, and noting all
-new syntax inside highlighted code blocks.
+So let's talk about [struct args](#1-struct-args) instead of named arguments for
+a minute, then build up to it with some [syntactic
+sugar](#4-named-argument-sugar).
+
+* TOC
+{:toc}
 
 ## 1. Struct Args
 
@@ -41,11 +48,18 @@ You can use it in a function definition:
 1. As any other parameter: `fn f(p: Point) {}`
 2. With a pattern: `fn f(p @ Point { x, y }: Point) {}`
 
-The first form is just standard argument passing, which doesn't destructure the named fields at all. While the second form destructures the named fields but requires both using a somewhat lesser known `@` pattern and a named struct type (twice).
+The first form is just standard argument passing, which doesn't destructure the
+named fields at all. While the second form destructures the named fields but
+requires both using a somewhat lesser known `@` pattern and a named struct type
+(twice).
+
+I'll be introducing new syntax in stages, and noting all new syntax inside
+highlighted code blocks.
 
 ### Elided struct types
 
-We could avoid the duplication of `Point` in the second example simply by allowing it to be elided entirely when it can be inferred from the pattern.
+We could avoid the duplication of `Point` in the second example simply by
+allowing it to be elided entirely when it can be inferred from the pattern.
 
 E.g.
 
@@ -53,7 +67,7 @@ E.g.
 fn f(p @ Point { x, y }: Point) {}
 ```
 
-Could be written as:
+With an elided struct type, it could be written as:
 
 <div class="highlight-block" markdown="1">
 ```rust
@@ -135,17 +149,23 @@ types at all, just an inferred struct literal and "sugar to create an anonymous
 type in a function definition", which is what's proposed here. [As recently as
 2025][irlo-anon-struct-2025], Josh Triplett [separated][josh-2025] three ideas
 that usually get conflated. The first is structural anonymous types, which seem
-unlikely to make progress. The second is [RFC 2102][rfc-2102]'s unnamed fields
-([tracking issue][rust-49804]), which are about `#[repr(C)]` layout and
-unrelated to this. The third is passing a struct to a function without naming
-it, `f(_ { x: 1 })`, which is the call half of what's proposed here.
+unlikely to make progress soon, though we explore some of thier motivations in
+[record types](#record-types). The second is [RFC 2102][rfc-2102]'s unnamed
+fields ([tracking issue][rust-49804]), which are about `#[repr(C)]` layout and
+not directly related to this. Though I do wonder if the syntax for unnamed
+fields could be unified with the syntax for anonymous struct types in params. We
+don't care about `union` params, so the design space is slightly different, it
+would be nice to be consistent.
 
-That last idea is [RFC 3444][rfc-3444] from the intro, which proposes inferring a
-struct literal's path (currently spelled `.{ .. }`), and binrw's maintainers [point
-out][rfc-3444-binrw] that it plus field defaults would replace [their `args!`
-macro][binrw-named-args] and its inference hacks. However, that RFC proposes a
-more general "path inference" and focuses on inferring the path of an `enum`
-which we aren't concerned with to satisfy ergonomic struct arguments.
+The third is passing a struct to a function without naming it, `f(_ { x: 1 })`,
+which is the call half of what's proposed here. This idea is materialized in the
+open [RFC 3444][rfc-3444] as mentioned in the intro, which proposes inferring a
+struct literal's path (currently spelled `.{ .. }`). `binrw`'s maintainers
+[point out][rfc-3444-binrw] that this plus field defaults (RFC 3681) would
+replace [their `args!` macro][binrw-named-args] and its inference hacks.
+However, RFC 3444 proposes a more general "path inference" and focuses on
+inferring the path of an `enum` which we aren't concerned with to satisfy
+ergonomic struct arguments.
 
 <div class="aside" markdown="1">
 I personally don't accept that `.{ }` is better, since `_` is already the
@@ -182,7 +202,8 @@ edits to a function are breaking:
 
 - **Adding a parameter** is always breaking for positional parameters, however
   adding a field *with a default* to an anonymous struct isn't breaking for
-  callers that wrote `..`
+  callers that wrote `..` or used the named argument [sugar](#4-named-argument-sugar),
+  which implies it
 - **Reordering** positional parameters is breaking, however reordering fields
   isn't since they're passed by name
 - **Renaming** a positional parameter is free, since its name isn't part of its
@@ -197,18 +218,17 @@ adding fields without a breaking change. Anonymous structs have no struct item
 to put `#[non_exhaustive]` on, so they don't even get that choice. If the two are
 ever allowed together, anonymous structs could opt in, or be non-exhaustive by
 default, meaning every literal from outside the crate has to write `..`, even
-one that lists every field, as named argument [sugar](#call-syntax-fa-x-1)
-already implies. Then adding a field with a default would never be breaking
-([Section 8](#8-whats-next)).
+one that lists every field, as named argument sugar already implies. Then adding
+a field with a default would never be breaking ([Section 8](#8-whats-next)).
 
 ## 2. Examples
 
 Now let's look at some realistic examples of using this new syntax. Later we'll
-see if/how we can make it even shorter with some syntactic sugar in [Section
-4](#4-sugar). I have a hacked together [prototype
+see how we can make it even more like named arguments with some [syntactic
+sugar](#4-named-argument-sugar). I have a hacked together [prototype
 implementation](#5-the-prototype) for both the `struct_args` and
-`struct_args_sugar` features, but for now we'll focus on the core
-`struct_args` feature.
+`struct_args_sugar` features, but for now we'll focus on the core `struct_args`
+feature.
 
 ### Unambiguous calls
 
@@ -278,6 +298,47 @@ crop(&img, _ { y: 25, x: 15, width: 200, .. });
 ```
 </div>
 
+Without this, the builder pattern would require a constructor and a setter method for every optional field:
+
+```rust
+pub struct CropOptions {
+    width: u32,
+    height: Option<u32> = None,
+    x: u32 = 0,
+    y: u32 = 0,
+}
+
+impl CropOptions {
+    pub fn new(width: u32) -> Self {
+        Self { width, .. }
+    }
+
+    pub fn height(mut self, height: u32) -> Self {
+        self.height = Some(height);
+        self
+    }
+
+    pub fn x(mut self, x: u32) -> Self {
+        self.x = x;
+        self
+    }
+
+    pub fn y(mut self, y: u32) -> Self {
+        self.y = y;
+        self
+    }
+}
+
+fn crop(img: &Image, options: CropOptions) -> Image {
+    unimplemented!()
+}
+
+let img = Image::from_png("cat.png");
+crop(&img, CropOptions::new(200));
+crop(&img, CropOptions::new(200).height(200));
+crop(&img, CropOptions::new(200).x(15).y(25));
+```
+
 ### Existing structs
 
 `_ { .. }` isn't tied to anonymous structs. It works wherever the expected type is a struct, so every existing options-struct API gets it without changing:
@@ -290,14 +351,16 @@ fn fill(shape: &mut Shape, color: Rgb) {
     unimplemented!()
 }
 
-fill(&mut shape, Rgb { red: 0xA8, green: 0x3C, blue: 0x09 });
 fill(&mut shape, _ { red: 0xA8, green: 0x3C, blue: 0x09 });
 
 let accent = Rgb { red: 0x1E, green: 0x90, blue: 0xFF };
 fill(&mut shape, _ { red: 0xFF, ..accent });
 
 // wgpu's `InstanceDescriptor`
-Instance::new(_ { backends: Backends::VULKAN, ..InstanceDescriptor::new_without_display_handle() });
+Instance::new(_ {
+    backends: Backends::VULKAN,
+    ..InstanceDescriptor::new_without_display_handle()
+});
 ```
 </div>
 
@@ -311,11 +374,7 @@ structs work.
 ### Generics and lifetimes
 
 Fields can use anything in scope in the signature: including generic parameters,
-elided lifetimes, `impl Trait`, `Self`, and associated types. A lifetime in a
-field means what it would in a positional parameter. An elided one, like
-`&str`, is elided as it would be in `x: &str`. Unlike a named struct, which
-would need `struct PickArgs<'a>`, the anonymous struct never declares lifetimes
-itself.
+elided lifetimes, `impl Trait`, `Self`, and associated types. 
 
 <div class="highlight-block" markdown="1">
 ```rust
@@ -326,7 +385,16 @@ fn map<T, U>(v: Vec<T>, _ {
 
 map(vec![1, 2, 3], _ { f: |n| n * 2, .. });
 map(vec![1, 2, 3], _ { f: |n| n.to_string(), limit: 2 });
+```
+</div>
 
+A lifetime in a field means what it would in a positional parameter. An elided
+one, like `&str`, is elided as it would be in `x: &str`. Unlike a named struct,
+which would need `struct PickArgs<'a>`, the anonymous struct never declares
+lifetimes itself.
+
+<div class="highlight-block" markdown="1">
+```rust
 fn pick<'a>(x: &'a str, _ {
     fallback: &'a str = "none",
 }) -> &'a str { .. }
@@ -403,7 +471,7 @@ details on each below.
 | `fn` pointers | Distinct per function (sharing when the fields match is an open question) | Rejected unless the struct is shared | Names erased | Raised as a problem |
 | Adding a parameter | Non-breaking if defaulted, for callers that wrote `..` | Non-breaking if defaulted, for callers that wrote `..` or `..Default::default()` | Non-breaking if defaulted | Breaking |
 | Per-function boilerplate | None | One struct per function | None | None |
-| New syntax | `_ { .. }` as a parameter and as an expression, struct patterns without their type, and [possible sugar](#4-sugar) for `name: value` arguments and `;` parameters | None | `pub` parameters, `name: value` arguments, defaults | `name: value` arguments |
+| New syntax | `_ { .. }` as a parameter and as an expression, struct patterns without their type, and [possible sugar](#4-named-argument-sugar) for `name: value` arguments and `;` parameters | None | `pub` parameters, `name: value` arguments, defaults | `name: value` arguments |
 
 Klabnik's post is a position rather than a proposal, so its column records the problems it raises rather than answers. Macro crates like [bon] and [structx] fill the same gap today, with a builder or a macro at each call.
 
@@ -531,7 +599,7 @@ foo((1, 2), _ { .. });
 
 #### Defaults
 
-Defaults are RFC 3681 defaults. They're const, declared on the field, and used when the caller writes `..`. They can use the function's type and const parameters (`fn foo<const A: usize>(_ { bar: usize = A })`), and associated consts through their bounds (`fn foo<T: HasN>(_ { n: usize = T::N })`). Const-only is a real limit, and [Section 7](#7-limitations-and-open-questions) covers it.
+Defaults are RFC 3681 defaults. They're const, declared on the field, and used when the caller writes `..`. They can use the function's type and const parameters (`fn foo<const A: usize>(_ { bar: usize = A })`), and associated consts through their bounds (`fn foo<T: HasN>(_ { n: usize = T::N })`). Const-only is a real limit, and [Section 6](#6-limitations-and-open-questions) covers it.
 
 #### Renaming hazards
 
@@ -555,7 +623,7 @@ g(_ { a: 5, .. });
 ```
 </div>
 
-Two functions with the same fields don't share a pointer type, though [Section 7](#function-types) sketches one way they might.
+Two functions with the same fields don't share a pointer type, though [Section 6](#function-types) sketches one way they might.
 
   </div>
 </details>
@@ -648,7 +716,7 @@ That's why I think structs are the right direction, rather than a separate named
 
 -->
 
-## 4. Sugar
+## 4. Named Argument Sugar
 
 TODO
 
@@ -656,6 +724,9 @@ TODO
 Everything so far is struct syntax in new places. The sugar here is the part that looks like named arguments, and like the elided struct type in Section 1, it only removes something from what you write. The rule to keep in mind is that **the sugar never adds meaning.** There is one deliberate exception, which is that named arguments to an anonymous struct imply `..`.
 
 I'm less sure about this part than about Sections 1 and 2. Everything they offer works without it, and sugar has costs that structs don't. It gives every call two spellings, so codebases will split on style. It claims `:` in argument lists for good, and ties named arguments to the last parameter, which makes adding a parameter after it a breaking change. The implied `..` hides which fields took their defaults, which is exactly what Klabnik worries about. And the `;` signature syntax hides that the parameter is a struct at all, which can surprise someone who passes the function as a value. These are reasons to add the sugar later, if at all, once the struct parts have proven themselves.
+
+TODO: when uncommenting, point the `[sugar](#4-named-argument-sugar)` links in "API evolution
+and SemVer" back at `#call-syntax-fa-x-1`, and delete this note.
 
 ### Call syntax: `f(a, x: 1)`
 
@@ -685,7 +756,7 @@ Positional parameters never become labels. A parameter is a pattern that may not
 
 The syntax happens to be free, since `expr: Type` in expressions (type ascription) was removed, and `macro_rules!` can't write `$e:expr :`. It does claim `:` in argument lists for good, which is the point. `f(x: 1)` always means "the field `x` of the struct the last parameter expects".
 
-Note that `crop(&img, width: 200, height: 200)` doesn't compile against `height: Option<u32>`. It's `height: Some(200)`. Named arguments are sugar for a struct literal, and struct literals don't wrap values in `Some`. [Section 6](#optional-fields) has a more speculative idea that would change that.
+Note that `crop(&img, width: 200, height: 200)` doesn't compile against `height: Option<u32>`. It's `height: Some(200)`. Named arguments are sugar for a struct literal, and struct literals don't wrap values in `Some`. [Section 7](#optional-fields) has a more speculative idea that would change that.
 
 A last anonymous struct parameter whose fields all have defaults can also be left out of the call entirely:
 
@@ -801,13 +872,50 @@ TODO: describe the `struct_args_sugar` feature.
 
 <!--Everything above is implemented in a rustc prototype behind `#![feature(struct_args)]` and `#![feature(struct_args_sugar)]`, marked incomplete. Defaults and `..` also need `#![feature(default_field_values)]`, whose implementation landed in [rust-lang/rust#129514][rust-129514]. The prototype isn't published yet, so its results can't be reproduced for now, but the examples that compile come from it.-->
 
-## 6. Going Further
+## 6. Limitations and Open Questions
+
+### Non-const defaults
+
+TODO
+
+<!--Field defaults are RFC 3681 defaults, so they have to be const. A default can't call `RandomState::new()`, and it can't reach a generic type's value through its bound, like `S::default()`. A field that needs one becomes an `Option` that the body fills in, as in the `HashMap` example in [Section 3](#botahamec-names-defaults-and-pub-apis). Named structs can fall back on `..Default::default()`, which runs ordinary code, but an anonymous struct has no `Default` impl to call. This is a limit of RFC 3681 rather than of records, so lifting it belongs in a follow-up to that RFC ([Section 8](#8-whats-next)).
+
+RFC 3681 makes defaults const on purpose. Its [rationale][rfc-3681-const] is that `Foo { .. }` stays deterministic and cheap, and that a crate can't break a downstream `const fn` by quietly changing a default to a non-const one. Its [future possibilities][rfc-3681-non-const] leave non-const values open, "potentially allowed but linted against", and expect `Default` impls to become const where they can. The [tracking issue][rust-132162] lists "Expand support to non-const values?" as an open question that doesn't block stabilization, with the author's position that "we shouldn't do that, particularly seeing how powerful const eval is becoming".
+
+That question is where the discussion is. [cart argued][cart-2026], from Bevy, that `bar: Bar = Default::default()`, `String`s, and `seed: usize = rand()` are exactly the defaults people want, and asked why a struct literal can't just be const when all of its defaults are. [scottmcm replied][scottmcm-2026] that [const traits][const-traits-goal] are a 2026 project goal, and asked which cases truly *can't* be const, and how `seed: usize = rand()` compares to `seed: Option<usize> = None`. That last comparison is the `HashMap` example, and this [reply][vultix-2026] applies here too: `Option` says the hasher is optional, when every map has one and only passing it is optional. Const traits would cover `S::default()` through a `[const] Default` bound, but not `RandomState::new()`, which seeds itself from the OS at runtime.-->
+
+### Function types
+
+TODO
+
+<!--It would be nice if two functions whose anonymous structs have the same fields, with the same names and types, could unify as values, so that `if c { resize } else { grow }` compiles, and `type Callback = fn(_ { width: u32, height: u32 })` accepts both. The prototype doesn't do this. The generated structs are distinct types whose layouts aren't guaranteed to match, so one possible approach is a conversion shim, like the existing reify shims, that moves the fields from one struct into the other. Limiting it to the same fields would keep `if`/`else` symmetric, never drop a field behind the caller's back, and leave room for structural records to replace the shim later.
+
+The subset and superset conversions of [record types](#record-types) would stretch this further. A function taking `_ { width: u32, height: u32, x: u32 = 0 }` could stand in for a `Callback`, with the shim filling in `x` from its default, and a shim going the other way would drop `x`, which is the silent loss the same-fields limit avoids. Which functions unify would then depend on which conversions apply in which direction, not just on their fields, so the same-fields rule is the conservative place to start. None of this is designed in detail yet.
+
+Generic records are harder. In `fn higher_order<A>(f: impl Fn(A)) { f(a: 4, b: 2) }`, the body can't build an `A`, since the caller picks it. Today that needs a named struct (`impl Fn(FooArgs)`).-->
+
+### Tooling
+
+TODO
+
+<!--Tools that parse Rust themselves don't get any of the compiler's changes. rust-analyzer's parser treats `_ {` as an error and loses highlighting for the rest of the signature, and semantic support needs about as much work as the prototype did. tree-sitter-rust, which Neovim, Helix, Zed, and GitHub use, needs about ten lines of grammar, and currently lacks RFC 3681's default field values too. rustfmt uses rustc's parser, so it formats `_ { .. }` literals and the code around them, but keeps anonymous struct parameters, `;` parameter lists, and named arguments as written.-->
+
+### Prototype gaps
+
+TODO
+
+<!--These are gaps in the prototype, not the design:
+
+- Attribute macros built on `syn` reject anonymous struct parameters, so `#[tokio::main]` and `#[tracing::instrument]` can't be used on such functions.
+- Diagnostics name anonymous structs by location, as `{record@src/main.rs:6:9: 6:10}`, and a few suggestions name a struct you can't write.-->
+
+## 7. Going Further
 
 <div class="aside" markdown="1">
 This section is optional reading. It's less developed than the rest of the
 post, and the main proposal doesn't depend on it. Neither optional fields nor
 `let` records are in the prototype. Both are collapsed below, so feel free to
-skip ahead to [Section 7](#7-limitations-and-open-questions).
+skip ahead to [Section 8](#8-whats-next).
 </div>
 
 <details id="optional-fields">
@@ -842,7 +950,7 @@ That makes the call most people write first, `crop(&img, width: 200, height:
 100)`, compile. It also makes changing a field from `height: u32 = 0` to
 `height: Option<u32>` non-breaking, since callers' `height: 100` still compiles.
 
-Like the implied `..` from [Section 4](#4-sugar), this would be a deliberate
+Like the implied `..` from [Section 4](#4-named-argument-sugar), this would be a deliberate
 exception to "the sugar never adds meaning", and limited the same way, to named
 arguments to an anonymous struct. `_ { height: 100 }` would still be an error,
 and so would `height: 100` against a named struct. Otherwise every struct
@@ -977,7 +1085,7 @@ Records, and their conversions, cover a good part of what RFC 2584 wanted struct
 None of these block structural records later, because each is something records leave out, not something they decide:
 
 - The bare `{ x: 1 }` syntax, for expressions, patterns, and types, is still free.
-- A record's type can't be named, so, like a closure's, its identity is unspecified. Two records with the same fields can become the same type later without changing what any caller writes, and any `fn` pointer shim like the one sketched in [Section 7](#function-types) could be retired the same way.
+- A record's type can't be named, so, like a closure's, its identity is unspecified. Two records with the same fields can become the same type later without changing what any caller writes, and any `fn` pointer shim like the one sketched in [Section 6](#function-types) could be retired the same way.
 - Deriving more traits for records is additive.
 
 #### Converting by field name
@@ -1007,83 +1115,37 @@ A named record gives up what a named struct's name protects, so it has to be the
 -->
 </details>
 
-
-## 7. Limitations and Open Questions
-
-### Non-const defaults
-
-TODO
-
-<!--Field defaults are RFC 3681 defaults, so they have to be const. A default can't call `RandomState::new()`, and it can't reach a generic type's value through its bound, like `S::default()`. A field that needs one becomes an `Option` that the body fills in, as in the `HashMap` example in [Section 3](#botahamec-names-defaults-and-pub-apis). Named structs can fall back on `..Default::default()`, which runs ordinary code, but an anonymous struct has no `Default` impl to call. This is a limit of RFC 3681 rather than of records, so lifting it belongs in a follow-up to that RFC ([Section 8](#8-whats-next)).
-
-RFC 3681 makes defaults const on purpose. Its [rationale][rfc-3681-const] is that `Foo { .. }` stays deterministic and cheap, and that a crate can't break a downstream `const fn` by quietly changing a default to a non-const one. Its [future possibilities][rfc-3681-non-const] leave non-const values open, "potentially allowed but linted against", and expect `Default` impls to become const where they can. The [tracking issue][rust-132162] lists "Expand support to non-const values?" as an open question that doesn't block stabilization, with the author's position that "we shouldn't do that, particularly seeing how powerful const eval is becoming".
-
-That question is where the discussion is. [cart argued][cart-2026], from Bevy, that `bar: Bar = Default::default()`, `String`s, and `seed: usize = rand()` are exactly the defaults people want, and asked why a struct literal can't just be const when all of its defaults are. [scottmcm replied][scottmcm-2026] that [const traits][const-traits-goal] are a 2026 project goal, and asked which cases truly *can't* be const, and how `seed: usize = rand()` compares to `seed: Option<usize> = None`. That last comparison is the `HashMap` example, and this [reply][vultix-2026] applies here too: `Option` says the hasher is optional, when every map has one and only passing it is optional. Const traits would cover `S::default()` through a `[const] Default` bound, but not `RandomState::new()`, which seeds itself from the OS at runtime.-->
-
-### Function types
-
-TODO
-
-<!--It would be nice if two functions whose anonymous structs have the same fields, with the same names and types, could unify as values, so that `if c { resize } else { grow }` compiles, and `type Callback = fn(_ { width: u32, height: u32 })` accepts both. The prototype doesn't do this. The generated structs are distinct types whose layouts aren't guaranteed to match, so one possible approach is a conversion shim, like the existing reify shims, that moves the fields from one struct into the other. Limiting it to the same fields would keep `if`/`else` symmetric, never drop a field behind the caller's back, and leave room for structural records to replace the shim later.
-
-The subset and superset conversions of [record types](#record-types) would stretch this further. A function taking `_ { width: u32, height: u32, x: u32 = 0 }` could stand in for a `Callback`, with the shim filling in `x` from its default, and a shim going the other way would drop `x`, which is the silent loss the same-fields limit avoids. Which functions unify would then depend on which conversions apply in which direction, not just on their fields, so the same-fields rule is the conservative place to start. None of this is designed in detail yet.
-
-Generic records are harder. In `fn higher_order<A>(f: impl Fn(A)) { f(a: 4, b: 2) }`, the body can't build an `A`, since the caller picks it. Today that needs a named struct (`impl Fn(FooArgs)`).-->
-
-### `Option` fields as optional arguments
-
-TODO
-
-<!--Whether the [optional fields](#optional-fields) idea from Section 6, an implied `= None` and a plain `T` wrapped in `Some`, is worth its costs is open. Wrapping makes inference depend on the field's type, needs a rule for `Option<Option<T>>` fields, and would be Rust's first implicit `T` to `Option<T>` conversion. I don't expect this to be accepted, frankly, but it has some attractive qualities.-->
-
-<!-- TODO: settle how `Option` fields should work. -->
-
-### Tooling
-
-TODO
-
-<!--Tools that parse Rust themselves don't get any of the compiler's changes. rust-analyzer's parser treats `_ {` as an error and loses highlighting for the rest of the signature, and semantic support needs about as much work as the prototype did. tree-sitter-rust, which Neovim, Helix, Zed, and GitHub use, needs about ten lines of grammar, and currently lacks RFC 3681's default field values too. rustfmt uses rustc's parser, so it formats `_ { .. }` literals and the code around them, but keeps anonymous struct parameters, `;` parameter lists, and named arguments as written.-->
-
-### Prototype gaps
-
-TODO
-
-<!--These are gaps in the prototype, not the design:
-
-- Attribute macros built on `syn` reject anonymous struct parameters, so `#[tokio::main]` and `#[tracing::instrument]` can't be used on such functions.
-- Diagnostics name anonymous structs by location, as `{record@src/main.rs:6:9: 6:10}`, and a few suggestions name a struct you can't write.-->
-
 ## 8. What's Next
 
-- **An RFC.** The 2020 named-arguments RFC was [closed][rfc-2964-close] because the lang team wanted to see "what the roadmap looks like towards the eventual full solution" before an incremental step. This is meant to be that roadmap, with struct literals with an inferred name now, named-argument sugar on top, and structural records later if they're wanted.
+- **An MCP or RFC.** The 2020 named-arguments RFC was [closed][rfc-2964-close] because the lang team wanted to see "what the roadmap looks like towards the eventual full solution" before an incremental step. This is meant to be that roadmap, with struct literals with an inferred name now, named-argument sugar on top, and structural records later if they're wanted.
 - **Follow-ups to [RFC 3681][rfc-3681].** These are limits of default field values ([tracking issue][rust-132162]), not of anonymous structs, so they belong in follow-ups to that RFC, and anonymous and named structs keep the same rules.
-  - **Non-const defaults.** `hasher: S = RandomState::new()` needs a non-const default. The tracking issue already has it as an open question ([Section 7](#non-const-defaults)).
+  - **Non-const defaults.** `hasher: S = RandomState::new()` needs a non-const default. The tracking issue already has it as an open question ([Section 6](#non-const-defaults)).
   - **API evolution.** RFC 3681 doesn't allow `#[non_exhaustive]` on structs with default field values. If the two are ever allowed together, anonymous structs could opt into `#[non_exhaustive]`, or be non-exhaustive by default, with every literal from outside the crate required to write `..`. Adding a field with a default would then never be breaking ([Section 1](#api-evolution-and-semver)).
 - **Follow-up posts.** Several of the threads cited here are subsumed by this proposal or depend on how it goes, and each should get a comment pointing to it.
-  - **[rfcs#323][rfcs-323], named arguments.** The wishlist issue is still open. Anonymous struct parameters with the [named-argument sugar](#4-sugar) would subsume it.
+  - **[rfcs#323][rfcs-323], named arguments.** The wishlist issue is still open. Anonymous struct parameters with the [named-argument sugar](#4-named-argument-sugar) would subsume it.
   - **[RFC 3444][rfc-3444], inferred types.** `_ { .. }` is the struct half of its path inference, spelled `_` instead of `.`. The two need one spelling, and the struct half doesn't need to wait for enums.
   - **[RFC 2584][rfc-2584], structural records.** It's closed, but a revival would inherit the `let` record [conversion rule](#converting-by-field-name), and anonymous struct parameters could become structural records without changing any caller.
 
 <div class="highlight-block" markdown="1">
 ```rust
 fn send_feedback(_ {
-    from: &User,
-    to: &User,
+    from: impl TryInto<User, Error = InvalidEmail>,
+    to: impl TryInto<User, Error = InvalidEmail>,
     message: &str,
     mood: Mood,
-});
+}) -> Result<(), InvalidEmail>;
 
 send_feedback(_ {
     from: "you@example.com",
     to: "nathan@nixpulvis.com",
-    message: """
+    message: "
       Named arguments are dumb, Rust shouldn't even allow
       multiple arguments. Everything should be curried:
       
       λ(x, y).e := λx.λy.e
-    """,
+    ",
     mood: Mood::Angry,
-});
+})?;
 ```
 </div>
 
@@ -1101,6 +1163,7 @@ TODO: users.rust-lang.org link.
 
 <!-- RFC pull requests -->
 [rfc-2584]: https://github.com/rust-lang/rfcs/pull/2584
+[rfc-2964]: https://github.com/rust-lang/rfcs/pull/2964
 [rfc-3444]: https://github.com/rust-lang/rfcs/pull/3444
 [rfc-3681]: https://github.com/rust-lang/rfcs/pull/3681
 
@@ -1136,6 +1199,8 @@ TODO: users.rust-lang.org link.
 
 <!-- Internals forum threads -->
 [pre-rfc-2016]: https://internals.rust-lang.org/t/pre-rfc-named-arguments/3831
+[pre-rfc-2020]: https://internals.rust-lang.org/t/pre-rfc-named-arguments/12730
+[cad97-2020]: https://internals.rust-lang.org/t/pre-rfc-named-arguments/12730/47
 [pre-rfc-unnamed-struct-types]: https://internals.rust-lang.org/t/pre-rfc-unnamed-struct-types/3872
 [irlo-record-types]: https://internals.rust-lang.org/t/record-types/18258
 [irlo-anon-struct-2025]: https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592
