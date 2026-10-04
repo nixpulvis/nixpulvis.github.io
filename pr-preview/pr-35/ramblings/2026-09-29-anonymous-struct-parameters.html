@@ -437,7 +437,7 @@ In ["Named and Optional Arguments are Awesome"][botahamec], Botahamec tours Dart
 
 Their proposal builds on [a 2016 pre-RFC][pre-rfc-2016]. A parameter marked `pub` can be passed by name, and parameters may have defaults, which callers leave out without a trace. A `pub` parameter can still be passed by position too. `pub` is a poor fit for this, since it has nothing to do with visibility (a private `fn` can have `pub` parameters, and `pub(crate) x: u32` has no sensible meaning), and the post itself flags the keyword as an open question. But that's a small point about a single keyword.
 
-<div class="highlight-block other" markdown="1">
+<div class="highlight-block red" markdown="1">
 ```rust
 // Botahamec's proposal
 fn print_labeled_measurement(pub value: i32, pub unit_label: char = 'm') { .. }
@@ -466,7 +466,7 @@ There's no equivalent of `print_labeled_measurement(5, 'h')`, and that's on purp
 
 Their `HashMap` example folds the eight constructors into one function, quoted here as written. It doesn't address generic parameters yet. `S` and `A` are never declared, and a default like `A = Global` only typechecks when `A` is `Global`, so the post sets the problem aside for its "Future possibilities" section.
 
-<div class="highlight-block other" markdown="1">
+<div class="highlight-block red" markdown="1">
 ```rust
 // Botahamec's proposal, generic parameters ignored
 pub fn new(
