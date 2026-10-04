@@ -9,7 +9,7 @@ Plot[
 ]
 ```
 
-![]({{ '/img/fourier_euler.png' | relative_url }})
+![](/img/fourier_euler.png)
 
 Unlike the "Euler series" we above, which is purely constructive, a <b>square
 wave</b> can be constructed with the Fourier series:
@@ -29,8 +29,8 @@ Plot[
 ]
 ```
 
-![]({{ '/img/fourier_square.png' | relative_url }})
-![]({{ '/img/fourier_square.gif' | relative_url }})
+![](/img/fourier_square.png)
+![](/img/fourier_square.gif)
 
 And a <b>saw wave</b> can be constructed by another:
 
@@ -49,5 +49,5 @@ Plot[
 ]
 ```
 
-![]({{ '/img/fourier_saw.png' | relative_url }})
-![]({{ '/img/fourier_saw.gif' | relative_url }})
+![](/img/fourier_saw.png)
+![](/img/fourier_saw.gif)
