@@ -34,7 +34,7 @@
     <div class="content"><h2 class="title">
     Anonymous Struct Parameters
     <small>
-        10988 words
+        11378 words
         
             drafted
         
@@ -212,7 +212,8 @@ edits to a function are breaking:</p>
 <ul>
   <li><strong>Adding a parameter</strong> is always breaking for positional parameters, however
 adding a field <em>with a default</em> to an anonymous struct isn’t breaking for
-callers that wrote <code class="language-plaintext highlighter-rouge">..</code></li>
+callers that wrote <code class="language-plaintext highlighter-rouge">..</code> or used the named argument <a href="#4-sugar">sugar</a>,
+which implies it</li>
   <li><strong>Reordering</strong> positional parameters is breaking, however reordering fields
 isn’t since they’re passed by name</li>
   <li><strong>Renaming</strong> a positional parameter is free, since its name isn’t part of its
@@ -228,7 +229,7 @@ adding fields without a breaking change. Anonymous structs have no struct item
 to put <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> on, so they don’t even get that choice. If the two are
 ever allowed together, anonymous structs could opt in, or be non-exhaustive by
 default, meaning every literal from outside the crate has to write <code class="language-plaintext highlighter-rouge">..</code>, even
-one that lists every field, as named argument <a href="#call-syntax-fa-x-1">sugar</a>
+one that lists every field, as named argument <a href="#4-sugar">sugar</a>
 already implies. Then adding a field with a default would never be breaking
 (<a href="#8-whats-next">Section 8</a>).</p>
 
@@ -303,6 +304,54 @@ cases.</p>
 <span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">y</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
 </code></pre></div>  </div>
 </div>
+
+<p>Without this, the builder pattern would require a separate builder struct, and a bunch of boilerplate methods:</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">CropOptions</span> <span class="p">{</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">,</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="nb">u32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">None</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">CropOptions</span> <span class="p">{</span>
+    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
+        <span class="k">Self</span> <span class="p">{</span> <span class="n">width</span><span class="p">,</span> <span class="o">..</span><span class="nn">Default</span><span class="p">::</span><span class="nf">default</span><span class="p">()</span> <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">width</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
+        <span class="k">self</span><span class="py">.width</span> <span class="o">=</span> <span class="n">width</span><span class="p">;</span>
+        <span class="k">self</span>
+    <span class="p">}</span>
+
+    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">height</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
+        <span class="k">self</span><span class="py">.height</span> <span class="o">=</span> <span class="nf">Some</span><span class="p">(</span><span class="n">height</span><span class="p">);</span>
+        <span class="k">self</span>
+    <span class="p">}</span>
+
+    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">x</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
+        <span class="k">self</span><span class="py">.x</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+        <span class="k">self</span>
+    <span class="p">}</span>
+
+    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">y</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
+        <span class="k">self</span><span class="py">.y</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+        <span class="k">self</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">crop</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Image</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">CropOptions</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Image</span> <span class="p">{</span>
+    <span class="nd">unimplemented!</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">img</span> <span class="o">=</span> <span class="nn">Image</span><span class="p">::</span><span class="nf">from_png</span><span class="p">(</span><span class="s">"cat.png"</span><span class="p">);</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.width</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.width</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.height</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+  <span class="nf">.width</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+  <span class="nf">.x</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+  <span class="nf">.y</span><span class="p">(</span><span class="mi">25</span><span class="p">));</span>
+</code></pre></div></div>
 
 <h3 id="existing-structs">Existing structs</h3>
 
@@ -679,6 +728,9 @@ That's why I think structs are the right direction, rather than a separate named
 Everything so far is struct syntax in new places. The sugar here is the part that looks like named arguments, and like the elided struct type in Section 1, it only removes something from what you write. The rule to keep in mind is that **the sugar never adds meaning.** There is one deliberate exception, which is that named arguments to an anonymous struct imply `..`.
 
 I'm less sure about this part than about Sections 1 and 2. Everything they offer works without it, and sugar has costs that structs don't. It gives every call two spellings, so codebases will split on style. It claims `:` in argument lists for good, and ties named arguments to the last parameter, which makes adding a parameter after it a breaking change. The implied `..` hides which fields took their defaults, which is exactly what Klabnik worries about. And the `;` signature syntax hides that the parameter is a struct at all, which can surprise someone who passes the function as a value. These are reasons to add the sugar later, if at all, once the struct parts have proven themselves.
+
+TODO: when uncommenting, point the `[sugar](#4-sugar)` links in "API evolution
+and SemVer" back at `#call-syntax-fa-x-1`, and delete this note.
 
 ### Call syntax: `f(a, x: 1)`
 
