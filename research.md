@@ -15,7 +15,7 @@ layout: default
     {% endunless %}
     {% if research.draft %}
         <li class="draft">
-            <a href="{{ research.url }}">{{ research.title }}</a>
+            <a href="{{ research.url | relative_url }}">{{ research.title }}</a>
             <small>
                 {{ research.content | number_of_words }} words
                 drafted on {{ research.date | date: "%B %d, %Y" }}.
@@ -23,7 +23,7 @@ layout: default
         </li>
     {% else %}
         <li>
-            <a href="{{ research.url }}">{{ research.title }}</a>
+            <a href="{{ research.url | relative_url }}">{{ research.title }}</a>
             <small>
                 {{ research.content | number_of_words }} words
                 published on {{ research.date | date: "%B %d, %Y" }}.
@@ -45,7 +45,7 @@ layout: default
     {% endunless %}
     {% if research.draft %}
         <li class="draft">
-            <a href="{{ research.url }}">{{ research.title }}</a>
+            <a href="{{ research.url | relative_url }}">{{ research.title }}</a>
             <small>
                 {{ research.content | number_of_words }} words
                 drafted on {{ research.date | date: "%B %d, %Y" }}.
@@ -53,7 +53,7 @@ layout: default
         </li>
     {% else %}
         <li>
-            <a href="{{ research.url }}">{{ research.title }}</a>
+            <a href="{{ research.url | relative_url }}">{{ research.title }}</a>
             <small>
                 {{ research.content | number_of_words }} words
                 published on {{ research.date | date: "%B %d, %Y" }}.

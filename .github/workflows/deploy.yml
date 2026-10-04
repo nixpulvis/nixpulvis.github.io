@@ -1,0 +1,38 @@
+# Build master and publish it to the root of the gh-pages branch, which
+# GitHub Pages serves (Settings > Pages > Deploy from a branch > gh-pages).
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - run: bundle exec jekyll build
+
+      # The site is already built; stop Pages from running Jekyll over it.
+      - run: touch _site/.nojekyll
+
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: _site
+          branch: gh-pages
+          # Leave PR previews alone, and rebase instead of force-pushing so
+          # concurrent preview deploys aren't clobbered.
+          clean-exclude: pr-preview/
+          force: false

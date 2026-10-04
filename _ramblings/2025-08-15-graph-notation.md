@@ -21,7 +21,7 @@ following shows a simple fully-connected graph of four nodes.
 G = {A, B, C, D}
 ```
 
-![](/img/research/achilles/connected-graph.png)
+![]({{ '/img/research/achilles/connected-graph.png' | relative_url }})
 
 We can nest expressions within each other:
 
@@ -47,7 +47,7 @@ G = [A, B, C, D]
   = [[A, B], [C, D]]
 ```
 
-![](/img/research/achilles/disconnected-graph.png)
+![]({{ '/img/research/achilles/disconnected-graph.png' | relative_url }})
 
 #### Star Graphs
 
@@ -68,7 +68,7 @@ G = { S, [A, B, C, D] }
   = [{S, A}, {S, B}, {S, C}, {S, D}]
 ```
 
-![](/img/research/achilles/star-graph.png)
+![]({{ '/img/research/achilles/star-graph.png' | relative_url }})
 
 #### Example Reduction
 
@@ -98,7 +98,7 @@ we asked for.
 ---
 
 This was originally a thought experiment in [Achilles' Tent Note
-#12](/research/2019-12-02-achilles-12), but I think it's a fun way to express
+#12]({{ '/research/2019-12-02-achilles-12' | relative_url }}), but I think it's a fun way to express
 arbitrary graphs. I'm not sure how novel (or complete) it is however, but I
 thought I'd unbury it a bit in case someone else finds it interesting. I've
 also trimmed the contents of the original post a bit to remove the stuff

@@ -14,7 +14,7 @@ think/build clearly.
 >
 > -- <cite>Ralph Waldo Emerson</cite>
 
-Please be aware, unlike my [Ramblings](/ramblings), these projects are living
+Please be aware, unlike my [Ramblings]({{ '/ramblings' | relative_url }}), these projects are living
 documents. I may update them without notice to add detail or track changes to
 the projects themselves.
 
@@ -25,7 +25,7 @@ the projects themselves.
     {% endif %}
     {% unless project.draft %}
         <li class="project">
-            <a class="name" href="{{ project.url }}">
+            <a class="name" href="{{ project.url | relative_url }}">
                 {{ project.title }}
             </a>
             {{ project.excerpt }}
@@ -38,7 +38,7 @@ the projects themselves.
 {% for project in site.projects %}
     {% if project.draft %}
         <li class="project draft">
-            <a class="name" href="{{ project.url }}">
+            <a class="name" href="{{ project.url | relative_url }}">
                 {{ project.title }}
             </a>
             {{ project.excerpt }}

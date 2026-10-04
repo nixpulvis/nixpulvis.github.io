@@ -6,31 +6,31 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>nixpulvis - {{ page.title | default: page.path | split:'/' | last }}</title>
-    <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
-    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/syntax.css">
-    <link rel="stylesheet" href="{{ page.style }}" />
-    <script src="/js/mousetrap.min.js"></script>
+    <link rel="icon" type="image/png" href="{{ '/img/favicon-32x32.png' | relative_url }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ '/img/favicon-16x16.png' | relative_url }}" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="{{ '/css/fonts.css' | relative_url }}" />
+    <link rel="stylesheet" href="{{ '/css/style.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/css/syntax.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ page.style | relative_url }}" />
+    <script src="{{ '/js/mousetrap.min.js' | relative_url }}"></script>
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <script src="/js/main.js"></script>
+    <script src="{{ '/js/main.js' | relative_url }}"></script>
     {% for script in page.scripts %}
-      <script src="{{ script }}"></script>
+      <script src="{{ script | relative_url }}"></script>
     {% endfor %}
   </head>
 
   <body class="container">
     <header>
-      <img id="lambda" src="/img/cat-lambda.png" />
-      <img id="me" src="/img/me.jpg" class="hidden" />
-      <a href="/" class="identity">nixpulvis</a>
+      <img id="lambda" src="{{ '/img/cat-lambda.png' | relative_url }}" />
+      <img id="me" src="{{ '/img/me.jpg' | relative_url }}" class="hidden" />
+      <a href="{{ '/' | relative_url }}" class="identity">nixpulvis</a>
       <nav>
         <ul>
-          <li><a href="/projects">Projects</a></li>
-          <li><a href="/ramblings">Ramblings</a></li>
-          <li class="icon"><a href="/references">&</a></li>
-          <li class="icon"><a href="/musings">♪</a></li>
+          <li><a href="{{ '/projects' | relative_url }}">Projects</a></li>
+          <li><a href="{{ '/ramblings' | relative_url }}">Ramblings</a></li>
+          <li class="icon"><a href="{{ '/references' | relative_url }}">&</a></li>
+          <li class="icon"><a href="{{ '/musings' | relative_url }}">♪</a></li>
         </ul>
       </nav>
     </header>
@@ -38,7 +38,7 @@
     <div class="content">{{ content }}</div>
 
     <footer>
-      <a href="/about">Nathan Lilienthal</a>
+      <a href="{{ '/about' | relative_url }}">Nathan Lilienthal</a>
       &ndash;
       <a href="https://en.wikipedia.org/wiki/Copyright_notice"
          class="copyleft"

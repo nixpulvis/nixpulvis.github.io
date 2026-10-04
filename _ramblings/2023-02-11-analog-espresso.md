@@ -4,7 +4,7 @@ layout: rambling
 
 This is how I currently make my espresso.
 
-![](/img/ramblings/2023-02-11-analog-espresso/0.jpeg)
+![]({{ '/img/ramblings/2023-02-11-analog-espresso/0.jpeg' | relative_url }})
 
 Someday I'll pull the perfect shot and be lucky enough to have [recorded the
 moment](404-record). Another day, I'll have some [new sensors and
@@ -15,7 +15,7 @@ equipment, however as variables and conditions change, so too must the barista.
 Some variables, like temperature, I feel I have something of a handle on, while
 others like bean quality and humidity, I'm still less sure of.
 
-![](/img/ramblings/2023-02-11-analog-espresso/1-2.jpeg)
+![]({{ '/img/ramblings/2023-02-11-analog-espresso/1-2.jpeg' | relative_url }})
 
 I try to be consistent about things, but it's important to remember the
 following maxim:
@@ -32,7 +32,7 @@ YYYY-MM-DD HH-MM-SS <TEMP> <NOTE>
                            ...
 ```
 
-![](/img/ramblings/2023-02-11-analog-espresso/1-1.jpeg)
+![]({{ '/img/ramblings/2023-02-11-analog-espresso/1-1.jpeg' | relative_url }})
 
 With that, let's begin.
 
@@ -96,10 +96,10 @@ than you might originally think. Too much force can still lead to a slow and
 bitter brew however, so do be careful.
 
 <div>
-<img src="/img/ramblings/2023-02-11-analog-espresso/2-1.jpeg" width="48%"
+<img src="{{ '/img/ramblings/2023-02-11-analog-espresso/2-1.jpeg' | relative_url }}" width="48%"
 style="float: left; margin-right: 4%;" />
 
-<img src="/img/ramblings/2023-02-11-analog-espresso/2-2.jpeg" width="48%"
+<img src="{{ '/img/ramblings/2023-02-11-analog-espresso/2-2.jpeg' | relative_url }}" width="48%"
 style="align: left" />
 </div>
 
@@ -130,7 +130,7 @@ start a bit off cue. You're the boss.
           +     30 154˚F BREW OFF 
 ```
 
-![](/img/ramblings/2023-02-11-analog-espresso/3.jpeg)
+![]({{ '/img/ramblings/2023-02-11-analog-espresso/3.jpeg' | relative_url }})
 
 With a double spout like mine, you should start to see rich, dark, and creamy
 liquid streaming out of both sides within no more than 2 or 3 seconds. Watch
@@ -149,7 +149,7 @@ for a happy machine and reduces the burden of a deeper clean later.
 Repeat the grinding and brewing process as needed, remember things do tend to
 get a bit hotter while in use.
 
-![](/img/ramblings/2023-02-11-analog-espresso/4.jpeg)
+![]({{ '/img/ramblings/2023-02-11-analog-espresso/4.jpeg' | relative_url }})
 
 
 ### "How do you take it?"
@@ -164,6 +164,6 @@ Now that the coffee is ready, it must be served as fast as possible.
 
 The afternoon is for straight espresso, "No milk, thanks".
 
-![](/img/ramblings/2023-02-11-analog-espresso/5.jpeg)
+![]({{ '/img/ramblings/2023-02-11-analog-espresso/5.jpeg' | relative_url }})
 
 Enjoy.

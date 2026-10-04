@@ -172,5 +172,5 @@ TODO: Add this section after we have a type checker implemented.
 
 [1]: ...
 [documentation]: https://docs.rs/lalrpop-lambda
-[euler]: /math/00-euler
+[euler]: {{ '/math/00-euler' | relative_url }}
 [lalrpop]: https://github.com/lalrpop/lalrpop

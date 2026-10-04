@@ -18,7 +18,7 @@ customized my UI with addons that let me drag around boxes, and put things
 inside them. All from within the game, and without a single line of code.
 **At this point in my life I had never written any code.**
 
-![](/img/epic-ui/pretukui.jpg)
+![]({{ '/img/epic-ui/pretukui.jpg' | relative_url }})
 
 As you can see the result was a very "boxy" UI, and not one that I was very
 happy with. I was developing an opinion that the raider (PvE WoW player) is
@@ -46,7 +46,7 @@ An early version of Epic UI can be seen below. The unitframes (boxes with a
 claw next to them in the screenshot) have player info in the middle, a design
 I'm glad to have dropped.
 
-![](/img/epic-ui/early.jpg)
+![]({{ '/img/epic-ui/early.jpg' | relative_url }})
 
 Many other features were added, most notably a "buff" tracker (under the
 minimap), to ensure I had every advantage possible before each boss fight.
@@ -59,12 +59,12 @@ I ditched the middle info panel, and started to develop a real style. Some
 friends of mine started to use my UI, and I created a bit of a brand for the
 whole thing.
 
-![](/img/epic-ui/epicui_banner_v1.jpg)
+![]({{ '/img/epic-ui/epicui_banner_v1.jpg' | relative_url }})
 
 As the style grew, I updated the banner logo, and even started to version
 things (sadly 2.1.1 was the last version).
 
-![](/img/epic-ui/epicui_banner_v2.png)
+![]({{ '/img/epic-ui/epicui_banner_v2.png' | relative_url }})
 
 In EpicUI 2.0 I decided to move the power bar (mana/etc) to the border of the
 unitframes. This was in many ways what distinguished my UI from the rest. Even
@@ -76,7 +76,7 @@ I would occasionally play a healer (resto shaman). I quickly discovered that my
 UI wasn't optimal for this role, so I started further customizing it for each
 class/spec.
 
-![](/img/epic-ui/healing_uf.png)
+![]({{ '/img/epic-ui/healing_uf.png' | relative_url }})
 
 I only ever made the base (caster DPS), and shaman healer layouts however.
 
@@ -88,7 +88,7 @@ can have very dramatic effect. Below I managed to capture a bug that blocked a
 good part of my screen while fighting a new progression boss in Firelands,
 Majordomo Staghelm.
 
-![](/img/epic-ui/bug.jpg)
+![]({{ '/img/epic-ui/bug.jpg' | relative_url }})
 
 Other bugs have caused me to be unable to perform actions, or see needed boss
 abilities. It was a delicate act balancing developing my UI, and maintaining
@@ -110,7 +110,7 @@ should be easy to figure out. Sure enough after only a few hours of programming
 I had a simple addon that would calculate the "proc-rate", even if the addon
 looked like garbage.
 
-![](/img/epic-ui/dragonwrath.png)
+![]({{ '/img/epic-ui/dragonwrath.png' | relative_url }})
 
 #### A Hack to Progress
 
@@ -164,7 +164,7 @@ owe it all to a little LUA and a lot of help from the members of Tukui.
 
 -- <cite>Epicgrim</cite>
 
-![](/img/epic-ui/invincible.jpg)
+![]({{ '/img/epic-ui/invincible.jpg' | relative_url }})
 
 [tukui]: https://www.tukui.org/
 [wow-api]: http://wowprogramming.com/docs
