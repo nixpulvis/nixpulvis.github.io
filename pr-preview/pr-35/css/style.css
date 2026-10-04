@@ -1,0 +1,385 @@
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: "Computer Modern Serif", serif;
+  font-size: 18px;
+  color: #282c34;
+}
+
+pre {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+
+pre::-webkit-scrollbar {
+  display: none;
+}
+
+/* Highlighted code blocks: `{: .highlight-block}` after the fence. */
+.highlight-block {
+  background: #fff6db;
+  border-left: 10px solid #f0c94a;
+  margin: 1em 0;
+  padding: 5px 10px;
+}
+
+/* Other people's proposed syntax: `<div class="highlight-block other" ...>`. */
+.highlight-block.other {
+  background: #fde8e6;
+  border-left-color: #e0645a;
+}
+
+.highlight-block pre {
+  margin: 0;
+}
+
+.highlight-block > :first-child {
+  margin-top: 0;
+}
+
+.highlight-block > :last-child {
+  margin-bottom: 0;
+}
+
+/* Asides: `<div class="aside" markdown="1">` around the paragraphs. */
+.aside {
+  border: 1px dashed #aaa;
+  border-radius: 5px;
+  color: #555;
+  font-size: 16px;
+  margin: 1.5em 0;
+  padding: 10px 15px;
+}
+
+.aside > :first-child {
+  margin-top: 0;
+}
+
+.aside > :last-child {
+  margin-bottom: 0;
+}
+
+code {
+  font-family: "Computer Modern Typewriter", monospace;
+}
+
+blockquote {
+  background: #eee;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 0;
+  padding: 5px 10px;
+}
+
+details {
+  margin: 0 0 15px;
+  padding: 10px;
+  border: 1px dashed black;
+  border-radius: 5px;
+}
+
+details :last-child {
+  margin-bottom: 0;
+}
+
+summary {
+  cursor: pointer;
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px dashed black;
+}
+
+kbd {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 2px 4px 0px;
+  box-shadow: 1px 1px 1px #777;
+  font-size: calc(100% - 6px);
+  vertical-align: middle;
+  background: #eee;
+  color: #555;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+table {
+  text-align: left;
+  border-collapse: collapse;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+table tr:nth-child(even) {
+  background-color: #ccc;
+}
+
+table th {
+  border: 1px solid black;
+  color: #eee;
+  background-color: #666;
+}
+
+table th, table td {
+  border: 1px solid black;
+  padding: 5px 10px;
+}
+
+form input,
+form textarea,
+form fieldset,
+form select,
+form button
+{
+  display: block;
+  margin-bottom: 10px;
+}
+
+form input[type=text], form textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+form input[type=radio] {
+  display: inline-block;
+}
+
+form input[type=submit], form button {
+  margin-top: 15px;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.nintendo {
+  font-family: "Pixel";
+  letter-spacing: 0px;
+  font-variant: caps;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media only screen
+and (max-device-width : 600px) {
+  .container {
+    width: 90%;
+  }
+}
+
+.identity {
+  font-size: 32px;
+  text-decoration: none;
+  color: inherit;
+}
+
+
+#me {
+  position: absolute;
+  right: 80px;
+}
+
+header {
+  padding: 10px 0;
+  border-bottom: 1px dashed black;
+}
+
+header img {
+  height: 60px;
+  margin-top: 5px;
+  float: right;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.gif-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.gif-grid img {
+    margin: 10px 5px auto;
+}
+
+footer {
+  margin-top: 50px;
+  padding: 10px 0;
+  font-size: 14px;
+  border-top: 1px dashed black;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+footer .copyleft {
+  display: inline-block;
+  margin-right: -3px;
+  padding-bottom: 3px;
+  font-size: 10px;
+  vertical-align: middle;
+  transform: scale(-1, 1);
+}
+
+h2 small {
+  display: block;
+  font-size: 16px;
+}
+
+/* Heading links: `<a class="anchor">`, added by js/main.js. */
+.anchor {
+  position: absolute;
+  width: 1em;
+  margin-left: -1.25em;
+  padding-right: 0.25em;
+  text-align: right;
+  color: #aaa;
+  text-decoration: none;
+  visibility: hidden;
+}
+
+.anchored {
+  cursor: pointer;
+}
+
+/* Past the dashed border: `details` has 10px padding and a 1px border. */
+details .anchor {
+  margin-left: calc(-1.25em - 11px);
+}
+
+:is(h1, h2, h3, h4, h5, h6):hover > .anchor,
+.anchor:focus {
+  visibility: visible;
+}
+
+.anchor:hover {
+  color: inherit;
+}
+
+/* h1 a, */
+/* h1 a:link, */
+/* h1 a:active, */
+/* h1 a:visited */
+/* h2 a, */
+/* h2 a:link, */
+/* h2 a:active, */
+/* h2 a:visited */
+/* h3 a, */
+/* h3 a:link, */
+/* h3 a:active, */
+/* h3 a:visited */
+/* h4 a, */
+/* h4 a:link, */
+/* h4 a:active, */
+/* h4 a:visited */
+/* h5 a, */
+/* h5 a:link, */
+/* h5 a:active, */
+/* h5 a:visited, */
+/* h6 a, */
+/* h6 a:link, */
+/* h6 a:active, */
+/* h6 a:visited */
+/* { */
+/*   color: #282c34 !important; */
+/* } */
+
+nav ul {
+  margin: -7px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+nav .icon {
+  max-height: 24px;
+}
+
+nav .icon a {
+  text-decoration: none;
+}
+
+/* Rambling and Project Styles */
+
+li.draft {
+  opacity: 0.25;
+}
+
+.references {
+  background: #eee;
+  border: 1px dashed black;
+  border-radius: 5px;
+  font-size: 14px;
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.references li:before {
+  content: '- ';
+}
+
+@media print {
+  header {
+    display: none;
+  }
+
+  footer {
+    display: none;
+  }
+
+  .content * {
+    font-family: serif;
+    color: black;
+  }
+
+  .content code {
+    font-family: monospace;
+  }
+
+  blockquote {
+    border-left: 3px solid black;
+    background-color: white;
+  }
+
+  .anchor {
+    display: none;
+  }
+
+  h2:first-child {
+    margin-top: 0;
+  }
+
+  /* TODO: How to handle safari? */
+  @page {
+    margin-top: 70px;
+  }
+}

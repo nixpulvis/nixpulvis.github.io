@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Overview of Mathematics</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-35/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-35/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-35/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-35/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-35/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-35/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-35/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-35/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    Overview of Mathematics
+    <small>
+        1107 words
+        written by Nathan Lilienthal
+    </small>
+</h2>
+
+<h2 id="overview-of-mathematics">Overview of Mathematics</h2>
+
+<p>Mathematics makes use of symbols and names somewhat liberally, allowing for a
+certain amount of conciseness and expressiveness, but not always
+disambiguation. Notion can be context sensitive, be careful.</p>
+
+<p>Also, this is <strong>not</strong> a guide, or a lesson. I’m mostly trying to catalog useful
+notation and expressions.</p>
+
+<p><strong>Reader Be Warned</strong></p>
+
+<ol>
+  <li><a href="#logic">Logic</a>
+    <ol>
+      <li>Symbols</li>
+      <li>Rules</li>
+      <li>Proofs</li>
+    </ol>
+  </li>
+  <li><a href="#mathematics">Mathematics</a>
+    <ol>
+      <li>Notation
+        <ol>
+          <li>Objects</li>
+          <li>Operations &amp; Expressions</li>
+          <li>Conventions</li>
+        </ol>
+      </li>
+      <li>Subjects
+        <ol>
+          <li>Algebra</li>
+          <li>Calculus</li>
+          <li>Linear Algebra</li>
+          <li>Statistics</li>
+          <li>Combinatorics</li>
+          <li>Set/Group/Category Theory</li>
+          <li>Real Analysis*</li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li>Programming</li>
+  <li>Graphics and Plotting</li>
+  <li>Abstraction &amp; Application</li>
+</ol>
+
+<hr />
+
+<h1 id="logic">Logic</h1>
+
+<p>Logic is the foundation of all reasoning and thought. Though, not all logics
+are created equal.</p>
+
+<p>Formal logic denotes a collection of symbols and rules for these symbols. Used
+carefully, one can start here and build whole models of mathematics and thus
+anything.</p>
+
+<h3 id="symbols">Symbols</h3>
+
+<h5 id="negation-neg-a-a">Negation: \(\neg A\), \(!A\)</h5>
+<p>“Not” is written as \(\neg\) (or \(!\) by programmers). For example, all roads
+do <strong>not</strong> lead to Rome. Let’s call this proposition \(\neg R\).</p>
+
+<h5 id="equivalence-a-equiv-b-a-leftrightarrow-b">Equivalence: \(A \equiv B\), \(A \leftrightarrow B\)</h5>
+<p>We could say that all roads <em>do</em> in fact lead to Rome, and that would be \(\neg
+\neg R \equiv R\). This could also be written as \(\neg \neg R \leftrightarrow
+R\) (or even \(\neg \neg R \sim R\) in Kleene’s “Mathematical Logic”).</p>
+
+<h5 id="junction-a-land-b-a-lor-b">Junction: \(A \land B\), \(A \lor B\)</h5>
+<p>“And” and “Or” are written as \(\land\), and \(\lor\), respectively. We
+obviously can’t claim \(R \land \neg R\) is true.</p>
+
+<h5 id="implication-a-rightarrow-b-a-rightarrow-b">Implication: \(A \Rightarrow B\), \(A \rightarrow B\)</h5>
+<p><em>(also \(A \supset B\) in Kleene’s “Mathematical Logic”)</em></p>
+
+<h5 id="existentialization-exists-a">Existentialization: \(\exists A\)</h5>
+<h5 id="universilization-forall-a">Universilization: \(\forall A\)</h5>
+
+<h5 id="proof-vdash-a">Proof: \(\vdash A\)</h5>
+<h5 id="entailment-vdash-a">Entailment: \(\vDash A\)</h5>
+<p>We can now formally state in our observer language, \(\nvDash R \land \neg R\),
+for example.</p>
+
+<h5 id="approximation-sim-a-approx-a-o">Approximation: \(\sim A\), \(\approx A\), \(O\)</h5>
+<p>Somewhere along the way to Rome I might ask, “How long has it been since we
+left camp?”, which, unless someone or something was perfectly counting, could
+only be met with \(\sim 12\) hours. It might also be useful to write \(t
+\approx 12\). Looking over at the travelers along side us, we recognize a few
+from hours ago when we left. We could say our distance (\(d_1\)) and their
+distance (\(d_2\)) are related as \(d_1(t) \sim d_2(x)\), or even \(O(d_1(t)) =
+O(d_2(t))\).</p>
+
+<h1 id="mathematics">Mathematics</h1>
+
+<h3 id="notation">Notation</h3>
+
+<h5 id="objects">Objects</h5>
+
+<p>Numbers are the primary objects of math. You can use numbers to count, for
+example, \(1, 2, 3\), Go! You can use numbers for measures of units, for
+example, the current temperature \(65°F\).</p>
+
+<p>Fractions are for frogs, \(\frac{3}{7}\), ribbit.</p>
+
+<h5 id="operations--expressions">Operations &amp; Expressions</h5>
+
+<p>Math is full of various operations you can write into valid (or invalid)
+mathematical notation. Values can be computed, like \(\pi^3\), or \(\sqrt[3]
+2\).</p>
+
+<h5 id="equations">Equations</h5>
+
+<p>All hail the mighty equal sign, \(=\). Simply put, the equal sign says two
+things are identical, or equal. We call this an equation.</p>
+
+<p>A really obvious equation might be \(2 + 2 = 4\), while we can represent
+something as complex as the concept of a limit as simply as \(1 =
+0.9999999\dots\) or \(1 = 0.\overline{999}\).</p>
+
+<h5 id="variables">Variables</h5>
+
+<p>Many equations have letters in them, which can allow a fixed value to change
+with the variable, for example \(x^2\) grows quickly, but \(2^x\) even faster.
+Some variables are used to represent physical, or conceptual properties, for
+example \(a^2 + b^2 = c^2\) describes the edge lengths of a triangle, where
+\(a\) and \(b\) and the sides, and \(c\) is the hypotenuse.</p>
+
+\[k_{n+1} = n^2 + k_n^2 - k_{n-1}\]
+
+<h2 id="summation-and-production">Summation and Production</h2>
+
+\[\sum_{i=0}^n f(i) \hspace{5em} \prod_{i=1}^n g(i)\]
+
+<h2 id="vectors-and-matrices">Vectors and Matrices</h2>
+
+<p>Vectors come in a many forms. For example as a \(\vec{v}\) or as three (in this
+case) coefficients along with component unit vectors starting with \(\hat{i},
+\hat{j}, \hat{k}, \ldots\).</p>
+
+\[\vec{v} = [10, 25, -37.2]
+        = 10\hat{i} + 25\hat{j} - 37.2\hat{k}\]
+
+<p>Vectors may also be written in matrix form as \(A\) or \(B\).</p>
+
+\[\begin{align}
+A_n &amp;\in [a_1, a_2, \ldots, a_n] \\
+B_n &amp;\in [b_1, b_2, \ldots, b_n] \\\\
+A + B      &amp;= (a_1 + b_1, a_2 + b_2, \ldots, a_n + b_n) \\
+A \times B &amp;= \hat{n} \left\|A\right\| \left\|B\right\| \sin(\theta)
+  \hspace{3em}\rlap{\in \mathbb{R}^3} \\
+A \cdot B  &amp;= \sum_{i=1}^n a_i b_i \\
+\end{align}\]
+
+<p>Matrices are just vectors of vectors.</p>
+
+\[A =
+  \begin{pmatrix}
+    a_{11}  &amp; a_{12} &amp; \cdots &amp; a_{1n} \\
+    a_{21}  &amp; a_{22} &amp; \cdots &amp; a_{2n} \\
+    \vdots  &amp; \vdots &amp; \ddots &amp; \vdots \\
+    a_{m1}  &amp; a_{m2} &amp; \cdots &amp; a_{mn}
+ \end{pmatrix} \\\]
+
+<p>Transpose</p>
+
+\[(A^T)_{ij} = A_{ji}\]
+
+\[(A^T)^T = A\]
+
+<p>Addition</p>
+
+\[A + B =
+ \begin{pmatrix}
+  a_{11} + b_{11} &amp; a_{12} + b_{12} &amp; \cdots &amp; a_{1n} + b_{1n} \\
+  a_{21} + b_{21} &amp; a_{22} + b_{22} &amp; \cdots &amp; a_{2n} + b_{2n} \\
+  \vdots          &amp; \vdots          &amp; \ddots &amp; \vdots          \\
+  a_{m1} + b_{m1} &amp; a_{m2} + b_{m2} &amp; \cdots &amp; a_{mn} + b_{mn}
+ \end{pmatrix} \\\]
+
+\[\begin{align}
+A + 0     &amp;= A \\
+A + B     &amp;= B + A \\
+A + B + C &amp;= (A + B) + C = A + (B + C) \\
+(A + B)^T &amp;= A^T + B^T
+\end{align}\]
+
+<p>Scalar Multiplication</p>
+
+\[\lambda A =
+ \begin{pmatrix}
+  \lambda a_{11} &amp; \lambda a_{12} &amp; \cdots &amp; \lambda a_{1n} \\
+  \lambda a_{21} &amp; \lambda a_{22} &amp; \cdots &amp; \lambda a_{2n} \\
+  \vdots         &amp; \vdots         &amp; \ddots &amp; \vdots         \\
+  \lambda a_{m1} &amp; \lambda a_{m2} &amp; \cdots &amp; \lambda a_{mn}
+ \end{pmatrix} \\\\\]
+
+\[\begin{align}
+        y &amp;= Ax \hspace{5em}x\in\mathbb{R}^n, \hspace{.5em}y\in\mathbb{R}^m \\
+\lambda A &amp;\neq A \lambda
+\end{align}\]
+
+<p>Matrix Multiplication</p>
+
+\[AB = \sum_{k=1}^p a_{ik} b_{kj} \hspace{4em}i = 1, \ldots, m,
+                                \hspace{.5em}j = 1, \ldots, n\]
+
+\[\begin{align}
+0A       &amp;= 0, A0 = 0 \\
+IA       &amp;= A, AI = A \\
+ABC      &amp;= (AB)C = A(BC) \\
+A(B + C) &amp;= AB + AC \\
+(AB)^T   &amp;= B^T A^T \\
+\end{align}\]
+
+<p>Exponentiation</p>
+
+\[\begin{align}
+A^0     &amp;= I \\
+A^k     &amp;= \prod_{i=1}^k A \\\\
+\end{align}\]
+
+\[A^k A^l = A^{k+l} \\\]
+
+<p>Inverse</p>
+
+\[\begin{align}
+A^{-1} A         &amp;= I \\
+(A^{-1})^{-1}    &amp;= A
+\end{align}\]
+
+\[\begin{align}
+(AB)^{-1}        &amp;= B^{-1} A^{-1} \\
+(A^T)^{-1}       &amp;= (A^{-1})^T \\
+I^{-1}           &amp;= I \\
+(\lambda A)^{-1} &amp;= (1/\lambda) A^{-1}
+\end{align}\]
+
+<h2 id="combinatorics">Combinatorics</h2>
+
+\[\binom{n}{k} = \frac{n!}{k!(n-k)!}\]
+
+<h2 id="limits">Limits</h2>
+
+<p>A \(\lim_{x\to\infty}\) is a way to talk about the convergence of something.</p>
+
+\[\lim_{x\to\infty} f(x)\]
+
+<h2 id="derivatives">Derivatives</h2>
+
+\[\frac{\partial u}{\partial t}
+   = h^2 \left( \frac{\partial^2 u}{\partial x^2}
+      + \frac{\partial^2 u}{\partial y^2}
+      + \frac{\partial^2 u}{\partial z^2} \right)\]
+
+<h2 id="integration">Integration</h2>
+
+<p>Integral \(\int_{a}^{b} x^2 dx\) inside text looks nice too.</p>
+
+\[\frac{d}{dx}\left( \int_{0}^{x} f(u)\,du\right)=f(x).\]
+
+<h2 id="cases">Cases</h2>
+
+<p>This is where things can get “fun”.</p>
+
+\[f(n) =
+  \begin{cases}
+    n/2       &amp; \quad \text{if } n \text{ is even}\\
+    -(n+1)/2  &amp; \quad \text{if } n \text{ is odd}
+  \end{cases}\]
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-35/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

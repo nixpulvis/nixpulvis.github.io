@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Building a Shell - Part 1</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-35/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-35/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-35/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-35/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-35/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-35/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-35/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-35/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    Building a Shell - Part 1
+    <small>
+        1456 words
+        
+            published
+        
+        on July 11, 2018.
+    </small>
+</h2>
+
+<p>A shell is one of the best computer interfaces I’ve ever used.
+Twas <em>declarative</em>, before being declarative was cool. It’s
+<em>keyboard centric</em>, making it fast, and reliable to use. Sure, a
+shell isn’t the right tool for everything. I’m not going to try
+and convince you to do your photo editing by typing <code class="language-plaintext highlighter-rouge">lighten(0, 0,
+100, 100, 50%)</code>. A shell <strong>is</strong> the right tool for more tasks than many
+people think (a topic for another day).</p>
+
+<p>This is part 1 of a series I’ll be writing on the creation of <a href="https://nixpulvis.com/oursh/oursh"><code class="language-plaintext highlighter-rouge">oursh</code></a>,
+a modern POSIX compatible shell written in Rust. In this post I want to explain
+what a shell is, and build a very simple one.  The shell we create will not be
+fast, or even good, but it’ll work better than you might think ~50 lines of
+Ruby would.</p>
+
+<h3 id="shell-basics">Shell Basics</h3>
+
+<p>A <em>terminal</em> is a graphical application, or device which generally runs a
+<em>shell</em>. A shell is a special kind of read eval print loop (REPL), that is
+primarily concerned with running subprocesses within the operating system.</p>
+
+<p>A shell generally prints a <em>prompt</em> (<code class="language-plaintext highlighter-rouge">$</code> for example) at the start of your
+terminal’s line before waiting for a command. Using the shell is easy, just
+type your command and hit return. The shell will execute the command, and after
+everything’s done return you back to another prompt.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "Hello World"
+Hello World
+$ date --iso-8601
+2018-07-11
+...
+</code></pre></div></div>
+
+<p>You may have heard the saying that everything in UNIX is a file. Well that’s
+kinda true, but here we’re not reading and writing to a file that’s actually on
+the filesystem, we’re interacting with <code class="language-plaintext highlighter-rouge">STDIN</code>, <code class="language-plaintext highlighter-rouge">STDOUT</code> and <code class="language-plaintext highlighter-rouge">STDERR</code>. You
+should think of these like virtual files, which a terminal gives you access to.
+<code class="language-plaintext highlighter-rouge">STDIN</code> is the file descriptor for reading the text you type, while <code class="language-plaintext highlighter-rouge">STDOUT</code>
+and <code class="language-plaintext highlighter-rouge">STDERR</code> are both displayed on the terminal when written to.</p>
+
+<p>With the basics under our belt, let’s get started building a very simple, but
+functional shell. We’ll use Ruby for this, because it’ll make things very easy,
+as you’ll soon see. If you’re on a Mac you’ve already got Ruby installed,
+otherwise you can <a href="https://www.ruby-lang.org/en/documentation/installation/">install</a> it easily on many systems. We’ll be
+working on a program aptly named <code class="language-plaintext highlighter-rouge">shell.rb</code>, which you can run with <code class="language-plaintext highlighter-rouge">ruby
+shell.rb</code> from the terminal.</p>
+
+<h3 id="our-overly-simplistic-ruby-shell">Our Overly Simplistic Ruby Shell</h3>
+
+<p>The acronym REPL gives us a starting point for designing our shell, with a
+wishlist of functions to implement. We can get away without defining <code class="language-plaintext highlighter-rouge">print</code> or
+<code class="language-plaintext highlighter-rouge">loop</code> since evaluation will print itself, and <a href="https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-loop"><code class="language-plaintext highlighter-rouge">loop</code></a> is built into
+Ruby.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">read</code></li>
+  <li><code class="language-plaintext highlighter-rouge">evaluate</code></li>
+</ul>
+
+<p>We’ll start by implementing the <code class="language-plaintext highlighter-rouge">read</code> function. This function will block until
+an entire line is read using <a href="https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-gets"><code class="language-plaintext highlighter-rouge">gets</code></a>. A much more powerful shell might
+read in pieces to update syntax highlighting as you type, or provide various
+kinds of completion. However, we’re not building anything that fancy at the
+moment.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Print a prompt, then read a line from STDIN.</span>
+<span class="k">def</span> <span class="nf">read</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">'$ '</span><span class="p">)</span>
+
+  <span class="c1"># Try to read a line, exiting if there's no more lines.</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="no">STDIN</span><span class="p">.</span><span class="nf">gets</span>
+  <span class="k">if</span> <span class="n">line</span>
+    <span class="n">line</span><span class="p">.</span><span class="nf">chomp</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="k">else</span>
+    <span class="nb">exit</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The following implementation of <code class="language-plaintext highlighter-rouge">evaluate</code> is a copout, because we just pass
+the input through to Ruby’s implementation of <a href="https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-system"><code class="language-plaintext highlighter-rouge">system</code></a> which calls
+<code class="language-plaintext highlighter-rouge">/bin/sh</code> under the hood. It does the correct thing however, and is enough to
+get us off the ground running.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Run the given command in a subprocess.</span>
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+  <span class="n">success</span> <span class="o">=</span> <span class="nb">system</span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">)</span>
+  <span class="k">unless</span> <span class="n">success</span>
+    <span class="nb">puts</span><span class="p">(</span><span class="s2">"unknown command '</span><span class="si">#{</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now that we’ve defined both <code class="language-plaintext highlighter-rouge">read</code> and <code class="language-plaintext highlighter-rouge">evaluate</code>, the full blown REPL is a
+simple one liner.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># The glorious REPL itself.</span>
+<span class="kp">loop</span> <span class="p">{</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">read</span><span class="p">)</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Running this tiny Ruby program will give you a semi-functional shell. Take a
+moment and try it out for yourself! There are however, a few critical features
+missing, for example you’ll notice <code class="language-plaintext highlighter-rouge">cd</code> doesn’t work. This is where builtins
+come into play.</p>
+
+<h3 id="extending-our-shell-a-little">Extending Our Shell (a little)</h3>
+
+<p>Builtins are commands that the shell executes directly, without calling out
+to a subprocess. This is exactly what we need for <code class="language-plaintext highlighter-rouge">cd</code>, since we don’t want to
+change the working directory of a sub-process, we want to update the shell’s
+working directory itself.</p>
+
+<p>We’ll define a hash of <code class="language-plaintext highlighter-rouge">'command' =&gt; lambda { |args| ... }</code> to serve as a
+lookup table for the builtins. The <a href="https://ruby-doc.org/core-2.2.0/Proc.html"><code class="language-plaintext highlighter-rouge">lambda</code></a> here is a function which
+performs the task of the given <code class="language-plaintext highlighter-rouge">command</code>.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Commands to be executed directly by this shell.</span>
+<span class="no">BUILTINS</span> <span class="o">=</span> <span class="p">{}</span>
+</code></pre></div></div>
+
+<p>Next we need to update our <code class="language-plaintext highlighter-rouge">evaluate</code> function to handle our special builtin
+commands.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Run the given command in a subprocess.</span>
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+  <span class="k">if</span> <span class="no">BUILTINS</span><span class="p">[</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="no">BUILTINS</span><span class="p">[</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]].</span><span class="nf">call</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="o">..-</span><span class="mi">1</span><span class="p">])</span>
+  <span class="k">else</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="nb">system</span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">)</span>
+    <span class="k">unless</span> <span class="n">success</span>
+      <span class="nb">puts</span><span class="p">(</span><span class="s2">"unknown command '</span><span class="si">#{</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Finally, we can start defining the needed builtins. We’ll start with the two
+most needed commands, <code class="language-plaintext highlighter-rouge">cd</code> and <code class="language-plaintext highlighter-rouge">exit</code>, however there are many others which
+could be defined at this point. Mainly <code class="language-plaintext highlighter-rouge">.</code> (or <code class="language-plaintext highlighter-rouge">source</code>), <code class="language-plaintext highlighter-rouge">alias</code> and <code class="language-plaintext highlighter-rouge">exec</code>.
+I’ll leave those implementations as exercises for the reader.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># The builtin `cd` for changing the shell's working directory.</span>
+<span class="no">BUILTINS</span><span class="p">[</span><span class="s1">'cd'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="n">args</span><span class="o">|</span>
+  <span class="c1"># Change to the home directory by default.</span>
+  <span class="n">args</span> <span class="o">&lt;&lt;</span> <span class="no">ENV</span><span class="p">[</span><span class="s1">'HOME'</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="nf">empty?</span>
+
+  <span class="c1"># Read the destination path, doing very basic path expansion.</span>
+  <span class="n">dest</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">pop</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/~/</span><span class="p">,</span> <span class="no">ENV</span><span class="p">[</span><span class="s1">'HOME'</span><span class="p">])</span>
+
+  <span class="c1"># Try to change this shell's working directory.</span>
+  <span class="k">begin</span>
+    <span class="no">Dir</span><span class="p">.</span><span class="nf">chdir</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+  <span class="k">rescue</span> <span class="no">Exception</span>
+    <span class="nb">puts</span><span class="p">(</span><span class="s2">"no such directory: </span><span class="si">#{</span><span class="n">dest</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># The builtin to exit the shell.</span>
+<span class="no">BUILTINS</span><span class="p">[</span><span class="s1">'exit'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="n">args</span><span class="o">|</span>
+  <span class="c1"># Exit with a status of 0 by default.</span>
+  <span class="n">args</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">args</span><span class="p">.</span><span class="nf">empty?</span>
+
+  <span class="c1"># Exit the shell.</span>
+  <span class="nb">exit</span> <span class="n">args</span><span class="p">.</span><span class="nf">pop</span><span class="p">.</span><span class="nf">to_i</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>There’s another small issue the observant reader may have noticed. If you enter
+<kbd>ctrl-c</kbd> our shell process will exit with a nasty Ruby error. This is
+because by default that sends a <code class="language-plaintext highlighter-rouge">SIGINT</code> <em>signal</em>. Signals are another way UNIX
+processes can communicate with each other. In this case we’ll <a href="https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-trap"><code class="language-plaintext highlighter-rouge">trap</code></a>
+the <code class="language-plaintext highlighter-rouge">SIGINT</code> signal, and simply return a new prompt.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Don't exit on `SIGINT`, instead simply return a new prompt.</span>
+<span class="nb">trap</span><span class="p">(</span><span class="s1">'INT'</span><span class="p">)</span> <span class="p">{</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">$ "</span><span class="p">)</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="the-code">The Code</h3>
+
+<p>If you’d rather download the shell instead of copying / writing it based on the
+above snippits, I can’t fault you (too much). The pieces are glued together
+for your pleasure as a
+<a href="https://gist.github.com/nixpulvis/59d4f60db401f4b3fba6d6781063c7f5">Gist</a>.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>That’s it, you’ve now got a working shell. In the future, we’ll dive into both
+the <code class="language-plaintext highlighter-rouge">read</code> and <code class="language-plaintext highlighter-rouge">evaluate</code> functions in more depth. Both functions need a lot
+of work before we’re anywhere near having a standalone POSIX shell ready for
+the “real world”. There’s also many other topics worth exploring, like <code class="language-plaintext highlighter-rouge">ENV</code>
+variables, job control, user groups, glob syntax, locale, and much more.</p>
+
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-35/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

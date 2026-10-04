@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - "Visual" Voicemail from Ruby</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-35/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-35/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-35/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-35/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-35/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-35/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-35/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-35/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    "Visual" Voicemail from Ruby
+    <small>
+        910 words
+        
+            published
+        
+        on April 27, 2021.
+    </small>
+</h2>
+
+<p><em>Note: This post is specific to AT&amp;T, but may be similar across other providers.</em></p>
+
+<p>I have a <a href="https://www.pine64.org/pinephone">PinePhone</a> which I’ve recently been trying out running
+<a href="https://postmarketos.org">postmarketOS</a> on. It’s got a number of problems, but without
+getting caught up listing them all, I’ll talk briefly about “visual” voicemail
+(VVM).</p>
+
+<p>Yesterday I received the following SMS text message (redacted for privacy):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MBOXUPDATE?-m=1;server=vvm.mobile.att.net;port=143;-name=4:XXXXXXXXXX:A:XXXXX:ms-01:NAT:XXXXX
+</code></pre></div></div>
+
+<p>Neat! But what is behind <code class="language-plaintext highlighter-rouge">vvm.mobile.att.net</code>? After a quick search online and
+a few threads listing some kind of status message, I decided to text back the
+string <code class="language-plaintext highlighter-rouge">STATUS</code>, and sure enough it responded with the following
+(formatted/elided for clarity):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//-
+VVM:STATUS:
+  ...
+  srv=2:vvm.mobile.att.net;
+  ...
+  smtp_u=4:XXXXXXXXXX:A:XXXXX:ms01:NAT:XXXXX;
+  smpt_pw=XXXXXXX;
+  ...
+</code></pre></div></div>
+
+<p>So now we know this thing is using SMTP to send messages, that it uses the
+phone number as the username, and that the password is the PIN I setup a while
+ago.  This should make it relatively easy to download the voicemail with IMAP.
+I have no idea how to reset this PIN from Ruby at the moment however.</p>
+
+<p>At this point, you could probably plug in the username and password to your
+favorite email client, but I want to write a small script to retrieve these for
+me as audio files directly. So, it’s off to Ruby’s STD <a href="https://ruby-doc.org/stdlib-2.5.1/libdoc/net/imap/rdoc/Net/IMAP.html"><code class="language-plaintext highlighter-rouge">net/imap</code></a>
+library to fetch the voicemail(s).</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'net/imap'</span>
+
+<span class="c1"># Authenticate with the remote IMAP server</span>
+<span class="c1">#</span>
+<span class="c1"># Fetches must be done within a relatively short time window</span>
+<span class="c1"># after this request completes.</span>
+<span class="k">def</span> <span class="nf">imap_login</span><span class="p">(</span><span class="n">phone_number</span><span class="p">,</span> <span class="n">pin</span><span class="p">,</span> <span class="ss">host: </span><span class="s1">'vvm.mobile.att.net'</span><span class="p">,</span> <span class="ss">port: </span><span class="mi">143</span><span class="p">)</span>
+  <span class="n">imap</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">IMAP</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="ss">port: </span><span class="n">port</span><span class="p">)</span>
+  <span class="n">imap</span><span class="p">.</span><span class="nf">login</span><span class="p">(</span><span class="n">phone_number</span><span class="p">,</span> <span class="n">pin</span><span class="p">)</span>
+  <span class="n">imap</span>
+<span class="k">end</span>
+
+<span class="c1"># Print all the mailboxes in the authenticated IMAP server</span>
+<span class="k">def</span> <span class="nf">fetch_mailboxes</span><span class="p">(</span><span class="n">imap</span><span class="p">)</span>
+  <span class="n">imap</span><span class="p">.</span><span class="nf">list</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"*"</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">mailbox</span><span class="o">|</span>
+    <span class="nb">puts</span> <span class="n">mailbox</span><span class="p">.</span><span class="nf">name</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Print the messages in an authenticated IMAP server's mailbox</span>
+<span class="k">def</span> <span class="nf">fetch_mailbox</span><span class="p">(</span><span class="n">imap</span><span class="p">,</span> <span class="n">mailbox</span><span class="p">)</span>
+  <span class="n">imap</span><span class="p">.</span><span class="nf">examine</span><span class="p">(</span><span class="n">mailbox</span><span class="p">)</span>
+  <span class="n">imap</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="mi">1</span><span class="o">..-</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="s2">"ENVELOPE"</span><span class="p">]).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
+    <span class="n">envelope</span> <span class="o">=</span> <span class="n">message</span><span class="p">.</span><span class="nf">attr</span><span class="p">[</span><span class="s2">"ENVELOPE"</span><span class="p">]</span>
+    <span class="nb">puts</span> <span class="s2">"[</span><span class="si">#{</span><span class="n">message</span><span class="p">.</span><span class="nf">seqno</span><span class="si">}</span><span class="s2">] </span><span class="si">#{</span><span class="n">envelope</span><span class="p">.</span><span class="nf">date</span><span class="si">}</span><span class="se">\t</span><span class="si">#{</span><span class="n">envelope</span><span class="p">.</span><span class="nf">from</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">name</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Create an <code class="language-plaintext highlighter-rouge">imap</code> variable for interacting with the server:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">imap</span> <span class="o">=</span> <span class="n">imap_login</span><span class="p">(</span><span class="s1">'XXXXXXXXXX'</span><span class="p">,</span> <span class="s1">'XXXXXXX'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>By calling <code class="language-plaintext highlighter-rouge">fetch_mailboxes(imap)</code> I can tell there’s a mailbox conveniently
+named <code class="language-plaintext highlighter-rouge">INBOX</code>, along with <code class="language-plaintext highlighter-rouge">Trash</code>, and <code class="language-plaintext highlighter-rouge">Greetings</code>, something I can only assume
+holds the voicemail message I recorded a while ago.</p>
+
+<p>So, sure enough calling <code class="language-plaintext highlighter-rouge">fetch_mailbox(imap, "INBOX")</code> lists all five
+voicemails in my inbox, along with the <code class="language-plaintext highlighter-rouge">seqno</code>, date and sender’s phone number.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1] Sun, 4 Apr 2021 18:12:07 -0400    XXXXXXXXXX 
+[2] Fri, 9 Apr 2021 11:19:48 -0400    XXXXXXXXXX 
+[3] Sat, 10 Apr 2021 13:16:16 -0400   XXXXXXXXXX 
+[4] Fri, 16 Apr 2021 19:57:01 -0400   XXXXXXXXXX 
+[5] Tue, 27 Apr 2021 13:21:39 -0400   XXXXXXXXXX 
+</code></pre></div></div>
+
+<p>Great, now all I need to do is decode the body of the messages and play it from
+my speakers.</p>
+
+<p>To do this, first we fetch the <code class="language-plaintext highlighter-rouge">BODY</code> section, which contains the actual
+voicemail audio data. I’m assuming that there will always be a single part to
+this structure, so we also directly request the first part of the body with
+<code class="language-plaintext highlighter-rouge">BODY[1]</code>. By looking at the part’s <code class="language-plaintext highlighter-rouge">encoding</code> we know that this message is
+base 64 encoded, so after a quick <code class="language-plaintext highlighter-rouge">decode64</code> call we can write the file to
+disk.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'base64'</span>
+
+<span class="c1"># Fetch and decode a single voicemail saving it as `voice.amr`</span>
+<span class="k">def</span> <span class="nf">fetch_mailbox_message</span><span class="p">(</span><span class="n">imap</span><span class="p">,</span> <span class="n">mailbox</span><span class="p">,</span> <span class="n">seqno</span><span class="p">)</span>
+  <span class="n">imap</span><span class="p">.</span><span class="nf">examine</span><span class="p">(</span><span class="n">mailbox</span><span class="p">)</span>
+  <span class="n">imap</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="n">seqno</span><span class="p">,</span> <span class="p">[</span><span class="s2">"BODY"</span><span class="p">,</span> <span class="s2">"BODY[1]"</span><span class="p">]).</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span>
+    <span class="n">part_body</span> <span class="o">=</span> <span class="no">Base64</span><span class="p">.</span><span class="nf">decode64</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="nf">attr</span><span class="p">[</span><span class="s2">"BODY[1]"</span><span class="p">])</span>
+    <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="s1">'voice.amr'</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
+      <span class="n">file</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">part_body</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Finally, just call <code class="language-plaintext highlighter-rouge">fetch_mailbox_message(imap, "INBOX", seqno)</code> and we can
+play the message with <code class="language-plaintext highlighter-rouge">vlc voice.amr</code> (or whatever else you have that knows
+what an AMR file is, I sure don’t).</p>
+
+<p>Now I’ll be honest about my complete ignorance of the Open Mobile Terminal
+Platform (OMTP) VVM <a href="http://www.omtp.org/OMTP_VVM_Specification_v1_3_Final.pdf">specification</a>. Partially because it was faster to
+just work backwards, and partially because I’m aware that some providers do not
+follow the spec. It stands to reason however, if you run into problems with
+this post, that the spec may guide you towards a more complete solution.</p>
+
+<p>Hopefully this helps someone else who’s stuck trying to listen to their
+voicemails.</p>
+
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-35/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

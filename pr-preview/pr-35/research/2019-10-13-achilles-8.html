@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Achilles' Tent Notes &#35;8</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-35/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-35/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-35/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-35/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-35/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-35/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-35/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-35/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    Achilles' Tent Notes &#35;8
+    <small>
+        written by Nathan Lilienthal
+        on October 13, 2019.
+    </small>
+</h2>
+
+<ul>
+  <li><a href="/pr-preview/pr-35/research/2019-10-13-achilles-8"><strong>Achilles’ Tent Notes #8</strong></a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-10-15-achilles-9">Achilles’ Tent Notes #9</a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-10-28-achilles-10">Achilles’ Tent Notes #10</a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-11-11-achilles-11">Achilles’ Tent Notes #11</a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-12-02-achilles-12">Achilles’ Tent Notes #12</a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-12-13-achilles-13">Achilles’ Tent Notes #13</a></li>
+</ul>
+
+<hr />
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">fn</code> type returns from <code class="language-plaintext highlighter-rouge">obliv if</code>
+    <ul>
+      <li>Wrapped in new closure which calls an <code class="language-plaintext highlighter-rouge">obliv if</code> inside when called:
+        <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">obliv</span> <span class="k">if</span> <span class="n">p</span> <span class="p">{</span> <span class="p">|</span><span class="n">a</span><span class="o">...</span><span class="p">|</span> <span class="n">e1</span> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="p">|</span><span class="n">a</span><span class="o">...</span><span class="p">|</span> <span class="n">e2</span> <span class="p">}</span>
+<span class="p">|</span><span class="n">a</span><span class="o">...</span><span class="p">|</span> <span class="p">{</span> <span class="n">obliv</span> <span class="k">if</span> <span class="n">p</span> <span class="p">{</span> <span class="n">e1</span> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="n">e2</span> <span class="p">}</span>
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">panic!</code> within <code class="language-plaintext highlighter-rouge">obliv if</code>
+    <ul>
+      <li>Currently ruled out of Oxide (has <code class="language-plaintext highlighter-rouge">abort</code> instead, which cannot be rescued from)</li>
+      <li>The <code class="language-plaintext highlighter-rouge">Output</code> for division of obliv types should handle division by zero explicitly:
+        <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">impl</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nb">Div</span> <span class="k">for</span> <span class="n">obliv</span> <span class="n">T</span> <span class="p">{</span>
+   <span class="k">type</span> <span class="n">Output</span> <span class="o">=</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+   <span class="k">fn</span> <span class="nf">div</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="k">Self</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span><span class="p">::</span><span class="n">Output</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="k">let</span> <span class="nf">Some</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="n">obliv</span> <span class="mi">5</span> <span class="o">/</span> <span class="n">obliv</span> <span class="mi">0</span> <span class="p">{</span>
+  <span class="c1">// never hit</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="c1">// handle division by zero</span>
+<span class="p">}</span>
+</code></pre></div>        </div>
+      </li>
+      <li>Otherwise we just state that <code class="language-plaintext highlighter-rouge">x/0 == 0</code>. This will cause user who care about the value <code class="language-plaintext highlighter-rouge">0/x</code> being distinct to do their own checking</li>
+      <li>obliv-c for example, just crashes when you divide by 0</li>
+    </ul>
+  </li>
+  <li>Obliv compound types (i.e. <code class="language-plaintext highlighter-rouge">obliv Option&lt;T&gt;</code> or <code class="language-plaintext highlighter-rouge">obliv (T, U)</code>), what about <code class="language-plaintext highlighter-rouge">Cell&lt;T&gt;</code>
+    <ul>
+      <li>The idea of an <code class="language-plaintext highlighter-rouge">obliv enum</code> in general is interesting (along with <code class="language-plaintext highlighter-rouge">obliv match</code>)</li>
+      <li><code class="language-plaintext highlighter-rouge">obliv (T, U)</code> oblivious tuple, not to be confused with a plain tuple of oblivious types, <code class="language-plaintext highlighter-rouge">(obliv T, obliv U)</code> is tricky because tuples are heterogeneous</li>
+      <li><code class="language-plaintext highlighter-rouge">obliv [T; n]</code></li>
+      <li>Oxide doesn’t have a notion of <code class="language-plaintext highlighter-rouge">Cell</code>, or interior mutability in general</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">obliv fn</code> ideally shouldn’t be needed (need <code class="language-plaintext highlighter-rouge">frz</code> qualifier?)
+    <ul>
+      <li>In obliv-c it exists to limit mutation from the outside, whereas we should be reasoning about the mutability of arguments in a closure</li>
+      <li><code class="language-plaintext highlighter-rouge">static mut</code> items (which are unsafe) allow security leaks if allowed in <code class="language-plaintext highlighter-rouge">obliv</code> contexts:
+        <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="k">mut</span> <span class="n">X</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1">// f is *not* obliv safe.</span>
+<span class="k">fn</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">unsafe</span> <span class="p">{</span>
+      <span class="n">X</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li>2 stage borrow’s <code class="language-plaintext highlighter-rouge">reserved</code> is similar to <code class="language-plaintext highlighter-rouge">freeze</code>
+    <ul>
+      <li><a href="http://smallcultfollowing.com/babysteps/blog/2017/03/01/nested-method-calls-via-two-phase-borrowing">Currently <code class="language-plaintext highlighter-rouge">&amp;'a mut T</code> could really be viewed as <code class="language-plaintext highlighter-rouge">RefMut&lt;'r, 'w, T&gt;</code> with
+explicit lifetimes for reading and writing.</a></li>
+    </ul>
+  </li>
+</ul>
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-35/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

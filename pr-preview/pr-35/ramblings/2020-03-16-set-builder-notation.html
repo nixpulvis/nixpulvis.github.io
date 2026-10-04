@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Set Builder Notation</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-35/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-35/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-35/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-35/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-35/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-35/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-35/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-35/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    Set Builder Notation
+    <small>
+        502 words
+        
+            published
+        
+        on March 16, 2020.
+    </small>
+</h2>
+
+<p>I’m not a fan of set builder notation, and let me explain why…</p>
+
+<p>I mean, it beats a lot of other things mathematicians were probably doing
+before they agreed to it, but that could be said about pretty much anything.
+Just look at how many people love writing Python, and how god awful that
+language is. I’d expect a bit more from math notation, but I digress.</p>
+
+<p>We can read a set \(\{\ e : x \in \mathbb{D}\ \}\) as “\(\ e\) such that \(x\)
+is in \(\mathbb{D}\,\)”. Here \(e\) is an expression which has \(x\) bound
+within it.</p>
+
+<p>To fully explain my position, let’s start by looking at a good use of set
+builder notation.</p>
+
+\[A = \{\ 2x^2 : x \in \mathbb{R} \ \} \\\]
+
+<p>Here we lead with the interesting stuff, being the \(2x^2\), and brush the fact
+that \(x \in \mathbb{R}\) under the rug. This is more or less OK, because you
+don’t need to be thinking about what kind of number \(x\) is to understand
+the equation in this case. It’s purely a formality, which may be necessary to
+a larger context.</p>
+
+<p>However, things start getting interesting quickly.</p>
+
+\[\{\ \sqrt{x} - 2 : x ∈ [1,10) \ \}\]
+
+<p>Suddenly the domain of the set and \(x\) aren’t necessarily the same, yet we
+would probably assume something reasonable, right? These must all be \(\in
+\mathbb{R}\), or something. Still we’ve tried to lead with what we care about,
+the \(\sqrt{x} - 2\) in this case. But suddenly the right side matters a lot
+more.</p>
+
+<p>Next, we start calling functions on the right side.</p>
+
+\[\{\ \sqrt[3]{x} : x \in filter([0, ∞), odd?) \ \}\]
+
+<p>I like to think someone would stop at this point and restructure the equations.
+Why am I operating on \(x\) in \(\sqrt[3]{x}\) before I even know what \(x\)
+is?! A quick glance, and you don’t even notice it anymore, it’s lost in the
+noise on the right.</p>
+
+<p>Finally, we come to what Python starts letting you do with their surprisingly
+beloved <em>array comprehensions</em>, which are basically just set builder notation
+in ASCII. In math, at least we can argue about the evaluation order a little
+bit, but in Python this is just downright wrong!</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nf">bar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+</code></pre></div></div>
+
+<p>The function <code class="language-plaintext highlighter-rouge">foo</code> will execute before the function <code class="language-plaintext highlighter-rouge">bar</code>, and this is not
+entirely clear by reading the source. In fact, this makes me wonder what other
+things in Python evaluate backwards…</p>
+
+<p>One more thing, what about <strong>chained</strong> array comprehensions?</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nf">int</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nf">bin</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]]</span>
+</code></pre></div></div>
+
+<p>My head hurts looking at this code. Where is <code class="language-plaintext highlighter-rouge">x</code> bound? Where is <code class="language-plaintext highlighter-rouge">b</code> bound?
+It’s all so unclear, it really makes me wonder…</p>
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-35/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Achilles' Tent Notes &#35;10</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-35/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-35/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-35/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-35/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-35/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-35/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-35/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-35/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    Achilles' Tent Notes &#35;10
+    <small>
+        written by Nathan Lilienthal
+        on October 28, 2019.
+    </small>
+</h2>
+
+<ul>
+  <li><a href="/pr-preview/pr-35/research/2019-10-13-achilles-8">Achilles’ Tent Notes #8</a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-10-15-achilles-9">Achilles’ Tent Notes #9</a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-10-28-achilles-10"><strong>Achilles’ Tent Notes #10</strong></a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-11-11-achilles-11">Achilles’ Tent Notes #11</a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-12-02-achilles-12">Achilles’ Tent Notes #12</a></li>
+  <li><a href="/pr-preview/pr-35/research/2019-12-13-achilles-13">Achilles’ Tent Notes #13</a></li>
+</ul>
+
+<hr />
+
+<h3 id="typing-notes">Typing Notes</h3>
+
+<ul>
+  <li>Oxide doesn’t have traits, or associated types
+    <ul>
+      <li>Proper syntax for oblivious array types: <code class="language-plaintext highlighter-rouge">obliv [τ; N]</code>, cases enumerated
+below:
+        <blockquote>
+          <p><strong>Details:</strong></p>
+          <ul>
+            <li><code class="language-plaintext highlighter-rouge">obliv [obliv τ; N]⋮Index&lt;obliv usize&gt;</code>
+An oblivious array with oblivious data and oblivious access is an ORAM</li>
+            <li><code class="language-plaintext highlighter-rouge">obliv [obliv τ; N]⋮Index&lt;usize&gt;</code>
+An oblivious array with oblivious data and plain access</li>
+            <li><code class="language-plaintext highlighter-rouge">obliv [τ; N]⋮Index&lt;obliv usize&gt;</code>
+An oblivious array with plain data and oblivious access is comparable
+to a PIR, as it <em>could</em> simply reveal the whole array</li>
+            <li><code class="language-plaintext highlighter-rouge">obliv [τ; N]⋮Index&lt;usize&gt;</code>
+An oblivious array with plain data and plain access only adds a secure
+mapping of indices to logical memory addresses. Logical to physical
+mappings are still present in the face of compiled Rust</li>
+            <li><code class="language-plaintext highlighter-rouge">[obliv τ; N]⋮Index&lt;usize&gt;</code> is just a normal ol’ array of <code class="language-plaintext highlighter-rouge">obliv τ</code>
+types</li>
+            <li><code class="language-plaintext highlighter-rouge">[τ; N] ⋮Index&lt;obliv usize&gt;</code> is not implemented, and should be a type
+error</li>
+          </ul>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">obliv ()</code>, <code class="language-plaintext highlighter-rouge">obliv (T)</code>, <code class="language-plaintext highlighter-rouge">obliv (T, U)</code>, and so on…
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">obliv (T)</code> should not be equivalent to <code class="language-plaintext highlighter-rouge">obliv T</code></li>
+      <li><code class="language-plaintext highlighter-rouge">obliv (T, U) = (obliv T, obliv U)</code>, simply structural</li>
+      <li>Rust’s <code class="language-plaintext highlighter-rouge">struct</code> (\(S::\langle\barρ,\barτ\rangle\)) are like tuples, so
+they should be consistent</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">obliv obliv τ</code>
+    <ul>
+      <li>Supports “MPC in the head” nested protocols</li>
+      <li>Might require careful consideration when writing typing rules with
+promotions</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">conceal(τ)</code> and <code class="language-plaintext highlighter-rouge">reveal(τ)</code> where <code class="language-plaintext highlighter-rouge">τ: σ → ρ</code>
+    <ul>
+      <li>Initial thought is that it doesn’t make sense to allow this, because
+function bodies must be public information in general, more on this below</li>
+    </ul>
+  </li>
+  <li>Oxide doesn’t currently have <code class="language-plaintext highlighter-rouge">enum</code> or <code class="language-plaintext highlighter-rouge">match</code>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">match</code> should be able to be represented as if, with an understanding of
+some patterns</li>
+      <li>Enums are “tagged”, sum types</li>
+      <li>We could start small and only allow matching for enums, avoiding the
+broader class of “patterns”</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="redex-model">Redex Model</h3>
+
+<ul>
+  <li>Started a redex model <code class="language-plaintext highlighter-rouge">(define-language obliv)</code>
+    <ul>
+      <li>Thinking it should be <code class="language-plaintext highlighter-rouge">(define-union-language ...)</code></li>
+    </ul>
+  </li>
+  <li>Example typing judgment:
+    <div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[(</span><span class="nf">types</span> <span class="nv">Γ</span> <span class="nv">e_1</span> <span class="p">(</span><span class="nf">obliv</span> <span class="nv">bool</span><span class="p">))</span>
+ <span class="p">(</span><span class="nf">types</span> <span class="nv">Γ</span> <span class="nv">e_2</span> <span class="p">(</span><span class="nf">obliv</span> <span class="nv">t</span><span class="p">))</span>
+ <span class="p">(</span><span class="nf">types</span> <span class="nv">Γ</span> <span class="nv">e_3</span> <span class="p">(</span><span class="nf">obliv</span> <span class="nv">t</span><span class="p">))</span>
+ <span class="nv">--------------------------------------------</span> <span class="nv">obliv-if</span>
+ <span class="p">(</span><span class="nf">types</span> <span class="nv">Γ</span> <span class="p">(</span><span class="nf">obliv-if</span> <span class="nv">e_1</span> <span class="nv">e_2</span> <span class="nv">e_3</span><span class="p">)</span> <span class="p">(</span><span class="nf">obliv</span> <span class="nv">t</span><span class="p">))])</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Example reduction rule:
+    <div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">--&gt;</span> <span class="p">(</span><span class="nf">in-hole</span> <span class="nv">E</span> <span class="p">(</span><span class="nf">obliv-if</span> <span class="nv">v_1</span> <span class="p">(</span><span class="k">λ</span> <span class="p">(</span><span class="nf">x</span> <span class="nv">:</span> <span class="nv">t</span><span class="p">)</span> <span class="nv">e_2</span><span class="p">)</span>
+                              <span class="p">(</span><span class="k">λ</span> <span class="p">(</span><span class="nf">x</span> <span class="nv">:</span> <span class="nv">t</span><span class="p">)</span> <span class="nv">e_3</span><span class="p">)))</span>
+     <span class="p">(</span><span class="nf">in-hole</span> <span class="nv">E</span> <span class="p">(</span><span class="k">λ</span> <span class="p">(</span><span class="nf">x</span> <span class="nv">:</span> <span class="nv">t</span><span class="p">)</span> <span class="p">(</span><span class="nf">obliv-if</span> <span class="nv">v_1</span> <span class="nv">e_2</span> <span class="nv">e_3</span><span class="p">)))</span>
+     <span class="s">"obliv-if-λ"</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h4 id="public-promotion--wire-types">Public Promotion &amp; Wire Types</h4>
+
+<ul>
+  <li>How can I write promotion rules like the following:
+    <div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[(</span><span class="nf">types</span> <span class="nv">Γ</span> <span class="nv">e</span> <span class="nv">t</span><span class="p">)</span>
+ <span class="p">(</span><span class="nf">side-condition</span> <span class="p">(</span><span class="nf">public?</span> <span class="nv">t</span><span class="p">))</span>
+ <span class="nv">----------------------------</span> <span class="nv">promotion?</span>
+ <span class="p">(</span><span class="nf">types</span> <span class="nv">Γ</span> <span class="nv">e</span> <span class="p">(</span><span class="nf">obliv</span> <span class="nv">t</span><span class="p">))]</span>
+</code></pre></div>    </div>
+  </li>
+  <li>New typing forms for <code class="language-plaintext highlighter-rouge">public</code> and <code class="language-plaintext highlighter-rouge">obliv</code> wire types
+    <div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nf">t</span> <span class="nv">::=</span>
+   <span class="nv">num</span>
+   <span class="nv">bool</span>
+   <span class="p">(</span><span class="nf">→</span> <span class="nv">t</span> <span class="nv">t</span><span class="p">)</span>
+   <span class="c1">; ----------</span>
+   <span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="nv">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nf">&lt;obliv&gt;</span> <span class="nv">t</span><span class="p">)]</span>
+</code></pre></div>    </div>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">(conceal (+ 1 2))</code> gets you <code class="language-plaintext highlighter-rouge">(&lt;obliv&gt; 3)</code></li>
+      <li><code class="language-plaintext highlighter-rouge">1</code> used in place of a wire can be public promoted to <code class="language-plaintext highlighter-rouge">(&lt;public&gt; 1)</code>
+        <blockquote>
+          <p><strong>Details:</strong></p>
+          <ul>
+            <li>Public predicate and public values
+              <div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">mux</span> <span class="no">#t</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">)</span>
+<span class="c1">; -promotion&gt;</span>
+<span class="p">(</span><span class="nf">mux</span> <span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="no">#t</span><span class="p">)</span> <span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="mi">3</span><span class="p">))</span>
+<span class="c1">; -public-mux&gt;</span>
+<span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nv">:</span>
+<span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="nv">num</span><span class="p">)</span>
+</code></pre></div>              </div>
+            </li>
+            <li>Public predicate and <code class="language-plaintext highlighter-rouge">obliv</code> values
+              <div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">mux</span> <span class="no">#f</span> <span class="p">(</span><span class="nf">conceal</span> <span class="mi">2</span><span class="p">)</span> <span class="p">(</span><span class="nf">conceal</span> <span class="mi">3</span><span class="p">))</span>
+<span class="c1">; -promotion&gt;</span>
+<span class="p">(</span><span class="nf">mux</span> <span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="no">#f</span><span class="p">)</span> <span class="p">(</span><span class="nf">conceal</span> <span class="mi">2</span><span class="p">)</span> <span class="p">(</span><span class="nf">conceal</span> <span class="mi">3</span><span class="p">))</span>
+<span class="c1">; -conceals&gt;</span>
+<span class="p">(</span><span class="nf">mux</span> <span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="no">#f</span><span class="p">)</span> <span class="p">(</span><span class="nf">&lt;obliv&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">(</span><span class="nf">&lt;obliv&gt;</span> <span class="mi">3</span><span class="p">))</span>
+<span class="c1">; -public-mux&gt;</span>
+<span class="p">(</span><span class="nf">&lt;obliv&gt;</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nv">:</span>
+<span class="p">(</span><span class="nf">&lt;obliv&gt;</span> <span class="nv">num</span><span class="p">)</span>
+</code></pre></div>              </div>
+            </li>
+            <li><code class="language-plaintext highlighter-rouge">obliv</code> conditional predicate
+              <div class="language-racket highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">mux</span> <span class="p">(</span><span class="nf">conceal</span> <span class="nv">x</span><span class="p">)</span> <span class="mi">1</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1">; -promotion&gt;</span>
+<span class="p">(</span><span class="nf">mux</span> <span class="p">(</span><span class="nf">&lt;obliv&gt;</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="nf">&lt;public&gt;</span> <span class="mi">2</span><span class="p">))</span>
+<span class="nv">:</span>
+<span class="p">(</span><span class="nf">&lt;obliv&gt;</span> <span class="nv">num</span><span class="p">)</span>
+</code></pre></div>              </div>
+            </li>
+          </ul>
+        </blockquote>
+      </li>
+      <li><code class="language-plaintext highlighter-rouge">(&lt;public&gt; (→ t t))</code> is the promotion of any function</li>
+      <li><code class="language-plaintext highlighter-rouge">(&lt;obliv&gt; (→ t t))</code> could be the result type of something like
+<code class="language-plaintext highlighter-rouge">(mux p (λ (x : num) x) (λ (x : num) 0))</code> since which function’s value is
+used will be unknown to an observer</li>
+      <li>We may want the ability to send/recv <code class="language-plaintext highlighter-rouge">(&lt;public&gt; v)</code> at run-time</li>
+    </ul>
+  </li>
+</ul>
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-35/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

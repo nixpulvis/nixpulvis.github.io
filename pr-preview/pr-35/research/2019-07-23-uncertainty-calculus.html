@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - (S)MPC & An Uncertain Calculus</title>
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-35/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-35/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/style.css">
+    <link rel="stylesheet" href="/pr-preview/pr-35/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/pr-preview/pr-35/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/pr-preview/pr-35/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/pr-preview/pr-35/img/cat-lambda.png" />
+      <img id="me" src="/pr-preview/pr-35/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-35/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-35/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-35/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/references">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-35/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    (S)MPC & An Uncertain Calculus
+    <small>
+        622 words
+        written by Nathan Lilienthal
+    </small>
+</h2>
+
+<blockquote>
+  <p>Abstract: Towards a minimal language for multi-party communication and
+computations. I (we?) define <strong>two</strong> new languages: \(\lambda_\div\), a
+language for probabilistic computation, and \(\lambda_o\) a language for
+multi-party secure computation.</p>
+
+  <p>\(\lambda_o\) is an extension of \(\lambda_\div\), however it doesn’t need to
+export the idea of a \(\div\) flipping primitive.</p>
+</blockquote>
+
+<h3 id="secure-two-party-communication-s2pc">Secure Two Party Communication (S2PC)</h3>
+
+<p>Generally, both parties will have an input to a function \(\lambda_o\), here
+we’ll call \(\color{blue} A\)’s input \(\color{blue} x\) and \(\color{red}
+B\)’s input \(\color{red} y\). Before either party can pass their inputs to
+\(\lambda_o\) they must create an <em>authentication context</em> with \(\bullet \
+e\).</p>
+
+\[(\lambda_o \ \color{blue}{x} \ \color{red}{y} \ . e) \
+\color{blue}{\bullet}a \
+\color{red}{\bullet}b
+\rightarrow e[a/\color{blue} x,b/\color{red} y]\]
+
+<p>We have up to three possible implementations for \(e\): \(e\),
+\(\color{blue}{\bullet \ e}\) and \(\color{red}{\bullet \ e}\). This allows for
+each party to perform arbitrary computations on the oblivious data, or to fix
+the garbling up front so no one party controls it. For example here the
+expression \(e\) was garbled by \(\color{blue}A\).</p>
+
+\[(\lambda_o \ \color{blue}{x} \ \color{red}{y} \ . \color{blue}{\bullet}\ e) \
+\color{blue}{\bullet}a \
+\color{red}{\bullet}b
+\rightarrow \color{blue}{\bullet \
+e[\color{black}a/\color{blue}x,\color{black}b/\color{red}y]}\]
+
+<p>Traditional function notation can be colored to indicate the same notion.</p>
+
+\[\color{blue}{\bullet} \ f \ \color{blue}x \ \color{red}y = \color{blue}{f(x,\color{red}
+y)} \\
+\color{red}{\bullet} g \ \color{blue}x \ \color{red}y = \color{red}{g(\color{blue}x,y)}\]
+
+<p>We see that each party, \(\color{blue} A\) and \(\color{red} B\), have unique
+functions, \(\color{blue} f\) and \(\color{red} g\) respectively. However it is
+also possible to define \(e = \color{blue}{f} \cup \color{red}{g}\). These
+functions are oblivious to the other party’s data but follow consistent use.</p>
+
+<p>One example pair of \(\color{blue} f\) and \(\color{red} g\) functions is a
+classic problem of Oblivious Transfer (OT). In this case, \(\color{blue} A\)
+wants to access a specific element from \(\color{red} B\)’s database, without
+\(\color{red} B\) knowing what element was retrieved. For this example, we’ll
+use a database projection function \(\color{red}{p}\) (oblivious to anything
+else about the database), which takes an oblivious index \(\color{blue} i\).</p>
+
+\[\Gamma \vdash \lambda_o \ \color{blue}{i} \ \color{red}{p} \ . \color{red}{p} \ \color{blue}{i} : \sigma_o \rightarrow (\sigma_o \rightarrow \tau_o) \rightarrow \tau_o \\
+\cong \\
+\Gamma \vdash \lambda_o \ \color{blue}{i} \ \color{red}{p} \ . \color{red}{p} \ \color{blue}{i} : \sigma_o \times (\sigma_o \times \tau_o) \rightarrow \tau_o\]
+
+<p>Or as a solution to Yao’s Millionare Problem:</p>
+
+\[\Gamma, &gt;: \mathbb{Z} \times \mathbb{Z} \rightarrow \{0,1\} \ \vdash (\lambda_o \ \color{blue}a \ \color{red}b \ . \color{blue}a &gt; \color{red}b)\]
+
+<p>It’s worth noting that the \(&gt;\) operator in the figure above is written in
+black because it’s “baked in” to the protocol.</p>
+
+<h3 id="s3pc">S3PC</h3>
+
+<p>This notion expands naturally for a third member of the computation, Carrol
+(\(\color{green} C\)). Similar to the S2PC case above, we can define a
+\(\lambda_o\), which now takes three arguments and tells each member what
+position in line they are in a group.</p>
+
+\[\lambda_o \ \color{blue}{x} \ \color{red}{y} \ \color{green}{z} \ . \\
+\color{blue}{place(x, \left\{x,\color{red}y,\color{green}z\}\right)} \\
+\color{red}{place(y, \left\{\color{blue}x,y,\color{green}z\}\right)} \\
+\color{green}{place(z, \left\{\color{blue}x,\color{red}y,z\}\right)}\]
+
+<h3 id="lambda_div-the-uncertainty-calculus">\(\lambda_\div\) the Uncertainty Calculus</h3>
+
+\[\div \ a \\
+50\% \rightarrow a \\
+50\% \rightarrow \_\]
+
+\[\div \div a \\
+25\% \rightarrow a \\
+75\% \rightarrow \_\]
+
+\[\div \ a \ b \\
+50\% \rightarrow a \ b \\
+50\% \rightarrow b \ a\]
+
+\[a \div b \\
+\div \div \ a \ b \\
+50\% \rightarrow a \ b \\
+50\% \rightarrow b \ a\]
+
+<p>Below the order of operations \(f \ g\) is certain, while the order of \(a \
+b\) is uncertain.</p>
+
+\[\lambda f \ g \ a \ b . f \ g \div a \ b \\\]
+
+<p>Full expressions can be wrapped and made uncertain.</p>
+
+\[\lambda \_ . \div \ (\lambda a \ b . a \ b) \ (\lambda a \ b . b \ a)\]
+
+<p>Much more work is clearly needed on this idea…</p>
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-35/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>
