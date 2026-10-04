@@ -27,7 +27,7 @@ jobs:
         with:
           bundler-cache: true
 
-      - run: bundle exec jekyll build --baseurl "/pr-preview/pr-${{ github.event.number }}"
+      - run: bundle exec jekyll build --drafts --unpublished --baseurl "/pr-preview/pr-${{ github.event.number }}"
         if: github.event.action != 'closed'
 
       - uses: rossjrw/pr-preview-action@v1
