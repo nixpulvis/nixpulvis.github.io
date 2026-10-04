@@ -62,7 +62,7 @@ Some distributions require special (generally paid for) certificates to be used
 to validate the ownership of a secret key. Other distributions have a blessed
 list of keys, held by the trusted members of the team or community.
 
-<img src="/img/ramblings/software-packaging/signing-warning.png"
+<img src="{{ '/img/ramblings/software-packaging/signing-warning.png' | relative_url }}"
 height="500px" />
 
 The dialog above is what Windows users will see when launching Alacritty for
@@ -81,7 +81,7 @@ was created by, notarization offers the distribution platform a way to
 invalidate releases of the software as they become flagged as malware. Apple is
 the primary platform pushing this distribution requirement.
 
-<img src="/img/ramblings/software-packaging/notarization-warning.png"
+<img src="{{ '/img/ramblings/software-packaging/notarization-warning.png' | relative_url }}"
 height="500px" />
 
 This works by flagging software as _quarantined_ until, upon the first launch,
@@ -134,7 +134,7 @@ these bypasses to individual applications.
     $ cargo build
     ```
 
-    <img src="/img/ramblings/software-packaging/building.png" />
+    <img src="{{ '/img/ramblings/software-packaging/building.png' | relative_url }}" />
 
 ### 4. Development vs. Distribution
 

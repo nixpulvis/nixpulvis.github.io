@@ -7,4 +7,4 @@ scripts:
 style: /css/musing.css
 ---
 
-<div id="score" data-music-xml="/musings/Beyer.musicxml"/>
+<div id="score" data-music-xml="{{ '/musings/Beyer.musicxml' | relative_url }}"/>

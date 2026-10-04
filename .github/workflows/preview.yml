@@ -1,0 +1,38 @@
+# Publish each pull request to https://nixpulvis.com/pr-preview/pr-<number>/
+# and remove it again when the pull request is closed.
+name: Preview
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: preview-${{ github.ref }}
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ruby/setup-ruby@v1
+        if: github.event.action != 'closed'
+        with:
+          bundler-cache: true
+
+      - run: bundle exec jekyll build --baseurl "/pr-preview/pr-${{ github.event.number }}"
+        if: github.event.action != 'closed'
+
+      - uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: _site
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          pages-base-url: nixpulvis.com
