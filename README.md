@@ -43,3 +43,25 @@ specified in the YAML front-matter.
 
 Additional options may exist for some layouts, and should be documented at
 some point.
+
+#### Links
+
+Write site-internal links, images, and assets through `relative_url` so they
+keep working when the site is built under a sub-path (PR previews):
+
+```md
+![]({{ '/img/photo.jpg' | relative_url }})
+[Ramblings]({{ '/ramblings' | relative_url }})
+```
+
+A bare `/img/photo.jpg` still works on nixpulvis.com but breaks in previews.
+
+## Publishing
+
+GitHub Pages serves the `gh-pages` branch. Pushing to `master` runs
+`.github/workflows/deploy.yml`, which builds the site and commits it to the
+root of `gh-pages`.
+
+Every pull request is built by `.github/workflows/preview.yml` and published to
+`https://nixpulvis.com/pr-preview/pr-<number>/`; a comment on the PR links to
+it. The preview is removed when the PR is closed.
