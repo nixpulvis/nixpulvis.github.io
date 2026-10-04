@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Achilles' Tent Notes &#35;11</title>
+    <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/img/cat-lambda.png" />
+      <img id="me" src="/img/me.jpg" class="hidden" />
+      <a href="/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/references">&</a></li>
+          <li class="icon"><a href="/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2>
+    Achilles' Tent Notes &#35;11
+    <small>
+        written by Nathan Lilienthal
+        on November 11, 2019.
+    </small>
+</h2>
+
+<ul>
+  <li><a href="/research/2019-10-13-achilles-8">Achilles’ Tent Notes #8</a></li>
+  <li><a href="/research/2019-10-15-achilles-9">Achilles’ Tent Notes #9</a></li>
+  <li><a href="/research/2019-10-28-achilles-10">Achilles’ Tent Notes #10</a></li>
+  <li><a href="/research/2019-11-11-achilles-11"><strong>Achilles’ Tent Notes #11</strong></a></li>
+  <li><a href="/research/2019-12-02-achilles-12">Achilles’ Tent Notes #12</a></li>
+  <li><a href="/research/2019-12-13-achilles-13">Achilles’ Tent Notes #13</a></li>
+</ul>
+
+<hr />
+
+<h3 id="parties--protocols">Parties &amp; Protocols</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">enum Other { Ip(...), Mem(...), ... }</code></li>
+  <li><code class="language-plaintext highlighter-rouge">trait Protocol</code></li>
+  <li><code class="language-plaintext highlighter-rouge">enum Party { Me, Other(Other), Protocol(Box&lt;Protocol&gt;) }</code></li>
+</ul>
+
+<p>All of <code class="language-plaintext highlighter-rouge">Me</code>, <code class="language-plaintext highlighter-rouge">Other</code> and <code class="language-plaintext highlighter-rouge">Protocol</code> implement <code class="language-plaintext highlighter-rouge">trait Party</code> (maybe <code class="language-plaintext highlighter-rouge">Entity</code>).</p>
+
+<h4 id="same-source-protocol-with-cli-flags">Same source protocol, with CLI flags:</h4>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">A</code> runs with <code class="language-plaintext highlighter-rouge">--parties=[10.0.1.1, @me, 10.0.1.2]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">B</code> runs with <code class="language-plaintext highlighter-rouge">--parties=[@me, 10.0.1.0, 10.0.1.2]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">C</code> runs with <code class="language-plaintext highlighter-rouge">--parties=[10.0.1.1, 10.0.1.0, @me]</code></li>
+</ul>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">use</span> <span class="nn">achillies</span><span class="p">::</span><span class="nn">party</span><span class="p">::</span><span class="n">Party</span><span class="p">;</span>
+
+<span class="c1">// Could be a const-fn to allow compiling with specific</span>
+<span class="c1">// parties established.</span>
+<span class="k">let</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">]:</span> <span class="p">[</span><span class="n">Party</span><span class="p">;</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nf">parse_flags</span><span class="p">();</span>
+<span class="k">let</span> <span class="n">P</span> <span class="o">=</span> <span class="nd">init_protocol!</span> <span class="p">{</span>
+  <span class="nf">GC</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+
+  <span class="n">Garbler</span>   <span class="k">=&gt;</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">],</span>
+  <span class="n">Evaluator</span> <span class="k">=&gt;</span> <span class="n">C</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="c1">// Symmetric inputs</span>
+<span class="k">let</span> <span class="n">i</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="nf">read_env</span><span class="p">();</span>
+<span class="k">let</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">]:</span> <span class="p">[</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="nb">u32</span><span class="o">&gt;</span><span class="p">;</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="nf">.conceals</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">P</span><span class="py">.parties</span><span class="p">);</span>
+
+<span class="c1">// Asymmetric inputs</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">P</span><span class="nf">.conceal</span><span class="p">(</span><span class="nf">read_env</span><span class="p">(),</span> <span class="n">A</span><span class="p">);</span>
+<span class="k">let</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="nf">.conceals</span><span class="p">(</span><span class="nf">gen_rand</span><span class="p">(),</span> <span class="p">[</span><span class="n">B</span><span class="p">,</span><span class="n">C</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<details>
+  <summary>Conceals Implementation, and Conceal Macros</summary>
+  <div>
+    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Lazy/party specific block?</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="nd">conceal!</span><span class="p">(</span><span class="n">A</span><span class="o">@</span><span class="p">{</span><span class="nf">read_env</span><span class="p">()}</span> <span class="k">=&gt;</span> <span class="n">P</span><span class="p">);</span>
+<span class="k">let</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="nd">conceals!</span><span class="p">([</span><span class="n">B</span><span class="p">,</span><span class="n">C</span><span class="p">]</span><span class="o">@</span><span class="p">{</span><span class="nf">gen_rand</span><span class="p">()}</span> <span class="k">=&gt;</span> <span class="n">P</span><span class="p">);</span>
+
+<span class="c1">// NOTE: `conceals` may be implemented as:</span>
+<span class="k">fn</span> <span class="nf">conceals</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">parties</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Party</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="n">xs</span> <span class="o">=</span> <span class="nn">Vec</span><span class="p">::</span><span class="nf">with_capacity</span><span class="p">(</span><span class="n">parties</span><span class="nf">.len</span><span class="p">());</span>
+  <span class="k">for</span> <span class="n">party</span> <span class="k">in</span> <span class="n">parties</span><span class="nf">.iter</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">xs</span><span class="nf">.push</span><span class="p">(</span><span class="k">self</span><span class="nf">.conceal</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">party</span><span class="p">));</span>
+  <span class="p">}</span>
+  <span class="n">xs</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </div>
+</details>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Compute on `Obliv` data.</span>
+<span class="k">let</span> <span class="n">r</span> <span class="o">=</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">);</span>
+
+<span class="c1">// Explicit reveals.</span>
+<span class="n">P</span><span class="nf">.reveal</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">A</span><span class="p">);</span>
+</code></pre></div></div>
+
+<details>
+  <summary>Different source (C's shown)</summary>
+  <div>
+    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">use</span> <span class="nn">achillies</span><span class="p">::</span><span class="nn">party</span><span class="p">::{</span><span class="n">Party</span><span class="p">,</span> <span class="n">Other</span><span class="p">};</span>
+
+<span class="k">let</span> <span class="n">P</span> <span class="o">=</span> <span class="nd">init_protocol!</span> <span class="p">{</span>
+  <span class="nf">GC</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+
+  <span class="n">Garbler</span> <span class="k">=&gt;</span> <span class="p">[</span>
+    <span class="nn">Party</span><span class="p">::</span><span class="nf">Other</span><span class="p">(</span><span class="nn">Other</span><span class="p">::</span><span class="nf">Ip</span><span class="p">(</span><span class="s">"10.0.1.1"</span><span class="p">)),</span>
+    <span class="nn">Party</span><span class="p">::</span><span class="nf">Other</span><span class="p">(</span><span class="nn">Other</span><span class="p">::</span><span class="nf">Ip</span><span class="p">(</span><span class="s">"10.0.1.0"</span><span class="p">)),</span>
+  <span class="p">],</span>
+  <span class="n">Evaluator</span> <span class="k">=&gt;</span> <span class="nn">Party</span><span class="p">::</span><span class="n">Me</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="c1">// We don't have to know what the source of `x` and `y` is.</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">P</span><span class="nf">.conceal</span><span class="p">(</span><span class="nb">None</span><span class="p">,</span> <span class="n">A</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="n">P</span><span class="nf">.conceal</span><span class="p">(</span><span class="nb">None</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">z</span> <span class="o">=</span> <span class="n">P</span><span class="nf">.conceal</span><span class="p">(</span><span class="nf">Some</span><span class="p">(</span><span class="nf">gen_rand</span><span class="p">()),</span> <span class="n">C</span><span class="p">);</span>
+
+<span class="c1">// Compute on `Obliv` data.</span>
+<span class="k">let</span> <span class="n">r</span> <span class="o">=</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">);</span>
+
+<span class="c1">// Explicit reveals.</span>
+<span class="n">P</span><span class="nf">.reveal</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">A</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </div>
+</details>
+
+<h3 id="merge-sort">Merge Sort</h3>
+
+<p>We see that <code class="language-plaintext highlighter-rouge">merge_sort</code> over a slice of <code class="language-plaintext highlighter-rouge">Obliv&lt;T&gt;</code> is mostly recursive calls
+to a <code class="language-plaintext highlighter-rouge">merge</code> function, as we expect.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">merge_sort</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">slice</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">])</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span>
+    <span class="k">where</span> <span class="n">T</span><span class="p">:</span> <span class="nb">PartialOrd</span> <span class="o">+</span> <span class="nb">Clone</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="n">slice</span><span class="nf">.len</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span> <span class="k">return</span> <span class="n">slice</span><span class="nf">.to_owned</span><span class="p">()</span> <span class="p">}</span>
+    <span class="k">let</span> <span class="n">mid</span>   <span class="o">=</span> <span class="n">slice</span><span class="nf">.len</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">left</span>  <span class="o">=</span> <span class="nf">merge_sort</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slice</span><span class="p">[</span><span class="mi">0</span><span class="o">..</span><span class="n">mid</span><span class="p">]);</span>
+    <span class="k">let</span> <span class="n">right</span> <span class="o">=</span> <span class="nf">merge_sort</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slice</span><span class="p">[</span><span class="n">mid</span><span class="o">..</span><span class="n">slice</span><span class="nf">.len</span><span class="p">()]);</span>
+    <span class="nf">merge</span><span class="p">(</span><span class="o">&amp;</span><span class="n">left</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">right</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">merge</code> function requires a bit of care to avoid leaking the original
+orders of it’s arguments.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// You start with an slice of `Obliv&lt;T&gt;` meaning you know</span>
+<span class="c1">// essentially nothing but the length of the slice. After merging,</span>
+<span class="c1">// you end up with a `Vec` of `Obliv&lt;T&gt;` again meaning that you</span>
+<span class="c1">// know nothing but the length. This means this function **should</span>
+<span class="c1">// not** leak, for instance, the order of the elements in the</span>
+<span class="c1">// original slice. See `leaky_merge`.</span>
+<span class="k">fn</span> <span class="n">merge</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">],</span> <span class="n">right</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">])</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span>
+    <span class="k">where</span> <span class="n">T</span><span class="p">:</span> <span class="nb">PartialOrd</span> <span class="o">+</span> <span class="nb">Clone</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="n">out_len</span> <span class="o">=</span> <span class="n">left</span><span class="nf">.len</span><span class="p">()</span> <span class="o">+</span> <span class="n">right</span><span class="nf">.len</span><span class="p">();</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">out</span> <span class="o">=</span> <span class="nn">Vec</span><span class="p">::</span><span class="nf">with_capacity</span><span class="p">(</span><span class="n">out_len</span><span class="p">);</span>
+
+    <span class="c1">// Both `li` and `ri` must be `Obliv` types, because</span>
+    <span class="c1">// they will need to be mutated inside the `obliv if`, which</span>
+    <span class="c1">// is disallowed otherwise.  This makes sense, because</span>
+    <span class="c1">// inspection of the current left and right slice index while</span>
+    <span class="c1">// running the following `for` loop would leak the ....</span>
+    <span class="c1">//</span>
+    <span class="c1">// The `Obliv` type is public information at first however,</span>
+    <span class="c1">// since it's well established that any instance of this</span>
+    <span class="c1">// sorting algorithm starts at the 0th index of each slice.</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">li</span> <span class="o">=</span> <span class="nn">Obliv</span><span class="p">::</span><span class="nf">public</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">ri</span> <span class="o">=</span> <span class="nn">Obliv</span><span class="p">::</span><span class="nf">public</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="c1">// We need to use the length's of the slices in our obliv if</span>
+    <span class="c1">// logic, so we must make an explicit public `left_len` obliv</span>
+    <span class="c1">// value.</span>
+    <span class="k">let</span> <span class="n">left_len</span> <span class="o">=</span> <span class="nn">Obliv</span><span class="p">::</span><span class="nf">public</span><span class="p">(</span><span class="n">left</span><span class="nf">.len</span><span class="p">());</span>
+    <span class="k">let</span> <span class="n">right_len</span> <span class="o">=</span> <span class="nn">Obliv</span><span class="p">::</span><span class="nf">public</span><span class="p">(</span><span class="n">right</span><span class="nf">.len</span><span class="p">());</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..</span><span class="n">out_len</span> <span class="p">{</span>
+        <span class="n">out</span><span class="nf">.push</span><span class="p">({</span>
+            <span class="n">obliv</span> <span class="k">if</span> <span class="n">li</span> <span class="o">==</span> <span class="n">left_len</span> <span class="p">||</span>
+                     <span class="n">ri</span> <span class="o">&lt;</span> <span class="n">right_len</span> <span class="o">&amp;&amp;</span>
+                     <span class="nf">Oram</span><span class="p">(</span><span class="n">right</span><span class="p">)[</span><span class="n">ri</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nf">Oram</span><span class="p">(</span><span class="n">left</span><span class="p">)[</span><span class="n">li</span><span class="p">]</span>
+            <span class="p">{</span>
+                <span class="k">let</span> <span class="n">o</span> <span class="o">=</span> <span class="nf">Oram</span><span class="p">(</span><span class="n">right</span><span class="p">)[</span><span class="n">ri</span><span class="p">]</span><span class="nf">.clone</span><span class="p">();</span>
+                <span class="n">ri</span> <span class="o">+=</span> <span class="nn">Obliv</span><span class="p">::</span><span class="nf">public</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+                <span class="n">o</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="n">o</span> <span class="o">=</span> <span class="nf">Oram</span><span class="p">(</span><span class="n">left</span><span class="p">)[</span><span class="n">li</span><span class="p">]</span><span class="nf">.clone</span><span class="p">();</span>
+                <span class="n">li</span> <span class="o">+=</span> <span class="nn">Obliv</span><span class="p">::</span><span class="nf">public</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+                <span class="n">o</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="n">out</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<details>
+  <summary>Leaky merge function</summary>
+  <div>
+    <p>We show a simple mistake, and where our type system would catch it.</p>
+
+    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">leaky_merge</span><span class="o">&lt;</span><span class="n">T</span><span class="p">:</span> <span class="nb">PartialOrd</span><span class="o">&gt;</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">],</span> <span class="n">right</span><span class="p">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">])</span>
+    <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Obliv</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="n">out_len</span> <span class="o">=</span> <span class="n">left</span><span class="nf">.len</span><span class="p">()</span> <span class="o">+</span> <span class="n">right</span><span class="nf">.len</span><span class="p">();</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">out</span> <span class="o">=</span> <span class="nn">Vec</span><span class="p">::</span><span class="nf">with_capacity</span><span class="p">(</span><span class="n">out_len</span><span class="p">);</span>
+
+    <span class="c1">// Mistake here, we would leak the original order by allowing</span>
+    <span class="c1">// inspection of the left and right index we use throughout</span>
+    <span class="c1">// the algorithm.</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">li</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">ri</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..</span><span class="n">out_len</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">r</span> <span class="o">=</span> <span class="n">right</span><span class="p">[</span><span class="n">ri</span><span class="p">]</span><span class="nf">.clone</span><span class="p">();</span>
+        <span class="k">let</span> <span class="n">l</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="n">li</span><span class="p">]</span><span class="nf">.clone</span><span class="p">();</span>
+
+        <span class="n">out</span><span class="nf">.push</span><span class="p">({</span>
+            <span class="c1">// NOTE: This luckily type-fails here. We can't mutate</span>
+            <span class="c1">// a plain value within an `obliv if`.</span>
+            <span class="c1">//</span>
+            <span class="c1">// We *could* use an `always` block to allow mutation.</span>
+            <span class="c1">// However, then the index would *always* increment by</span>
+            <span class="c1">// 1, breaking the merge algorithm.</span>
+            <span class="n">obliv</span> <span class="k">if</span> <span class="n">li</span> <span class="o">==</span> <span class="n">left</span><span class="nf">.len</span><span class="p">()</span> <span class="p">||</span>
+                     <span class="n">ri</span> <span class="o">&lt;</span> <span class="n">right</span><span class="nf">.len</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+                     <span class="n">right</span><span class="p">[</span><span class="n">ri</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">left</span><span class="p">[</span><span class="n">li</span><span class="p">]</span>
+            <span class="p">{</span>
+                <span class="k">let</span> <span class="n">o</span> <span class="o">=</span> <span class="n">right</span><span class="p">[</span><span class="n">ri</span><span class="p">]</span><span class="nf">.clone</span><span class="p">();</span>
+                <span class="n">ri</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+                <span class="n">o</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="n">o</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="n">li</span><span class="p">]</span><span class="nf">.clone</span><span class="p">();</span>
+                <span class="n">li</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+                <span class="n">o</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+
+        <span class="c1">// We didn't declare obliv index (aka linear scan), so</span>
+        <span class="c1">// this leaks the original order.</span>
+        <span class="nd">println!</span><span class="p">(</span><span class="s">"{}"</span><span class="p">,</span> <span class="n">li</span><span class="p">,</span> <span class="n">ri</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">out</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </div>
+</details>
+
+<h3 id="todo">TODO</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">GC(3)</code> can be any<code class="language-plaintext highlighter-rouge">Party::Protocol</code> trait or something…?</li>
+  <li>Exact <code class="language-plaintext highlighter-rouge">conceal</code> and <code class="language-plaintext highlighter-rouge">conceals</code> semantics in multi-party setting.</li>
+  <li>Short circuit semantics for <code class="language-plaintext highlighter-rouge">||</code></li>
+  <li>Example <a href="https://www.cs.rochester.edu/u/muthuv/compare.pdf">[1]</a> <code class="language-plaintext highlighter-rouge">fn median&lt;T: PartialOrd&gt;(inputs: Vec&lt;Vec&lt;Obliv&lt;T&gt;&gt;&gt;) -&gt; T</code></li>
+  <li>Example <a href="https://eprint.iacr.org/2016/861.pdf">[2]</a> <code class="language-plaintext highlighter-rouge">fn stable_match</code></li>
+</ul>
+
+
+</div>
+
+    <footer>
+      <a href="/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

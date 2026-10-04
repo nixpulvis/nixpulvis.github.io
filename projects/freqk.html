@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Freqk Display (7 band audio EQ)</title>
+    <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/img/cat-lambda.png" />
+      <img id="me" src="/img/me.jpg" class="hidden" />
+      <a href="/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/references">&</a></li>
+          <li class="icon"><a href="/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2>Freqk Display (7 band audio EQ)</h2>
+
+<ul class="references">
+
+    <li><a href="https://github.com/nixpulvis/freqk">https://github.com/nixpulvis/freqk</a></li>
+
+</ul>
+
+<p>I own a Korg MS-20 Mini, and have been using it to learn a bit more about music
+and signal generation. It has configurable oscilators, envelopes, and filters.
+The primary way we interact with sound is with our ears, but electronic tools
+can also be made to “hear” and then display that information visually. I’ve
+built an LED display (on top of the synth) to visualize the intensity of 7
+frequency bands (4 LEDs) of our audible spectrum, log scale.</p>
+
+<h3 id="demonstration-and-explaination">Demonstration and Explaination</h3>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yq7Y-EA3SVI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+
+<h3 id="details">Details</h3>
+
+<p>We have 28 LEDs along the width of the synth, going 15 deep back away from the
+keys. Six on top and nine down the back.</p>
+
+<p><img src="/img/freqk/korg-ms20.jpeg" alt="" /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define DISPLAY_WIDTH 28
+#define DISPLAY_BAND_WIDTH 4
+#define DISPLAY_TOP_DEPTH 6
+#define DISPLAY_BACK_DEPTH 9
+#define DISPLAY_DEPTH (DISPLAY_TOP_DEPTH + DISPLAY_BACK_DEPTH)
+</span></code></pre></div></div>
+
+<p>Using the Arduino has many advantages, but eventually I’d like to use the board
+we etched by hand.</p>
+
+<p><img src="/img/freqk/arduino.jpeg" height="250" style="float:right; margin-left: 1em;" /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define ANALOG_PIN A1
+#define STROBE_PIN 10
+#define RESET_PIN 9
+#define DISPLAY_PIN 8
+</span></code></pre></div></div>
+
+<p><img src="/img/freqk/arduino-pinout.png" alt="" /></p>
+
+<p><img src="/img/freqk/msgeq7.jpeg" height="100" style="float: left; margin-right: 1em; transform: rotate(-90deg);" /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define BANDS 7
+</span></code></pre></div></div>
+
+<p>The MSGEQ7 has 7 bands which it samples for analog values.</p>
+
+<h3 id="main-loop-overview">Main Loop (Overview)</h3>
+
+<p>This is a slightly simplified version of the <code class="language-plaintext highlighter-rouge">loop</code> function for the Freqk
+Display.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">spectrums</span><span class="p">[</span><span class="n">DISPLAY_DEPTH</span><span class="p">][</span><span class="n">BANDS</span><span class="p">];</span>
+  <span class="n">read_msgeq7</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  <span class="n">clone</span><span class="p">(</span><span class="n">spectrums</span><span class="p">);</span>
+  <span class="n">update_display</span><span class="p">(</span><span class="n">spectrums</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="read_msgeq7"><code class="language-plaintext highlighter-rouge">read_msgeq7</code></h3>
+
+<p><img src="/img/freqk/msgeq7-schematic.png" alt="" /></p>
+
+<p>In order from first to last, the bands are centered around the following
+acoustic frequencies: 63Hz, 160Hz, 400Hz, 1kHz, 2.5kHz, 6.25kHz, 16kHz.</p>
+
+<p><img src="/img/freqk/msgeq7-timing.png" alt="" /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">read_msgeq7</span><span class="p">(</span><span class="kt">int</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">BANDS</span><span class="p">])</span> <span class="p">{</span>
+  <span class="c1">// TODO: Dynamically set this value somehow?</span>
+  <span class="kt">int</span> <span class="n">spectrumOffset</span><span class="p">[</span><span class="n">BANDS</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span>  <span class="p">};</span>
+
+  <span class="n">digitalWrite</span><span class="p">(</span><span class="n">RESET_PIN</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span>
+  <span class="n">digitalWrite</span><span class="p">(</span><span class="n">RESET_PIN</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">BANDS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">digitalWrite</span><span class="p">(</span><span class="n">STROBE_PIN</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>
+    <span class="n">delayMicroseconds</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span>  <span class="c1">// why was this working at 30?</span>
+    <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">analogRead</span><span class="p">(</span><span class="n">ANALOG_PIN</span><span class="p">)</span> <span class="o">-</span> <span class="n">spectrumOffset</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">digitalWrite</span><span class="p">(</span><span class="n">STROBE_PIN</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="clone-and-shift"><code class="language-plaintext highlighter-rouge">clone</code> and <code class="language-plaintext highlighter-rouge">shift</code></h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">clone</span><span class="p">(</span><span class="kt">int</span> <span class="n">spectrums</span><span class="p">[</span><span class="n">DISPLAY_DEPTH</span><span class="p">][</span><span class="n">BANDS</span><span class="p">])</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">DISPLAY_DEPTH</span><span class="p">;</span> <span class="n">s</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="n">DISPLAY_DEPTH</span> <span class="o">-</span> <span class="n">s</span><span class="p">],</span>
+           <span class="n">spectrums</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+           <span class="n">BANDS</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Things get a little more complex for shifting and triggering, but the code is
+still pretty straightforward.</p>
+
+<p>First there are two configuration options. <code class="language-plaintext highlighter-rouge">HISTORY_TRIGGER</code>, if <code class="language-plaintext highlighter-rouge">HISTORY</code>
+is enabled, will trigger a new shift when the value is exceeded in difference
+on consecutive analog reads. A trigger value of 0 will cause updates to
+happen consistently on every other cycle.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define HISTORY 1
+#define HISTORY_TRIGGER 0
+</span></code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#if HISTORY
+</span><span class="kt">void</span> <span class="nf">shift</span><span class="p">(</span><span class="kt">int</span> <span class="n">spectrums</span><span class="p">[</span><span class="n">DISPLAY_DEPTH</span><span class="p">][</span><span class="n">BANDS</span><span class="p">])</span> <span class="p">{</span>
+<span class="cp">#if HISTORY_TRIGGER &gt; 0
+</span>  <span class="n">bool</span> <span class="n">visable</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">BANDS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">visable</span> <span class="o">=</span> <span class="n">visable</span> <span class="o">||</span> <span class="n">abs</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">spectrums</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">HISTORY_TRIGGER</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">max_index</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="n">max_index</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">visable</span><span class="p">)</span>
+  <span class="p">{</span>
+<span class="cp">#elif HISTORY_TRIGGER == HISTORY_TIME
+</span>  <span class="n">tick</span><span class="o">++</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">tick</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+<span class="cp">#endif
+</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">DISPLAY_DEPTH</span><span class="p">;</span> <span class="n">s</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">memcpy</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="n">DISPLAY_DEPTH</span> <span class="o">-</span> <span class="n">s</span><span class="p">],</span>
+             <span class="n">spectrums</span><span class="p">[(</span><span class="n">DISPLAY_DEPTH</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+             <span class="n">BANDS</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">#endif
+</span></code></pre></div></div>
+
+<h3 id="update_display"><code class="language-plaintext highlighter-rouge">update_display</code></h3>
+
+<p><img src="/img/freqk/28x6.jpeg" width="95%" />
+<img src="/img/freqk/msgeq7-response.png" alt="" /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">update_display</span><span class="p">(</span><span class="kt">int</span> <span class="n">spectrums</span><span class="p">[</span><span class="n">DISPLAY_DEPTH</span><span class="p">][</span><span class="n">BANDS</span><span class="p">])</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">intensity</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">loudest_band</span><span class="p">;</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">DISPLAY_DEPTH</span><span class="p">;</span> <span class="n">s</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">loudest_band</span> <span class="o">=</span> <span class="n">max_index</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="n">s</span><span class="p">]);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="n">BANDS</span><span class="p">;</span> <span class="n">b</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Each strip is alternating direction as they connect Dins.</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">intensity</span> <span class="o">=</span> <span class="n">map</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="n">s</span><span class="p">][(</span><span class="n">BANDS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">b</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">intensity</span> <span class="o">=</span> <span class="n">map</span><span class="p">(</span><span class="n">spectrums</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">b</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">DISPLAY_WIDTH</span> <span class="o">/</span> <span class="n">BANDS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">display_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">DISPLAY_WIDTH</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">DISPLAY_BAND_WIDTH</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
+        <span class="kt">uint32_t</span> <span class="n">color</span><span class="p">;</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">intensity_color</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">loudest_band</span><span class="p">);</span>
+        <span class="n">display</span><span class="p">.</span><span class="n">setPixelColor</span><span class="p">(</span><span class="n">display_index</span><span class="p">,</span> <span class="n">color</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="n">display</span><span class="p">.</span><span class="n">show</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="colors">Colors</h3>
+
+<p><img src="/img/freqk/grid.jpeg" width="300" /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define COLOR COLOR_MIXED
+</span></code></pre></div></div>
+
+<p>Given the audio intensity and the loudest band and return a color.</p>
+
+<p>We take the audio intensity to change the light’s intensity. We need to know
+the loudest band to change the color of the whole strip.</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">uint32_t</span> <span class="nf">intensity_color</span><span class="p">(</span><span class="kt">int</span> <span class="n">intensity</span><span class="p">,</span> <span class="kt">int</span> <span class="n">loudest</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">scaled_intensity</span> <span class="o">=</span> <span class="n">map</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">);</span>
+
+<span class="cp">#if COLOR == COLOR_MIXED
+</span>  <span class="k">switch</span> <span class="p">(</span><span class="n">loudest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">display</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">scaled_intensity</span><span class="p">);</span>
+    <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">case</span> <span class="mi">3</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">display</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">scaled_intensity</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">case</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="k">case</span> <span class="mi">5</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">display</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="n">scaled_intensity</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="nl">default:</span>
+      <span class="k">return</span> <span class="n">display</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="n">scaled_intensity</span><span class="p">,</span>
+                           <span class="n">scaled_intensity</span><span class="p">,</span>
+                           <span class="n">scaled_intensity</span><span class="p">);</span>
+  <span class="p">}</span>
+
+<span class="cp">#elif COLOR == COLOR_RED
+</span>  <span class="k">return</span> <span class="n">display</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="n">scaled_intensity</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="cp">#elif COLOR == COLOR_GREEN
+</span>  <span class="k">return</span> <span class="n">display</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">scaled_intensity</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="cp">#else
+</span>  <span class="k">return</span> <span class="n">display</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">scaled_intensity</span><span class="p">);</span>
+<span class="cp">#endif
+</span><span class="p">}</span>
+
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">max_index</span><span class="p">(</span><span class="kt">int</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">BANDS</span><span class="p">])</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">max_v</span> <span class="o">=</span> <span class="n">INT_MIN</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">max_i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">BANDS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_v</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">max_v</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">max_i</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">max_i</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="setup-and-loop-revisited">Setup and Loop (Revisited)</h3>
+
+<p><img src="/img/freqk/box.jpeg" alt="" /></p>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p><img src="/img/freqk/schematic.png" style="transform: rotate(90deg); margin: 2em 0 2.5em" /></p>
+
+<ul>
+  <li>Think about display mode inputs</li>
+  <li>Investigate power and hardware requirements for back LED strips</li>
+  <li>Firmware for etched board</li>
+  <li><a href="https://github.com/nixpulvis/synth/issues">GitHub Issues</a></li>
+</ul>
+
+</div>
+
+    <footer>
+      <a href="/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>

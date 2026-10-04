@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Nesting Git Repositories</title>
+    <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="" />
+    <script src="/js/mousetrap.min.js"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" src="/img/cat-lambda.png" />
+      <img id="me" src="/img/me.jpg" class="hidden" />
+      <a href="/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/references">&</a></li>
+          <li class="icon"><a href="/musings">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2>
+    Nesting Git Repositories
+    <small>
+        258 words
+        
+            published
+        
+        on April 24, 2024.
+    </small>
+</h2>
+
+<p>So I had an idea last night… what if we could simply nest git repositories
+inside each other, without all the added complexity of <code class="language-plaintext highlighter-rouge">git-submodule</code>?</p>
+
+<p>Consider for a moment a scenario like the one I have. During my years at school
+I collected a bunch of repos for each class e.g. <code class="language-plaintext highlighter-rouge">cs2500</code>, each with their own
+history. Then, I wanted to put them all together under a new repo named
+<code class="language-plaintext highlighter-rouge">school</code>. A perfect use case for submodules, no? But the issue is I didn’t want
+to manage updating two repos and remotes every time I touched anything.
+Wouldn’t it be nice if all I needed to do was <code class="language-plaintext highlighter-rouge">mv cs2500 school</code> and git could
+handle the nested <code class="language-plaintext highlighter-rouge">.git</code> directory as a sort of subrepository.</p>
+
+<p>With this setup, I imagine history would simply be the union of all
+subrepositories’ histories, and a commit to <code class="language-plaintext highlighter-rouge">cs2500</code> would only change the
+contents of <code class="language-plaintext highlighter-rouge">cs2500/.git</code>. At any point I should be able to move back out the 
+subrepository with <code class="language-plaintext highlighter-rouge">mv school/cs2500 cs2500</code> and have all my progress
+persevered.</p>
+
+<p>This is just the very beginnings of an idea, so I expect there are a lot of
+edge cases and blatant issues with it, but I do think there could be something
+here worth thinking about. People often shy away from using submodules because
+of the overhead they add. So giving a new way to manage nested repositories
+could go a long way for organizing things inside git.</p>
+
+</div>
+
+    <footer>
+      <a href="/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span style="float:right;">
+        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      </span>
+    </footer>
+  </body>
+</html>
