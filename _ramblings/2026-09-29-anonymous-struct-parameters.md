@@ -4,7 +4,7 @@ title: Anonymous Struct Parameters
 draft: true
 ---
 
-There have been a few [recent posts](#3-relating-to-recent-posts) on how Rust
+There have been a few [recent posts](#4-relating-to-recent-posts) on how Rust
 should adopt _named arguments_, and I even had some thoughts on the matter back
 in [a comment I left on the issue in 2016][nixpulvis-2016]. My original idea was
 never really something I expected to be adopted, but my point was always that
@@ -26,7 +26,7 @@ need and also doesn't cover anonymous structs in function signatures.
 
 So let's talk about [struct args](#1-struct-args) instead of named arguments for
 a minute, then build up to it with some [syntactic
-sugar](#4-named-argument-sugar).
+sugar](#3-named-argument-sugar).
 
 * TOC
 {:toc}
@@ -56,7 +56,7 @@ requires both using a somewhat lesser known `@` pattern and a named struct type
 I'll be introducing new syntax in stages, and noting all new syntax inside
 highlighted code blocks.
 
-### Elided struct types
+### Elided parameter types
 
 We could avoid the duplication of `Point` in the second example simply by
 allowing it to be elided entirely when it can be inferred from the pattern.
@@ -75,7 +75,7 @@ fn f(p @ Point { x, y }) {}
 ```
 </div>
 
-Technically elided struct types in function signatures aren't needed for the
+Technically elided parameter types in function signatures aren't needed for the
 following anonymous struct feature, but they feel like a natural extension of
 the language at this moment since both require letting the type be inferred from
 the pattern.
@@ -202,7 +202,7 @@ edits to a function are breaking:
 
 - **Adding a parameter** is always breaking for positional parameters, however
   adding a field *with a default* to an anonymous struct isn't breaking for
-  callers that wrote `..` or used the named argument [sugar](#4-named-argument-sugar),
+  callers that wrote `..` or used the named argument [sugar](#call-syntax-fa-x-1),
   which implies it
 - **Reordering** positional parameters is breaking, however reordering fields
   isn't since they're passed by name
@@ -225,7 +225,7 @@ a field with a default would never be breaking ([Section 8](#8-whats-next)).
 
 Now let's look at some realistic examples of using this new syntax. Later we'll
 see how we can make it even more like named arguments with some [syntactic
-sugar](#4-named-argument-sugar). I have a hacked together [prototype
+sugar](#3-named-argument-sugar). I have a hacked together [prototype
 implementation](#5-the-prototype) for both the `struct_args` and
 `struct_args_sugar` features, but for now we'll focus on the core `struct_args`
 feature.
@@ -433,29 +433,150 @@ w.write(_ { data: "hi", times: 2 });
 ```
 </div>
 
-Leaving the defaults out of the `impl` keeps them in one place, the trait, but
-it means someone reading the impl can't see that `times` defaults to `1`.
-Requiring the impl to repeat the default instead, as `times: usize = 1`, checked
-against the trait's, might be preferable, at the cost of keeping the two in sync
-by hand.
+For now the `impl` leaves the defaults out. That keeps them in one place, the
+trait, but someone reading the impl can't see that `times` defaults to `1`. We'd
+like to require the impl to repeat them, as `times: usize = 1`, checked against
+the trait's, but it's not clear how that check should work. Comparing the
+expressions as written would reject an impl that writes the same value a
+different way. Comparing values means evaluating both, after filling in the
+impl's types for something like `Self::N`. And with [non-const
+defaults](#non-const-defaults) there might not be a value to compare until
+runtime. Either way the impl's copy has to match, since the impl's struct is the
+trait's struct, and every call, direct or through `dyn`, uses the trait's
+defaults.
 
 Unlike positional parameters, the struct field names must match the trait's
 field names. An `impl` that renames `data` to `bytes` is an error, since `bytes`
 isn't a field of the trait's struct.
 
-## 3. Relating to Recent Posts
+## 3. Named Argument Sugar
+
+Everything so far is struct syntax in new places. The sugar here is the part that looks like named arguments, and like the elided parameter types in Section 1, it only removes something from what you write. The rule to keep in mind is that **the sugar never adds meaning.** There is one deliberate exception, which is that named arguments imply `..`.
+
+It's also the part I expect the most questions about. None of it is required, everything in Sections 1 and 2 works without it, but none of it is new either. Leaving out a named argument to get its default is how named arguments work in [Swift][swift-labels], [Python][python-kwargs], and [Julia][julia-kwargs], and the implied `..` is just Rust's spelling of that from RFC 3681. Separating positional and keyword parameters with a `;` comes from Julia. It does have costs. Every call can be written two ways, a call no longer shows which fields took their defaults ([Klabnik's][klabnik] concern), and a `;` signature hides that the last parameter is a struct, which matters when the function is used as a value. Only the last argument can be written with names, and `:` in argument lists is taken for good. I think it's worth it, but these are fair questions.
+
+### Call syntax: `f(a, x: 1)`
+
+Named arguments are sugar for a `_ { .. }` literal as the last argument. Once an argument is written `name: value`, it and the ones after it form the struct. The calls from [Section 2](#2-examples) become:
+
+<div class="highlight-block" markdown="1">
+```rust
+copy(from: a, to: b)?;
+// = copy(_ { from: a, to: b })?
+
+crop(&img, width: 200);
+// = crop(&img, _ { width: 200, .. })
+crop(&img, width: 200, x: 15, y: 25);
+
+fill(&mut shape, red: 0xA8, green: 0x3C, blue: 0x09);
+fill(&mut shape, red: 0xFF, ..accent);
+```
+</div>
+
+- Positional arguments come first, then named ones, then optionally `..` or `..base`, last.
+- Named arguments imply `..`, so any fields left out take their defaults, and a field without a default still has to be given. This is the exception mentioned above, and it costs something, since the call no longer shows which fields were defaulted the way `..` does. For an anonymous struct, at least the defaults are the function's own, since the struct only exists for it. Whether named structs should also get the implied `..` is still open. If they do, a library adding a default to a public struct changes which calls compile, so it depends on how `#[non_exhaustive]` ends up working with RFC 3681 defaults ([Section 1](#api-evolution-and-semver)). Writing the `..` yourself, as in `Instance::new(backends: Backends::VULKAN, ..InstanceDescriptor::new_without_display_handle())`, works either way.
+- `f(..)` on its own is still a `RangeFull`, as in `v.drain(..)`, so it can't mean "use every default". For `fn f(_ { verbose: bool = false })` you write `f(_ { .. })`, or leave the struct out and just write `f()` (see below).
+- There's no field shorthand. In a struct literal `Point { x, y }` means `Point { x: x, y: y }`, but `f(x, y)` is already two positional arguments, so it's `f(x: x, y: y)`, or `f(_ { x, y })`.
+- Named arguments are always the last argument, so they fill whatever parameter is last. An anonymous struct anywhere else is passed with `_ { .. }`. Since adding a parameter is breaking anyway, new options should go in the existing struct as fields with defaults. The exception is adding a new last anonymous struct where every field has a default, since calls can leave it out (below), and `crop(&img, width: 200)` still fills the old one.
+
+Positional parameters never become labels. A parameter is a pattern that may not have a name (`(x, y): (i32, i32)`, `_: u8`), and turning its name into API would make every rename a breaking change. So `foo(a: 1)` against `fn foo(a: i32)` is an error. The argument is passed by position, or the parameter moves into a struct.
+
+The syntax happens to be free, since `expr: Type` in expressions (type ascription) was removed, and `macro_rules!` can't write `$e:expr :`. It does claim `:` in argument lists for good, which is the point. `f(x: 1)` always means "the field `x` of the struct the last parameter expects".
+
+Note that `crop(&img, width: 200, height: 200)` doesn't compile against `height: Option<u32>`. It's `height: Some(200)`. Named arguments are sugar for a struct literal, and struct literals don't wrap values in `Some`. [Section 7](#optional-fields) has a more speculative idea that would change that.
+
+A last anonymous struct parameter whose fields all have defaults can also be left out of the call entirely:
+
+<div class="highlight-block" markdown="1">
+```rust
+fn text(text: &str, _ { font_size: u32 = 16 }) -> Widget { .. }
+
+text("hi");              // text("hi", _ { .. })
+text("hi", font_size: 24);
+```
+</div>
+
+This only works for anonymous structs, never for named ones, so that `v.push()` can't build a default element.
+
+There's one catch. Leaving the struct out works for calls, including method calls and calls through `fn` pointers, but in the prototype a function used as a value still takes its anonymous struct. Changing `fn f()` to `fn f(_ { a: i32 = 0 })` keeps every `f()` compiling, but breaks `opt.unwrap_or_else(f)`. Fixing that would mean `f` implementing `FnOnce()` as well as `FnOnce(_)` ([Section 6](#function-types)).
+
+### Signature syntax: `fn f(a: i32; x: i32)`
+
+[Julia][julia-kwargs] separates keyword parameters from positional ones with a `;`, and the same syntax works here. The call syntax has a mirror in the signature, which is easier to miss. `_ { .. }` as the last parameter is noisy, especially in the common case where it holds the function's options, so a `;` in the parameter list can start it instead. Every parameter after the `;` is a field of one anonymous struct, which is the last parameter.
+
+<div class="highlight-block" markdown="1">
+```rust
+fn crop(
+    img: &Image;
+    width: u32,
+    height: Option<u32> = None,
+    x: u32 = 0,
+    y: u32 = 0,
+) -> Image
+// = fn crop(img: &Image, _ {
+//       width: u32,
+//       height: Option<u32> = None,
+//       x: u32 = 0,
+//       y: u32 = 0,
+//   }) -> Image
+
+fn copy<P: AsRef<Path>, Q: AsRef<Path>>(; from: P, to: Q) -> io::Result<u64>
+// = fn copy<P: AsRef<Path>, Q: AsRef<Path>>(_ { from: P, to: Q }) -> io::Result<u64>
+```
+</div>
+
+- The parameters after the `;` are fields, exactly as in `_ { .. }`, written `name: Type`, optionally with `mut name` and `= default`. They're names, not patterns, since a field's name is its API.
+- There's at most one `;`, and it declares the last parameter, which is the one the call sugar fills. So `fn f(a: i32; x: i32)` is called `f(1, x: 2)`, and the two sides read the same. Anonymous struct parameters anywhere else still use `_ { .. }`.
+- It works in traits and impls too, as in `fn write(&mut self; data: &'static str, times: usize = 1);`.
+- It's purely syntax, so switching between `;` and `_ { .. }` changes nothing for callers.
+
+`;` already appears inside parameter types, as in `[u8; 4]`, but only inside brackets, so a `;` at the top level of a parameter list is unambiguous. Python's bare `*` for [keyword-only parameters][pep-3102] (`def f(a, *, b=1)`) is similar. Unlike Julia's and Python's, the `;` doesn't make a second kind of parameter. It's just another way to write a struct.
+
+The `;` declares an anonymous struct. When the argument struct should have a name instead, for reuse, forwarding, or traits, declare an ordinary struct and take it with the elided type from [Section 1](#elided-parameter-types):
+
+<div class="highlight-block" markdown="1">
+```rust
+struct CropArgs {
+    width: u32,
+    height: Option<u32> = None,
+    x: u32 = 0,
+    y: u32 = 0,
+}
+
+fn crop(
+    img: &Image,
+    CropArgs { width, height, x, y },
+) -> Image { .. }
+// = fn crop(
+//     img: &Image,
+//     CropArgs { width, height, x, y }: CropArgs,
+// ) -> Image
+
+crop(&img, _ { width: 200, .. });
+crop(&img, width: 200, ..);
+crop(&img, CropArgs { width: 200, .. });   // also fine
+// forwarding, `opts: CropArgs`
+crop(&img, _ { width: 50, ..opts });
+crop(&img, width: 50, ..opts);
+```
+</div>
+
+This makes the named form as short as the anonymous one, and it's written the same way, with the struct's name instead of `_`. Callers use `_ { .. }` either way, so switching between them doesn't break anyone, except calls that leave the struct out, like `f()`, and, if named structs end up without the implied `..`, named arguments that leave out fields.
+
+The elided type is just the pattern's path, so a generic struct needs its generic arguments written in the pattern. `Wrapper { s, v }` would leave `T` to be inferred, and function signatures don't infer types, so you write `fn f<T>(Wrapper::<'_, T> { s, v })`, which means `Wrapper::<'_, T> { s, v }: Wrapper<'_, T>`. Tuple-struct patterns don't get this yet ([prototype gaps](#prototype-gaps)).
+
+## 4. Relating to Recent Posts
 
 TODO
 
 <!--
-So far this has all been about structs, but the feature people keep asking for
-is *named arguments*. They've been [a wishlist issue][rfcs-323] since before
-Rust 1.0, the issue is still open, and languages like [Swift][swift-labels],
+Named arguments have been [a wishlist issue][rfcs-323] since before Rust 1.0,
+the issue is still open, and languages like [Swift][swift-labels],
 [Ruby][ruby-kwargs], [Python][python-kwargs], and [Julia][julia-kwargs] already
-have them. Anonymous structs get most of the way there, with names, any order,
-and defaults, but `copy(_ { from: a, to: b })` still isn't quite
-`copy(from: a, to: b)`. Others have been circling similar ideas, so before
-closing that gap, it's worth seeing how this compares.
+have them. With the sugar, anonymous structs give Rust the same kind of calls,
+with names, any order, and defaults, but built out of structs instead of a new
+kind of parameter. Others have been working on similar ideas, so it's worth
+seeing how this compares.
 
 Three recent posts pull in different directions, and each is worth answering on
 its own terms. Here's an overview of how this design compares to them, with more
@@ -471,7 +592,7 @@ details on each below.
 | `fn` pointers | Distinct per function (sharing when the fields match is an open question) | Rejected unless the struct is shared | Names erased | Raised as a problem |
 | Adding a parameter | Non-breaking if defaulted, for callers that wrote `..` | Non-breaking if defaulted, for callers that wrote `..` or `..Default::default()` | Non-breaking if defaulted | Breaking |
 | Per-function boilerplate | None | One struct per function | None | None |
-| New syntax | `_ { .. }` as a parameter and as an expression, struct patterns without their type, and [possible sugar](#4-named-argument-sugar) for `name: value` arguments and `;` parameters | None | `pub` parameters, `name: value` arguments, defaults | `name: value` arguments |
+| New syntax | `_ { .. }` as a parameter and as an expression, struct patterns without their type, and [possible sugar](#3-named-argument-sugar) for `name: value` arguments and `;` parameters | None | `pub` parameters, `name: value` arguments, defaults | `name: value` arguments |
 
 Klabnik's post is a position rather than a proposal, so its column records the problems it raises rather than answers. Macro crates like [bon] and [structx] fill the same gap today, with a builder or a macro at each call.
 
@@ -674,7 +795,7 @@ crop_imm(&img, _ { x: 10, y: 20, width: 200, height: 100 });
 
 When the arguments need to be a real type, for invariants, for storing, or for
 passing along, declare one and use the elided type from [Section
-1](#elided-struct-types), as in `fn crop_imm<I: GenericImageView>(image: &I,
+1](#elided-parameter-types), as in `fn crop_imm<I: GenericImageView>(image: &I,
 Crop { x, y, width, height })`. Callers don't change, since `_ { .. }` builds
 either one. The call Endler's post [wishes it could write][endler-composition]
 at the end gets close without any sugar. It basically just needs `_ { .. }`
@@ -700,7 +821,7 @@ request("/hello", _ { .. })?;
 ```
 </div>
 
-With the named-argument [sugar](#call-syntax-fa-x-1) from Section 4, the `_ { ..
+With the named-argument [sugar](#call-syntax-fa-x-1) from Section 3, the `_ { ..
 }` goes away too, and the call has exactly the shape Endler wants. 
 
   </div>
@@ -716,161 +837,92 @@ That's why I think structs are the right direction, rather than a separate named
 
 -->
 
-## 4. Named Argument Sugar
-
-TODO
-
-<!--
-Everything so far is struct syntax in new places. The sugar here is the part that looks like named arguments, and like the elided struct type in Section 1, it only removes something from what you write. The rule to keep in mind is that **the sugar never adds meaning.** There is one deliberate exception, which is that named arguments to an anonymous struct imply `..`.
-
-I'm less sure about this part than about Sections 1 and 2. Everything they offer works without it, and sugar has costs that structs don't. It gives every call two spellings, so codebases will split on style. It claims `:` in argument lists for good, and ties named arguments to the last parameter, which makes adding a parameter after it a breaking change. The implied `..` hides which fields took their defaults, which is exactly what Klabnik worries about. And the `;` signature syntax hides that the parameter is a struct at all, which can surprise someone who passes the function as a value. These are reasons to add the sugar later, if at all, once the struct parts have proven themselves.
-
-TODO: when uncommenting, point the `[sugar](#4-named-argument-sugar)` links in "API evolution
-and SemVer" back at `#call-syntax-fa-x-1`, and delete this note.
-
-### Call syntax: `f(a, x: 1)`
-
-Named arguments are sugar for a `_ { .. }` literal as the last argument. Once an argument is written `name: value`, it and the ones after it form the struct. The calls from [Section 2](#2-examples) become:
-
-<div class="highlight-block" markdown="1">
-```rust
-copy(from: a, to: b)?;
-// = copy(_ { from: a, to: b })?
-
-crop(&img, width: 200);
-// = crop(&img, _ { width: 200, .. })
-crop(&img, width: 200, x: 15, y: 25);
-
-fill(&mut shape, red: 0xA8, green: 0x3C, blue: 0x09);
-fill(&mut shape, red: 0xFF, ..accent);
-```
-</div>
-
-- Positional arguments come first, then named ones, then optionally `..` or `..base`, last.
-- Against an anonymous struct, named arguments imply `..`, so the fields they leave out take their defaults. A field without a default must still be given. Against a named struct they don't, so `Instance::new(backends: Backends::VULKAN, ..InstanceDescriptor::new_without_display_handle())` still spells out where the rest comes from. The reason is evolution, since a library adding field defaults to its public struct mustn't change which of its callers' calls compile.
-- `f(..)` on its own is still a `RangeFull`, as in `v.drain(..)`. A call taking every default writes `f(_ { .. })`, or leaves the struct out (below).
-- There's no shorthand, since `f(x, y)` is positional. `_ { x, y, .. }` still has it.
-- Named arguments fill the last parameter, so adding a parameter after it is a breaking change for callers that use them. `crop(&img, width: 200)` would name fields of the new parameter instead, and fail to compile. New options belong in the existing struct, as defaulted fields. An anonymous struct parameter anywhere else is passed with an explicit `_ { .. }`.
-
-Positional parameters never become labels. A parameter is a pattern that may not have a name (`(x, y): (i32, i32)`, `_: u8`), and turning its name into API would make every rename a breaking change. So `foo(a: 1)` against `fn foo(a: i32)` is an error. The argument is passed by position, or the parameter moves into a struct.
-
-The syntax happens to be free, since `expr: Type` in expressions (type ascription) was removed, and `macro_rules!` can't write `$e:expr :`. It does claim `:` in argument lists for good, which is the point. `f(x: 1)` always means "the field `x` of the struct the last parameter expects".
-
-Note that `crop(&img, width: 200, height: 200)` doesn't compile against `height: Option<u32>`. It's `height: Some(200)`. Named arguments are sugar for a struct literal, and struct literals don't wrap values in `Some`. [Section 7](#optional-fields) has a more speculative idea that would change that.
-
-A last anonymous struct parameter whose fields all have defaults can also be left out of the call entirely:
-
-<div class="highlight-block" markdown="1">
-```rust
-fn text(text: &str, _ { font_size: u32 = 16 }) -> Widget { .. }
-
-text("hi");              // text("hi", _ { .. })
-text("hi", font_size: 24);
-```
-</div>
-
-This only works for anonymous structs, never for named ones. `v.push()` mustn't build a default element, and, again, a library adding defaults to its struct mustn't change which calls compile.
-
-There's one caveat. Leaving the struct out works for calls, including method calls and calls through `fn` pointers, but a function used as a value still has its anonymous struct parameter. Changing `fn f()` to `fn f(_ { a: i32 = 0 })` keeps every `f()` compiling, but breaks `opt.unwrap_or_else(f)`.
-
-### Signature syntax: `fn f(a: i32; x: i32)`
-
-[Julia][julia-kwargs] separates keyword parameters from positional ones with a `;`, and the same syntax works here. The call syntax has a mirror in the signature, which is easier to miss. `_ { .. }` as the last parameter is noisy, especially in the common case where it holds the function's options, so a `;` in the parameter list can start it instead. Every parameter after the `;` is a field of one anonymous struct, which is the last parameter.
-
-<div class="highlight-block" markdown="1">
-```rust
-fn crop(
-    img: &Image;
-    width: u32,
-    height: Option<u32> = None,
-    x: u32 = 0,
-    y: u32 = 0,
-) -> Image
-// = fn crop(img: &Image, _ {
-//       width: u32,
-//       height: Option<u32> = None,
-//       x: u32 = 0,
-//       y: u32 = 0,
-//   }) -> Image
-
-fn copy<P: AsRef<Path>, Q: AsRef<Path>>(; from: P, to: Q) -> io::Result<u64>
-// = fn copy<P: AsRef<Path>, Q: AsRef<Path>>(_ { from: P, to: Q }) -> io::Result<u64>
-```
-</div>
-
-- The parameters after the `;` are fields, exactly as in `_ { .. }`, written `name: Type`, optionally with `mut name` and `= default`. They're names, not patterns, since a field's name is its API.
-- There's at most one `;`, and it declares the last parameter, which is the one the call sugar fills. So `fn f(a: i32; x: i32)` is called `f(1, x: 2)`, and the two sides read the same. Anonymous struct parameters anywhere else still use `_ { .. }`.
-- It works in traits and impls too, as in `fn write(&mut self; data: &'static str, times: usize = 1);`.
-- It's purely syntax, so switching between `;` and `_ { .. }` changes nothing for callers.
-
-`;` already appears inside parameter types, as in `[u8; 4]`, but only inside brackets, so a `;` at the top level of a parameter list is unambiguous. Python's bare `*` for [keyword-only parameters][pep-3102] (`def f(a, *, b=1)`) is similar. Unlike Julia's and Python's, the `;` doesn't make a second kind of parameter. It's just another way to write a struct.
-
-The `;` declares an anonymous struct. When the argument struct should have a name instead, for reuse, forwarding, or traits, declare an ordinary struct and take it with the elided type from [Section 1](#elided-struct-types):
-
-<div class="highlight-block" markdown="1">
-```rust
-struct CropArgs {
-    width: u32,
-    height: Option<u32> = None,
-    x: u32 = 0,
-    y: u32 = 0,
-}
-
-fn crop(
-    img: &Image,
-    CropArgs { width, height, x, y },
-) -> Image { .. }
-// = fn crop(
-//     img: &Image,
-//     CropArgs { width, height, x, y }: CropArgs,
-// ) -> Image
-
-crop(&img, _ { width: 200, .. });
-crop(&img, width: 200, ..);
-crop(&img, CropArgs { width: 200, .. });   // also fine
-// forwarding, `opts: CropArgs`
-crop(&img, _ { width: 50, ..opts });
-crop(&img, width: 50, ..opts);
-```
-</div>
-
-This makes the named form as short as an anonymous one, and spelled the same way with the struct's name in place of `_`. Callers use `_ { .. }` either way, so switching between the two forms doesn't break them, except for calls that rely on an anonymous struct's implied defaults, like `f()` and named arguments without `..`.
-
-Since signatures don't infer, a generic struct's parameters go in the pattern (`Wrapper::<'_, T> { s, v }`). Only struct patterns get this, and tuple-struct patterns (`Point(x, y)`) still need their type.
--->
-
 ## 5. The Prototype
+
+Everything in Sections 1 to 3 is implemented in a [rustc
+prototype][struct-args-branch] as two incomplete features. Defaults and `..`
+also need `#![feature(default_field_values)]`, which landed in
+[rust-lang/rust#129514][rust-129514]. The examples in this post that compile
+come from it, and [Prototype gaps](#prototype-gaps) lists where it falls short.
+
+It's about 1,300 lines of changes to the compiler. The idea is to turn the new
+syntax into an ordinary struct, struct pattern, or struct literal as early as
+possible, so most of the compiler, like privacy, borrow checking, and MIR
+building, doesn't see anything new. Internally an anonymous struct is called a
+*record*, which is where names like `TyKind::Record` and `{record@..}` come
+from. The name also leaves the door open for extending them later, toward the
+[record types](#record-types) of Section 7.
 
 ### The core feature
 
+<div class="highlight-block" markdown="1">
 ```rust
 #![feature(struct_args, default_field_values)]
+
+fn f(a: i32, _ { x: i32, y: i32 = 0 }) {}
+f(0, _ { x: 1, .. });
 ```
+</div>
 
-TODO: describe the `struct_args` feature.
+- **Parsing.** An anonymous struct parameter becomes a parameter with a new AST
+  type, `TyKind::Record`, which holds the fields, and the pattern
+  `<_>::_ { x, y }`, or `p @ <_>::_ { x, y }` when it's bound. An elided
+  parameter type is just the pattern's path copied over, so `Point { x, y }`
+  becomes `Point { x, y }: Point`. And `_ { .. }` in an expression is a struct
+  literal whose path gets filled in later by type checking.
+- **Lowering.** Name resolution gives each anonymous struct its own `DefId`, and
+  AST lowering turns it into a real struct item. The struct is a child of its
+  function and shares the function's generics, which is how its fields can use
+  the function's generic parameters, `impl Trait`, `Self`, and lifetimes without
+  declaring any of them. Lifetimes elided in fields become early-bound
+  parameters of the function, so the struct can use them too.
+- **Types.** After that a record is an ordinary ADT, its struct applied to the
+  function's own generic arguments. `tcx.is_record` tells it apart in the few
+  places that care, like printing it the way closures are printed,
+  `{record@src/main.rs:6:9: 6:10}`, and skipping it in item lints and dead code
+  checks, since it's documented and used through its function.
+- **Type checking.** The `<_>::_` pattern takes its struct from the parameter's
+  type, and an inferred literal takes its struct from the expected type, which
+  is also how `_ { .. }` builds named structs.
+- **Traits.** In a trait impl, an anonymous struct isn't a new struct. Its type
+  is the trait method's struct, with the impl's generic arguments filled in, and
+  the fields the impl writes out are just checked against the trait's by name
+  and type. A method stays dyn compatible unless one of its fields mentions
+  `Self`.
 
-<!--### How it works
-
-Most of the work happens in the parser, which turns the new syntax into ordinary structs, struct patterns, and struct literals, so name resolution, privacy, borrow checking, and MIR building see nothing new.
-
-- `_ {` in a parameter list becomes an anonymous struct named `‹record·N›` (`‹` can't appear in an identifier, so the name can't be written), placed next to the function with its visibility and `#[cfg]`s, plus the struct pattern `‹record·N› { x, y, .. }: ‹record·N›<..>`. Each field without a default gets its own type parameter, whose argument is the field's written type, so the signature gives it its meaning. A field with a default keeps its type, which the default is checked against. Types print like closures do, as in `{record@src/main.rs:6:9: 6:10}`.
-- `_ { .. }` in an expression becomes the struct literal `<_>::_ { .. }`, and named arguments become the same literal. Type checking fills in the struct from the expected type, or defers the literal until inference knows it.
-- A `let` record gets its own generic struct deriving `Clone` and `Copy`, and type checking gets one new coercion, a record conversion, which THIR turns back into a struct literal reading the record's fields. Borrow checking then sees ordinary field moves, which gives partial moves and use-after-move errors for free.
-- Trait methods get a hidden generic associated type for each record parameter, so an impl's record normalizes to the trait's.
-- A left-out record and named arguments' implied `..` are both filled in when building THIR.
-
-Code that doesn't enable the feature sees one change. `_ { .. }` and `f(x: 1)` now report the feature-gate error instead of their old parse errors.
--->
+Rustdoc, Clippy, and rustfmt only needed small changes to match
+([Tooling](#tooling)).
 
 ### The sugar
 
+<div class="highlight-block" markdown="1">
 ```rust
 #![feature(struct_args, struct_args_sugar, default_field_values)]
+
+fn f(a: i32; x: i32, y: i32 = 0) {}
+f(0, x: 1);
 ```
+</div>
 
-TODO: describe the `struct_args_sugar` feature.
+The sugar is smaller still, and almost all of it is in the parser.
 
-<!--Everything above is implemented in a rustc prototype behind `#![feature(struct_args)]` and `#![feature(struct_args_sugar)]`, marked incomplete. Defaults and `..` also need `#![feature(default_field_values)]`, whose implementation landed in [rust-lang/rust#129514][rust-129514]. The prototype isn't published yet, so its results can't be reproduced for now, but the examples that compile come from it.-->
+- **Named arguments.** Named arguments at the end of a call are parsed into one
+  inferred struct literal, flagged so the pretty printer and rustfmt can print
+  them back the way they were written. AST lowering adds the implied `..` and
+  tags the literal's span (its location in the source) as coming from the named
+  argument desugaring, the same way the code for `for` loops, `?`, and `a..b`
+  gets tagged. Type checking ignores the tag. Only error messages use it, so a
+  missing field is reported as "missing named argument `width`" instead of
+  pointing at a `..` nobody wrote.
+- **`;` parameters.** These are handled entirely by the parser, which turns
+  everything after the `;` into the fields of a last `TyKind::Record` parameter,
+  the same as writing `_ { .. }`.
+- **Left-out structs.** This is the only part that reaches type checking. When a
+  call has one argument fewer than the function takes, and the last parameter is
+  an anonymous struct whose fields all have defaults, the argument check skips
+  that parameter and makes a note of the call. When building THIR, each of those
+  calls gets a `_ { .. }` argument added, so MIR building and borrow checking see
+  the call as if it had been written out.
 
 ## 6. Limitations and Open Questions
 
@@ -878,7 +930,7 @@ TODO: describe the `struct_args_sugar` feature.
 
 TODO
 
-<!--Field defaults are RFC 3681 defaults, so they have to be const. A default can't call `RandomState::new()`, and it can't reach a generic type's value through its bound, like `S::default()`. A field that needs one becomes an `Option` that the body fills in, as in the `HashMap` example in [Section 3](#botahamec-names-defaults-and-pub-apis). Named structs can fall back on `..Default::default()`, which runs ordinary code, but an anonymous struct has no `Default` impl to call. This is a limit of RFC 3681 rather than of records, so lifting it belongs in a follow-up to that RFC ([Section 8](#8-whats-next)).
+<!--Field defaults are RFC 3681 defaults, so they have to be const. A default can't call `RandomState::new()`, and it can't reach a generic type's value through its bound, like `S::default()`. A field that needs one becomes an `Option` that the body fills in, as in the `HashMap` example in [Section 4](#botahamec-names-defaults-and-pub-apis). Named structs can fall back on `..Default::default()`, which runs ordinary code, but an anonymous struct has no `Default` impl to call. This is a limit of RFC 3681 rather than of records, so lifting it belongs in a follow-up to that RFC ([Section 8](#8-whats-next)).
 
 RFC 3681 makes defaults const on purpose. Its [rationale][rfc-3681-const] is that `Foo { .. }` stays deterministic and cheap, and that a crate can't break a downstream `const fn` by quietly changing a default to a non-const one. Its [future possibilities][rfc-3681-non-const] leave non-const values open, "potentially allowed but linted against", and expect `Default` impls to become const where they can. The [tracking issue][rust-132162] lists "Expand support to non-const values?" as an open question that doesn't block stabilization, with the author's position that "we shouldn't do that, particularly seeing how powerful const eval is becoming".
 
@@ -892,7 +944,41 @@ TODO
 
 The subset and superset conversions of [record types](#record-types) would stretch this further. A function taking `_ { width: u32, height: u32, x: u32 = 0 }` could stand in for a `Callback`, with the shim filling in `x` from its default, and a shim going the other way would drop `x`, which is the silent loss the same-fields limit avoids. Which functions unify would then depend on which conversions apply in which direction, not just on their fields, so the same-fields rule is the conservative place to start. None of this is designed in detail yet.
 
+Leaving out a struct raises a similar question for a single function. `fn f(_ { a: i32 = 0 })` can be called as `f()`, but as a value it still takes one argument, so `opt.unwrap_or_else(f)` doesn't compile. One option is for `f` to implement `FnOnce()` as well as `FnOnce(_)`, filling in `_ { .. }` when it's called without the struct. That's pretty close to overloading by arity, which Rust has avoided so far, and it would make inference ambiguous anywhere the argument types aren't known yet. It should probably be worked out together with the other `Fn` trait questions records raise, like the generic case below.
+
 Generic records are harder. In `fn higher_order<A>(f: impl Fn(A)) { f(a: 4, b: 2) }`, the body can't build an `A`, since the caller picks it. Today that needs a named struct (`impl Fn(FooArgs)`).-->
+
+### Macros
+
+Procedural macros get the tokens as written, and most of them parse those tokens
+with [`syn`][syn], which expects every parameter to be `pat: ty`, separated by
+commas. So `syn` rejects anonymous struct parameters, elided parameter types,
+and `;` parameter lists, which means `#[tokio::main]` or `#[tracing::instrument]`
+can't be used on functions that have them. Macros that parse the whole function
+body also fail on named arguments, since `f(x: 1)` isn't an expression `syn`
+knows about. This isn't unique to anonymous structs though. `syn` doesn't parse
+RFC 3681's `= default` fields yet either, so derives built on it already fail on
+structs that use them. New syntax tends to show up in `syn` once it's close to
+stable.
+
+Most of the new forms fit into what `syn` already has. `p: _ { x: i32 }` is
+already `pat: ty`, with `_ { .. }` as an opaque type. An elided parameter type
+can be read as what it stands for, `Point { x, y }: Point`, and a `;` parameter
+list as a last `_ { .. }` parameter. Both are just sugar, so a macro that prints
+the expanded form back out doesn't change what the function means.
+
+The bare `_ { x: i32 }` is harder. It has no `pat: ty` form, since `_: _ { x:
+i32 }` wouldn't bind `x`, and adding a new kind of parameter to `syn` would be a
+breaking change for it. So either it waits for the next major version of `syn`,
+or the language gives it a form that fits, like `_ { x }: _ { x: i32 }`, using a
+struct pattern with an inferred path. In general, it seems like every new
+parameter form should have a `pat: ty` version someone could write by hand.
+
+Even once `syn` can parse these, some macros will need updating. A macro that
+just passes the signature through, as `#[tokio::main]` mostly does, would work
+right away. But `#[tracing::instrument]` records each parameter by its binding
+name, so it would need to know that an anonymous struct's fields are its
+bindings.
 
 ### Tooling
 
@@ -902,12 +988,25 @@ TODO
 
 ### Prototype gaps
 
-TODO
+These are gaps in the prototype, or places where it had to pick something the
+design hasn't decided yet:
 
-<!--These are gaps in the prototype, not the design:
-
-- Attribute macros built on `syn` reject anonymous struct parameters, so `#[tokio::main]` and `#[tracing::instrument]` can't be used on such functions.
-- Diagnostics name anonymous structs by location, as `{record@src/main.rs:6:9: 6:10}`, and a few suggestions name a struct you can't write.-->
+- Named arguments imply `..` for every struct, named or anonymous, because the
+  prototype adds the `..` during AST lowering, before it knows which struct the
+  call is for. Whether named structs should get it is undecided. If they do, a
+  library adding a default to a field of a public struct changes which calls
+  compile, so it depends on how `#[non_exhaustive]` ends up working with RFC
+  3681 defaults and with anonymous structs ([Section
+  1](#api-evolution-and-semver)).
+- A function whose last anonymous struct can be left out still can't be used as
+  a value without it. For `fn f(_ { a: i32 = 0 })`, `opt.unwrap_or_else(f)` is
+  an error. Making it work would mean `f` implementing `FnOnce()` as well as
+  `FnOnce(_)` ([Function types](#function-types)).
+- Only struct patterns like `Point { x, y }` get an [elided parameter
+  type](#elided-parameter-types). Tuple-struct patterns like `Point(x, y)`
+  still need `: Point`, though the same rule could likely cover them.
+- Some error messages could be better, especially for mistakes in named
+  arguments.
 
 ## 7. Going Further
 
@@ -950,15 +1049,15 @@ That makes the call most people write first, `crop(&img, width: 200, height:
 100)`, compile. It also makes changing a field from `height: u32 = 0` to
 `height: Option<u32>` non-breaking, since callers' `height: 100` still compiles.
 
-Like the implied `..` from [Section 4](#4-named-argument-sugar), this would be a deliberate
-exception to "the sugar never adds meaning", and limited the same way, to named
-arguments to an anonymous struct. `_ { height: 100 }` would still be an error,
-and so would `height: 100` against a named struct. Otherwise every struct
-literal would change, and a library switching between a named struct and an
-anonymous one would change which of its callers' calls compile. The catch is
-that a call's arguments can't always move into a [`let` record](#record-types)
-unchanged. `crop(&img, width: 200, height: 100)` compiles, but the same fields
-in a record don't.
+Like the implied `..` from [Section 3](#3-named-argument-sugar), this would be a deliberate
+exception to "the sugar never adds meaning", and it would only apply to named
+arguments. `_ { height: 100 }` would still be an error, otherwise every struct
+literal would change. Whether it should apply to named structs is open, same as
+the implied `..`, and it should probably be decided the same way, so that a
+library switching between a named struct and an anonymous one doesn't change
+which of its callers' calls compile. The catch is that a call's arguments can't always
+move into a [`let` record](#record-types) unchanged. `crop(&img, width: 200,
+height: 100)` compiles, but the same fields in a record don't.
 
 It isn't free. Wrapping depends on the argument's type, but the argument's type
 often depends on the field's, so in `height: s.parse()?` the field no longer
@@ -1122,7 +1221,7 @@ A named record gives up what a named struct's name protects, so it has to be the
   - **Non-const defaults.** `hasher: S = RandomState::new()` needs a non-const default. The tracking issue already has it as an open question ([Section 6](#non-const-defaults)).
   - **API evolution.** RFC 3681 doesn't allow `#[non_exhaustive]` on structs with default field values. If the two are ever allowed together, anonymous structs could opt into `#[non_exhaustive]`, or be non-exhaustive by default, with every literal from outside the crate required to write `..`. Adding a field with a default would then never be breaking ([Section 1](#api-evolution-and-semver)).
 - **Follow-up posts.** Several of the threads cited here are subsumed by this proposal or depend on how it goes, and each should get a comment pointing to it.
-  - **[rfcs#323][rfcs-323], named arguments.** The wishlist issue is still open. Anonymous struct parameters with the [named-argument sugar](#4-named-argument-sugar) would subsume it.
+  - **[rfcs#323][rfcs-323], named arguments.** The wishlist issue is still open. Anonymous struct parameters with the [named-argument sugar](#3-named-argument-sugar) would subsume it.
   - **[RFC 3444][rfc-3444], inferred types.** `_ { .. }` is the struct half of its path inference, spelled `_` instead of `.`. The two need one spelling, and the struct half doesn't need to wait for enums.
   - **[RFC 2584][rfc-2584], structural records.** It's closed, but a revival would inherit the `let` record [conversion rule](#converting-by-field-name), and anonymous struct parameters could become structural records without changing any caller.
 
@@ -1197,6 +1296,9 @@ TODO: users.rust-lang.org link.
 <!-- rustc pull requests -->
 [rust-129514]: https://github.com/rust-lang/rust/pull/129514
 
+<!-- Prototype -->
+[struct-args-branch]: https://github.com/nixpulvis/rust/tree/struct-args
+
 <!-- Internals forum threads -->
 [pre-rfc-2016]: https://internals.rust-lang.org/t/pre-rfc-named-arguments/3831
 [pre-rfc-2020]: https://internals.rust-lang.org/t/pre-rfc-named-arguments/12730
@@ -1208,6 +1310,7 @@ TODO: users.rust-lang.org link.
 [josh-2025]: https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592/3
 
 <!-- Crates and crate source -->
+[syn]: https://docs.rs/syn
 [bon]: https://docs.rs/bon
 [structx]: https://docs.rs/structx
 [binrw-named-args]: https://github.com/jam1garner/binrw/blob/585d48134e7b71be74d8b81b54cdbd07f6f1a1c4/binrw/src/named_args.rs
