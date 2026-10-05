@@ -34,7 +34,7 @@
     <div class="content"><h2 class="title">
     Anonymous Struct Parameters
     <small>
-        11378 words
+        11511 words
         
             drafted
         
@@ -52,15 +52,52 @@ correspondence between positional arguments with tuples and named arguments with
 structs, which was cute, but ultimately not good syntax.</p>
 
 <p>But the point stands, Rust already has a named, reorderable, defaultable
-construct… the <code class="language-plaintext highlighter-rouge">struct</code>. I’m not the only one who thinks so. scottmcm has
-<a href="https://internals.rust-lang.org/t/record-types/18258/11">pointed out</a> that named arguments only need an inferred
-struct literal and a way to declare an anonymous struct in a function signature,
-and <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a> already proposes an inferred literal, but goes further
-than we need.</p>
+construct… the <code class="language-plaintext highlighter-rouge">struct</code>. I’m not the only one who thinks so. In the 2020
+<a href="https://internals.rust-lang.org/t/pre-rfc-named-arguments/12730">named arguments pre-RFC</a>, CAD97 <a href="https://internals.rust-lang.org/t/pre-rfc-named-arguments/12730/47">argued</a> that making
+options structs more ergonomic was a better short-term goal than full named
+arguments, and the <a href="https://github.com/rust-lang/rfcs/pull/2964">RFC</a> it became was <a href="https://github.com/rust-lang/rfcs/pull/2964#issuecomment-671545486">closed</a>, with
+the lang team asking for a roadmap first. scottmcm has since <a href="https://internals.rust-lang.org/t/record-types/18258/11">pointed
+out</a> that named arguments only need an inferred struct
+literal and a way to declare an anonymous struct in a function signature. <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC
+3444</a> already proposes an inferred literal, but goes further than we
+need and also doesn’t cover anonymous structs in function signatures.</p>
 
-<p>So let’s talk about struct args instead of named arguments specifically for a
-minute. For this idea, I’ll be introducing new syntax in stages, and noting all
-new syntax inside highlighted code blocks.</p>
+<p>So let’s talk about <a href="#1-struct-args">struct args</a> instead of named arguments for
+a minute, then build up to it with some <a href="#4-named-argument-sugar">syntactic
+sugar</a>.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#1-struct-args" id="markdown-toc-1-struct-args">1. Struct Args</a>    <ul>
+      <li><a href="#elided-struct-types" id="markdown-toc-elided-struct-types">Elided struct types</a></li>
+      <li><a href="#anonymous-structs" id="markdown-toc-anonymous-structs">Anonymous structs</a></li>
+      <li><a href="#api-evolution-and-semver" id="markdown-toc-api-evolution-and-semver">API evolution and SemVer</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-examples" id="markdown-toc-2-examples">2. Examples</a>    <ul>
+      <li><a href="#unambiguous-calls" id="markdown-toc-unambiguous-calls">Unambiguous calls</a></li>
+      <li><a href="#options-without-a-builder" id="markdown-toc-options-without-a-builder">Options without a builder</a></li>
+      <li><a href="#existing-structs" id="markdown-toc-existing-structs">Existing structs</a></li>
+      <li><a href="#generics-and-lifetimes" id="markdown-toc-generics-and-lifetimes">Generics and lifetimes</a></li>
+      <li><a href="#traits" id="markdown-toc-traits">Traits</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-relating-to-recent-posts" id="markdown-toc-3-relating-to-recent-posts">3. Relating to Recent Posts</a></li>
+  <li><a href="#4-named-argument-sugar" id="markdown-toc-4-named-argument-sugar">4. Named Argument Sugar</a></li>
+  <li><a href="#5-the-prototype" id="markdown-toc-5-the-prototype">5. The Prototype</a>    <ul>
+      <li><a href="#the-core-feature" id="markdown-toc-the-core-feature">The core feature</a></li>
+      <li><a href="#the-sugar" id="markdown-toc-the-sugar">The sugar</a></li>
+    </ul>
+  </li>
+  <li><a href="#6-limitations-and-open-questions" id="markdown-toc-6-limitations-and-open-questions">6. Limitations and Open Questions</a>    <ul>
+      <li><a href="#non-const-defaults" id="markdown-toc-non-const-defaults">Non-const defaults</a></li>
+      <li><a href="#function-types" id="markdown-toc-function-types">Function types</a></li>
+      <li><a href="#tooling" id="markdown-toc-tooling">Tooling</a></li>
+      <li><a href="#prototype-gaps" id="markdown-toc-prototype-gaps">Prototype gaps</a></li>
+    </ul>
+  </li>
+  <li><a href="#7-going-further" id="markdown-toc-7-going-further">7. Going Further</a></li>
+  <li><a href="#8-whats-next" id="markdown-toc-8-whats-next">8. What’s Next</a></li>
+</ul>
 
 <h2 id="1-struct-args">1. Struct Args</h2>
 
@@ -80,18 +117,25 @@ following struct:</p>
   <li>With a pattern: <code class="language-plaintext highlighter-rouge">fn f(p @ Point { x, y }: Point) {}</code></li>
 </ol>
 
-<p>The first form is just standard argument passing, which doesn’t destructure the named fields at all. While the second form destructures the named fields but requires both using a somewhat lesser known <code class="language-plaintext highlighter-rouge">@</code> pattern and a named struct type (twice).</p>
+<p>The first form is just standard argument passing, which doesn’t destructure the
+named fields at all. While the second form destructures the named fields but
+requires both using a somewhat lesser known <code class="language-plaintext highlighter-rouge">@</code> pattern and a named struct type
+(twice).</p>
+
+<p>I’ll be introducing new syntax in stages, and noting all new syntax inside
+highlighted code blocks.</p>
 
 <h3 id="elided-struct-types">Elided struct types</h3>
 
-<p>We could avoid the duplication of <code class="language-plaintext highlighter-rouge">Point</code> in the second example simply by allowing it to be elided entirely when it can be inferred from the pattern.</p>
+<p>We could avoid the duplication of <code class="language-plaintext highlighter-rouge">Point</code> in the second example simply by
+allowing it to be elided entirely when it can be inferred from the pattern.</p>
 
 <p>E.g.</p>
 
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">p</span> <span class="o">@</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}:</span> <span class="n">Point</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre></div></div>
 
-<p>Could be written as:</p>
+<p>With an elided struct type, it could be written as:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">p</span> <span class="o">@</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">})</span> <span class="p">{}</span>
@@ -165,17 +209,23 @@ types at all, just an inferred struct literal and “sugar to create an anonymou
 type in a function definition”, which is what’s proposed here. <a href="https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592">As recently as
 2025</a>, Josh Triplett <a href="https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592/3">separated</a> three ideas
 that usually get conflated. The first is structural anonymous types, which seem
-unlikely to make progress. The second is <a href="https://rust-lang.github.io/rfcs/2102-unnamed-fields.html">RFC 2102</a>’s unnamed fields
-(<a href="https://github.com/rust-lang/rust/issues/49804">tracking issue</a>), which are about <code class="language-plaintext highlighter-rouge">#[repr(C)]</code> layout and
-unrelated to this. The third is passing a struct to a function without naming
-it, <code class="language-plaintext highlighter-rouge">f(_ { x: 1 })</code>, which is the call half of what’s proposed here.</p>
+unlikely to make progress soon, though we explore some of thier motivations in
+<a href="#record-types">record types</a>. The second is <a href="https://rust-lang.github.io/rfcs/2102-unnamed-fields.html">RFC 2102</a>’s unnamed
+fields (<a href="https://github.com/rust-lang/rust/issues/49804">tracking issue</a>), which are about <code class="language-plaintext highlighter-rouge">#[repr(C)]</code> layout and
+not directly related to this. Though I do wonder if the syntax for unnamed
+fields could be unified with the syntax for anonymous struct types in params. We
+don’t care about <code class="language-plaintext highlighter-rouge">union</code> params, so the design space is slightly different, it
+would be nice to be consistent.</p>
 
-<p>That last idea is <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a> from the intro, which proposes inferring a
-struct literal’s path (currently spelled <code class="language-plaintext highlighter-rouge">.{ .. }</code>), and binrw’s maintainers <a href="https://github.com/rust-lang/rfcs/pull/3444#issuecomment-5626022100">point
-out</a> that it plus field defaults would replace <a href="https://github.com/jam1garner/binrw/blob/585d48134e7b71be74d8b81b54cdbd07f6f1a1c4/binrw/src/named_args.rs">their <code class="language-plaintext highlighter-rouge">args!</code>
-macro</a> and its inference hacks. However, that RFC proposes a
-more general “path inference” and focuses on inferring the path of an <code class="language-plaintext highlighter-rouge">enum</code>
-which we aren’t concerned with to satisfy ergonomic struct arguments.</p>
+<p>The third is passing a struct to a function without naming it, <code class="language-plaintext highlighter-rouge">f(_ { x: 1 })</code>,
+which is the call half of what’s proposed here. This idea is materialized in the
+open <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a> as mentioned in the intro, which proposes inferring a
+struct literal’s path (currently spelled <code class="language-plaintext highlighter-rouge">.{ .. }</code>). <code class="language-plaintext highlighter-rouge">binrw</code>’s maintainers
+<a href="https://github.com/rust-lang/rfcs/pull/3444#issuecomment-5626022100">point out</a> that this plus field defaults (RFC 3681) would
+replace <a href="https://github.com/jam1garner/binrw/blob/585d48134e7b71be74d8b81b54cdbd07f6f1a1c4/binrw/src/named_args.rs">their <code class="language-plaintext highlighter-rouge">args!</code> macro</a> and its inference hacks.
+However, RFC 3444 proposes a more general “path inference” and focuses on
+inferring the path of an <code class="language-plaintext highlighter-rouge">enum</code> which we aren’t concerned with to satisfy
+ergonomic struct arguments.</p>
 
 <div class="aside">
   <p>I personally don’t accept that <code class="language-plaintext highlighter-rouge">.{ }</code> is better, since <code class="language-plaintext highlighter-rouge">_</code> is already the
@@ -212,7 +262,7 @@ edits to a function are breaking:</p>
 <ul>
   <li><strong>Adding a parameter</strong> is always breaking for positional parameters, however
 adding a field <em>with a default</em> to an anonymous struct isn’t breaking for
-callers that wrote <code class="language-plaintext highlighter-rouge">..</code> or used the named argument <a href="#4-sugar">sugar</a>,
+callers that wrote <code class="language-plaintext highlighter-rouge">..</code> or used the named argument <a href="#4-named-argument-sugar">sugar</a>,
 which implies it</li>
   <li><strong>Reordering</strong> positional parameters is breaking, however reordering fields
 isn’t since they’re passed by name</li>
@@ -229,18 +279,17 @@ adding fields without a breaking change. Anonymous structs have no struct item
 to put <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> on, so they don’t even get that choice. If the two are
 ever allowed together, anonymous structs could opt in, or be non-exhaustive by
 default, meaning every literal from outside the crate has to write <code class="language-plaintext highlighter-rouge">..</code>, even
-one that lists every field, as named argument <a href="#4-sugar">sugar</a>
-already implies. Then adding a field with a default would never be breaking
-(<a href="#8-whats-next">Section 8</a>).</p>
+one that lists every field, as named argument sugar already implies. Then adding
+a field with a default would never be breaking (<a href="#8-whats-next">Section 8</a>).</p>
 
 <h2 id="2-examples">2. Examples</h2>
 
 <p>Now let’s look at some realistic examples of using this new syntax. Later we’ll
-see if/how we can make it even shorter with some syntactic sugar in <a href="#4-sugar">Section
-4</a>. I have a hacked together <a href="#5-the-prototype">prototype
+see how we can make it even more like named arguments with some <a href="#4-named-argument-sugar">syntactic
+sugar</a>. I have a hacked together <a href="#5-the-prototype">prototype
 implementation</a> for both the <code class="language-plaintext highlighter-rouge">struct_args</code> and
-<code class="language-plaintext highlighter-rouge">struct_args_sugar</code> features, but for now we’ll focus on the core
-<code class="language-plaintext highlighter-rouge">struct_args</code> feature.</p>
+<code class="language-plaintext highlighter-rouge">struct_args_sugar</code> features, but for now we’ll focus on the core <code class="language-plaintext highlighter-rouge">struct_args</code>
+feature.</p>
 
 <h3 id="unambiguous-calls">Unambiguous calls</h3>
 
@@ -305,9 +354,9 @@ cases.</p>
 </code></pre></div>  </div>
 </div>
 
-<p>Without this, the builder pattern would require a separate builder struct, and a bunch of boilerplate methods:</p>
+<p>Without this, the builder pattern would require a constructor and a setter method for every optional field:</p>
 
-<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">CropOptions</span> <span class="p">{</span>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">struct</span> <span class="n">CropOptions</span> <span class="p">{</span>
     <span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">,</span>
     <span class="n">height</span><span class="p">:</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="nb">u32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">None</span><span class="p">,</span>
     <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -316,12 +365,7 @@ cases.</p>
 
 <span class="k">impl</span> <span class="n">CropOptions</span> <span class="p">{</span>
     <span class="k">pub</span> <span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
-        <span class="k">Self</span> <span class="p">{</span> <span class="n">width</span><span class="p">,</span> <span class="o">..</span><span class="nn">Default</span><span class="p">::</span><span class="nf">default</span><span class="p">()</span> <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">width</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
-        <span class="k">self</span><span class="py">.width</span> <span class="o">=</span> <span class="n">width</span><span class="p">;</span>
-        <span class="k">self</span>
+        <span class="k">Self</span> <span class="p">{</span> <span class="n">width</span><span class="p">,</span> <span class="o">..</span> <span class="p">}</span>
     <span class="p">}</span>
 
     <span class="k">pub</span> <span class="k">fn</span> <span class="nf">height</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
@@ -345,12 +389,9 @@ cases.</p>
 <span class="p">}</span>
 
 <span class="k">let</span> <span class="n">img</span> <span class="o">=</span> <span class="nn">Image</span><span class="p">::</span><span class="nf">from_png</span><span class="p">(</span><span class="s">"cat.png"</span><span class="p">);</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.width</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.width</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.height</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
-  <span class="nf">.width</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
-  <span class="nf">.x</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
-  <span class="nf">.y</span><span class="p">(</span><span class="mi">25</span><span class="p">));</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.height</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.x</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span><span class="nf">.y</span><span class="p">(</span><span class="mi">25</span><span class="p">));</span>
 </code></pre></div></div>
 
 <h3 id="existing-structs">Existing structs</h3>
@@ -364,14 +405,16 @@ cases.</p>
     <span class="nd">unimplemented!</span><span class="p">()</span>
 <span class="p">}</span>
 
-<span class="nf">fill</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="n">shape</span><span class="p">,</span> <span class="n">Rgb</span> <span class="p">{</span> <span class="n">red</span><span class="p">:</span> <span class="mi">0xA8</span><span class="p">,</span> <span class="n">green</span><span class="p">:</span> <span class="mi">0x3C</span><span class="p">,</span> <span class="n">blue</span><span class="p">:</span> <span class="mi">0x09</span> <span class="p">});</span>
 <span class="nf">fill</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="n">shape</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">red</span><span class="p">:</span> <span class="mi">0xA8</span><span class="p">,</span> <span class="n">green</span><span class="p">:</span> <span class="mi">0x3C</span><span class="p">,</span> <span class="n">blue</span><span class="p">:</span> <span class="mi">0x09</span> <span class="p">});</span>
 
 <span class="k">let</span> <span class="n">accent</span> <span class="o">=</span> <span class="n">Rgb</span> <span class="p">{</span> <span class="n">red</span><span class="p">:</span> <span class="mi">0x1E</span><span class="p">,</span> <span class="n">green</span><span class="p">:</span> <span class="mi">0x90</span><span class="p">,</span> <span class="n">blue</span><span class="p">:</span> <span class="mi">0xFF</span> <span class="p">};</span>
 <span class="nf">fill</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="n">shape</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">red</span><span class="p">:</span> <span class="mi">0xFF</span><span class="p">,</span> <span class="o">..</span><span class="n">accent</span> <span class="p">});</span>
 
 <span class="c1">// wgpu's `InstanceDescriptor`</span>
-<span class="nn">Instance</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">backends</span><span class="p">:</span> <span class="nn">Backends</span><span class="p">::</span><span class="n">VULKAN</span><span class="p">,</span> <span class="o">..</span><span class="nn">InstanceDescriptor</span><span class="p">::</span><span class="nf">new_without_display_handle</span><span class="p">()</span> <span class="p">});</span>
+<span class="nn">Instance</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span>
+    <span class="n">backends</span><span class="p">:</span> <span class="nn">Backends</span><span class="p">::</span><span class="n">VULKAN</span><span class="p">,</span>
+    <span class="o">..</span><span class="nn">InstanceDescriptor</span><span class="p">::</span><span class="nf">new_without_display_handle</span><span class="p">()</span>
+<span class="p">});</span>
 </code></pre></div>  </div>
 </div>
 
@@ -385,11 +428,7 @@ structs work.</p>
 <h3 id="generics-and-lifetimes">Generics and lifetimes</h3>
 
 <p>Fields can use anything in scope in the signature: including generic parameters,
-elided lifetimes, <code class="language-plaintext highlighter-rouge">impl Trait</code>, <code class="language-plaintext highlighter-rouge">Self</code>, and associated types. A lifetime in a
-field means what it would in a positional parameter. An elided one, like
-<code class="language-plaintext highlighter-rouge">&amp;str</code>, is elided as it would be in <code class="language-plaintext highlighter-rouge">x: &amp;str</code>. Unlike a named struct, which
-would need <code class="language-plaintext highlighter-rouge">struct PickArgs&lt;'a&gt;</code>, the anonymous struct never declares lifetimes
-itself.</p>
+elided lifetimes, <code class="language-plaintext highlighter-rouge">impl Trait</code>, <code class="language-plaintext highlighter-rouge">Self</code>, and associated types.</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span>
@@ -399,8 +438,16 @@ itself.</p>
 
 <span class="nf">map</span><span class="p">(</span><span class="nd">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">_</span> <span class="p">{</span> <span class="n">f</span><span class="p">:</span> <span class="p">|</span><span class="n">n</span><span class="p">|</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
 <span class="nf">map</span><span class="p">(</span><span class="nd">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">_</span> <span class="p">{</span> <span class="n">f</span><span class="p">:</span> <span class="p">|</span><span class="n">n</span><span class="p">|</span> <span class="n">n</span><span class="nf">.to_string</span><span class="p">(),</span> <span class="n">limit</span><span class="p">:</span> <span class="mi">2</span> <span class="p">});</span>
+</code></pre></div>  </div>
+</div>
 
-<span class="k">fn</span> <span class="n">pick</span><span class="o">&lt;</span><span class="nv">'a</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span>
+<p>A lifetime in a field means what it would in a positional parameter. An elided
+one, like <code class="language-plaintext highlighter-rouge">&amp;str</code>, is elided as it would be in <code class="language-plaintext highlighter-rouge">x: &amp;str</code>. Unlike a named struct,
+which would need <code class="language-plaintext highlighter-rouge">struct PickArgs&lt;'a&gt;</code>, the anonymous struct never declares
+lifetimes itself.</p>
+
+<div class="highlight-block">
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">pick</span><span class="o">&lt;</span><span class="nv">'a</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span>
     <span class="n">fallback</span><span class="p">:</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"none"</span><span class="p">,</span>
 <span class="p">})</span> <span class="k">-&gt;</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span> <span class="p">{</span> <span class="o">..</span> <span class="p">}</span>
 
@@ -475,7 +522,7 @@ details on each below.
 | `fn` pointers | Distinct per function (sharing when the fields match is an open question) | Rejected unless the struct is shared | Names erased | Raised as a problem |
 | Adding a parameter | Non-breaking if defaulted, for callers that wrote `..` | Non-breaking if defaulted, for callers that wrote `..` or `..Default::default()` | Non-breaking if defaulted | Breaking |
 | Per-function boilerplate | None | One struct per function | None | None |
-| New syntax | `_ { .. }` as a parameter and as an expression, struct patterns without their type, and [possible sugar](#4-sugar) for `name: value` arguments and `;` parameters | None | `pub` parameters, `name: value` arguments, defaults | `name: value` arguments |
+| New syntax | `_ { .. }` as a parameter and as an expression, struct patterns without their type, and [possible sugar](#4-named-argument-sugar) for `name: value` arguments and `;` parameters | None | `pub` parameters, `name: value` arguments, defaults | `name: value` arguments |
 
 Klabnik's post is a position rather than a proposal, so its column records the problems it raises rather than answers. Macro crates like [bon] and [structx] fill the same gap today, with a builder or a macro at each call.
 
@@ -603,7 +650,7 @@ foo((1, 2), _ { .. });
 
 #### Defaults
 
-Defaults are RFC 3681 defaults. They're const, declared on the field, and used when the caller writes `..`. They can use the function's type and const parameters (`fn foo<const A: usize>(_ { bar: usize = A })`), and associated consts through their bounds (`fn foo<T: HasN>(_ { n: usize = T::N })`). Const-only is a real limit, and [Section 7](#7-limitations-and-open-questions) covers it.
+Defaults are RFC 3681 defaults. They're const, declared on the field, and used when the caller writes `..`. They can use the function's type and const parameters (`fn foo<const A: usize>(_ { bar: usize = A })`), and associated consts through their bounds (`fn foo<T: HasN>(_ { n: usize = T::N })`). Const-only is a real limit, and [Section 6](#6-limitations-and-open-questions) covers it.
 
 #### Renaming hazards
 
@@ -627,7 +674,7 @@ g(_ { a: 5, .. });
 ```
 </div>
 
-Two functions with the same fields don't share a pointer type, though [Section 7](#function-types) sketches one way they might.
+Two functions with the same fields don't share a pointer type, though [Section 6](#function-types) sketches one way they might.
 
   </div>
 </details>
@@ -720,7 +767,7 @@ That's why I think structs are the right direction, rather than a separate named
 
 -->
 
-<h2 id="4-sugar">4. Sugar</h2>
+<h2 id="4-named-argument-sugar">4. Named Argument Sugar</h2>
 
 <p>TODO</p>
 
@@ -729,7 +776,7 @@ Everything so far is struct syntax in new places. The sugar here is the part tha
 
 I'm less sure about this part than about Sections 1 and 2. Everything they offer works without it, and sugar has costs that structs don't. It gives every call two spellings, so codebases will split on style. It claims `:` in argument lists for good, and ties named arguments to the last parameter, which makes adding a parameter after it a breaking change. The implied `..` hides which fields took their defaults, which is exactly what Klabnik worries about. And the `;` signature syntax hides that the parameter is a struct at all, which can surprise someone who passes the function as a value. These are reasons to add the sugar later, if at all, once the struct parts have proven themselves.
 
-TODO: when uncommenting, point the `[sugar](#4-sugar)` links in "API evolution
+TODO: when uncommenting, point the `[sugar](#4-named-argument-sugar)` links in "API evolution
 and SemVer" back at `#call-syntax-fa-x-1`, and delete this note.
 
 ### Call syntax: `f(a, x: 1)`
@@ -760,7 +807,7 @@ Positional parameters never become labels. A parameter is a pattern that may not
 
 The syntax happens to be free, since `expr: Type` in expressions (type ascription) was removed, and `macro_rules!` can't write `$e:expr :`. It does claim `:` in argument lists for good, which is the point. `f(x: 1)` always means "the field `x` of the struct the last parameter expects".
 
-Note that `crop(&img, width: 200, height: 200)` doesn't compile against `height: Option<u32>`. It's `height: Some(200)`. Named arguments are sugar for a struct literal, and struct literals don't wrap values in `Some`. [Section 6](#optional-fields) has a more speculative idea that would change that.
+Note that `crop(&img, width: 200, height: 200)` doesn't compile against `height: Option<u32>`. It's `height: Some(200)`. Named arguments are sugar for a struct literal, and struct literals don't wrap values in `Some`. [Section 7](#optional-fields) has a more speculative idea that would change that.
 
 A last anonymous struct parameter whose fields all have defaults can also be left out of the call entirely:
 
@@ -874,13 +921,50 @@ Code that doesn't enable the feature sees one change. `_ { .. }` and `f(x: 1)` n
 
 <!--Everything above is implemented in a rustc prototype behind `#![feature(struct_args)]` and `#![feature(struct_args_sugar)]`, marked incomplete. Defaults and `..` also need `#![feature(default_field_values)]`, whose implementation landed in [rust-lang/rust#129514][rust-129514]. The prototype isn't published yet, so its results can't be reproduced for now, but the examples that compile come from it.-->
 
-<h2 id="6-going-further">6. Going Further</h2>
+<h2 id="6-limitations-and-open-questions">6. Limitations and Open Questions</h2>
+
+<h3 id="non-const-defaults">Non-const defaults</h3>
+
+<p>TODO</p>
+
+<!--Field defaults are RFC 3681 defaults, so they have to be const. A default can't call `RandomState::new()`, and it can't reach a generic type's value through its bound, like `S::default()`. A field that needs one becomes an `Option` that the body fills in, as in the `HashMap` example in [Section 3](#botahamec-names-defaults-and-pub-apis). Named structs can fall back on `..Default::default()`, which runs ordinary code, but an anonymous struct has no `Default` impl to call. This is a limit of RFC 3681 rather than of records, so lifting it belongs in a follow-up to that RFC ([Section 8](#8-whats-next)).
+
+RFC 3681 makes defaults const on purpose. Its [rationale][rfc-3681-const] is that `Foo { .. }` stays deterministic and cheap, and that a crate can't break a downstream `const fn` by quietly changing a default to a non-const one. Its [future possibilities][rfc-3681-non-const] leave non-const values open, "potentially allowed but linted against", and expect `Default` impls to become const where they can. The [tracking issue][rust-132162] lists "Expand support to non-const values?" as an open question that doesn't block stabilization, with the author's position that "we shouldn't do that, particularly seeing how powerful const eval is becoming".
+
+That question is where the discussion is. [cart argued][cart-2026], from Bevy, that `bar: Bar = Default::default()`, `String`s, and `seed: usize = rand()` are exactly the defaults people want, and asked why a struct literal can't just be const when all of its defaults are. [scottmcm replied][scottmcm-2026] that [const traits][const-traits-goal] are a 2026 project goal, and asked which cases truly *can't* be const, and how `seed: usize = rand()` compares to `seed: Option<usize> = None`. That last comparison is the `HashMap` example, and this [reply][vultix-2026] applies here too: `Option` says the hasher is optional, when every map has one and only passing it is optional. Const traits would cover `S::default()` through a `[const] Default` bound, but not `RandomState::new()`, which seeds itself from the OS at runtime.-->
+
+<h3 id="function-types">Function types</h3>
+
+<p>TODO</p>
+
+<!--It would be nice if two functions whose anonymous structs have the same fields, with the same names and types, could unify as values, so that `if c { resize } else { grow }` compiles, and `type Callback = fn(_ { width: u32, height: u32 })` accepts both. The prototype doesn't do this. The generated structs are distinct types whose layouts aren't guaranteed to match, so one possible approach is a conversion shim, like the existing reify shims, that moves the fields from one struct into the other. Limiting it to the same fields would keep `if`/`else` symmetric, never drop a field behind the caller's back, and leave room for structural records to replace the shim later.
+
+The subset and superset conversions of [record types](#record-types) would stretch this further. A function taking `_ { width: u32, height: u32, x: u32 = 0 }` could stand in for a `Callback`, with the shim filling in `x` from its default, and a shim going the other way would drop `x`, which is the silent loss the same-fields limit avoids. Which functions unify would then depend on which conversions apply in which direction, not just on their fields, so the same-fields rule is the conservative place to start. None of this is designed in detail yet.
+
+Generic records are harder. In `fn higher_order<A>(f: impl Fn(A)) { f(a: 4, b: 2) }`, the body can't build an `A`, since the caller picks it. Today that needs a named struct (`impl Fn(FooArgs)`).-->
+
+<h3 id="tooling">Tooling</h3>
+
+<p>TODO</p>
+
+<!--Tools that parse Rust themselves don't get any of the compiler's changes. rust-analyzer's parser treats `_ {` as an error and loses highlighting for the rest of the signature, and semantic support needs about as much work as the prototype did. tree-sitter-rust, which Neovim, Helix, Zed, and GitHub use, needs about ten lines of grammar, and currently lacks RFC 3681's default field values too. rustfmt uses rustc's parser, so it formats `_ { .. }` literals and the code around them, but keeps anonymous struct parameters, `;` parameter lists, and named arguments as written.-->
+
+<h3 id="prototype-gaps">Prototype gaps</h3>
+
+<p>TODO</p>
+
+<!--These are gaps in the prototype, not the design:
+
+- Attribute macros built on `syn` reject anonymous struct parameters, so `#[tokio::main]` and `#[tracing::instrument]` can't be used on such functions.
+- Diagnostics name anonymous structs by location, as `{record@src/main.rs:6:9: 6:10}`, and a few suggestions name a struct you can't write.-->
+
+<h2 id="7-going-further">7. Going Further</h2>
 
 <div class="aside">
   <p>This section is optional reading. It’s less developed than the rest of the
 post, and the main proposal doesn’t depend on it. Neither optional fields nor
 <code class="language-plaintext highlighter-rouge">let</code> records are in the prototype. Both are collapsed below, so feel free to
-skip ahead to <a href="#7-limitations-and-open-questions">Section 7</a>.</p>
+skip ahead to <a href="#8-whats-next">Section 8</a>.</p>
 </div>
 
 <details id="optional-fields">
@@ -915,7 +999,7 @@ That makes the call most people write first, `crop(&img, width: 200, height:
 100)`, compile. It also makes changing a field from `height: u32 = 0` to
 `height: Option<u32>` non-breaking, since callers' `height: 100` still compiles.
 
-Like the implied `..` from [Section 4](#4-sugar), this would be a deliberate
+Like the implied `..` from [Section 4](#4-named-argument-sugar), this would be a deliberate
 exception to "the sugar never adds meaning", and limited the same way, to named
 arguments to an anonymous struct. `_ { height: 100 }` would still be an error,
 and so would `height: 100` against a named struct. Otherwise every struct
@@ -1050,7 +1134,7 @@ Records, and their conversions, cover a good part of what RFC 2584 wanted struct
 None of these block structural records later, because each is something records leave out, not something they decide:
 
 - The bare `{ x: 1 }` syntax, for expressions, patterns, and types, is still free.
-- A record's type can't be named, so, like a closure's, its identity is unspecified. Two records with the same fields can become the same type later without changing what any caller writes, and any `fn` pointer shim like the one sketched in [Section 7](#function-types) could be retired the same way.
+- A record's type can't be named, so, like a closure's, its identity is unspecified. Two records with the same fields can become the same type later without changing what any caller writes, and any `fn` pointer shim like the one sketched in [Section 6](#function-types) could be retired the same way.
 - Deriving more traits for records is additive.
 
 #### Converting by field name
@@ -1080,64 +1164,19 @@ A named record gives up what a named struct's name protects, so it has to be the
 -->
 </details>
 
-<h2 id="7-limitations-and-open-questions">7. Limitations and Open Questions</h2>
-
-<h3 id="non-const-defaults">Non-const defaults</h3>
-
-<p>TODO</p>
-
-<!--Field defaults are RFC 3681 defaults, so they have to be const. A default can't call `RandomState::new()`, and it can't reach a generic type's value through its bound, like `S::default()`. A field that needs one becomes an `Option` that the body fills in, as in the `HashMap` example in [Section 3](#botahamec-names-defaults-and-pub-apis). Named structs can fall back on `..Default::default()`, which runs ordinary code, but an anonymous struct has no `Default` impl to call. This is a limit of RFC 3681 rather than of records, so lifting it belongs in a follow-up to that RFC ([Section 8](#8-whats-next)).
-
-RFC 3681 makes defaults const on purpose. Its [rationale][rfc-3681-const] is that `Foo { .. }` stays deterministic and cheap, and that a crate can't break a downstream `const fn` by quietly changing a default to a non-const one. Its [future possibilities][rfc-3681-non-const] leave non-const values open, "potentially allowed but linted against", and expect `Default` impls to become const where they can. The [tracking issue][rust-132162] lists "Expand support to non-const values?" as an open question that doesn't block stabilization, with the author's position that "we shouldn't do that, particularly seeing how powerful const eval is becoming".
-
-That question is where the discussion is. [cart argued][cart-2026], from Bevy, that `bar: Bar = Default::default()`, `String`s, and `seed: usize = rand()` are exactly the defaults people want, and asked why a struct literal can't just be const when all of its defaults are. [scottmcm replied][scottmcm-2026] that [const traits][const-traits-goal] are a 2026 project goal, and asked which cases truly *can't* be const, and how `seed: usize = rand()` compares to `seed: Option<usize> = None`. That last comparison is the `HashMap` example, and this [reply][vultix-2026] applies here too: `Option` says the hasher is optional, when every map has one and only passing it is optional. Const traits would cover `S::default()` through a `[const] Default` bound, but not `RandomState::new()`, which seeds itself from the OS at runtime.-->
-
-<h3 id="function-types">Function types</h3>
-
-<p>TODO</p>
-
-<!--It would be nice if two functions whose anonymous structs have the same fields, with the same names and types, could unify as values, so that `if c { resize } else { grow }` compiles, and `type Callback = fn(_ { width: u32, height: u32 })` accepts both. The prototype doesn't do this. The generated structs are distinct types whose layouts aren't guaranteed to match, so one possible approach is a conversion shim, like the existing reify shims, that moves the fields from one struct into the other. Limiting it to the same fields would keep `if`/`else` symmetric, never drop a field behind the caller's back, and leave room for structural records to replace the shim later.
-
-The subset and superset conversions of [record types](#record-types) would stretch this further. A function taking `_ { width: u32, height: u32, x: u32 = 0 }` could stand in for a `Callback`, with the shim filling in `x` from its default, and a shim going the other way would drop `x`, which is the silent loss the same-fields limit avoids. Which functions unify would then depend on which conversions apply in which direction, not just on their fields, so the same-fields rule is the conservative place to start. None of this is designed in detail yet.
-
-Generic records are harder. In `fn higher_order<A>(f: impl Fn(A)) { f(a: 4, b: 2) }`, the body can't build an `A`, since the caller picks it. Today that needs a named struct (`impl Fn(FooArgs)`).-->
-
-<h3 id="option-fields-as-optional-arguments"><code class="language-plaintext highlighter-rouge">Option</code> fields as optional arguments</h3>
-
-<p>TODO</p>
-
-<!--Whether the [optional fields](#optional-fields) idea from Section 6, an implied `= None` and a plain `T` wrapped in `Some`, is worth its costs is open. Wrapping makes inference depend on the field's type, needs a rule for `Option<Option<T>>` fields, and would be Rust's first implicit `T` to `Option<T>` conversion. I don't expect this to be accepted, frankly, but it has some attractive qualities.-->
-
-<!-- TODO: settle how `Option` fields should work. -->
-
-<h3 id="tooling">Tooling</h3>
-
-<p>TODO</p>
-
-<!--Tools that parse Rust themselves don't get any of the compiler's changes. rust-analyzer's parser treats `_ {` as an error and loses highlighting for the rest of the signature, and semantic support needs about as much work as the prototype did. tree-sitter-rust, which Neovim, Helix, Zed, and GitHub use, needs about ten lines of grammar, and currently lacks RFC 3681's default field values too. rustfmt uses rustc's parser, so it formats `_ { .. }` literals and the code around them, but keeps anonymous struct parameters, `;` parameter lists, and named arguments as written.-->
-
-<h3 id="prototype-gaps">Prototype gaps</h3>
-
-<p>TODO</p>
-
-<!--These are gaps in the prototype, not the design:
-
-- Attribute macros built on `syn` reject anonymous struct parameters, so `#[tokio::main]` and `#[tracing::instrument]` can't be used on such functions.
-- Diagnostics name anonymous structs by location, as `{record@src/main.rs:6:9: 6:10}`, and a few suggestions name a struct you can't write.-->
-
 <h2 id="8-whats-next">8. What’s Next</h2>
 
 <ul>
-  <li><strong>An RFC.</strong> The 2020 named-arguments RFC was <a href="https://github.com/rust-lang/rfcs/pull/2964#issuecomment-671545486">closed</a> because the lang team wanted to see “what the roadmap looks like towards the eventual full solution” before an incremental step. This is meant to be that roadmap, with struct literals with an inferred name now, named-argument sugar on top, and structural records later if they’re wanted.</li>
+  <li><strong>An MCP or RFC.</strong> The 2020 named-arguments RFC was <a href="https://github.com/rust-lang/rfcs/pull/2964#issuecomment-671545486">closed</a> because the lang team wanted to see “what the roadmap looks like towards the eventual full solution” before an incremental step. This is meant to be that roadmap, with struct literals with an inferred name now, named-argument sugar on top, and structural records later if they’re wanted.</li>
   <li><strong>Follow-ups to <a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>.</strong> These are limits of default field values (<a href="https://github.com/rust-lang/rust/issues/132162">tracking issue</a>), not of anonymous structs, so they belong in follow-ups to that RFC, and anonymous and named structs keep the same rules.
     <ul>
-      <li><strong>Non-const defaults.</strong> <code class="language-plaintext highlighter-rouge">hasher: S = RandomState::new()</code> needs a non-const default. The tracking issue already has it as an open question (<a href="#non-const-defaults">Section 7</a>).</li>
+      <li><strong>Non-const defaults.</strong> <code class="language-plaintext highlighter-rouge">hasher: S = RandomState::new()</code> needs a non-const default. The tracking issue already has it as an open question (<a href="#non-const-defaults">Section 6</a>).</li>
       <li><strong>API evolution.</strong> RFC 3681 doesn’t allow <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> on structs with default field values. If the two are ever allowed together, anonymous structs could opt into <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code>, or be non-exhaustive by default, with every literal from outside the crate required to write <code class="language-plaintext highlighter-rouge">..</code>. Adding a field with a default would then never be breaking (<a href="#api-evolution-and-semver">Section 1</a>).</li>
     </ul>
   </li>
   <li><strong>Follow-up posts.</strong> Several of the threads cited here are subsumed by this proposal or depend on how it goes, and each should get a comment pointing to it.
     <ul>
-      <li><strong><a href="https://github.com/rust-lang/rfcs/issues/323">rfcs#323</a>, named arguments.</strong> The wishlist issue is still open. Anonymous struct parameters with the <a href="#4-sugar">named-argument sugar</a> would subsume it.</li>
+      <li><strong><a href="https://github.com/rust-lang/rfcs/issues/323">rfcs#323</a>, named arguments.</strong> The wishlist issue is still open. Anonymous struct parameters with the <a href="#4-named-argument-sugar">named-argument sugar</a> would subsume it.</li>
       <li><strong><a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a>, inferred types.</strong> <code class="language-plaintext highlighter-rouge">_ { .. }</code> is the struct half of its path inference, spelled <code class="language-plaintext highlighter-rouge">_</code> instead of <code class="language-plaintext highlighter-rouge">.</code>. The two need one spelling, and the struct half doesn’t need to wait for enums.</li>
       <li><strong><a href="https://github.com/rust-lang/rfcs/pull/2584">RFC 2584</a>, structural records.</strong> It’s closed, but a revival would inherit the <code class="language-plaintext highlighter-rouge">let</code> record <a href="#converting-by-field-name">conversion rule</a>, and anonymous struct parameters could become structural records without changing any caller.</li>
     </ul>
@@ -1146,23 +1185,23 @@ Generic records are harder. In `fn higher_order<A>(f: impl Fn(A)) { f(a: 4, b: 2
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">send_feedback</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span>
-    <span class="n">from</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">User</span><span class="p">,</span>
-    <span class="n">to</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">User</span><span class="p">,</span>
+    <span class="n">from</span><span class="p">:</span> <span class="k">impl</span> <span class="nb">TryInto</span><span class="o">&lt;</span><span class="n">User</span><span class="p">,</span> <span class="n">Error</span> <span class="o">=</span> <span class="n">InvalidEmail</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="n">to</span><span class="p">:</span> <span class="k">impl</span> <span class="nb">TryInto</span><span class="o">&lt;</span><span class="n">User</span><span class="p">,</span> <span class="n">Error</span> <span class="o">=</span> <span class="n">InvalidEmail</span><span class="o">&gt;</span><span class="p">,</span>
     <span class="n">message</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span>
     <span class="n">mood</span><span class="p">:</span> <span class="n">Mood</span><span class="p">,</span>
-<span class="p">});</span>
+<span class="p">})</span> <span class="k">-&gt;</span> <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span> <span class="n">InvalidEmail</span><span class="o">&gt;</span><span class="p">;</span>
 
 <span class="nf">send_feedback</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span>
     <span class="n">from</span><span class="p">:</span> <span class="s">"you@example.com"</span><span class="p">,</span>
     <span class="n">to</span><span class="p">:</span> <span class="s">"nathan@nixpulvis.com"</span><span class="p">,</span>
-    <span class="n">message</span><span class="p">:</span> <span class="s">"""
+    <span class="n">message</span><span class="p">:</span> <span class="s">"
       Named arguments are dumb, Rust shouldn't even allow
       multiple arguments. Everything should be curried:
       
       λ(x, y).e := λx.λy.e
-    """</span><span class="p">,</span>
+    "</span><span class="p">,</span>
     <span class="n">mood</span><span class="p">:</span> <span class="nn">Mood</span><span class="p">::</span><span class="n">Angry</span><span class="p">,</span>
-<span class="p">});</span>
+<span class="p">})</span><span class="o">?</span><span class="p">;</span>
 </code></pre></div>  </div>
 </div>
 
