@@ -34,7 +34,7 @@
     <div class="content"><h2 class="title">
     Anonymous Struct Parameters
     <small>
-        13397 words
+        15232 words
         
             drafted
         
@@ -58,25 +58,53 @@ options structs more ergonomic was a better short-term goal than full named
 arguments, and the <a href="https://github.com/rust-lang/rfcs/pull/2964">RFC</a> it became was <a href="https://github.com/rust-lang/rfcs/pull/2964#issuecomment-671545486">closed</a>, with
 the lang team asking for a roadmap first. scottmcm has since <a href="https://internals.rust-lang.org/t/record-types/18258/11">pointed
 out</a> that named arguments only need an inferred struct
-literal and a way to declare an anonymous struct in a function signature. <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC
-3444</a> already proposes an inferred literal, but goes further than we
-need and also doesn’t cover anonymous structs in function signatures.</p>
+literal and a way to declare an anonymous struct in a function signature. This
+follows that direction, directly. <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a> already proposes an
+inferred literal, but goes further than we need and also doesn’t cover anonymous
+structs in function signatures.</p>
 
-<p>So let’s talk about <a href="#1-struct-args">struct args</a> instead of named arguments for
-a minute, then build up to it with some <a href="#3-named-argument-sugar">syntactic
-sugar</a>.</p>
+<p>First we’ll show <a href="#1-struct-args"><code class="language-plaintext highlighter-rouge">#[feature(struct_args)]</code></a>:</p>
 
+<ul>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">struct { x: i32, y: i32 = 0 }</code>: the type of an anonymous struct. Usable in a
+parameter’s type position</li>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">_ { x: 1, .. }</code>: a struct literal or pattern whose type is inferred. Used
+anywhere a literal or pattern goes, for any struct</li>
+</ul>
+
+<p>And <a href="#elided-struct-patterns"><code class="language-plaintext highlighter-rouge">#[feature(struct_args_pattern_elision)]</code></a> which gives:</p>
+<ul>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">fn foo(struct { x: i32, y: i32 = 0 })</code>: where the anonymous struct both
+defines the type and the pattern</li>
+</ul>
+
+<p>Then we’ll add <a href="#elided-parameter-types"><code class="language-plaintext highlighter-rouge">#[feature(parameter_type_elision)]</code></a>
+for a corresponding elision of types who are described by thier pattern:</p>
+<ul>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">fn foo(Point { x, y })</code>: binds <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> without writing <code class="language-plaintext highlighter-rouge">: Point</code></li>
+</ul>
+
+<p>Later we’ll show <a href="#3-named-argument-sugar"><code class="language-plaintext highlighter-rouge">#[feature(named_arguments)]</code></a> for a
+proposed syntax of what a full named argument sugar might look like:</p>
+<ul>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">fn foo(x: i32; named: &amp;str)</code></li>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">foo(1, named: "hi");</code></li>
+</ul>
+
+<hr />
 <ul id="markdown-toc">
   <li><a href="#1-struct-args" id="markdown-toc-1-struct-args">1. Struct Args</a>    <ul>
+      <li><a href="#anonymous-structs-in-params" id="markdown-toc-anonymous-structs-in-params">Anonymous structs in params</a></li>
+      <li><a href="#elided-struct-patterns" id="markdown-toc-elided-struct-patterns">Elided struct patterns</a></li>
+      <li><a href="#nested-anonymous-structs" id="markdown-toc-nested-anonymous-structs">Nested anonymous structs</a></li>
       <li><a href="#elided-parameter-types" id="markdown-toc-elided-parameter-types">Elided parameter types</a></li>
-      <li><a href="#anonymous-structs" id="markdown-toc-anonymous-structs">Anonymous structs</a></li>
       <li><a href="#api-evolution-and-semver" id="markdown-toc-api-evolution-and-semver">API evolution and SemVer</a></li>
     </ul>
   </li>
   <li><a href="#2-examples" id="markdown-toc-2-examples">2. Examples</a>    <ul>
       <li><a href="#unambiguous-calls" id="markdown-toc-unambiguous-calls">Unambiguous calls</a></li>
-      <li><a href="#options-without-a-builder" id="markdown-toc-options-without-a-builder">Options without a builder</a></li>
       <li><a href="#existing-structs" id="markdown-toc-existing-structs">Existing structs</a></li>
+      <li><a href="#options-structs" id="markdown-toc-options-structs">Options structs</a></li>
       <li><a href="#generics-and-lifetimes" id="markdown-toc-generics-and-lifetimes">Generics and lifetimes</a></li>
       <li><a href="#traits" id="markdown-toc-traits">Traits</a></li>
     </ul>
@@ -103,6 +131,7 @@ sugar</a>.</p>
   <li><a href="#7-going-further" id="markdown-toc-7-going-further">7. Going Further</a></li>
   <li><a href="#8-whats-next" id="markdown-toc-8-whats-next">8. What’s Next</a></li>
 </ul>
+<hr />
 
 <h2 id="1-struct-args">1. Struct Args</h2>
 
@@ -119,76 +148,46 @@ following struct:</p>
 
 <ol>
   <li>As any other parameter: <code class="language-plaintext highlighter-rouge">fn f(p: Point) {}</code></li>
-  <li>With a pattern: <code class="language-plaintext highlighter-rouge">fn f(p @ Point { x, y }: Point) {}</code></li>
+  <li>With a pattern: <code class="language-plaintext highlighter-rouge">fn f(Point { x, y }: Point) {}</code></li>
 </ol>
 
 <p>The first form is just standard argument passing, which doesn’t destructure the
 named fields at all. While the second form destructures the named fields but
-requires both using a somewhat lesser known <code class="language-plaintext highlighter-rouge">@</code> pattern and a named struct type
-(twice).</p>
+names the struct type twice.</p>
 
 <p>I’ll be introducing new syntax in stages, and noting all new syntax inside
 highlighted code blocks.</p>
 
-<h3 id="elided-parameter-types">Elided parameter types</h3>
+<h3 id="anonymous-structs-in-params">Anonymous structs in params</h3>
 
-<p>We could avoid the duplication of <code class="language-plaintext highlighter-rouge">Point</code> in the second example simply by
-allowing it to be elided entirely when it can be inferred from the pattern.</p>
-
-<p>E.g.</p>
-
-<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">p</span> <span class="o">@</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}:</span> <span class="n">Point</span><span class="p">)</span> <span class="p">{}</span>
-</code></pre></div></div>
-
-<p>With an elided struct type, it could be written as:</p>
+<p>For a function argument without a struct type to use yet, an anonymous struct
+type can be declared inline with <code class="language-plaintext highlighter-rouge">struct { .. }</code>. This is the base feature,
+<code class="language-plaintext highlighter-rouge">#![feature(struct_args)]</code>, and it’s an ordinary type in an ordinary <code class="language-plaintext highlighter-rouge">pat: ty</code>
+parameter:</p>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">p</span> <span class="o">@</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">})</span> <span class="p">{}</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">g</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">})</span> <span class="p">{}</span>
 </code></pre></div>  </div>
 </div>
 
-<p>Technically elided parameter types in function signatures aren’t needed for the
-following anonymous struct feature, but they feel like a natural extension of
-the language at this moment since both require letting the type be inferred from
-the pattern.</p>
-
-<h3 id="anonymous-structs">Anonymous structs</h3>
-
-<p>Furthermore, for a function argument without a struct type to use yet, an anonymous struct could be defined inline.</p>
-
-<p>E.g.</p>
-
-<div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">g</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">})</span> <span class="p">{}</span>
-</code></pre></div>  </div>
-</div>
-
-<p>Which could be thought of essentially as:</p>
-
-<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">g</span><span class="p">(</span><span class="n">p</span> <span class="o">@</span> <span class="p">{</span><span class="k">struct</span><span class="o">@...</span><span class="p">}</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}:</span> <span class="p">{</span><span class="k">struct</span><span class="o">@...</span><span class="p">})</span> <span class="p">{}</span>
-</code></pre></div></div>
-
-<p>These new structs are anonymous, just like anonymous closure types, e.g.
+<p>This only binds <code class="language-plaintext highlighter-rouge">p</code>, exactly as <code class="language-plaintext highlighter-rouge">p: Point</code> would. These new structs are
+anonymous, just like anonymous closure types, e.g.
 <code class="language-plaintext highlighter-rouge">{closure@foo.rs:2:13: 2:21}</code>.</p>
 
-<p>There’s already some existing motivation for <code class="language-plaintext highlighter-rouge">p @ Point</code> to be equal to <code class="language-plaintext highlighter-rouge">p:
-Point</code> since <code class="language-plaintext highlighter-rouge">rustdoc</code> will report the previous <code class="language-plaintext highlighter-rouge">f</code> as <code class="language-plaintext highlighter-rouge">f(p: Point)</code>.</p>
-
-<p>The binding is optional. Without it, the fields are bound directly, which is the
-form the rest of this post mostly uses:</p>
+<p>Since the struct has no name, its fields are bound with <code class="language-plaintext highlighter-rouge">_ { .. }</code>, a struct
+pattern whose struct is whatever it matches. It works anywhere a pattern does,
+so the fields can also be renamed, borrowed, or skipped:</p>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">g</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">})</span> <span class="p">{}</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">g</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">})</span> <span class="p">{}</span>
+<span class="k">fn</span> <span class="nf">g</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="n">horizontal</span><span class="p">,</span> <span class="o">..</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">})</span> <span class="p">{}</span>
+<span class="k">let</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="o">=</span> <span class="n">point</span><span class="p">;</span>
 </code></pre></div>  </div>
 </div>
 
-<p>Which could be thought of as:</p>
-
-<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">g</span><span class="p">({</span><span class="k">struct</span><span class="o">@...</span><span class="p">}</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}:</span> <span class="p">{</span><span class="k">struct</span><span class="o">@...</span><span class="p">})</span> <span class="p">{}</span>
-</code></pre></div></div>
-
 <p>Calling a function with an anonymous struct argument is just like calling it
-with a named struct argument, except you can only use an <code class="language-plaintext highlighter-rouge">_</code> to refer to it:</p>
+with a named struct argument, except you can only use an <code class="language-plaintext highlighter-rouge">_</code> to refer to it, the
+literal form of the same <code class="language-plaintext highlighter-rouge">_ { .. }</code>:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">g</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">});</span>
@@ -205,6 +204,10 @@ with a named struct argument, except you can only use an <code class="language-p
 </code></pre></div>  </div>
 </div>
 
+<p>Note that <code class="language-plaintext highlighter-rouge">_</code> never spells the type of a parameter. <code class="language-plaintext highlighter-rouge">fn g(_ { x })</code> is an error
+for the same reason <code class="language-plaintext highlighter-rouge">fn g(x: _)</code> is, function signatures don’t infer their
+types, and that’s the gap <code class="language-plaintext highlighter-rouge">struct { .. }</code> fills.</p>
+
 <p>Anonymous struct types have come up on internals <a href="https://internals.rust-lang.org/t/pre-rfc-unnamed-struct-types/3872">since 2016</a>,
 usually as <em>structural</em> types, with <code class="language-plaintext highlighter-rouge">{ red: 25i8, .. }</code> as both a type and an
 expression, and named arguments as one of the motivations. When it came up
@@ -217,10 +220,8 @@ that usually get conflated. The first is structural anonymous types, which seem
 unlikely to make progress soon, though we explore some of thier motivations in
 <a href="#record-types">record types</a>. The second is <a href="https://rust-lang.github.io/rfcs/2102-unnamed-fields.html">RFC 2102</a>’s unnamed
 fields (<a href="https://github.com/rust-lang/rust/issues/49804">tracking issue</a>), which are about <code class="language-plaintext highlighter-rouge">#[repr(C)]</code> layout and
-not directly related to this. Though I do wonder if the syntax for unnamed
-fields could be unified with the syntax for anonymous struct types in params. We
-don’t care about <code class="language-plaintext highlighter-rouge">union</code> params, so the design space is slightly different, it
-would be nice to be consistent.</p>
+not directly related to this. Their syntax does line up though, RFC 2102 also
+spells an anonymous struct type <code class="language-plaintext highlighter-rouge">struct { .. }</code>.</p>
 
 <p>The third is passing a struct to a function without naming it, <code class="language-plaintext highlighter-rouge">f(_ { x: 1 })</code>,
 which is the call half of what’s proposed here. This idea is materialized in the
@@ -249,7 +250,7 @@ solved in a way that works naturally with <code class="language-plaintext highli
 <p>So we get this for free:</p>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">h</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="k">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="k">false</span> <span class="p">})</span> <span class="p">{}</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">h</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="k">log</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="k">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="k">false</span> <span class="p">})</span> <span class="p">{}</span>
 <span class="nf">h</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="o">..</span> <span class="p">});</span>
 <span class="nf">h</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
 <span class="nf">h</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="nf">set_log</span><span class="p">(),</span> <span class="k">log</span><span class="p">:</span> <span class="nf">get_log</span><span class="p">()</span> <span class="p">});</span>
@@ -257,6 +258,164 @@ solved in a way that works naturally with <code class="language-plaintext highli
 </div>
 
 <p>So while this doesn’t give us default positional arguments, it does give us a way to define default fields for anonymous struct arguments.</p>
+
+<h3 id="elided-struct-patterns">Elided struct patterns</h3>
+
+<p>So far <code class="language-plaintext highlighter-rouge">h</code> has had to name <code class="language-plaintext highlighter-rouge">i</code> and <code class="language-plaintext highlighter-rouge">log</code> twice, once to bind them in the
+pattern and again to declare them in the type. Since we almost always want the
+fields themselves, we can leave the pattern off.</p>
+
+<p><code class="language-plaintext highlighter-rouge">#![feature(struct_args_pattern_elision)]</code> lets an anonymous struct type act as
+its own pattern, binding each of its fields by name:</p>
+
+<div class="highlight-block">
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">h</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="k">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="k">false</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre></div>  </div>
+</div>
+
+<p>This is the form we’ll use for most of the rest of this post.</p>
+
+<p>Fields are written just like parameters here, so they can use the same binding
+modes, <code class="language-plaintext highlighter-rouge">mut</code>, <code class="language-plaintext highlighter-rouge">ref</code>, and <code class="language-plaintext highlighter-rouge">ref mut</code>:</p>
+
+<div class="highlight-block">
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">g</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span> <span class="k">mut</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="k">ref</span> <span class="n">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre></div>  </div>
+</div>
+
+<p>These only make sense when the type is also the pattern, so
+<code class="language-plaintext highlighter-rouge">p: struct { mut x: i32 }</code> is an error.</p>
+
+<details>
+  <summary>
+    <h3 id="nested-anonymous-structs">Nested anonymous structs</h3>
+  </summary>
+  <div>
+
+    <p>A field could also be an anonymous struct itself. Nesting isn’t new, with named
+structs it’s already valid Rust today:</p>
+
+    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">Marker</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">Point</span> <span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">i</span><span class="p">(</span><span class="n">Marker</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="p">}:</span> <span class="n">Marker</span><span class="p">)</span> <span class="p">{}</span>
+<span class="nf">i</span><span class="p">(</span><span class="n">Marker</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span> <span class="p">});</span>
+</code></pre></div>    </div>
+
+    <p>This only binds <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code>, the <code class="language-plaintext highlighter-rouge">at</code> field is taken apart but never bound.</p>
+
+    <p>Without elided patterns, an anonymous field is just another type, so it’s built
+and taken apart the same way:</p>
+
+    <div class="highlight-block">
+      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">j</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
+<span class="nf">j</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span> <span class="p">});</span>
+</code></pre></div>      </div>
+    </div>
+
+    <p>To keep <code class="language-plaintext highlighter-rouge">at</code> as well as its fields, bind it with an <code class="language-plaintext highlighter-rouge">@</code>. Since <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> are
+<code class="language-plaintext highlighter-rouge">Copy</code>, <code class="language-plaintext highlighter-rouge">at</code> and its fields can each have their own copy:</p>
+
+    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">k</span><span class="p">(</span><span class="n">Marker</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">at</span> <span class="o">@</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="p">}:</span> <span class="n">Marker</span><span class="p">)</span> <span class="p">{}</span>
+</code></pre></div>    </div>
+
+    <p>The anonymous version is the same pattern with <code class="language-plaintext highlighter-rouge">_</code> in place of the names:</p>
+
+    <div class="highlight-block">
+      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">l</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">at</span> <span class="o">@</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre></div>      </div>
+    </div>
+
+    <p>With fields that aren’t <code class="language-plaintext highlighter-rouge">Copy</code>, like a <code class="language-plaintext highlighter-rouge">String</code>, <code class="language-plaintext highlighter-rouge">at</code> and its fields can’t both
+own the same values, so the best you can do is borrow both:</p>
+
+    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">Label</span> <span class="p">{</span> <span class="n">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span>
+<span class="k">struct</span> <span class="n">Tagged</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">Label</span> <span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">m</span><span class="p">(</span><span class="n">Tagged</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">ref</span> <span class="n">at</span> <span class="o">@</span> <span class="n">Label</span> <span class="p">{</span> <span class="k">ref</span> <span class="n">name</span> <span class="p">}</span> <span class="p">}:</span> <span class="n">Tagged</span><span class="p">)</span> <span class="p">{}</span>
+</code></pre></div>    </div>
+
+    <p>And again anonymously:</p>
+
+    <div class="highlight-block">
+      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">n</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">ref</span> <span class="n">at</span> <span class="o">@</span> <span class="n">_</span> <span class="p">{</span> <span class="k">ref</span> <span class="n">name</span> <span class="p">}</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre></div>      </div>
+    </div>
+
+    <p>Once the pattern is elided though, it’s not exactly clear how binding should
+work:</p>
+
+    <div class="highlight-block">
+      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">j</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre></div>      </div>
+    </div>
+
+    <p>Elided fields can already take binding modes like <code class="language-plaintext highlighter-rouge">ref</code>, so the inner fields
+could too. Borrowing everything gives you <code class="language-plaintext highlighter-rouge">at</code> and its fields at once, just
+like <code class="language-plaintext highlighter-rouge">ref at @ _ { ref x, ref y }</code> did:</p>
+
+    <div class="highlight-block">
+      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">j</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span> <span class="k">ref</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="k">ref</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="k">ref</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre></div>      </div>
+    </div>
+
+    <p>The biggest issue is name collisions. Binding fields at every level puts them
+all in the same scope, so two inner structs with the same field name clash:</p>
+
+    <div class="highlight-block red">
+      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">o</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span> <span class="n">from</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">},</span> <span class="n">to</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre></div>      </div>
+    </div>
+
+    <p>Binding only the outer fields never has this problem, since a struct’s field
+names are already unique. But I don’t think that’s the right call, it’s just
+the easy one. A collision like this could be an error, fixed by writing the
+pattern out and renaming them, like <code class="language-plaintext highlighter-rouge">_ { from: _ { x: from_x }, to: _ { x: to_x } }</code>.</p>
+  </div>
+</details>
+
+<h3 id="elided-parameter-types">Elided parameter types</h3>
+
+<p>Anonymous struct arguments don’t actually need elided parameter types, and
+neither does the named argument sugar later on, so this could just as well be
+its own proposal. But once a type can imply its pattern, it’s a natural time to
+let a pattern imply its type too.</p>
+
+<p>This also removes the duplication of <code class="language-plaintext highlighter-rouge">Point</code> from the start of this section.
+With <code class="language-plaintext highlighter-rouge">#![feature(parameter_type_elision)]</code>, a parameter’s type can be left out
+when the pattern already names it.</p>
+
+<p>E.g.</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}:</span> <span class="n">Point</span><span class="p">)</span> <span class="p">{}</span>
+</code></pre></div></div>
+
+<p>With an elided struct type, it could be written as:</p>
+
+<div class="highlight-block">
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">})</span> <span class="p">{}</span>
+</code></pre></div>  </div>
+</div>
+
+<p>The rule is that a pattern which spells out a type can stand for the pattern and
+that type. Struct and tuple struct patterns spell the type their path names, a
+reference pattern spells a reference, and tuples and arrays of those spell
+tuples and arrays:</p>
+
+<div class="highlight-block">
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">p</span> <span class="o">@</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="o">..</span> <span class="p">})</span>   <span class="c1">// p @ Point { x, .. }: Point</span>
+<span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="nf">Meters</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>             <span class="c1">// Meters(m): Meters</span>
+<span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">})</span>       <span class="c1">// &amp;Point { x, y }: &amp;Point</span>
+<span class="k">fn</span> <span class="nf">f</span><span class="p">((</span><span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">},</span> <span class="nf">Meters</span><span class="p">(</span><span class="n">m</span><span class="p">)))</span>  <span class="c1">// (Point, Meters)</span>
+<span class="k">fn</span> <span class="nf">f</span><span class="p">([</span><span class="nf">Meters</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">m</span><span class="p">])</span>        <span class="c1">// [Meters(a), m]: [Meters; 2]</span>
+</code></pre></div>  </div>
+</div>
+
+<p>It’s purely syntactic, the type is the pattern’s path copied over. Lifetimes can
+still be elided, <code class="language-plaintext highlighter-rouge">&amp;Point { .. }</code> takes part in lifetime elision like <code class="language-plaintext highlighter-rouge">&amp;Point</code>
+does, and generic arguments are written in the pattern the way they would be in
+the type, <code class="language-plaintext highlighter-rouge">fn f&lt;T&gt;(Pair&lt;T&gt; { a, b })</code> (or with a turbofish, <code class="language-plaintext highlighter-rouge">Pair::&lt;T&gt;</code>). A
+variant pattern like <code class="language-plaintext highlighter-rouge">Shape::Square(s)</code> names a variant, not a type, so it can’t
+elide anything.</p>
 
 <h3 id="api-evolution-and-semver">API evolution and SemVer</h3>
 
@@ -289,16 +448,16 @@ a field with a default would never be breaking (<a href="#8-whats-next">Section 
 
 <h2 id="2-examples">2. Examples</h2>
 
-<p>Now let’s look at some realistic examples of using this new syntax. Later we’ll
-see how we can make it even more like named arguments with some <a href="#3-named-argument-sugar">syntactic
-sugar</a>. I have a hacked together <a href="#5-the-prototype">prototype
-implementation</a> for both the <code class="language-plaintext highlighter-rouge">struct_args</code> and
-<code class="language-plaintext highlighter-rouge">struct_args_sugar</code> features, but for now we’ll focus on the core <code class="language-plaintext highlighter-rouge">struct_args</code>
-feature.</p>
+<p>Now let’s look at some realistic examples of this new syntax. Later we’ll see
+how to make it look even more like named arguments with some <a href="#3-named-argument-sugar">syntactic
+sugar</a>. I have a hacked-together <a href="#5-the-prototype">prototype
+implementation</a> for every feature in this post, but for now
+we’ll stick to the ones from Section 1 and leave <code class="language-plaintext highlighter-rouge">named_arguments</code> for later.</p>
 
 <h3 id="unambiguous-calls">Unambiguous calls</h3>
 
-<p>Consider the <a href="https://doc.rust-lang.org/std/fs/fn.copy.html"><code class="language-plaintext highlighter-rouge">std::fs::copy</code></a> function, which has the following signature:</p>
+<p>Consider the <a href="https://doc.rust-lang.org/std/fs/fn.copy.html"><code class="language-plaintext highlighter-rouge">std::fs::copy</code></a> function, which has the following
+signature:</p>
 
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">fn</span> <span class="n">copy</span><span class="o">&lt;</span><span class="n">P</span><span class="p">:</span> <span class="nb">AsRef</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="nb">AsRef</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;&gt;</span><span class="p">(</span>
     <span class="n">from</span><span class="p">:</span> <span class="n">P</span><span class="p">,</span>
@@ -306,25 +465,26 @@ feature.</p>
 <span class="p">)</span> <span class="k">-&gt;</span> <span class="nn">io</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">u64</span><span class="o">&gt;</span>
 </code></pre></div></div>
 
-<p>Calling this function can be ambiguous, as both parameters have the same type.</p>
+<p>Calling it can be ambiguous, since both arguments are just paths:</p>
 
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">a</span> <span class="o">=</span> <span class="nn">Path</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="s">"notes.txt"</span><span class="p">);</span>
 <span class="k">let</span> <span class="n">b</span> <span class="o">=</span> <span class="nn">Path</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="s">"notes.bak"</span><span class="p">);</span>
-<span class="nf">copy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
-<span class="nf">copy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>  <span class="c1">// oops, overwrites notes.txt</span>
+<span class="nf">copy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="nf">copy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>  <span class="c1">// oops, overwrites notes.txt</span>
 </code></pre></div></div>
 
-<p>Now consider if we used an anonymous struct instead:</p>
+<p>With an anonymous struct instead:</p>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">fn</span> <span class="n">copy</span><span class="o">&lt;</span><span class="n">P</span><span class="p">:</span> <span class="nb">AsRef</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="nb">AsRef</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">fn</span> <span class="n">copy</span><span class="o">&lt;</span><span class="n">P</span><span class="p">:</span> <span class="nb">AsRef</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="nb">AsRef</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span>
     <span class="n">from</span><span class="p">:</span> <span class="n">P</span><span class="p">,</span>
     <span class="n">to</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span>
 <span class="p">})</span> <span class="k">-&gt;</span> <span class="nn">io</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">u64</span><span class="o">&gt;</span>
 </code></pre></div>  </div>
 </div>
 
-<p>Now we can call <code class="language-plaintext highlighter-rouge">copy</code> with an anonymous struct which names the fields and makes it clear which argument is <code class="language-plaintext highlighter-rouge">from</code> and which is <code class="language-plaintext highlighter-rouge">to</code>:</p>
+<p>Each call names its fields, so it’s clear which path is <code class="language-plaintext highlighter-rouge">from</code> and which is
+<code class="language-plaintext highlighter-rouge">to</code>:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">a</span> <span class="o">=</span> <span class="nn">Path</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="s">"notes.txt"</span><span class="p">);</span>
@@ -334,74 +494,10 @@ feature.</p>
 </code></pre></div>  </div>
 </div>
 
-<h3 id="options-without-a-builder">Options without a builder</h3>
-
-<p>Anonymous struct parameters with defaults can avoid the builder pattern.
-Sometimes your function needs some options, but you don’t want to write a
-complete builder implementation for it. Anonymous struct with <code class="language-plaintext highlighter-rouge">..</code> filling in
-the remaining fields from their defaults can be a simpler solution for these use
-cases.</p>
-
-<div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">crop</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Image</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span>
-    <span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">,</span>
-    <span class="n">height</span><span class="p">:</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="nb">u32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">None</span><span class="p">,</span>
-    <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">y</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-<span class="p">})</span> <span class="k">-&gt;</span> <span class="n">Image</span> <span class="p">{</span>
-    <span class="nd">unimplemented!</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="k">let</span> <span class="n">img</span> <span class="o">=</span> <span class="nn">Image</span><span class="p">::</span><span class="nf">from_png</span><span class="p">(</span><span class="s">"cat.png"</span><span class="p">);</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nf">Some</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="o">..</span> <span class="p">});</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">y</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
-</code></pre></div>  </div>
-</div>
-
-<p>Without this, the builder pattern would require a constructor and a setter method for every optional field:</p>
-
-<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">struct</span> <span class="n">CropOptions</span> <span class="p">{</span>
-    <span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">,</span>
-    <span class="n">height</span><span class="p">:</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="nb">u32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">None</span><span class="p">,</span>
-    <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">y</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-<span class="p">}</span>
-
-<span class="k">impl</span> <span class="n">CropOptions</span> <span class="p">{</span>
-    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
-        <span class="k">Self</span> <span class="p">{</span> <span class="n">width</span><span class="p">,</span> <span class="o">..</span> <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">height</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
-        <span class="k">self</span><span class="py">.height</span> <span class="o">=</span> <span class="nf">Some</span><span class="p">(</span><span class="n">height</span><span class="p">);</span>
-        <span class="k">self</span>
-    <span class="p">}</span>
-
-    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">x</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
-        <span class="k">self</span><span class="py">.x</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-        <span class="k">self</span>
-    <span class="p">}</span>
-
-    <span class="k">pub</span> <span class="k">fn</span> <span class="nf">y</span><span class="p">(</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">u32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
-        <span class="k">self</span><span class="py">.y</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-        <span class="k">self</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">fn</span> <span class="nf">crop</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Image</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">CropOptions</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Image</span> <span class="p">{</span>
-    <span class="nd">unimplemented!</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="k">let</span> <span class="n">img</span> <span class="o">=</span> <span class="nn">Image</span><span class="p">::</span><span class="nf">from_png</span><span class="p">(</span><span class="s">"cat.png"</span><span class="p">);</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.height</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
-<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="nn">CropOptions</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="nf">.x</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span><span class="nf">.y</span><span class="p">(</span><span class="mi">25</span><span class="p">));</span>
-</code></pre></div></div>
-
 <h3 id="existing-structs">Existing structs</h3>
 
-<p><code class="language-plaintext highlighter-rouge">_ { .. }</code> isn’t tied to anonymous structs. It works wherever the expected type is a struct, so every existing options-struct API gets it without changing:</p>
+<p><code class="language-plaintext highlighter-rouge">_ { .. }</code> isn’t tied to anonymous structs. It works wherever the expected type
+is a struct, so every existing options struct gets it without changing:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">Rgb</span> <span class="p">{</span> <span class="n">red</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span> <span class="n">green</span><span class="p">:</span> <span class="nb">u8</span><span class="p">,</span> <span class="n">blue</span><span class="p">:</span> <span class="nb">u8</span> <span class="p">}</span>
@@ -424,37 +520,94 @@ cases.</p>
 </div>
 
 <p>Keep in mind that <code class="language-plaintext highlighter-rouge">..</code> and <code class="language-plaintext highlighter-rouge">..Default::default()</code> are different things. A plain
-<code class="language-plaintext highlighter-rouge">..</code> takes each omitted field’s declared default (RFC 3681, which must be const,
-see <a href="#non-const-defaults">non-const defaults</a>). While
+<code class="language-plaintext highlighter-rouge">..</code> takes each omitted field’s declared default (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>), which
+must be const, see <a href="#non-const-defaults">non-const defaults</a>. While
 <code class="language-plaintext highlighter-rouge">..Default::default()</code> builds the struct’s whole <code class="language-plaintext highlighter-rouge">Default</code> value and takes the
-omitted fields from it. This is not new to this proposal, it’s simply how
-structs work.</p>
+omitted fields from it. Neither is new, it’s how structs already work.</p>
+
+<h3 id="options-structs">Options structs</h3>
+
+<p>With default field values (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>), an options struct no longer
+needs a builder, since <code class="language-plaintext highlighter-rouge">..</code> fills in every field the caller leaves out:</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">struct</span> <span class="n">CropOptions</span> <span class="p">{</span>
+    <span class="k">pub</span> <span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">,</span>
+    <span class="k">pub</span> <span class="n">height</span><span class="p">:</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="nb">u32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">None</span><span class="p">,</span>
+    <span class="k">pub</span> <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="k">pub</span> <span class="n">y</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">crop</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Image</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">CropOptions</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Image</span> <span class="p">{</span>
+    <span class="nd">unimplemented!</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">img</span> <span class="o">=</span> <span class="nn">Image</span><span class="p">::</span><span class="nf">from_png</span><span class="p">(</span><span class="s">"cat.png"</span><span class="p">);</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">CropOptions</span> <span class="p">{</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">CropOptions</span> <span class="p">{</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nf">Some</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="o">..</span> <span class="p">});</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">CropOptions</span> <span class="p">{</span> <span class="n">y</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
+</code></pre></div></div>
+
+<p>Today’s calls name <code class="language-plaintext highlighter-rouge">CropOptions</code> every time, and with <code class="language-plaintext highlighter-rouge">_ { .. }</code> they wouldn’t
+have to. But it’s still a whole separate type, with its own name and <code class="language-plaintext highlighter-rouge">pub</code> on
+every field, just to pass a few arguments to one function. An anonymous struct
+keeps the same fields and defaults, but puts them right in the signature:</p>
+
+<div class="highlight-block">
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">fn</span> <span class="nf">crop</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Image</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">u32</span><span class="p">,</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="nb">u32</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">None</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">})</span> <span class="k">-&gt;</span> <span class="n">Image</span> <span class="p">{</span>
+    <span class="nd">unimplemented!</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">img</span> <span class="o">=</span> <span class="nn">Image</span><span class="p">::</span><span class="nf">from_png</span><span class="p">(</span><span class="s">"cat.png"</span><span class="p">);</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nf">Some</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="o">..</span> <span class="p">});</span>
+<span class="nf">crop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">img</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">y</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
+</code></pre></div>  </div>
+</div>
+
+<p>If the options do end up needing a name, for reuse or to implement traits,
+switching back to <code class="language-plaintext highlighter-rouge">CropOptions</code> doesn’t change the calls, since <code class="language-plaintext highlighter-rouge">_ { .. }</code>
+builds either one.</p>
 
 <h3 id="generics-and-lifetimes">Generics and lifetimes</h3>
 
-<p>Fields can use anything in scope in the signature: including generic parameters,
-elided lifetimes, <code class="language-plaintext highlighter-rouge">impl Trait</code>, <code class="language-plaintext highlighter-rouge">Self</code>, and associated types.</p>
+<p>Fields can use anything a parameter’s type can, including generic parameters,
+elided lifetimes, <code class="language-plaintext highlighter-rouge">impl Trait</code>, <code class="language-plaintext highlighter-rouge">Self</code>, and associated types:</p>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span>
     <span class="n">f</span><span class="p">:</span> <span class="k">impl</span> <span class="nf">Fn</span><span class="p">(</span><span class="o">&amp;</span><span class="n">T</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="n">U</span><span class="p">,</span>
     <span class="n">limit</span><span class="p">:</span> <span class="nb">usize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-<span class="p">})</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span> <span class="p">{</span> <span class="o">..</span> <span class="p">}</span>
+<span class="p">})</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="nd">unimplemented!</span><span class="p">()</span>
+<span class="p">}</span>
 
 <span class="nf">map</span><span class="p">(</span><span class="nd">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">_</span> <span class="p">{</span> <span class="n">f</span><span class="p">:</span> <span class="p">|</span><span class="n">n</span><span class="p">|</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
 <span class="nf">map</span><span class="p">(</span><span class="nd">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">_</span> <span class="p">{</span> <span class="n">f</span><span class="p">:</span> <span class="p">|</span><span class="n">n</span><span class="p">|</span> <span class="n">n</span><span class="nf">.to_string</span><span class="p">(),</span> <span class="n">limit</span><span class="p">:</span> <span class="mi">2</span> <span class="p">});</span>
 </code></pre></div>  </div>
 </div>
 
-<p>A lifetime in a field means what it would in a positional parameter. An elided
-one, like <code class="language-plaintext highlighter-rouge">&amp;str</code>, is elided as it would be in <code class="language-plaintext highlighter-rouge">x: &amp;str</code>. Unlike a named struct,
-which would need <code class="language-plaintext highlighter-rouge">struct PickArgs&lt;'a&gt;</code>, the anonymous struct never declares
-lifetimes itself.</p>
+<p>This works the way closures do. A closure written inside <code class="language-plaintext highlighter-rouge">map</code> gets a type
+that’s generic over <code class="language-plaintext highlighter-rouge">map</code>’s generic parameters, and so does the anonymous
+struct. Each instantiation of <code class="language-plaintext highlighter-rouge">map</code>, including the hidden type parameter that
+<code class="language-plaintext highlighter-rouge">impl Fn</code> introduces, gets its own instantiation of the struct. Nothing about
+the struct needs declaring, it just uses what the signature already has.</p>
+
+<p>A lifetime in a field means what it would in a positional parameter, whether
+it’s named like <code class="language-plaintext highlighter-rouge">'a</code> here, or elided like <code class="language-plaintext highlighter-rouge">&amp;str</code> would be in <code class="language-plaintext highlighter-rouge">x: &amp;str</code>. Unlike
+a named struct, which would need <code class="language-plaintext highlighter-rouge">struct PickArgs&lt;'a&gt;</code>, the anonymous struct
+never declares lifetimes itself:</p>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">pick</span><span class="o">&lt;</span><span class="nv">'a</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">pick</span><span class="o">&lt;</span><span class="nv">'a</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span>
     <span class="n">fallback</span><span class="p">:</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"none"</span><span class="p">,</span>
-<span class="p">})</span> <span class="k">-&gt;</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span> <span class="p">{</span> <span class="o">..</span> <span class="p">}</span>
+<span class="p">})</span> <span class="k">-&gt;</span> <span class="o">&amp;</span><span class="nv">'a</span> <span class="nb">str</span> <span class="p">{</span>
+    <span class="nd">unimplemented!</span><span class="p">()</span>
+<span class="p">}</span>
 
 <span class="nf">pick</span><span class="p">(</span><span class="s">""</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="o">..</span> <span class="p">});</span>
 <span class="nf">pick</span><span class="p">(</span><span class="s">""</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">fallback</span><span class="p">:</span> <span class="s">"empty"</span> <span class="p">});</span>
@@ -463,24 +616,26 @@ lifetimes itself.</p>
 
 <h3 id="traits">Traits</h3>
 
-<p>Methods defined on a <code class="language-plaintext highlighter-rouge">trait</code> can take anonymous struct parameters just like any
-other method. The trait owns the struct and its defaults, and each <code class="language-plaintext highlighter-rouge">impl</code> method
-repeats the fields with the same types, just like positional parameters, but in
-any order. Calls through generics and <code class="language-plaintext highlighter-rouge">dyn</code> work like any other method call.</p>
+<p>Trait methods can take anonymous struct parameters just like any other method.
+The trait owns the struct and its defaults, and each <code class="language-plaintext highlighter-rouge">impl</code> repeats the fields
+with the same types, just like positional parameters, but in any order. Calls
+through generics and <code class="language-plaintext highlighter-rouge">dyn</code> work like any other method call:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="n">Writer</span> <span class="p">{</span>
-    <span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span>
+    <span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span>
         <span class="n">data</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">'static</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">times</span><span class="p">:</span> <span class="nb">usize</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">});</span>
 <span class="p">}</span>
 
 <span class="k">impl</span> <span class="n">Writer</span> <span class="k">for</span> <span class="n">Buffer</span> <span class="p">{</span>
-    <span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span>
+    <span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span>
         <span class="n">times</span><span class="p">:</span> <span class="nb">usize</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">'static</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="p">})</span> <span class="p">{</span> <span class="o">..</span> <span class="p">}</span>
+    <span class="p">})</span> <span class="p">{</span>
+        <span class="nd">unimplemented!</span><span class="p">()</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="n">buffer</span><span class="nf">.write</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">data</span><span class="p">:</span> <span class="s">"hi"</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
@@ -489,31 +644,45 @@ any order. Calls through generics and <code class="language-plaintext highlighte
 </code></pre></div>  </div>
 </div>
 
-<p>For now the <code class="language-plaintext highlighter-rouge">impl</code> leaves the defaults out. That keeps them in one place, the
-trait, but someone reading the impl can’t see that <code class="language-plaintext highlighter-rouge">times</code> defaults to <code class="language-plaintext highlighter-rouge">1</code>. We’d
-like to require the impl to repeat them, as <code class="language-plaintext highlighter-rouge">times: usize = 1</code>, checked against
-the trait’s, but it’s not clear how that check should work. Comparing the
-expressions as written would reject an impl that writes the same value a
-different way. Comparing values means evaluating both, after filling in the
-impl’s types for something like <code class="language-plaintext highlighter-rouge">Self::N</code>. And with <a href="#non-const-defaults">non-const
-defaults</a> there might not be a value to compare until
-runtime. Either way the impl’s copy has to match, since the impl’s struct is the
-trait’s struct, and every call, direct or through <code class="language-plaintext highlighter-rouge">dyn</code>, uses the trait’s
-defaults.</p>
+<p>The <code class="language-plaintext highlighter-rouge">impl</code> can’t repeat the defaults, since they come from the trait. A call
+fills in the defaults before the method is dispatched, and through generics or
+<code class="language-plaintext highlighter-rouge">dyn</code> the caller can’t know which impl it’s calling, so only the trait’s
+defaults can be used consistently. Letting the impl repeat them, checked
+against the trait’s, would mean comparing values like <code class="language-plaintext highlighter-rouge">Self::N</code> after filling
+in the impl’s types, which isn’t worth it just to repeat what the trait already
+says. Instead, writing one in the impl is an error that points at the trait’s
+default, so a reader of the impl can find it.</p>
 
-<p>Unlike positional parameters, the struct field names must match the trait’s
-field names. An <code class="language-plaintext highlighter-rouge">impl</code> that renames <code class="language-plaintext highlighter-rouge">data</code> to <code class="language-plaintext highlighter-rouge">bytes</code> is an error, since <code class="language-plaintext highlighter-rouge">bytes</code>
-isn’t a field of the trait’s struct.</p>
+<p>Unlike positional parameters though, the field names have to match the trait’s.
+An <code class="language-plaintext highlighter-rouge">impl</code> that renames <code class="language-plaintext highlighter-rouge">data</code> to <code class="language-plaintext highlighter-rouge">bytes</code> is an error, since <code class="language-plaintext highlighter-rouge">bytes</code> isn’t a
+field of the trait’s struct. The same goes for anonymous structs nested in the
+fields.</p>
 
 <h2 id="3-named-argument-sugar">3. Named Argument Sugar</h2>
 
-<p>Everything so far is struct syntax in new places. The sugar here is the part that looks like named arguments, and like the elided parameter types in Section 1, it only removes something from what you write. The rule to keep in mind is that <strong>the sugar never adds meaning.</strong> There is one deliberate exception, which is that named arguments imply <code class="language-plaintext highlighter-rouge">..</code>.</p>
+<p>Everything so far is struct syntax in new places. The sugar here is the part
+that looks like named arguments, and like elided parameter types in Section 1,
+it only removes things from what you write.</p>
 
-<p>It’s also the part I expect the most questions about. None of it is required, everything in Sections 1 and 2 works without it, but none of it is new either. Leaving out a named argument to get its default is how named arguments work in <a href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/functions/#Function-Argument-Labels-and-Parameter-Names">Swift</a>, <a href="https://docs.python.org/3/tutorial/controlflow.html#keyword-arguments">Python</a>, and <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">Julia</a>, and the implied <code class="language-plaintext highlighter-rouge">..</code> is just Rust’s spelling of that from RFC 3681. Separating positional and keyword parameters with a <code class="language-plaintext highlighter-rouge">;</code> comes from Julia. It does have costs. Every call can be written two ways, a call no longer shows which fields took their defaults (<a href="https://steveklabnik.com/writing/arguing-about-arguments/">Klabnik’s</a> concern), and a <code class="language-plaintext highlighter-rouge">;</code> signature hides that the last parameter is a struct, which matters when the function is used as a value. Only the last argument can be written with names, and <code class="language-plaintext highlighter-rouge">:</code> in argument lists is taken for good. I think it’s worth it, but these are fair questions.</p>
+<p>This is also the part I expect the most questions about. None of it is
+required, everything in Sections 1 and 2 works without it, but none of it is
+new either. Leaving out a named argument to get its default is how named
+arguments work in <a href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/functions/#Function-Argument-Labels-and-Parameter-Names">Swift</a>, <a href="https://docs.python.org/3/tutorial/controlflow.html#keyword-arguments">Python</a>, and
+<a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">Julia</a>, and the implied <code class="language-plaintext highlighter-rouge">..</code> is just Rust’s spelling of that
+from RFC 3681. Separating positional and keyword parameters with a <code class="language-plaintext highlighter-rouge">;</code> comes
+from Julia.</p>
+
+<p>It does have costs though. Every call can be written two ways, a call no longer
+shows which fields took their defaults (<a href="https://steveklabnik.com/writing/arguing-about-arguments/">Klabnik’s</a> concern), and a
+<code class="language-plaintext highlighter-rouge">;</code> signature obscures that the last parameter is a struct. Only the last
+argument can be written with names, and <code class="language-plaintext highlighter-rouge">:</code> in argument lists is taken for
+good. I think it’s worth it, but these are fair concerns.</p>
 
 <h3 id="call-syntax-fa-x-1">Call syntax: <code class="language-plaintext highlighter-rouge">f(a, x: 1)</code></h3>
 
-<p>Named arguments are sugar for a <code class="language-plaintext highlighter-rouge">_ { .. }</code> literal as the last argument. Once an argument is written <code class="language-plaintext highlighter-rouge">name: value</code>, it and the ones after it form the struct. The calls from <a href="#2-examples">Section 2</a> become:</p>
+<p>Named arguments are sugar for a <code class="language-plaintext highlighter-rouge">_ { .. }</code> literal as the last argument. Once
+an argument is written <code class="language-plaintext highlighter-rouge">name: value</code>, it and every argument after it form the
+struct. The calls from <a href="#2-examples">Section 2</a> become:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">copy</span><span class="p">(</span><span class="n">from</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">b</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
@@ -529,36 +698,81 @@ isn’t a field of the trait’s struct.</p>
 </div>
 
 <ul>
-  <li>Positional arguments come first, then named ones, then optionally <code class="language-plaintext highlighter-rouge">..</code> or <code class="language-plaintext highlighter-rouge">..base</code>, last.</li>
-  <li>Named arguments imply <code class="language-plaintext highlighter-rouge">..</code>, so any fields left out take their defaults, and a field without a default still has to be given. This is the exception mentioned above, and it costs something, since the call no longer shows which fields were defaulted the way <code class="language-plaintext highlighter-rouge">..</code> does. For an anonymous struct, at least the defaults are the function’s own, since the struct only exists for it. Whether named structs should also get the implied <code class="language-plaintext highlighter-rouge">..</code> is still open. If they do, a library adding a default to a public struct changes which calls compile, so it depends on how <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> ends up working with RFC 3681 defaults (<a href="#api-evolution-and-semver">Section 1</a>). Writing the <code class="language-plaintext highlighter-rouge">..</code> yourself, as in <code class="language-plaintext highlighter-rouge">Instance::new(backends: Backends::VULKAN, ..InstanceDescriptor::new_without_display_handle())</code>, works either way.</li>
-  <li><code class="language-plaintext highlighter-rouge">f(..)</code> on its own is still a <code class="language-plaintext highlighter-rouge">RangeFull</code>, as in <code class="language-plaintext highlighter-rouge">v.drain(..)</code>, so it can’t mean “use every default”. For <code class="language-plaintext highlighter-rouge">fn f(_ { verbose: bool = false })</code> you write <code class="language-plaintext highlighter-rouge">f(_ { .. })</code>, or leave the struct out and just write <code class="language-plaintext highlighter-rouge">f()</code> (see below).</li>
-  <li>There’s no field shorthand. In a struct literal <code class="language-plaintext highlighter-rouge">Point { x, y }</code> means <code class="language-plaintext highlighter-rouge">Point { x: x, y: y }</code>, but <code class="language-plaintext highlighter-rouge">f(x, y)</code> is already two positional arguments, so it’s <code class="language-plaintext highlighter-rouge">f(x: x, y: y)</code>, or <code class="language-plaintext highlighter-rouge">f(_ { x, y })</code>.</li>
-  <li>Named arguments are always the last argument, so they fill whatever parameter is last. An anonymous struct anywhere else is passed with <code class="language-plaintext highlighter-rouge">_ { .. }</code>. Since adding a parameter is breaking anyway, new options should go in the existing struct as fields with defaults. The exception is adding a new last anonymous struct where every field has a default, since calls can leave it out (below), and <code class="language-plaintext highlighter-rouge">crop(&amp;img, width: 200)</code> still fills the old one.</li>
+  <li>Positional arguments come first, then named ones, then optionally <code class="language-plaintext highlighter-rouge">..</code> or
+<code class="language-plaintext highlighter-rouge">..base</code> last.</li>
+  <li>Named arguments imply <code class="language-plaintext highlighter-rouge">..</code>, so any fields left out take their defaults, and a
+field without a default still has to be given. This costs something, since
+the call no longer shows which fields were defaulted the way <code class="language-plaintext highlighter-rouge">..</code> does. For
+an anonymous struct, at least the defaults are the function’s own, since the
+struct only exists for it.
+Whether named structs should also get the implied <code class="language-plaintext highlighter-rouge">..</code> is still open. If
+they do, a library adding a default to a public struct changes which calls
+compile, so it depends on how <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> ends up working with RFC
+3681 defaults (<a href="#api-evolution-and-semver">Section 1</a>). Writing the <code class="language-plaintext highlighter-rouge">..</code>
+yourself, as in <code class="language-plaintext highlighter-rouge">Instance::new(backends: Backends::VULKAN, ..InstanceDescriptor::new_without_display_handle())</code>,
+works either way.</li>
+  <li><code class="language-plaintext highlighter-rouge">f(..)</code> on its own is still a <code class="language-plaintext highlighter-rouge">RangeFull</code>, as in <code class="language-plaintext highlighter-rouge">v.drain(..)</code>, so it can’t
+mean “use every default”. For <code class="language-plaintext highlighter-rouge">fn f(struct { verbose: bool = false })</code> you
+write <code class="language-plaintext highlighter-rouge">f(_ { .. })</code>, or leave the struct out and just write <code class="language-plaintext highlighter-rouge">f()</code> (see
+below).</li>
+  <li>There’s no field shorthand. In a struct literal <code class="language-plaintext highlighter-rouge">Point { x, y }</code> means
+<code class="language-plaintext highlighter-rouge">Point { x: x, y: y }</code>, but <code class="language-plaintext highlighter-rouge">f(x, y)</code> is already two positional arguments, so
+it’s <code class="language-plaintext highlighter-rouge">f(x: x, y: y)</code>, or <code class="language-plaintext highlighter-rouge">f(_ { x, y })</code>.</li>
+  <li>Named arguments are always the last argument, so they fill the parameter at
+that position, which is the last one unless a trailing all-default struct is
+left out. An anonymous struct anywhere else is passed with
+<code class="language-plaintext highlighter-rouge">_ { .. }</code>. Since adding a parameter is breaking anyway, new options should go
+in the existing struct as fields with defaults. The exception is adding a new
+last anonymous struct where every field has a default, since calls can leave
+it out (below), and <code class="language-plaintext highlighter-rouge">crop(&amp;img, width: 200)</code> still fills the old one.</li>
 </ul>
 
-<p>Positional parameters never become labels. A parameter is a pattern that may not have a name (<code class="language-plaintext highlighter-rouge">(x, y): (i32, i32)</code>, <code class="language-plaintext highlighter-rouge">_: u8</code>), and turning its name into API would make every rename a breaking change. So <code class="language-plaintext highlighter-rouge">foo(a: 1)</code> against <code class="language-plaintext highlighter-rouge">fn foo(a: i32)</code> is an error. The argument is passed by position, or the parameter moves into a struct.</p>
+<p>Positional parameters never become labels. A parameter is a pattern that may
+not have a name, like <code class="language-plaintext highlighter-rouge">(x, y): (i32, i32)</code> or <code class="language-plaintext highlighter-rouge">_: u8</code>, and turning its name
+into API would make every rename a breaking change. So <code class="language-plaintext highlighter-rouge">foo(a: 1)</code> against
+<code class="language-plaintext highlighter-rouge">fn foo(a: i32)</code> is an error. The argument is either passed by position, or the
+parameter moves into a struct.</p>
 
-<p>The syntax happens to be free, since <code class="language-plaintext highlighter-rouge">expr: Type</code> in expressions (type ascription) was removed, and <code class="language-plaintext highlighter-rouge">macro_rules!</code> can’t write <code class="language-plaintext highlighter-rouge">$e:expr :</code>. It does claim <code class="language-plaintext highlighter-rouge">:</code> in argument lists for good, which is the point. <code class="language-plaintext highlighter-rouge">f(x: 1)</code> always means “the field <code class="language-plaintext highlighter-rouge">x</code> of the struct the last parameter expects”.</p>
+<p>The syntax happens to be free, since <code class="language-plaintext highlighter-rouge">expr: Type</code> in expressions (type
+ascription) was removed, and <code class="language-plaintext highlighter-rouge">macro_rules!</code> can’t write <code class="language-plaintext highlighter-rouge">$e:expr :</code>. It does
+claim <code class="language-plaintext highlighter-rouge">:</code> in argument lists for good, which is the point. <code class="language-plaintext highlighter-rouge">f(x: 1)</code> always
+means “the field <code class="language-plaintext highlighter-rouge">x</code> of the struct this argument fills”.</p>
 
-<p>Note that <code class="language-plaintext highlighter-rouge">crop(&amp;img, width: 200, height: 200)</code> doesn’t compile against <code class="language-plaintext highlighter-rouge">height: Option&lt;u32&gt;</code>. It’s <code class="language-plaintext highlighter-rouge">height: Some(200)</code>. Named arguments are sugar for a struct literal, and struct literals don’t wrap values in <code class="language-plaintext highlighter-rouge">Some</code>. <a href="#optional-fields">Section 7</a> has a more speculative idea that would change that.</p>
+<p>Note that <code class="language-plaintext highlighter-rouge">crop(&amp;img, width: 200, height: 200)</code> doesn’t compile against
+<code class="language-plaintext highlighter-rouge">height: Option&lt;u32&gt;</code>, it’s <code class="language-plaintext highlighter-rouge">height: Some(200)</code>. Named arguments are sugar for
+a struct literal, and struct literals don’t wrap values in <code class="language-plaintext highlighter-rouge">Some</code>. <a href="#optional-fields">Section
+7</a> has a more speculative idea that would change that.</p>
 
-<p>A last anonymous struct parameter whose fields all have defaults can also be left out of the call entirely:</p>
+<p>A last anonymous struct parameter whose fields all have defaults can also be
+left out of the call entirely:</p>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">font_size</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">16</span> <span class="p">})</span> <span class="k">-&gt;</span> <span class="n">Widget</span> <span class="p">{</span> <span class="o">..</span> <span class="p">}</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">font_size</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">16</span> <span class="p">})</span> <span class="k">-&gt;</span> <span class="n">Widget</span> <span class="p">{</span>
+    <span class="nd">unimplemented!</span><span class="p">()</span>
+<span class="p">}</span>
 
-<span class="nf">text</span><span class="p">(</span><span class="s">"hi"</span><span class="p">);</span>              <span class="c1">// text("hi", _ { .. })</span>
+<span class="nf">text</span><span class="p">(</span><span class="s">"hi"</span><span class="p">);</span>  <span class="c1">// = text("hi", _ { .. })</span>
 <span class="nf">text</span><span class="p">(</span><span class="s">"hi"</span><span class="p">,</span> <span class="n">font_size</span><span class="p">:</span> <span class="mi">24</span><span class="p">);</span>
 </code></pre></div>  </div>
 </div>
 
-<p>This only works for anonymous structs, never for named ones, so that <code class="language-plaintext highlighter-rouge">v.push()</code> can’t build a default element.</p>
+<p>This only works for anonymous structs, never for named ones, so that <code class="language-plaintext highlighter-rouge">v.push()</code>
+can’t build a default element.</p>
 
-<p>There’s one catch. Leaving the struct out works for calls, including method calls and calls through <code class="language-plaintext highlighter-rouge">fn</code> pointers, but in the prototype a function used as a value still takes its anonymous struct. Changing <code class="language-plaintext highlighter-rouge">fn f()</code> to <code class="language-plaintext highlighter-rouge">fn f(_ { a: i32 = 0 })</code> keeps every <code class="language-plaintext highlighter-rouge">f()</code> compiling, but breaks <code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code>. Fixing that would mean <code class="language-plaintext highlighter-rouge">f</code> implementing <code class="language-plaintext highlighter-rouge">FnOnce()</code> as well as <code class="language-plaintext highlighter-rouge">FnOnce(_)</code> (<a href="#function-types">Section 6</a>).</p>
+<p>There’s one catch. Leaving the struct out works for calls, including method
+calls and calls through <code class="language-plaintext highlighter-rouge">fn</code> pointers, but in the prototype a function used as
+a value still takes its anonymous struct. Changing <code class="language-plaintext highlighter-rouge">fn f()</code> to
+<code class="language-plaintext highlighter-rouge">fn f(struct { a: i32 = 0 })</code> keeps every <code class="language-plaintext highlighter-rouge">f()</code> compiling, but breaks
+<code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code>. Fixing that would mean <code class="language-plaintext highlighter-rouge">f</code> implementing <code class="language-plaintext highlighter-rouge">FnOnce()</code> as
+well as <code class="language-plaintext highlighter-rouge">FnOnce(_)</code> (<a href="#function-types">Section 6</a>).</p>
 
 <h3 id="signature-syntax-fn-fa-i32-x-i32">Signature syntax: <code class="language-plaintext highlighter-rouge">fn f(a: i32; x: i32)</code></h3>
 
-<p><a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">Julia</a> separates keyword parameters from positional ones with a <code class="language-plaintext highlighter-rouge">;</code>, and the same syntax works here. The call syntax has a mirror in the signature, which is easier to miss. <code class="language-plaintext highlighter-rouge">_ { .. }</code> as the last parameter is noisy, especially in the common case where it holds the function’s options, so a <code class="language-plaintext highlighter-rouge">;</code> in the parameter list can start it instead. Every parameter after the <code class="language-plaintext highlighter-rouge">;</code> is a field of one anonymous struct, which is the last parameter.</p>
+<p>The call syntax has a mirror in the signature too, which is easier to miss. A
+<code class="language-plaintext highlighter-rouge">struct { .. }</code> as the last parameter is noisy, especially in the common case
+where it holds the function’s options. So, like <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">Julia</a>’s keyword
+parameters, a <code class="language-plaintext highlighter-rouge">;</code> in the parameter list can start it instead. Every parameter
+after the <code class="language-plaintext highlighter-rouge">;</code> is a field of one anonymous struct, which is the last parameter:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">crop</span><span class="p">(</span>
@@ -568,7 +782,7 @@ isn’t a field of the trait’s struct.</p>
     <span class="n">x</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">y</span><span class="p">:</span> <span class="nb">u32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Image</span>
-<span class="c1">// = fn crop(img: &amp;Image, _ {</span>
+<span class="c1">// = fn crop(img: &amp;Image, struct {</span>
 <span class="c1">//       width: u32,</span>
 <span class="c1">//       height: Option&lt;u32&gt; = None,</span>
 <span class="c1">//       x: u32 = 0,</span>
@@ -576,20 +790,42 @@ isn’t a field of the trait’s struct.</p>
 <span class="c1">//   }) -&gt; Image</span>
 
 <span class="k">fn</span> <span class="n">copy</span><span class="o">&lt;</span><span class="n">P</span><span class="p">:</span> <span class="nb">AsRef</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Q</span><span class="p">:</span> <span class="nb">AsRef</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;&gt;</span><span class="p">(;</span> <span class="n">from</span><span class="p">:</span> <span class="n">P</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">Q</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nn">io</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">u64</span><span class="o">&gt;</span>
-<span class="c1">// = fn copy&lt;P: AsRef&lt;Path&gt;, Q: AsRef&lt;Path&gt;&gt;(_ { from: P, to: Q }) -&gt; io::Result&lt;u64&gt;</span>
+<span class="c1">// = fn copy&lt;P: AsRef&lt;Path&gt;, Q: AsRef&lt;Path&gt;&gt;(struct { from: P, to: Q }) -&gt; io::Result&lt;u64&gt;</span>
 </code></pre></div>  </div>
 </div>
 
 <ul>
-  <li>The parameters after the <code class="language-plaintext highlighter-rouge">;</code> are fields, exactly as in <code class="language-plaintext highlighter-rouge">_ { .. }</code>, written <code class="language-plaintext highlighter-rouge">name: Type</code>, optionally with <code class="language-plaintext highlighter-rouge">mut name</code> and <code class="language-plaintext highlighter-rouge">= default</code>. They’re names, not patterns, since a field’s name is its API.</li>
-  <li>There’s at most one <code class="language-plaintext highlighter-rouge">;</code>, and it declares the last parameter, which is the one the call sugar fills. So <code class="language-plaintext highlighter-rouge">fn f(a: i32; x: i32)</code> is called <code class="language-plaintext highlighter-rouge">f(1, x: 2)</code>, and the two sides read the same. Anonymous struct parameters anywhere else still use <code class="language-plaintext highlighter-rouge">_ { .. }</code>.</li>
-  <li>It works in traits and impls too, as in <code class="language-plaintext highlighter-rouge">fn write(&amp;mut self; data: &amp;'static str, times: usize = 1);</code>.</li>
-  <li>It’s purely syntax, so switching between <code class="language-plaintext highlighter-rouge">;</code> and <code class="language-plaintext highlighter-rouge">_ { .. }</code> changes nothing for callers.</li>
+  <li>The parameters after the <code class="language-plaintext highlighter-rouge">;</code> are fields, exactly as in a bare <code class="language-plaintext highlighter-rouge">struct { .. }</code>
+parameter. They’re written <code class="language-plaintext highlighter-rouge">name: Type</code> with an optional <code class="language-plaintext highlighter-rouge">= default</code>, and can
+take the same binding modes, <code class="language-plaintext highlighter-rouge">mut</code>, <code class="language-plaintext highlighter-rouge">ref</code>, and <code class="language-plaintext highlighter-rouge">ref mut</code>. They’re names, not
+patterns, since a field’s name is its API.</li>
+  <li>There’s at most one <code class="language-plaintext highlighter-rouge">;</code>, and it declares the last parameter, which is the one
+the call sugar fills. So <code class="language-plaintext highlighter-rouge">fn f(a: i32; x: i32)</code> is called <code class="language-plaintext highlighter-rouge">f(1, x: 2)</code>, and
+the two sides read the same. Anonymous struct parameters anywhere else still
+use <code class="language-plaintext highlighter-rouge">struct { .. }</code>.</li>
+  <li>It works in traits and impls too, as in
+<code class="language-plaintext highlighter-rouge">fn write(&amp;mut self; data: &amp;'static str, times: usize = 1);</code>.</li>
+  <li>It’s purely syntax, so switching between <code class="language-plaintext highlighter-rouge">;</code> and <code class="language-plaintext highlighter-rouge">struct { .. }</code> changes
+nothing for callers.</li>
 </ul>
 
-<p><code class="language-plaintext highlighter-rouge">;</code> already appears inside parameter types, as in <code class="language-plaintext highlighter-rouge">[u8; 4]</code>, but only inside brackets, so a <code class="language-plaintext highlighter-rouge">;</code> at the top level of a parameter list is unambiguous. Python’s bare <code class="language-plaintext highlighter-rouge">*</code> for <a href="https://peps.python.org/pep-3102/">keyword-only parameters</a> (<code class="language-plaintext highlighter-rouge">def f(a, *, b=1)</code>) is similar. Unlike Julia’s and Python’s, the <code class="language-plaintext highlighter-rouge">;</code> doesn’t make a second kind of parameter. It’s just another way to write a struct.</p>
+<p><code class="language-plaintext highlighter-rouge">;</code> already appears inside parameter types, as in <code class="language-plaintext highlighter-rouge">[u8; 4]</code>, but only inside
+brackets, so a <code class="language-plaintext highlighter-rouge">;</code> at the top level of a parameter list is unambiguous.
+Python’s bare <code class="language-plaintext highlighter-rouge">*</code> for <a href="https://peps.python.org/pep-3102/">keyword-only parameters</a>, as in
+<code class="language-plaintext highlighter-rouge">def f(a, *, b=1)</code>, is similar. Unlike Julia’s and Python’s though, the <code class="language-plaintext highlighter-rouge">;</code>
+doesn’t make a second kind of parameter, it’s just another way to write a
+struct.</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">;</code> declares an anonymous struct. When the argument struct should have a name instead, for reuse, forwarding, or traits, declare an ordinary struct and take it with the elided type from <a href="#elided-parameter-types">Section 1</a>:</p>
+<p>Python’s <code class="language-plaintext highlighter-rouge">*</code> does have one real advantage. It’s its own item in the list, so in
+a long signature it’s hard to miss, and adding or removing a parameter on
+either side of it only touches that parameter’s line. The <code class="language-plaintext highlighter-rouge">;</code> takes the place
+of a comma instead, so in a signature that doesn’t fit on one line, like <code class="language-plaintext highlighter-rouge">crop</code>
+above, it ends the last positional parameter’s line. A short one stays on one
+line, <code class="language-plaintext highlighter-rouge">fn f(a: i32; x: i32)</code>.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">;</code> declares an anonymous struct. When the argument struct should have a
+name instead, for reuse, forwarding, or traits, declare an ordinary struct and
+take it with an <a href="#elided-parameter-types">elided parameter type</a>:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">CropArgs</span> <span class="p">{</span>
@@ -602,7 +838,9 @@ isn’t a field of the trait’s struct.</p>
 <span class="k">fn</span> <span class="nf">crop</span><span class="p">(</span>
     <span class="n">img</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">CropArgs</span> <span class="p">{</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">},</span>
-<span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Image</span> <span class="p">{</span> <span class="o">..</span> <span class="p">}</span>
+<span class="p">)</span> <span class="k">-&gt;</span> <span class="n">Image</span> <span class="p">{</span>
+    <span class="nd">unimplemented!</span><span class="p">()</span>
+<span class="p">}</span>
 <span class="c1">// = fn crop(</span>
 <span class="c1">//     img: &amp;Image,</span>
 <span class="c1">//     CropArgs { width, height, x, y }: CropArgs,</span>
@@ -617,9 +855,17 @@ isn’t a field of the trait’s struct.</p>
 </code></pre></div>  </div>
 </div>
 
-<p>This makes the named form as short as the anonymous one, and it’s written the same way, with the struct’s name instead of <code class="language-plaintext highlighter-rouge">_</code>. Callers use <code class="language-plaintext highlighter-rouge">_ { .. }</code> either way, so switching between them doesn’t break anyone, except calls that leave the struct out, like <code class="language-plaintext highlighter-rouge">f()</code>, and, if named structs end up without the implied <code class="language-plaintext highlighter-rouge">..</code>, named arguments that leave out fields.</p>
+<p>This makes the named form about as short as the anonymous one. Callers use
+<code class="language-plaintext highlighter-rouge">_ { .. }</code> either way, so switching between them doesn’t break anyone, except
+calls that leave the struct out, like <code class="language-plaintext highlighter-rouge">f()</code>, and, if named structs end up
+without the implied <code class="language-plaintext highlighter-rouge">..</code>, named arguments that leave out fields.</p>
 
-<p>The elided type is just the pattern’s path, so a generic struct needs its generic arguments written in the pattern. <code class="language-plaintext highlighter-rouge">Wrapper { s, v }</code> would leave <code class="language-plaintext highlighter-rouge">T</code> to be inferred, and function signatures don’t infer types, so you write <code class="language-plaintext highlighter-rouge">fn f&lt;T&gt;(Wrapper::&lt;'_, T&gt; { s, v })</code>, which means <code class="language-plaintext highlighter-rouge">Wrapper::&lt;'_, T&gt; { s, v }: Wrapper&lt;'_, T&gt;</code>. Tuple-struct patterns don’t get this yet (<a href="#prototype-gaps">prototype gaps</a>).</p>
+<p>The elided type is just the pattern’s path, so a generic struct needs its
+generic arguments written in the pattern. <code class="language-plaintext highlighter-rouge">Wrapper { s, v }</code> would leave <code class="language-plaintext highlighter-rouge">T</code> to
+be inferred, and function signatures don’t infer types, so you write
+<code class="language-plaintext highlighter-rouge">fn f&lt;T&gt;(Wrapper::&lt;'_, T&gt; { s, v })</code>, which means
+<code class="language-plaintext highlighter-rouge">Wrapper::&lt;'_, T&gt; { s, v }: Wrapper&lt;'_, T&gt;</code>. Leaving them out is an error that
+suggests exactly that.</p>
 
 <h2 id="4-relating-to-recent-posts">4. Relating to Recent Posts</h2>
 
@@ -640,7 +886,7 @@ details on each below.
 
 |  | This design | Structs today ([Endler][endler]) | `pub` parameters ([Botahamec][botahamec]) | Names only ([Klabnik][klabnik]) |
 | --- | --- | --- | --- | --- |
-| Named parameters | Fields of a `_ { .. }` parameter, or parameters after `;` with [possible sugar](#signature-syntax-fn-fa-i32-x-i32) | Fields of a named struct | Parameters marked `pub` | Every parameter, with no marker |
+| Named parameters | Fields of a `struct { .. }` parameter, or parameters after `;` with [possible sugar](#signature-syntax-fn-fa-i32-x-i32) | Fields of a named struct | Parameters marked `pub` | Every parameter, with no marker |
 | Reordering | Yes | Yes | Yes | Not settled |
 | Defaults | `..` with RFC 3681 field defaults, and `..Default::default()` for named structs, with [possible optional fields](#optional-fields) as a follow-up I'm skeptical of | `..` with RFC 3681 field defaults, and `..Default::default()` | May be non-const, omission implicit | No |
 | Evaluation order | As written | As written | Not addressed | Raised as a problem |
@@ -648,7 +894,7 @@ details on each below.
 | `fn` pointers | Distinct per function (sharing when the fields match is an open question) | Rejected unless the struct is shared | Names erased | Raised as a problem |
 | Adding a parameter | Non-breaking if defaulted, for callers that wrote `..` | Non-breaking if defaulted, for callers that wrote `..` or `..Default::default()` | Non-breaking if defaulted | Breaking |
 | Per-function boilerplate | None | One struct per function | None | None |
-| New syntax | `_ { .. }` as a parameter and as an expression, struct patterns without their type, and [possible sugar](#3-named-argument-sugar) for `name: value` arguments and `;` parameters | None | `pub` parameters, `name: value` arguments, defaults | `name: value` arguments |
+| New syntax | `struct { .. }` as a parameter type, `_ { .. }` as an expression and a pattern, parameter types elided by their pattern, and [possible sugar](#3-named-argument-sugar) for `name: value` arguments and `;` parameters | None | `pub` parameters, `name: value` arguments, defaults | `name: value` arguments |
 
 Klabnik's post is a position rather than a proposal, so its column records the problems it raises rather than answers. Macro crates like [bon] and [structx] fill the same gap today, with a builder or a macro at each call.
 
@@ -676,7 +922,7 @@ With an anonymous struct, the same function's named parameters become fields, wh
 <div class="highlight-block" markdown="1">
 ```rust
 // anonymous struct
-fn print_labeled_measurement(_ { value: i32, unit_label: char = 'm' }) { .. }
+fn print_labeled_measurement(struct { value: i32, unit_label: char = 'm' }) { .. }
 
 print_labeled_measurement(_ { value: 5, .. });
 print_labeled_measurement(_ { value: 5, unit_label: 'h' });
@@ -704,7 +950,7 @@ An anonymous struct has to face that problem now. It folds the constructors too,
 <div class="highlight-block" markdown="1">
 ```rust
 // anonymous struct
-fn new_map<K, V, S: BuildHasher + Default, A: Allocator + Default>(_ {
+fn new_map<K, V, S: BuildHasher + Default, A: Allocator + Default>(struct {
     capacity: usize = 0,
     hasher: Option<S> = None,
     alloc: Option<A> = None,
@@ -744,7 +990,7 @@ Fields are evaluated in the order written at the call site, as in any struct lit
 
 <div class="highlight-block" markdown="1">
 ```rust
-fn consume(_ { data: Vec<u8>, length: usize }) { .. }
+fn consume(struct { data: Vec<u8>, length: usize }) { .. }
 
 consume(_ { length: data.len(), data: data });
 ```
@@ -767,7 +1013,7 @@ Anonymous structs don't need either. Only fields are passed by name, and a field
 
 <div class="highlight-block" markdown="1">
 ```rust
-fn foo((x, y): (i32, i32), _ { scale: i32 = 1 }) -> i32 { .. }
+fn foo((x, y): (i32, i32), struct { scale: i32 = 1 }) -> i32 { .. }
 
 foo((1, 2), _ { scale: 2 });
 foo((1, 2), _ { .. });
@@ -776,7 +1022,7 @@ foo((1, 2), _ { .. });
 
 #### Defaults
 
-Defaults are RFC 3681 defaults. They're const, declared on the field, and used when the caller writes `..`. They can use the function's type and const parameters (`fn foo<const A: usize>(_ { bar: usize = A })`), and associated consts through their bounds (`fn foo<T: HasN>(_ { n: usize = T::N })`). Const-only is a real limit, and [Section 6](#6-limitations-and-open-questions) covers it.
+Defaults are RFC 3681 defaults. They're const, declared on the field, and used when the caller writes `..`. They can use the function's type and const parameters (`fn foo<const A: usize>(struct { bar: usize = A })`), and associated consts through their bounds (`fn foo<T: HasN>(struct { n: usize = T::N })`). Const-only is a real limit, and [Section 6](#6-limitations-and-open-questions) covers it.
 
 #### Renaming hazards
 
@@ -792,7 +1038,7 @@ A function used as a value keeps its anonymous structs as parameter types, so na
 
 <div class="highlight-block" markdown="1">
 ```rust
-fn foo(_ { a: i32, b: i32 = 10 }) -> i32 { .. }
+fn foo(struct { a: i32, b: i32 = 10 }) -> i32 { .. }
 
 let g: fn(_) -> i32 = foo;
 g(_ { b: 2, a: 4 });
@@ -838,7 +1084,7 @@ That's the case anonymous structs were made for:
 <div class="highlight-block" markdown="1">
 ```rust
 // anonymous struct
-fn crop_imm<I: GenericImageView>(image: &I, _ {
+fn crop_imm<I: GenericImageView>(image: &I, struct {
     x: u32,
     y: u32,
     width: u32,
@@ -859,7 +1105,7 @@ around the options and real syntax for the duration and headers:
 
 <div class="highlight-block" markdown="1">
 ```rust
-fn request(url: impl Into<Url>, _ {
+fn request(url: impl Into<Url>, struct {
     timeout: Option<Duration> = None,
     redirects: bool = true,
     headers: Vec<Header> = Vec::new(),
@@ -895,13 +1141,15 @@ That's why I think structs are the right direction, rather than a separate named
 
 <h2 id="5-the-prototype">5. The Prototype</h2>
 
-<p>Everything in Sections 1 to 3 is implemented in a <a href="https://github.com/nixpulvis/rust/tree/struct-args">rustc
-prototype</a> as two incomplete features. Defaults and <code class="language-plaintext highlighter-rouge">..</code>
+<p>Everything in Sections 1 to 3 is implemented in a <a href="https://github.com/nixpulvis/rust/tree/struct-args+type-elision">rustc
+prototype</a> as four incomplete features, <code class="language-plaintext highlighter-rouge">struct_args</code>,
+<code class="language-plaintext highlighter-rouge">struct_args_pattern_elision</code>, <code class="language-plaintext highlighter-rouge">parameter_type_elision</code>, and <code class="language-plaintext highlighter-rouge">named_arguments</code>,
+each gated separately so they can be judged separately. Defaults and <code class="language-plaintext highlighter-rouge">..</code>
 also need <code class="language-plaintext highlighter-rouge">#![feature(default_field_values)]</code>, which landed in
 <a href="https://github.com/rust-lang/rust/pull/129514">rust-lang/rust#129514</a>. The examples in this post that compile
 come from it, and <a href="#prototype-gaps">Prototype gaps</a> lists where it falls short.</p>
 
-<p>It’s about 1,300 lines of changes to the compiler. The idea is to turn the new
+<p>It’s about 2,000 lines of changes to the compiler and tools. The idea is to turn the new
 syntax into an ordinary struct, struct pattern, or struct literal as early as
 possible, so most of the compiler, like privacy, borrow checking, and MIR
 building, doesn’t see anything new. Internally an anonymous struct is called a
@@ -912,39 +1160,41 @@ from. The name also leaves the door open for extending them later, toward the
 <h3 id="the-core-feature">The core feature</h3>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![feature(struct_args,</span> <span class="nd">default_field_values)]</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![feature(struct_args,</span> <span class="nd">struct_args_pattern_elision,</span> <span class="nd">default_field_values)]</span>
 
-<span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">})</span> <span class="p">{}</span>
+<span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">})</span> <span class="p">{}</span>
 <span class="nf">f</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
 </code></pre></div>  </div>
 </div>
 
 <ul>
-  <li><strong>Parsing.</strong> An anonymous struct parameter becomes a parameter with a new AST
-type, <code class="language-plaintext highlighter-rouge">TyKind::Record</code>, which holds the fields, and the pattern
-<code class="language-plaintext highlighter-rouge">&lt;_&gt;::_ { x, y }</code>, or <code class="language-plaintext highlighter-rouge">p @ &lt;_&gt;::_ { x, y }</code> when it’s bound. An elided
-parameter type is just the pattern’s path copied over, so <code class="language-plaintext highlighter-rouge">Point { x, y }</code>
-becomes <code class="language-plaintext highlighter-rouge">Point { x, y }: Point</code>. And <code class="language-plaintext highlighter-rouge">_ { .. }</code> in an expression is a struct
-literal whose path gets filled in later by type checking.</li>
+  <li><strong>Parsing.</strong> <code class="language-plaintext highlighter-rouge">struct { .. }</code> is a new AST type, <code class="language-plaintext highlighter-rouge">TyKind::Record</code>, which holds
+the fields. It’s only parsed as a parameter’s type or a field’s type inside
+another one, and anywhere else it’s an error. A parameter that’s just the type
+gets the pattern <code class="language-plaintext highlighter-rouge">&lt;_&gt;::_ { x, y }</code>, which <code class="language-plaintext highlighter-rouge">_ { x, y }</code> also parses to. An
+elided parameter type is the type its pattern spells out, so <code class="language-plaintext highlighter-rouge">Point { x, y }</code>
+becomes <code class="language-plaintext highlighter-rouge">Point { x, y }: Point</code>, and <code class="language-plaintext highlighter-rouge">&amp;T(x)</code> becomes <code class="language-plaintext highlighter-rouge">&amp;T(x): &amp;T</code>. And <code class="language-plaintext highlighter-rouge">_ { .. }</code>
+in an expression is a struct literal whose path gets filled in later by type
+checking.</li>
   <li><strong>Lowering.</strong> Name resolution gives each anonymous struct its own <code class="language-plaintext highlighter-rouge">DefId</code>, and
-AST lowering turns it into a real struct item. The struct is a child of its
-function and shares the function’s generics, which is how its fields can use
-the function’s generic parameters, <code class="language-plaintext highlighter-rouge">impl Trait</code>, <code class="language-plaintext highlighter-rouge">Self</code>, and lifetimes without
-declaring any of them. Lifetimes elided in fields become early-bound
-parameters of the function, so the struct can use them too.</li>
+AST lowering turns it into a real struct item. The struct shares its
+function’s generics, also when it’s nested in another one’s field, which is
+how its fields can use the function’s generic parameters, <code class="language-plaintext highlighter-rouge">impl Trait</code>,
+<code class="language-plaintext highlighter-rouge">Self</code>, and lifetimes without declaring any of them. Lifetimes elided in fields
+become early-bound parameters of the function, so the struct can use them too.</li>
   <li><strong>Types.</strong> After that a record is an ordinary ADT, its struct applied to the
 function’s own generic arguments. <code class="language-plaintext highlighter-rouge">tcx.is_record</code> tells it apart in the few
 places that care, like printing it the way closures are printed,
-<code class="language-plaintext highlighter-rouge">{record@src/main.rs:6:9: 6:10}</code>, and skipping it in item lints and dead code
+<code class="language-plaintext highlighter-rouge">{record@src/main.rs:6:9: 6:15}</code>, and skipping it in item lints and dead code
 checks, since it’s documented and used through its function.</li>
-  <li><strong>Type checking.</strong> The <code class="language-plaintext highlighter-rouge">&lt;_&gt;::_</code> pattern takes its struct from the parameter’s
-type, and an inferred literal takes its struct from the expected type, which
-is also how <code class="language-plaintext highlighter-rouge">_ { .. }</code> builds named structs.</li>
-  <li><strong>Traits.</strong> In a trait impl, an anonymous struct isn’t a new struct. Its type
-is the trait method’s struct, with the impl’s generic arguments filled in, and
-the fields the impl writes out are just checked against the trait’s by name
-and type. A method stays dyn compatible unless one of its fields mentions
-<code class="language-plaintext highlighter-rouge">Self</code>.</li>
+  <li><strong>Type checking.</strong> The <code class="language-plaintext highlighter-rouge">&lt;_&gt;::_</code> pattern takes its struct from the type it
+matches, and an inferred literal takes its struct from the expected type, which
+is also how <code class="language-plaintext highlighter-rouge">_ { .. }</code> builds and matches named structs.</li>
+  <li><strong>Traits.</strong> In a trait impl, the parameter’s type isn’t the impl’s own
+anonymous struct. It’s the trait method’s struct, with the impl’s generic
+arguments filled in, and the fields the impl writes out are just checked
+against the trait’s by name and type, nested ones included. A method stays dyn
+compatible unless one of its fields mentions <code class="language-plaintext highlighter-rouge">Self</code>.</li>
 </ul>
 
 <p>Rustdoc, Clippy, and rustfmt only needed small changes to match
@@ -953,7 +1203,7 @@ and type. A method stays dyn compatible unless one of its fields mentions
 <h3 id="the-sugar">The sugar</h3>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![feature(struct_args,</span> <span class="nd">struct_args_sugar,</span> <span class="nd">default_field_values)]</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![feature(struct_args,</span> <span class="nd">named_arguments,</span> <span class="nd">default_field_values)]</span>
 
 <span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">;</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{}</span>
 <span class="nf">f</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">);</span>
@@ -968,12 +1218,13 @@ inferred struct literal, flagged so the pretty printer and rustfmt can print
 them back the way they were written. AST lowering adds the implied <code class="language-plaintext highlighter-rouge">..</code> and
 tags the literal’s span (its location in the source) as coming from the named
 argument desugaring, the same way the code for <code class="language-plaintext highlighter-rouge">for</code> loops, <code class="language-plaintext highlighter-rouge">?</code>, and <code class="language-plaintext highlighter-rouge">a..b</code>
-gets tagged. Type checking ignores the tag. Only error messages use it, so a
-missing field is reported as “missing named argument <code class="language-plaintext highlighter-rouge">width</code>” instead of
-pointing at a <code class="language-plaintext highlighter-rouge">..</code> nobody wrote.</li>
+gets tagged. Type checking uses the tag to skip the <code class="language-plaintext highlighter-rouge">default_field_values</code>
+feature gate for the implied <code class="language-plaintext highlighter-rouge">..</code>, and error messages use it so a missing
+field is reported as “missing named argument <code class="language-plaintext highlighter-rouge">width</code>” instead of pointing at a
+<code class="language-plaintext highlighter-rouge">..</code> nobody wrote.</li>
   <li><strong><code class="language-plaintext highlighter-rouge">;</code> parameters.</strong> These are handled entirely by the parser, which turns
 everything after the <code class="language-plaintext highlighter-rouge">;</code> into the fields of a last <code class="language-plaintext highlighter-rouge">TyKind::Record</code> parameter,
-the same as writing <code class="language-plaintext highlighter-rouge">_ { .. }</code>.</li>
+the same as writing <code class="language-plaintext highlighter-rouge">struct { .. }</code>.</li>
   <li><strong>Left-out structs.</strong> This is the only part that reaches type checking. When a
 call has one argument fewer than the function takes, and the last parameter is
 an anonymous struct whose fields all have defaults, the argument check skips
@@ -998,11 +1249,11 @@ That question is where the discussion is. [cart argued][cart-2026], from Bevy, t
 
 <p>TODO</p>
 
-<!--It would be nice if two functions whose anonymous structs have the same fields, with the same names and types, could unify as values, so that `if c { resize } else { grow }` compiles, and `type Callback = fn(_ { width: u32, height: u32 })` accepts both. The prototype doesn't do this. The generated structs are distinct types whose layouts aren't guaranteed to match, so one possible approach is a conversion shim, like the existing reify shims, that moves the fields from one struct into the other. Limiting it to the same fields would keep `if`/`else` symmetric, never drop a field behind the caller's back, and leave room for structural records to replace the shim later.
+<!--It would be nice if two functions whose anonymous structs have the same fields, with the same names and types, could unify as values, so that `if c { resize } else { grow }` compiles, and `type Callback = fn(struct { width: u32, height: u32 })` accepts both. The prototype doesn't do this. The generated structs are distinct types whose layouts aren't guaranteed to match, so one possible approach is a conversion shim, like the existing reify shims, that moves the fields from one struct into the other. Limiting it to the same fields would keep `if`/`else` symmetric, never drop a field behind the caller's back, and leave room for structural records to replace the shim later.
 
-The subset and superset conversions of [record types](#record-types) would stretch this further. A function taking `_ { width: u32, height: u32, x: u32 = 0 }` could stand in for a `Callback`, with the shim filling in `x` from its default, and a shim going the other way would drop `x`, which is the silent loss the same-fields limit avoids. Which functions unify would then depend on which conversions apply in which direction, not just on their fields, so the same-fields rule is the conservative place to start. None of this is designed in detail yet.
+The subset and superset conversions of [record types](#record-types) would stretch this further. A function taking `struct { width: u32, height: u32, x: u32 = 0 }` could stand in for a `Callback`, with the shim filling in `x` from its default, and a shim going the other way would drop `x`, which is the silent loss the same-fields limit avoids. Which functions unify would then depend on which conversions apply in which direction, not just on their fields, so the same-fields rule is the conservative place to start. None of this is designed in detail yet.
 
-Leaving out a struct raises a similar question for a single function. `fn f(_ { a: i32 = 0 })` can be called as `f()`, but as a value it still takes one argument, so `opt.unwrap_or_else(f)` doesn't compile. One option is for `f` to implement `FnOnce()` as well as `FnOnce(_)`, filling in `_ { .. }` when it's called without the struct. That's pretty close to overloading by arity, which Rust has avoided so far, and it would make inference ambiguous anywhere the argument types aren't known yet. It should probably be worked out together with the other `Fn` trait questions records raise, like the generic case below.
+Leaving out a struct raises a similar question for a single function. `fn f(struct { a: i32 = 0 })` can be called as `f()`, but as a value it still takes one argument, so `opt.unwrap_or_else(f)` doesn't compile. One option is for `f` to implement `FnOnce()` as well as `FnOnce(_)`, filling in `_ { .. }` when it's called without the struct. That's pretty close to overloading by arity, which Rust has avoided so far, and it would make inference ambiguous anywhere the argument types aren't known yet. It should probably be worked out together with the other `Fn` trait questions records raise, like the generic case below.
 
 Generic records are harder. In `fn higher_order<A>(f: impl Fn(A)) { f(a: 4, b: 2) }`, the body can't build an `A`, since the caller picks it. Today that needs a named struct (`impl Fn(FooArgs)`).-->
 
@@ -1019,18 +1270,15 @@ RFC 3681’s <code class="language-plaintext highlighter-rouge">= default</code>
 structs that use them. New syntax tends to show up in <code class="language-plaintext highlighter-rouge">syn</code> once it’s close to
 stable.</p>
 
-<p>Most of the new forms fit into what <code class="language-plaintext highlighter-rouge">syn</code> already has. <code class="language-plaintext highlighter-rouge">p: _ { x: i32 }</code> is
-already <code class="language-plaintext highlighter-rouge">pat: ty</code>, with <code class="language-plaintext highlighter-rouge">_ { .. }</code> as an opaque type. An elided parameter type
-can be read as what it stands for, <code class="language-plaintext highlighter-rouge">Point { x, y }: Point</code>, and a <code class="language-plaintext highlighter-rouge">;</code> parameter
-list as a last <code class="language-plaintext highlighter-rouge">_ { .. }</code> parameter. Both are just sugar, so a macro that prints
-the expanded form back out doesn’t change what the function means.</p>
-
-<p>The bare <code class="language-plaintext highlighter-rouge">_ { x: i32 }</code> is harder. It has no <code class="language-plaintext highlighter-rouge">pat: ty</code> form, since <code class="language-plaintext highlighter-rouge">_: _ { x:
-i32 }</code> wouldn’t bind <code class="language-plaintext highlighter-rouge">x</code>, and adding a new kind of parameter to <code class="language-plaintext highlighter-rouge">syn</code> would be a
-breaking change for it. So either it waits for the next major version of <code class="language-plaintext highlighter-rouge">syn</code>,
-or the language gives it a form that fits, like <code class="language-plaintext highlighter-rouge">_ { x }: _ { x: i32 }</code>, using a
-struct pattern with an inferred path. In general, it seems like every new
-parameter form should have a <code class="language-plaintext highlighter-rouge">pat: ty</code> version someone could write by hand.</p>
+<p>Every new form has a <code class="language-plaintext highlighter-rouge">pat: ty</code> spelling that fits what <code class="language-plaintext highlighter-rouge">syn</code> already has.
+<code class="language-plaintext highlighter-rouge">p: struct { x: i32 }</code> is already <code class="language-plaintext highlighter-rouge">pat: ty</code>, with <code class="language-plaintext highlighter-rouge">struct { .. }</code> as an opaque
+type. A bare <code class="language-plaintext highlighter-rouge">struct { x: i32 }</code> is <code class="language-plaintext highlighter-rouge">_ { x }: struct { x: i32 }</code>, using the
+inferred struct pattern. An elided parameter type can be read as what it stands
+for, <code class="language-plaintext highlighter-rouge">Point { x, y }: Point</code>, and a <code class="language-plaintext highlighter-rouge">;</code> parameter list as a last
+<code class="language-plaintext highlighter-rouge">struct { .. }</code> parameter. They’re all just sugar, so a macro that prints the
+expanded form back out doesn’t change what the function means. That was a goal
+of the design, every parameter form should have a <code class="language-plaintext highlighter-rouge">pat: ty</code> version someone
+could write by hand.</p>
 
 <p>Even once <code class="language-plaintext highlighter-rouge">syn</code> can parse these, some macros will need updating. A macro that
 just passes the signature through, as <code class="language-plaintext highlighter-rouge">#[tokio::main]</code> mostly does, would work
@@ -1038,11 +1286,23 @@ right away. But <code class="language-plaintext highlighter-rouge">#[tracing::in
 name, so it would need to know that an anonymous struct’s fields are its
 bindings.</p>
 
+<p><code class="language-plaintext highlighter-rouge">macro_rules!</code> has a subtler problem. Today a <code class="language-plaintext highlighter-rouge">$p:pat</code>, <code class="language-plaintext highlighter-rouge">$e:expr</code> (2024) or
+<code class="language-plaintext highlighter-rouge">$s:stmt</code> fragment at the end of a macro arm, given <code class="language-plaintext highlighter-rouge">_ { x }</code>, parses just the
+<code class="language-plaintext highlighter-rouge">_</code> and leaves <code class="language-plaintext highlighter-rouge">{ x }</code> behind, so the arm fails and a later arm, like
+<code class="language-plaintext highlighter-rouge">(_ { $($t:tt)* })</code>, can match. With <code class="language-plaintext highlighter-rouge">_ { .. }</code> patterns and literals the
+fragment takes the whole thing, so the earlier arm matches instead, which breaks
+existing macros even in crates that don’t use the feature. The fix is to keep
+the old behavior in those fragments: <code class="language-plaintext highlighter-rouge">_</code> followed by <code class="language-plaintext highlighter-rouge">{</code> at the fragment’s
+outer level stays a lone <code class="language-plaintext highlighter-rouge">_</code>, which matches exactly what they did before.
+Nested inside brackets it was always an error, so it’s fine to allow there.
+Rust has changed what a fragment matches before, with <code class="language-plaintext highlighter-rouge">pat_param</code> in 2021 and
+<code class="language-plaintext highlighter-rouge">expr_2021</code> in 2024, so a later edition could let them match <code class="language-plaintext highlighter-rouge">_ { .. }</code> too.</p>
+
 <h3 id="tooling">Tooling</h3>
 
 <p>TODO</p>
 
-<!--Tools that parse Rust themselves don't get any of the compiler's changes. rust-analyzer's parser treats `_ {` as an error and loses highlighting for the rest of the signature, and semantic support needs about as much work as the prototype did. tree-sitter-rust, which Neovim, Helix, Zed, and GitHub use, needs about ten lines of grammar, and currently lacks RFC 3681's default field values too. rustfmt uses rustc's parser, so it formats `_ { .. }` literals and the code around them, but keeps anonymous struct parameters, `;` parameter lists, and named arguments as written.-->
+<!--Tools that parse Rust themselves don't get any of the compiler's changes. rust-analyzer's parser treats `struct {` in a parameter list as an error and loses highlighting for the rest of the signature, and semantic support needs about as much work as the prototype did. tree-sitter-rust, which Neovim, Helix, Zed, and GitHub use, needs about ten lines of grammar, and currently lacks RFC 3681's default field values too. rustfmt uses rustc's parser, so it formats `_ { .. }` literals and patterns, elided parameter types, and `;` parameter lists, putting the `;` on its own line when the signature doesn't fit on one, but keeps anonymous struct parameters and named arguments as written.-->
 
 <h3 id="prototype-gaps">Prototype gaps</h3>
 
@@ -1058,12 +1318,15 @@ compile, so it depends on how <code class="language-plaintext highlighter-rouge"
 3681 defaults and with anonymous structs (<a href="#api-evolution-and-semver">Section
 1</a>).</li>
   <li>A function whose last anonymous struct can be left out still can’t be used as
-a value without it. For <code class="language-plaintext highlighter-rouge">fn f(_ { a: i32 = 0 })</code>, <code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code> is
+a value without it. For <code class="language-plaintext highlighter-rouge">fn f(struct { a: i32 = 0 })</code>, <code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code> is
 an error. Making it work would mean <code class="language-plaintext highlighter-rouge">f</code> implementing <code class="language-plaintext highlighter-rouge">FnOnce()</code> as well as
 <code class="language-plaintext highlighter-rouge">FnOnce(_)</code> (<a href="#function-types">Function types</a>).</li>
-  <li>Only struct patterns like <code class="language-plaintext highlighter-rouge">Point { x, y }</code> get an <a href="#elided-parameter-types">elided parameter
-type</a>. Tuple-struct patterns like <code class="language-plaintext highlighter-rouge">Point(x, y)</code>
-still need <code class="language-plaintext highlighter-rouge">: Point</code>, though the same rule could likely cover them.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">macro_rules!</code> fragments above still take <code class="language-plaintext highlighter-rouge">_ { .. }</code>, which needs the
+fix described in <a href="#macros">Macros</a> before the prototype is compatible.</li>
+  <li>An elided parameter type is purely syntactic. A variant pattern like <code class="language-plaintext highlighter-rouge">E::V(x)</code>
+can’t elide its type even when <code class="language-plaintext highlighter-rouge">E</code> has a single variant and the pattern is
+irrefutable.</li>
+  <li>Rustdoc shows an anonymous struct parameter as <code class="language-plaintext highlighter-rouge">_</code>, without its fields.</li>
   <li>Some error messages could be better, especially for mistakes in named
 arguments.</li>
 </ul>
@@ -1094,7 +1357,7 @@ plain `T` instead of wrapping it. That takes two rules, which come as a pair.
 <div class="highlight-block" markdown="1">
 ```rust
 fn crop(img: &Image; width: u32, height: Option<u32>) -> Image
-// = fn crop(img: &Image, _ { width: u32, height: Option<u32> = None }) -> Image
+// = fn crop(img: &Image, struct { width: u32, height: Option<u32> = None }) -> Image
 
 crop(&img, width: 200);
 // = crop(&img, _ { width: 200, height: None })
@@ -1163,14 +1426,14 @@ Most real uses need both at once:
 
 <div class="highlight-block" markdown="1">
 ```rust
-fn crop(img: &Image, _ {
+fn crop(img: &Image, struct {
     width: u32,
     height: Option<u32> = None,
     x: u32 = 0,
     y: u32 = 0,
 }) -> Image { .. }
 
-fn encode(img: &Image, _ {
+fn encode(img: &Image, struct {
     quality: u8 = 80,
     progressive: bool = false,
 }) -> Vec<u8> { .. }
@@ -1189,8 +1452,8 @@ A record bound by `let`, without a type annotation or `..`, gets a struct of its
 
 <div class="highlight-block" markdown="1">
 ```rust
-fn greet(_ { name: &'static str, times: usize = 1 }) { .. }
-fn greet_prefix(_ {
+fn greet(struct { name: &'static str, times: usize = 1 }) { .. }
+fn greet_prefix(struct {
     name: &'static str,
     times: usize = 1,
     prefix: &'static str,
@@ -1237,7 +1500,7 @@ Anonymous structs and records follow these two pieces of advice. `_ { .. }` is a
 Records, and their conversions, cover a good part of what RFC 2584 wanted structural records for. They still aren't structural records. Each record is its own unnameable struct, and it only meets another struct through a conversion, which happens where the target type is known and moves the fields into a new value. That leaves gaps:
 
 - **No type identity.** Two `let` records with the same fields are different types. `if c { r1 } else { r2 }` and `[r1, r2]` have no single type to convert into, and `r1 == r2` has no impl between them.
-- **No way to refer to a record type.** `_ { .. }` in a parameter list declares a new anonymous struct every time it's written, and never names an existing one. So one function's anonymous struct can't be used as a struct field, a return type, or another function's parameter, and a library can only hand one out by converting it into a named struct.
+- **No way to refer to a record type.** `struct { .. }` in a parameter list declares a new anonymous struct every time it's written, and never names an existing one. So one function's anonymous struct can't be used as a struct field, a return type, or another function's parameter, and a library can only hand one out by converting it into a named struct.
 - **Conversion moves, it doesn't borrow.** `&args` can't be passed as `&Rgb`, since the two structs' layouts aren't guaranteed to match, and a `Vec` of one record doesn't convert into a `Vec` of another. Generic code never reaches a conversion at all.
 - **Few traits.** A `let` record derives only `Clone` and `Copy`. It has no `Debug`, `PartialEq`, `Hash`, or `Default`, and no user `impl`s, since there's no type to name.
 
@@ -1264,7 +1527,7 @@ Every record so far is unnameable, which is what leaves the second gap above. A 
 <div class="highlight-block" markdown="1">
 ```rust
 // possible spellings
-type CropArgs = _ { width: u32, height: Option<u32> = None };
+type CropArgs = struct { width: u32, height: Option<u32> = None };
 #[record] struct CropArgs { width: u32, height: Option<u32> = None }
 ```
 </div>
@@ -1294,7 +1557,7 @@ A named record gives up what a named struct's name protects, so it has to be the
 </ul>
 
 <div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">send_feedback</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span>
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">send_feedback</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span>
     <span class="n">from</span><span class="p">:</span> <span class="k">impl</span> <span class="nb">TryInto</span><span class="o">&lt;</span><span class="n">User</span><span class="p">,</span> <span class="n">Error</span> <span class="o">=</span> <span class="n">InvalidEmail</span><span class="o">&gt;</span><span class="p">,</span>
     <span class="n">to</span><span class="p">:</span> <span class="k">impl</span> <span class="nb">TryInto</span><span class="o">&lt;</span><span class="n">User</span><span class="p">,</span> <span class="n">Error</span> <span class="o">=</span> <span class="n">InvalidEmail</span><span class="o">&gt;</span><span class="p">,</span>
     <span class="n">message</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span>
