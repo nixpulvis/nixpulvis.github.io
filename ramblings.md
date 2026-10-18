@@ -26,7 +26,7 @@ assign ramblings = site.ramblings
         <li class="draft">
             <a href="{{ rambling.url | relative_url }}">{{ rambling.title }}</a>
             <small>
-                {{ rambling.content | number_of_words }} words
+                {{ rambling.content | strip_html | number_of_words }} words
                 drafted on {{ rambling.date | date: "%B %d, %Y" }}.
             </small>
         </li>
@@ -34,7 +34,7 @@ assign ramblings = site.ramblings
         <li>
             <a href="{{ rambling.url | relative_url }}">{{ rambling.title }}</a>
             <small>
-                {{ rambling.content | number_of_words }} words
+                {{ rambling.content | strip_html | number_of_words }} words
                 published on {{ rambling.date | date: "%B %d, %Y" }}.
             </small>
         </li>

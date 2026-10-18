@@ -19,6 +19,13 @@ bundle install
 jekyll serve
 ```
 
+TikZ figures (`_plugins/tikz.rb`) also need `latex` and `dvisvgm` from TeX Live:
+
+```sh
+.github/scripts/setup.sh      # Debian/Ubuntu
+brew install texlive dvisvgm  # macOS
+```
+
 ## Usage
 
 The main additions to this site are projects, and ramblings. Creating and
@@ -59,8 +66,12 @@ A bare `/img/photo.jpg` still works on nixpulvis.com but breaks in previews.
 ## Publishing
 
 GitHub Pages serves the `gh-pages` branch. Pushing to `master` runs
-`.github/workflows/deploy.yml`, which builds the site and commits it to the
+`.github/workflows/deploy.yml`, which builds the site (with our own plugins and
+TeX Live, which GitHub's built-in Jekyll wouldn't allow) and commits it to the
 root of `gh-pages`.
+
+Both workflows run `.github/scripts/setup.sh` to install system packages and
+`.github/scripts/build.sh` to build, which takes extra `jekyll build` arguments.
 
 Every pull request is built by `.github/workflows/preview.yml` and published to
 `https://nixpulvis.com/pr-preview/pr-<number>/`; a comment on the PR links to

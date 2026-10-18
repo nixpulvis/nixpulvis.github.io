@@ -17,3 +17,8 @@ collections:
         permalink: /:collection/:name
     references:
         output: true
+
+tikz:
+  preamble: |
+    \usepackage{tikz-cd}
+    \usetikzlibrary{arrows.meta,graphs,positioning,automata}
