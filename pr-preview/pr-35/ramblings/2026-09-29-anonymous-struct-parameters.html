@@ -34,7 +34,7 @@
     <div class="content"><h2 class="title">
     Anonymous Struct Parameters
     <small>
-        15232 words
+        9910 words
         
             drafted
         
@@ -66,37 +66,42 @@ structs in function signatures.</p>
 <p>First we’ll show <a href="#1-struct-args"><code class="language-plaintext highlighter-rouge">#[feature(struct_args)]</code></a>:</p>
 
 <ul>
-  <li><code class="language-plaintext new-syntax highlighter-rouge">struct { x: i32, y: i32 = 0 }</code>: the type of an anonymous struct. Usable in a
-parameter’s type position</li>
-  <li><code class="language-plaintext new-syntax highlighter-rouge">_ { x: 1, .. }</code>: a struct literal or pattern whose type is inferred. Used
-anywhere a literal or pattern goes, for any struct</li>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">fn foo(a: struct { x: i32, y: i32 = 0 })</code>: the type of an
+anonymous struct, usable in a parameter’s type position</li>
 </ul>
 
-<p>And <a href="#elided-struct-patterns"><code class="language-plaintext highlighter-rouge">#[feature(struct_args_pattern_elision)]</code></a> which gives:</p>
+<p>Which requires <a href="#struct-inference"><code class="language-plaintext highlighter-rouge">#[feature(struct_inference)]</code></a> to then call:</p>
 <ul>
-  <li><code class="language-plaintext new-syntax highlighter-rouge">fn foo(struct { x: i32, y: i32 = 0 })</code>: where the anonymous struct both
-defines the type and the pattern</li>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">_ { x: 1, .. }</code>: a struct literal or pattern whose type is inferred</li>
 </ul>
 
-<p>Then we’ll add <a href="#elided-parameter-types"><code class="language-plaintext highlighter-rouge">#[feature(parameter_type_elision)]</code></a>
-for a corresponding elision of types who are described by thier pattern:</p>
+<p>These two features form the core of the struct argument proposal.</p>
+
+<p>Then <a href="#elided-struct-patterns"><code class="language-plaintext highlighter-rouge">#[feature(struct_args_pattern_elision)]</code></a> gives:</p>
 <ul>
-  <li><code class="language-plaintext new-syntax highlighter-rouge">fn foo(Point { x, y })</code>: binds <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> without writing <code class="language-plaintext highlighter-rouge">: Point</code></li>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">fn foo(struct { ref x: i32, y: i32 = 0 })</code>: where the anonymous
+struct both defines the type and the pattern</li>
+</ul>
+
+<p>And optionally, <a href="#elided-parameter-types"><code class="language-plaintext highlighter-rouge">#[feature(parameter_type_elision)]</code></a>
+adds corresponding elision of types who are described by thier pattern:</p>
+<ul>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">fn bar(Point { x, y })</code>: binds <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> without writing <code class="language-plaintext highlighter-rouge">: Point</code></li>
 </ul>
 
 <p>Later we’ll show <a href="#3-named-argument-sugar"><code class="language-plaintext highlighter-rouge">#[feature(named_arguments)]</code></a> for a
 proposed syntax of what a full named argument sugar might look like:</p>
 <ul>
-  <li><code class="language-plaintext new-syntax highlighter-rouge">fn foo(x: i32; named: &amp;str)</code></li>
-  <li><code class="language-plaintext new-syntax highlighter-rouge">foo(1, named: "hi");</code></li>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">fn baz(x: i32; named: &amp;str)</code></li>
+  <li><code class="language-plaintext new-syntax highlighter-rouge">baz(1, named: "hi");</code></li>
 </ul>
 
 <hr />
 <ul id="markdown-toc">
   <li><a href="#1-struct-args" id="markdown-toc-1-struct-args">1. Struct Args</a>    <ul>
       <li><a href="#anonymous-structs-in-params" id="markdown-toc-anonymous-structs-in-params">Anonymous structs in params</a></li>
+      <li><a href="#struct-inference" id="markdown-toc-struct-inference">Struct inference</a></li>
       <li><a href="#elided-struct-patterns" id="markdown-toc-elided-struct-patterns">Elided struct patterns</a></li>
-      <li><a href="#nested-anonymous-structs" id="markdown-toc-nested-anonymous-structs">Nested anonymous structs</a></li>
       <li><a href="#elided-parameter-types" id="markdown-toc-elided-parameter-types">Elided parameter types</a></li>
       <li><a href="#api-evolution-and-semver" id="markdown-toc-api-evolution-and-semver">API evolution and SemVer</a></li>
     </ul>
@@ -115,21 +120,14 @@ proposed syntax of what a full named argument sugar might look like:</p>
     </ul>
   </li>
   <li><a href="#4-relating-to-recent-posts" id="markdown-toc-4-relating-to-recent-posts">4. Relating to Recent Posts</a></li>
-  <li><a href="#5-the-prototype" id="markdown-toc-5-the-prototype">5. The Prototype</a>    <ul>
-      <li><a href="#the-core-feature" id="markdown-toc-the-core-feature">The core feature</a></li>
-      <li><a href="#the-sugar" id="markdown-toc-the-sugar">The sugar</a></li>
-    </ul>
-  </li>
-  <li><a href="#6-limitations-and-open-questions" id="markdown-toc-6-limitations-and-open-questions">6. Limitations and Open Questions</a>    <ul>
+  <li><a href="#5-limitations-and-open-questions" id="markdown-toc-5-limitations-and-open-questions">5. Limitations and Open Questions</a>    <ul>
       <li><a href="#non-const-defaults" id="markdown-toc-non-const-defaults">Non-const defaults</a></li>
       <li><a href="#function-types" id="markdown-toc-function-types">Function types</a></li>
       <li><a href="#macros" id="markdown-toc-macros">Macros</a></li>
       <li><a href="#tooling" id="markdown-toc-tooling">Tooling</a></li>
-      <li><a href="#prototype-gaps" id="markdown-toc-prototype-gaps">Prototype gaps</a></li>
     </ul>
   </li>
-  <li><a href="#7-going-further" id="markdown-toc-7-going-further">7. Going Further</a></li>
-  <li><a href="#8-whats-next" id="markdown-toc-8-whats-next">8. What’s Next</a></li>
+  <li><a href="#6-whats-next" id="markdown-toc-6-whats-next">6. What’s Next</a></li>
 </ul>
 <hr />
 
@@ -171,12 +169,30 @@ parameter:</p>
 </div>
 
 <p>This only binds <code class="language-plaintext highlighter-rouge">p</code>, exactly as <code class="language-plaintext highlighter-rouge">p: Point</code> would. These new structs are
-anonymous, just like anonymous closure types, e.g.
-<code class="language-plaintext highlighter-rouge">{closure@foo.rs:2:13: 2:21}</code>.</p>
+anonymous, just like anonymous closure types, e.g. <code class="language-plaintext highlighter-rouge">{closure@foo.rs:2:13:
+2:21}</code>.</p>
 
-<p>Since the struct has no name, its fields are bound with <code class="language-plaintext highlighter-rouge">_ { .. }</code>, a struct
-pattern whose struct is whatever it matches. It works anywhere a pattern does,
-so the fields can also be renamed, borrowed, or skipped:</p>
+<p>Anonymous struct types have come up on internals <a href="https://internals.rust-lang.org/t/pre-rfc-unnamed-struct-types/3872">since 2016</a>,
+usually as <em>structural</em> types, with <code class="language-plaintext highlighter-rouge">{ red: 25i8, .. }</code> as both a type and an
+expression, and named arguments as one of the motivations. When it came up
+<a href="https://internals.rust-lang.org/t/record-types/18258">again in 2023</a>, scottmcm <a href="https://internals.rust-lang.org/t/record-types/18258/11">replied</a> with
+the point mentioned in the intro, that named arguments don’t need structural
+types at all, just an inferred struct literal and “sugar to create an anonymous
+type in a function definition”, which is what’s proposed here. <a href="https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592">As recently as
+2025</a>, Josh Triplett <a href="https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592/3">separated</a> three ideas
+that usually get conflated. The first is structural anonymous types, which seem
+unlikely to make progress soon, though we explore some of thier motivations in
+<a href="2026-09-29-anonymous-struct-parameters-prototype#record-types">record types</a>. The second is <a href="https://rust-lang.github.io/rfcs/2102-unnamed-fields.html">RFC 2102</a>’s unnamed
+fields (<a href="https://github.com/rust-lang/rust/issues/49804">tracking issue</a>), which are about <code class="language-plaintext highlighter-rouge">#[repr(C)]</code> layout and
+not directly related to this. Their syntax does line up though, RFC 2102 also
+spells an anonymous struct type <code class="language-plaintext highlighter-rouge">struct { .. }</code>.</p>
+
+<h3 id="struct-inference">Struct inference</h3>
+
+<p>Since the struct has no name, <code class="language-plaintext highlighter-rouge">#![feature(struct_inference)]</code> binds its fields
+with <code class="language-plaintext highlighter-rouge">_ { .. }</code>, a struct pattern whose struct is whatever it matches. It works
+anywhere a pattern does, so the fields can also be renamed, borrowed, or
+skipped:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">g</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">})</span> <span class="p">{}</span>
@@ -196,8 +212,6 @@ literal form of the same <code class="language-plaintext highlighter-rouge">_ { 
 
 <p>But nothing is stopping you from inferring the type of a named struct argument either.</p>
 
-<p>E.g.</p>
-
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// recall: fn f(p: Point) {}</span>
 <span class="nf">f</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">});</span>
@@ -208,22 +222,7 @@ literal form of the same <code class="language-plaintext highlighter-rouge">_ { 
 for the same reason <code class="language-plaintext highlighter-rouge">fn g(x: _)</code> is, function signatures don’t infer their
 types, and that’s the gap <code class="language-plaintext highlighter-rouge">struct { .. }</code> fills.</p>
 
-<p>Anonymous struct types have come up on internals <a href="https://internals.rust-lang.org/t/pre-rfc-unnamed-struct-types/3872">since 2016</a>,
-usually as <em>structural</em> types, with <code class="language-plaintext highlighter-rouge">{ red: 25i8, .. }</code> as both a type and an
-expression, and named arguments as one of the motivations. When it came up
-<a href="https://internals.rust-lang.org/t/record-types/18258">again in 2023</a>, scottmcm <a href="https://internals.rust-lang.org/t/record-types/18258/11">replied</a> with
-the point mentioned in the intro, that named arguments don’t need structural
-types at all, just an inferred struct literal and “sugar to create an anonymous
-type in a function definition”, which is what’s proposed here. <a href="https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592">As recently as
-2025</a>, Josh Triplett <a href="https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592/3">separated</a> three ideas
-that usually get conflated. The first is structural anonymous types, which seem
-unlikely to make progress soon, though we explore some of thier motivations in
-<a href="#record-types">record types</a>. The second is <a href="https://rust-lang.github.io/rfcs/2102-unnamed-fields.html">RFC 2102</a>’s unnamed
-fields (<a href="https://github.com/rust-lang/rust/issues/49804">tracking issue</a>), which are about <code class="language-plaintext highlighter-rouge">#[repr(C)]</code> layout and
-not directly related to this. Their syntax does line up though, RFC 2102 also
-spells an anonymous struct type <code class="language-plaintext highlighter-rouge">struct { .. }</code>.</p>
-
-<p>The third is passing a struct to a function without naming it, <code class="language-plaintext highlighter-rouge">f(_ { x: 1 })</code>,
+<p>Josh’s third idea is passing a struct to a function without naming it, <code class="language-plaintext highlighter-rouge">f(_ { x: 1 })</code>,
 which is the call half of what’s proposed here. This idea is materialized in the
 open <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a> as mentioned in the intro, which proposes inferring a
 struct literal’s path (currently spelled <code class="language-plaintext highlighter-rouge">.{ .. }</code>). <code class="language-plaintext highlighter-rouge">binrw</code>’s maintainers
@@ -286,92 +285,9 @@ modes, <code class="language-plaintext highlighter-rouge">mut</code>, <code clas
 <p>These only make sense when the type is also the pattern, so
 <code class="language-plaintext highlighter-rouge">p: struct { mut x: i32 }</code> is an error.</p>
 
-<details>
-  <summary>
-    <h3 id="nested-anonymous-structs">Nested anonymous structs</h3>
-  </summary>
-  <div>
-
-    <p>A field could also be an anonymous struct itself. Nesting isn’t new, with named
-structs it’s already valid Rust today:</p>
-
-    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">Marker</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">Point</span> <span class="p">}</span>
-
-<span class="k">fn</span> <span class="nf">i</span><span class="p">(</span><span class="n">Marker</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="p">}:</span> <span class="n">Marker</span><span class="p">)</span> <span class="p">{}</span>
-<span class="nf">i</span><span class="p">(</span><span class="n">Marker</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span> <span class="p">});</span>
-</code></pre></div>    </div>
-
-    <p>This only binds <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code>, the <code class="language-plaintext highlighter-rouge">at</code> field is taken apart but never bound.</p>
-
-    <p>Without elided patterns, an anonymous field is just another type, so it’s built
-and taken apart the same way:</p>
-
-    <div class="highlight-block">
-      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">j</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
-<span class="nf">j</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span> <span class="p">});</span>
-</code></pre></div>      </div>
-    </div>
-
-    <p>To keep <code class="language-plaintext highlighter-rouge">at</code> as well as its fields, bind it with an <code class="language-plaintext highlighter-rouge">@</code>. Since <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> are
-<code class="language-plaintext highlighter-rouge">Copy</code>, <code class="language-plaintext highlighter-rouge">at</code> and its fields can each have their own copy:</p>
-
-    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">k</span><span class="p">(</span><span class="n">Marker</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">at</span> <span class="o">@</span> <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="p">}:</span> <span class="n">Marker</span><span class="p">)</span> <span class="p">{}</span>
-</code></pre></div>    </div>
-
-    <p>The anonymous version is the same pattern with <code class="language-plaintext highlighter-rouge">_</code> in place of the names:</p>
-
-    <div class="highlight-block">
-      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">l</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">at</span> <span class="o">@</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
-</code></pre></div>      </div>
-    </div>
-
-    <p>With fields that aren’t <code class="language-plaintext highlighter-rouge">Copy</code>, like a <code class="language-plaintext highlighter-rouge">String</code>, <code class="language-plaintext highlighter-rouge">at</code> and its fields can’t both
-own the same values, so the best you can do is borrow both:</p>
-
-    <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">Label</span> <span class="p">{</span> <span class="n">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span>
-<span class="k">struct</span> <span class="n">Tagged</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="n">Label</span> <span class="p">}</span>
-
-<span class="k">fn</span> <span class="nf">m</span><span class="p">(</span><span class="n">Tagged</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">ref</span> <span class="n">at</span> <span class="o">@</span> <span class="n">Label</span> <span class="p">{</span> <span class="k">ref</span> <span class="n">name</span> <span class="p">}</span> <span class="p">}:</span> <span class="n">Tagged</span><span class="p">)</span> <span class="p">{}</span>
-</code></pre></div>    </div>
-
-    <p>And again anonymously:</p>
-
-    <div class="highlight-block">
-      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">n</span><span class="p">(</span><span class="n">_</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">ref</span> <span class="n">at</span> <span class="o">@</span> <span class="n">_</span> <span class="p">{</span> <span class="k">ref</span> <span class="n">name</span> <span class="p">}</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
-</code></pre></div>      </div>
-    </div>
-
-    <p>Once the pattern is elided though, it’s not exactly clear how binding should
-work:</p>
-
-    <div class="highlight-block">
-      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">j</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
-</code></pre></div>      </div>
-    </div>
-
-    <p>Elided fields can already take binding modes like <code class="language-plaintext highlighter-rouge">ref</code>, so the inner fields
-could too. Borrowing everything gives you <code class="language-plaintext highlighter-rouge">at</code> and its fields at once, just
-like <code class="language-plaintext highlighter-rouge">ref at @ _ { ref x, ref y }</code> did:</p>
-
-    <div class="highlight-block">
-      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">j</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span> <span class="k">ref</span> <span class="n">at</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="k">ref</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="k">ref</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
-</code></pre></div>      </div>
-    </div>
-
-    <p>The biggest issue is name collisions. Binding fields at every level puts them
-all in the same scope, so two inner structs with the same field name clash:</p>
-
-    <div class="highlight-block red">
-      <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">o</span><span class="p">(</span><span class="k">struct</span> <span class="p">{</span> <span class="n">from</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">},</span> <span class="n">to</span><span class="p">:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span> <span class="p">}</span> <span class="p">})</span> <span class="p">{}</span>
-</code></pre></div>      </div>
-    </div>
-
-    <p>Binding only the outer fields never has this problem, since a struct’s field
-names are already unique. But I don’t think that’s the right call, it’s just
-the easy one. A collision like this could be an error, fixed by writing the
-pattern out and renaming them, like <code class="language-plaintext highlighter-rouge">_ { from: _ { x: from_x }, to: _ { x: to_x } }</code>.</p>
-  </div>
-</details>
+<p>A field can also be an anonymous struct itself, though how an elided pattern
+should bind the nested fields is still an open question, which the
+<a href="2026-09-29-anonymous-struct-parameters-prototype#nested-anonymous-structs">follow-up</a> goes into.</p>
 
 <h3 id="elided-parameter-types">Elided parameter types</h3>
 
@@ -383,8 +299,6 @@ let a pattern imply its type too.</p>
 <p>This also removes the duplication of <code class="language-plaintext highlighter-rouge">Point</code> from the start of this section.
 With <code class="language-plaintext highlighter-rouge">#![feature(parameter_type_elision)]</code>, a parameter’s type can be left out
 when the pattern already names it.</p>
-
-<p>E.g.</p>
 
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">}:</span> <span class="n">Point</span><span class="p">)</span> <span class="p">{}</span>
 </code></pre></div></div>
@@ -444,13 +358,13 @@ to put <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</cod
 ever allowed together, anonymous structs could opt in, or be non-exhaustive by
 default, meaning every literal from outside the crate has to write <code class="language-plaintext highlighter-rouge">..</code>, even
 one that lists every field, as named argument sugar already implies. Then adding
-a field with a default would never be breaking (<a href="#8-whats-next">Section 8</a>).</p>
+a field with a default would never be breaking (<a href="#6-whats-next">Section 6</a>).</p>
 
 <h2 id="2-examples">2. Examples</h2>
 
 <p>Now let’s look at some realistic examples of this new syntax. Later we’ll see
 how to make it look even more like named arguments with some <a href="#3-named-argument-sugar">syntactic
-sugar</a>. I have a hacked-together <a href="#5-the-prototype">prototype
+sugar</a>. I have a hacked-together <a href="2026-09-29-anonymous-struct-parameters-prototype">prototype
 implementation</a> for every feature in this post, but for now
 we’ll stick to the ones from Section 1 and leave <code class="language-plaintext highlighter-rouge">named_arguments</code> for later.</p>
 
@@ -740,8 +654,9 @@ means “the field <code class="language-plaintext highlighter-rouge">x</code> o
 
 <p>Note that <code class="language-plaintext highlighter-rouge">crop(&amp;img, width: 200, height: 200)</code> doesn’t compile against
 <code class="language-plaintext highlighter-rouge">height: Option&lt;u32&gt;</code>, it’s <code class="language-plaintext highlighter-rouge">height: Some(200)</code>. Named arguments are sugar for
-a struct literal, and struct literals don’t wrap values in <code class="language-plaintext highlighter-rouge">Some</code>. <a href="#optional-fields">Section
-7</a> has a more speculative idea that would change that.</p>
+a struct literal, and struct literals don’t wrap values in <code class="language-plaintext highlighter-rouge">Some</code>. The
+<a href="2026-09-29-anonymous-struct-parameters-prototype#optional-fields">follow-up post</a> has a more speculative idea that would
+change that.</p>
 
 <p>A last anonymous struct parameter whose fields all have defaults can also be
 left out of the call entirely:</p>
@@ -760,11 +675,11 @@ left out of the call entirely:</p>
 can’t build a default element.</p>
 
 <p>There’s one catch. Leaving the struct out works for calls, including method
-calls and calls through <code class="language-plaintext highlighter-rouge">fn</code> pointers, but in the prototype a function used as
-a value still takes its anonymous struct. Changing <code class="language-plaintext highlighter-rouge">fn f()</code> to
-<code class="language-plaintext highlighter-rouge">fn f(struct { a: i32 = 0 })</code> keeps every <code class="language-plaintext highlighter-rouge">f()</code> compiling, but breaks
-<code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code>. Fixing that would mean <code class="language-plaintext highlighter-rouge">f</code> implementing <code class="language-plaintext highlighter-rouge">FnOnce()</code> as
-well as <code class="language-plaintext highlighter-rouge">FnOnce(_)</code> (<a href="#function-types">Section 6</a>).</p>
+calls and calls through <code class="language-plaintext highlighter-rouge">fn</code> pointers, but a function used as a value still
+takes its anonymous struct. Changing <code class="language-plaintext highlighter-rouge">fn f()</code> to <code class="language-plaintext highlighter-rouge">fn f(struct { a: i32 = 0 })</code>
+keeps every <code class="language-plaintext highlighter-rouge">f()</code> compiling, but breaks <code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code>. Fixing that
+would mean <code class="language-plaintext highlighter-rouge">f</code> implementing <code class="language-plaintext highlighter-rouge">FnOnce()</code> as well as <code class="language-plaintext highlighter-rouge">FnOnce(_)</code> (<a href="#function-types">Section
+5</a>).</p>
 
 <h3 id="signature-syntax-fn-fa-i32-x-i32">Signature syntax: <code class="language-plaintext highlighter-rouge">fn f(a: i32; x: i32)</code></h3>
 
@@ -888,7 +803,7 @@ details on each below.
 | --- | --- | --- | --- | --- |
 | Named parameters | Fields of a `struct { .. }` parameter, or parameters after `;` with [possible sugar](#signature-syntax-fn-fa-i32-x-i32) | Fields of a named struct | Parameters marked `pub` | Every parameter, with no marker |
 | Reordering | Yes | Yes | Yes | Not settled |
-| Defaults | `..` with RFC 3681 field defaults, and `..Default::default()` for named structs, with [possible optional fields](#optional-fields) as a follow-up I'm skeptical of | `..` with RFC 3681 field defaults, and `..Default::default()` | May be non-const, omission implicit | No |
+| Defaults | `..` with RFC 3681 field defaults, and `..Default::default()` for named structs, with [possible optional fields][follow-up-optional] as a follow-up I'm skeptical of | `..` with RFC 3681 field defaults, and `..Default::default()` | May be non-const, omission implicit | No |
 | Evaluation order | As written | As written | Not addressed | Raised as a problem |
 | Patterns as parameters | Struct pattern | Struct pattern | `pub name @ pat` | Raised as a problem |
 | `fn` pointers | Distinct per function (sharing when the fields match is an open question) | Rejected unless the struct is shared | Names erased | Raised as a problem |
@@ -1022,7 +937,7 @@ foo((1, 2), _ { .. });
 
 #### Defaults
 
-Defaults are RFC 3681 defaults. They're const, declared on the field, and used when the caller writes `..`. They can use the function's type and const parameters (`fn foo<const A: usize>(struct { bar: usize = A })`), and associated consts through their bounds (`fn foo<T: HasN>(struct { n: usize = T::N })`). Const-only is a real limit, and [Section 6](#6-limitations-and-open-questions) covers it.
+Defaults are RFC 3681 defaults. They're const, declared on the field, and used when the caller writes `..`. They can use the function's type and const parameters (`fn foo<const A: usize>(struct { bar: usize = A })`), and associated consts through their bounds (`fn foo<T: HasN>(struct { n: usize = T::N })`). Const-only is a real limit, and [Section 5](#5-limitations-and-open-questions) covers it.
 
 #### Renaming hazards
 
@@ -1046,7 +961,7 @@ g(_ { a: 5, .. });
 ```
 </div>
 
-Two functions with the same fields don't share a pointer type, though [Section 6](#function-types) sketches one way they might.
+Two functions with the same fields don't share a pointer type, though the [follow-up post][follow-up-function-types] sketches one way they might.
 
   </div>
 </details>
@@ -1139,411 +1054,53 @@ That's why I think structs are the right direction, rather than a separate named
 
 -->
 
-<h2 id="5-the-prototype">5. The Prototype</h2>
+<h2 id="5-limitations-and-open-questions">5. Limitations and Open Questions</h2>
 
-<p>Everything in Sections 1 to 3 is implemented in a <a href="https://github.com/nixpulvis/rust/tree/struct-args+type-elision">rustc
-prototype</a> as four incomplete features, <code class="language-plaintext highlighter-rouge">struct_args</code>,
-<code class="language-plaintext highlighter-rouge">struct_args_pattern_elision</code>, <code class="language-plaintext highlighter-rouge">parameter_type_elision</code>, and <code class="language-plaintext highlighter-rouge">named_arguments</code>,
-each gated separately so they can be judged separately. Defaults and <code class="language-plaintext highlighter-rouge">..</code>
-also need <code class="language-plaintext highlighter-rouge">#![feature(default_field_values)]</code>, which landed in
-<a href="https://github.com/rust-lang/rust/pull/129514">rust-lang/rust#129514</a>. The examples in this post that compile
-come from it, and <a href="#prototype-gaps">Prototype gaps</a> lists where it falls short.</p>
-
-<p>It’s about 2,000 lines of changes to the compiler and tools. The idea is to turn the new
-syntax into an ordinary struct, struct pattern, or struct literal as early as
-possible, so most of the compiler, like privacy, borrow checking, and MIR
-building, doesn’t see anything new. Internally an anonymous struct is called a
-<em>record</em>, which is where names like <code class="language-plaintext highlighter-rouge">TyKind::Record</code> and <code class="language-plaintext highlighter-rouge">{record@..}</code> come
-from. The name also leaves the door open for extending them later, toward the
-<a href="#record-types">record types</a> of Section 7.</p>
-
-<h3 id="the-core-feature">The core feature</h3>
-
-<div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![feature(struct_args,</span> <span class="nd">struct_args_pattern_elision,</span> <span class="nd">default_field_values)]</span>
-
-<span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">})</span> <span class="p">{}</span>
-<span class="nf">f</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
-</code></pre></div>  </div>
-</div>
-
-<ul>
-  <li><strong>Parsing.</strong> <code class="language-plaintext highlighter-rouge">struct { .. }</code> is a new AST type, <code class="language-plaintext highlighter-rouge">TyKind::Record</code>, which holds
-the fields. It’s only parsed as a parameter’s type or a field’s type inside
-another one, and anywhere else it’s an error. A parameter that’s just the type
-gets the pattern <code class="language-plaintext highlighter-rouge">&lt;_&gt;::_ { x, y }</code>, which <code class="language-plaintext highlighter-rouge">_ { x, y }</code> also parses to. An
-elided parameter type is the type its pattern spells out, so <code class="language-plaintext highlighter-rouge">Point { x, y }</code>
-becomes <code class="language-plaintext highlighter-rouge">Point { x, y }: Point</code>, and <code class="language-plaintext highlighter-rouge">&amp;T(x)</code> becomes <code class="language-plaintext highlighter-rouge">&amp;T(x): &amp;T</code>. And <code class="language-plaintext highlighter-rouge">_ { .. }</code>
-in an expression is a struct literal whose path gets filled in later by type
-checking.</li>
-  <li><strong>Lowering.</strong> Name resolution gives each anonymous struct its own <code class="language-plaintext highlighter-rouge">DefId</code>, and
-AST lowering turns it into a real struct item. The struct shares its
-function’s generics, also when it’s nested in another one’s field, which is
-how its fields can use the function’s generic parameters, <code class="language-plaintext highlighter-rouge">impl Trait</code>,
-<code class="language-plaintext highlighter-rouge">Self</code>, and lifetimes without declaring any of them. Lifetimes elided in fields
-become early-bound parameters of the function, so the struct can use them too.</li>
-  <li><strong>Types.</strong> After that a record is an ordinary ADT, its struct applied to the
-function’s own generic arguments. <code class="language-plaintext highlighter-rouge">tcx.is_record</code> tells it apart in the few
-places that care, like printing it the way closures are printed,
-<code class="language-plaintext highlighter-rouge">{record@src/main.rs:6:9: 6:15}</code>, and skipping it in item lints and dead code
-checks, since it’s documented and used through its function.</li>
-  <li><strong>Type checking.</strong> The <code class="language-plaintext highlighter-rouge">&lt;_&gt;::_</code> pattern takes its struct from the type it
-matches, and an inferred literal takes its struct from the expected type, which
-is also how <code class="language-plaintext highlighter-rouge">_ { .. }</code> builds and matches named structs.</li>
-  <li><strong>Traits.</strong> In a trait impl, the parameter’s type isn’t the impl’s own
-anonymous struct. It’s the trait method’s struct, with the impl’s generic
-arguments filled in, and the fields the impl writes out are just checked
-against the trait’s by name and type, nested ones included. A method stays dyn
-compatible unless one of its fields mentions <code class="language-plaintext highlighter-rouge">Self</code>.</li>
-</ul>
-
-<p>Rustdoc, Clippy, and rustfmt only needed small changes to match
-(<a href="#tooling">Tooling</a>).</p>
-
-<h3 id="the-sugar">The sugar</h3>
-
-<div class="highlight-block">
-  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![feature(struct_args,</span> <span class="nd">named_arguments,</span> <span class="nd">default_field_values)]</span>
-
-<span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">;</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{}</span>
-<span class="nf">f</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">);</span>
-</code></pre></div>  </div>
-</div>
-
-<p>The sugar is smaller still, and almost all of it is in the parser.</p>
-
-<ul>
-  <li><strong>Named arguments.</strong> Named arguments at the end of a call are parsed into one
-inferred struct literal, flagged so the pretty printer and rustfmt can print
-them back the way they were written. AST lowering adds the implied <code class="language-plaintext highlighter-rouge">..</code> and
-tags the literal’s span (its location in the source) as coming from the named
-argument desugaring, the same way the code for <code class="language-plaintext highlighter-rouge">for</code> loops, <code class="language-plaintext highlighter-rouge">?</code>, and <code class="language-plaintext highlighter-rouge">a..b</code>
-gets tagged. Type checking uses the tag to skip the <code class="language-plaintext highlighter-rouge">default_field_values</code>
-feature gate for the implied <code class="language-plaintext highlighter-rouge">..</code>, and error messages use it so a missing
-field is reported as “missing named argument <code class="language-plaintext highlighter-rouge">width</code>” instead of pointing at a
-<code class="language-plaintext highlighter-rouge">..</code> nobody wrote.</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">;</code> parameters.</strong> These are handled entirely by the parser, which turns
-everything after the <code class="language-plaintext highlighter-rouge">;</code> into the fields of a last <code class="language-plaintext highlighter-rouge">TyKind::Record</code> parameter,
-the same as writing <code class="language-plaintext highlighter-rouge">struct { .. }</code>.</li>
-  <li><strong>Left-out structs.</strong> This is the only part that reaches type checking. When a
-call has one argument fewer than the function takes, and the last parameter is
-an anonymous struct whose fields all have defaults, the argument check skips
-that parameter and makes a note of the call. When building THIR, each of those
-calls gets a <code class="language-plaintext highlighter-rouge">_ { .. }</code> argument added, so MIR building and borrow checking see
-the call as if it had been written out.</li>
-</ul>
-
-<h2 id="6-limitations-and-open-questions">6. Limitations and Open Questions</h2>
+<p>These are covered in more detail, along with the prototype’s own gaps, in the
+<a href="2026-09-29-anonymous-struct-parameters-prototype#2-limitations-and-open-questions">follow-up post</a>.</p>
 
 <h3 id="non-const-defaults">Non-const defaults</h3>
 
-<p>TODO</p>
-
-<!--Field defaults are RFC 3681 defaults, so they have to be const. A default can't call `RandomState::new()`, and it can't reach a generic type's value through its bound, like `S::default()`. A field that needs one becomes an `Option` that the body fills in, as in the `HashMap` example in [Section 4](#botahamec-names-defaults-and-pub-apis). Named structs can fall back on `..Default::default()`, which runs ordinary code, but an anonymous struct has no `Default` impl to call. This is a limit of RFC 3681 rather than of records, so lifting it belongs in a follow-up to that RFC ([Section 8](#8-whats-next)).
-
-RFC 3681 makes defaults const on purpose. Its [rationale][rfc-3681-const] is that `Foo { .. }` stays deterministic and cheap, and that a crate can't break a downstream `const fn` by quietly changing a default to a non-const one. Its [future possibilities][rfc-3681-non-const] leave non-const values open, "potentially allowed but linted against", and expect `Default` impls to become const where they can. The [tracking issue][rust-132162] lists "Expand support to non-const values?" as an open question that doesn't block stabilization, with the author's position that "we shouldn't do that, particularly seeing how powerful const eval is becoming".
-
-That question is where the discussion is. [cart argued][cart-2026], from Bevy, that `bar: Bar = Default::default()`, `String`s, and `seed: usize = rand()` are exactly the defaults people want, and asked why a struct literal can't just be const when all of its defaults are. [scottmcm replied][scottmcm-2026] that [const traits][const-traits-goal] are a 2026 project goal, and asked which cases truly *can't* be const, and how `seed: usize = rand()` compares to `seed: Option<usize> = None`. That last comparison is the `HashMap` example, and this [reply][vultix-2026] applies here too: `Option` says the hasher is optional, when every map has one and only passing it is optional. Const traits would cover `S::default()` through a `[const] Default` bound, but not `RandomState::new()`, which seeds itself from the OS at runtime.-->
+<p>Field defaults are RFC 3681 defaults, so they have to be const. A default can’t
+call <code class="language-plaintext highlighter-rouge">RandomState::new()</code>, or <code class="language-plaintext highlighter-rouge">S::default()</code> through a bound, so a field like
+that becomes an <code class="language-plaintext highlighter-rouge">Option</code> the body fills in. This is a limit of RFC 3681, not of
+anonymous structs, and its <a href="https://github.com/rust-lang/rust/issues/132162">tracking issue</a> already lists non-const
+values as an open question.</p>
 
 <h3 id="function-types">Function types</h3>
 
-<p>TODO</p>
-
-<!--It would be nice if two functions whose anonymous structs have the same fields, with the same names and types, could unify as values, so that `if c { resize } else { grow }` compiles, and `type Callback = fn(struct { width: u32, height: u32 })` accepts both. The prototype doesn't do this. The generated structs are distinct types whose layouts aren't guaranteed to match, so one possible approach is a conversion shim, like the existing reify shims, that moves the fields from one struct into the other. Limiting it to the same fields would keep `if`/`else` symmetric, never drop a field behind the caller's back, and leave room for structural records to replace the shim later.
-
-The subset and superset conversions of [record types](#record-types) would stretch this further. A function taking `struct { width: u32, height: u32, x: u32 = 0 }` could stand in for a `Callback`, with the shim filling in `x` from its default, and a shim going the other way would drop `x`, which is the silent loss the same-fields limit avoids. Which functions unify would then depend on which conversions apply in which direction, not just on their fields, so the same-fields rule is the conservative place to start. None of this is designed in detail yet.
-
-Leaving out a struct raises a similar question for a single function. `fn f(struct { a: i32 = 0 })` can be called as `f()`, but as a value it still takes one argument, so `opt.unwrap_or_else(f)` doesn't compile. One option is for `f` to implement `FnOnce()` as well as `FnOnce(_)`, filling in `_ { .. }` when it's called without the struct. That's pretty close to overloading by arity, which Rust has avoided so far, and it would make inference ambiguous anywhere the argument types aren't known yet. It should probably be worked out together with the other `Fn` trait questions records raise, like the generic case below.
-
-Generic records are harder. In `fn higher_order<A>(f: impl Fn(A)) { f(a: 4, b: 2) }`, the body can't build an `A`, since the caller picks it. Today that needs a named struct (`impl Fn(FooArgs)`).-->
+<p>A function used as a value keeps its anonymous struct as a parameter type, so
+two functions whose structs have the same fields still have different types,
+and <code class="language-plaintext highlighter-rouge">if c { resize } else { grow }</code> doesn’t compile. Leaving out a struct
+raises the <a href="#call-syntax-fa-x-1">same question</a> for a single function.</p>
 
 <h3 id="macros">Macros</h3>
 
-<p>Procedural macros get the tokens as written, and most of them parse those tokens
-with <a href="https://docs.rs/syn"><code class="language-plaintext highlighter-rouge">syn</code></a>, which expects every parameter to be <code class="language-plaintext highlighter-rouge">pat: ty</code>, separated by
-commas. So <code class="language-plaintext highlighter-rouge">syn</code> rejects anonymous struct parameters, elided parameter types,
-and <code class="language-plaintext highlighter-rouge">;</code> parameter lists, which means <code class="language-plaintext highlighter-rouge">#[tokio::main]</code> or <code class="language-plaintext highlighter-rouge">#[tracing::instrument]</code>
-can’t be used on functions that have them. Macros that parse the whole function
-body also fail on named arguments, since <code class="language-plaintext highlighter-rouge">f(x: 1)</code> isn’t an expression <code class="language-plaintext highlighter-rouge">syn</code>
-knows about. This isn’t unique to anonymous structs though. <code class="language-plaintext highlighter-rouge">syn</code> doesn’t parse
-RFC 3681’s <code class="language-plaintext highlighter-rouge">= default</code> fields yet either, so derives built on it already fail on
-structs that use them. New syntax tends to show up in <code class="language-plaintext highlighter-rouge">syn</code> once it’s close to
-stable.</p>
+<p>Most procedural macros parse with <a href="https://docs.rs/syn"><code class="language-plaintext highlighter-rouge">syn</code></a>, which expects every parameter
+to be <code class="language-plaintext highlighter-rouge">pat: ty</code>. The core features keep that shape, so <code class="language-plaintext highlighter-rouge">syn</code> just needs the new
+syntax, as it got <code class="language-plaintext highlighter-rouge">= default</code> fields in <a href="https://github.com/dtolnay/syn/releases/tag/3.0.0">3.0</a>. The elision features and
+<code class="language-plaintext highlighter-rouge">named_arguments</code> change the shape, so macros that read each parameter, like
+<code class="language-plaintext highlighter-rouge">#[tracing::instrument]</code>, need updating too.</p>
 
-<p>Every new form has a <code class="language-plaintext highlighter-rouge">pat: ty</code> spelling that fits what <code class="language-plaintext highlighter-rouge">syn</code> already has.
-<code class="language-plaintext highlighter-rouge">p: struct { x: i32 }</code> is already <code class="language-plaintext highlighter-rouge">pat: ty</code>, with <code class="language-plaintext highlighter-rouge">struct { .. }</code> as an opaque
-type. A bare <code class="language-plaintext highlighter-rouge">struct { x: i32 }</code> is <code class="language-plaintext highlighter-rouge">_ { x }: struct { x: i32 }</code>, using the
-inferred struct pattern. An elided parameter type can be read as what it stands
-for, <code class="language-plaintext highlighter-rouge">Point { x, y }: Point</code>, and a <code class="language-plaintext highlighter-rouge">;</code> parameter list as a last
-<code class="language-plaintext highlighter-rouge">struct { .. }</code> parameter. They’re all just sugar, so a macro that prints the
-expanded form back out doesn’t change what the function means. That was a goal
-of the design, every parameter form should have a <code class="language-plaintext highlighter-rouge">pat: ty</code> version someone
-could write by hand.</p>
-
-<p>Even once <code class="language-plaintext highlighter-rouge">syn</code> can parse these, some macros will need updating. A macro that
-just passes the signature through, as <code class="language-plaintext highlighter-rouge">#[tokio::main]</code> mostly does, would work
-right away. But <code class="language-plaintext highlighter-rouge">#[tracing::instrument]</code> records each parameter by its binding
-name, so it would need to know that an anonymous struct’s fields are its
-bindings.</p>
-
-<p><code class="language-plaintext highlighter-rouge">macro_rules!</code> has a subtler problem. Today a <code class="language-plaintext highlighter-rouge">$p:pat</code>, <code class="language-plaintext highlighter-rouge">$e:expr</code> (2024) or
-<code class="language-plaintext highlighter-rouge">$s:stmt</code> fragment at the end of a macro arm, given <code class="language-plaintext highlighter-rouge">_ { x }</code>, parses just the
-<code class="language-plaintext highlighter-rouge">_</code> and leaves <code class="language-plaintext highlighter-rouge">{ x }</code> behind, so the arm fails and a later arm, like
-<code class="language-plaintext highlighter-rouge">(_ { $($t:tt)* })</code>, can match. With <code class="language-plaintext highlighter-rouge">_ { .. }</code> patterns and literals the
-fragment takes the whole thing, so the earlier arm matches instead, which breaks
-existing macros even in crates that don’t use the feature. The fix is to keep
-the old behavior in those fragments: <code class="language-plaintext highlighter-rouge">_</code> followed by <code class="language-plaintext highlighter-rouge">{</code> at the fragment’s
-outer level stays a lone <code class="language-plaintext highlighter-rouge">_</code>, which matches exactly what they did before.
-Nested inside brackets it was always an error, so it’s fine to allow there.
-Rust has changed what a fragment matches before, with <code class="language-plaintext highlighter-rouge">pat_param</code> in 2021 and
-<code class="language-plaintext highlighter-rouge">expr_2021</code> in 2024, so a later edition could let them match <code class="language-plaintext highlighter-rouge">_ { .. }</code> too.</p>
+<p><code class="language-plaintext highlighter-rouge">macro_rules!</code> is subtler. <code class="language-plaintext highlighter-rouge">_ { .. }</code> changes what <code class="language-plaintext highlighter-rouge">pat</code>, <code class="language-plaintext highlighter-rouge">expr</code>, and <code class="language-plaintext highlighter-rouge">stmt</code>
+fragments match, so existing macros can pick a different arm, even in crates
+that don’t enable <code class="language-plaintext highlighter-rouge">struct_inference</code>. That makes it the only part of the
+proposal that needs an edition. The <a href="2026-09-29-anonymous-struct-parameters-prototype#macros">follow-up</a> has the
+details.</p>
 
 <h3 id="tooling">Tooling</h3>
 
-<p>TODO</p>
+<p>rust-analyzer and tree-sitter-rust have their own parsers, so they need
+updating separately. rustfmt uses rustc’s parser, so it mostly works already.</p>
 
-<!--Tools that parse Rust themselves don't get any of the compiler's changes. rust-analyzer's parser treats `struct {` in a parameter list as an error and loses highlighting for the rest of the signature, and semantic support needs about as much work as the prototype did. tree-sitter-rust, which Neovim, Helix, Zed, and GitHub use, needs about ten lines of grammar, and currently lacks RFC 3681's default field values too. rustfmt uses rustc's parser, so it formats `_ { .. }` literals and patterns, elided parameter types, and `;` parameter lists, putting the `;` on its own line when the signature doesn't fit on one, but keeps anonymous struct parameters and named arguments as written.-->
-
-<h3 id="prototype-gaps">Prototype gaps</h3>
-
-<p>These are gaps in the prototype, or places where it had to pick something the
-design hasn’t decided yet:</p>
-
-<ul>
-  <li>Named arguments imply <code class="language-plaintext highlighter-rouge">..</code> for every struct, named or anonymous, because the
-prototype adds the <code class="language-plaintext highlighter-rouge">..</code> during AST lowering, before it knows which struct the
-call is for. Whether named structs should get it is undecided. If they do, a
-library adding a default to a field of a public struct changes which calls
-compile, so it depends on how <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> ends up working with RFC
-3681 defaults and with anonymous structs (<a href="#api-evolution-and-semver">Section
-1</a>).</li>
-  <li>A function whose last anonymous struct can be left out still can’t be used as
-a value without it. For <code class="language-plaintext highlighter-rouge">fn f(struct { a: i32 = 0 })</code>, <code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code> is
-an error. Making it work would mean <code class="language-plaintext highlighter-rouge">f</code> implementing <code class="language-plaintext highlighter-rouge">FnOnce()</code> as well as
-<code class="language-plaintext highlighter-rouge">FnOnce(_)</code> (<a href="#function-types">Function types</a>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">macro_rules!</code> fragments above still take <code class="language-plaintext highlighter-rouge">_ { .. }</code>, which needs the
-fix described in <a href="#macros">Macros</a> before the prototype is compatible.</li>
-  <li>An elided parameter type is purely syntactic. A variant pattern like <code class="language-plaintext highlighter-rouge">E::V(x)</code>
-can’t elide its type even when <code class="language-plaintext highlighter-rouge">E</code> has a single variant and the pattern is
-irrefutable.</li>
-  <li>Rustdoc shows an anonymous struct parameter as <code class="language-plaintext highlighter-rouge">_</code>, without its fields.</li>
-  <li>Some error messages could be better, especially for mistakes in named
-arguments.</li>
-</ul>
-
-<h2 id="7-going-further">7. Going Further</h2>
-
-<div class="aside">
-  <p>This section is optional reading. It’s less developed than the rest of the
-post, and the main proposal doesn’t depend on it. Neither optional fields nor
-<code class="language-plaintext highlighter-rouge">let</code> records are in the prototype. Both are collapsed below, so feel free to
-skip ahead to <a href="#8-whats-next">Section 8</a>.</p>
-</div>
-
-<details id="optional-fields">
-  <summary>Optional fields: passing <code>T</code> for an <code>Option&lt;T&gt;</code> field</summary>
-<!--
-  <div markdown="1">
-So far a field is optional because it has a default, and `Option` is just
-another type a field can have. We could consider going much further, and make
-`Option` a first-class part of what makes an optional field optional. An
-`Option<T>` field would be optional by its type alone, and callers could pass a
-plain `T` instead of wrapping it. That takes two rules, which come as a pair.
-
-- A field of type `Option<T>` without a default gets `= None` implicitly.
-- A named argument of type `T` for a field of type `Option<T>` is wrapped in
-  `Some`.
-
-<div class="highlight-block" markdown="1">
-```rust
-fn crop(img: &Image; width: u32, height: Option<u32>) -> Image
-// = fn crop(img: &Image, struct { width: u32, height: Option<u32> = None }) -> Image
-
-crop(&img, width: 200);
-// = crop(&img, _ { width: 200, height: None })
-crop(&img, width: 200, height: 100);
-// = crop(&img, _ { width: 200, height: Some(100) })
-crop(&img, width: 200, height: None);
-// = crop(&img, _ { width: 200, height: None })
-```
-</div>
-
-That makes the call most people write first, `crop(&img, width: 200, height:
-100)`, compile. It also makes changing a field from `height: u32 = 0` to
-`height: Option<u32>` non-breaking, since callers' `height: 100` still compiles.
-
-Like the implied `..` from [Section 3](#3-named-argument-sugar), this would be a deliberate
-exception to "the sugar never adds meaning", and it would only apply to named
-arguments. `_ { height: 100 }` would still be an error, otherwise every struct
-literal would change. Whether it should apply to named structs is open, same as
-the implied `..`, and it should probably be decided the same way, so that a
-library switching between a named struct and an anonymous one doesn't change
-which of its callers' calls compile. The catch is that a call's arguments can't always
-move into a [`let` record](#record-types) unchanged. `crop(&img, width: 200,
-height: 100)` compiles, but the same fields in a record don't.
-
-It isn't free. Wrapping depends on the argument's type, but the argument's type
-often depends on the field's, so in `height: s.parse()?` the field no longer
-tells the compiler whether `parse` should produce `u32` or `Option<u32>`. Trying
-the field's own type first, and wrapping only if that fails, keeps every call
-that compiles today meaning what it does today, including `height: x.into()`,
-but makes whether a call wraps depend on what the compiler can infer. Wrapping
-only when the argument's type is already known is easier to predict, but
-rejects calls that look like they should work.
-
-Nesting needs a rule too. An `Option<Option<T>>` field, for "not set" versus
-"explicitly cleared", makes `None` ambiguous between `None` and `Some(None)`.
-Never wrapping into a field whose `T` is itself an `Option` avoids that, but
-then a generic `Option<T>` field wraps or doesn't depending on `T` at each call.
-
-And Rust has avoided implicit `T` to `Option<T>` conversions so far. It isn't
-one of the [coercions][ref-coercions], a [request for it][rfcs-2416] was closed
-as unlikely to happen, and the compiler [suggests][rust-42764] wrapping in
-`Some` instead. This would be one, if a narrow one. It isn't in the prototype,
-and the conservative path is to keep writing `Some` and `= None` explicitly,
-adding wrapping later only with an inference rule that can't change what an
-existing call means.
-  </div>
--->
-</details>
-
-<details id="record-types">
-  <summary>Record types: type identity based on fields</summary>
-<!--
-  <div markdown="1">
-A *record* is a struct type whose compatibility with other types is decided by its fields, not its name. Named structs deliberately aren't like this. Two structs with the same fields are still different types, because the name carries meaning, which is what makes newtypes work. A record is intrinsically unnamed, so there's no meaning to protect and it doesn't act like a newtype. Records can relate in two ways. With strict field equality, two records with the same fields are the same type, which is what structural records propose. With subsets and supersets, a record converts, where the target type is known, into any struct whose fields are a subset or a superset of its own. This section is mostly about the second.
-
-#### Why: subsets and supersets
-
-Everything in Sections 1 to 4 ties a struct to one function. That's fine at a single call, but arguments rarely live at a single call. Options get built once and passed to several functions, or passed through a wrapper to the function it wraps, and those functions each want a different slice of them. Without records, you either share one named struct between the functions, which couples their APIs to each other, or copy the fields across by hand at every call.
-
-Records solve this with two kinds of compatibility:
-
-- **Superset.** A record may have more fields than the struct it's passed as. The extra fields stay behind, available to the next call.
-- **Subset.** A record may have fewer fields than the struct it's passed as. The missing fields take the struct's defaults, as if the call had written `..`.
-
-Most real uses need both at once:
-
-<div class="highlight-block" markdown="1">
-```rust
-fn crop(img: &Image, struct {
-    width: u32,
-    height: Option<u32> = None,
-    x: u32 = 0,
-    y: u32 = 0,
-}) -> Image { .. }
-
-fn encode(img: &Image, struct {
-    quality: u8 = 80,
-    progressive: bool = false,
-}) -> Vec<u8> { .. }
-
-let opts = _ { width: 200, height: Some(100), quality: 90 };
-let thumb = crop(&img, opts);  // `quality` stays, `x` and `y` default
-encode(&thumb, opts);          // `width` and `height` stay, `progressive` defaults
-```
-</div>
-
-Neither function knows about the other, and neither has to agree on a shared options type. The record is the only thing that sees all the fields, and each call takes what it needs by name.
-
-#### Records built before the call: `let args = _ { ... };`
-
-A record bound by `let`, without a type annotation or `..`, gets a struct of its own, made from its field names. It converts by field name into whatever struct it's passed as. Fields the target lacks stay behind in the record (the record is a superset), and fields the record lacks take the target's defaults (the record is a subset). It's `Copy` when all its fields are, so one record can go to several functions:
-
-<div class="highlight-block" markdown="1">
-```rust
-fn greet(struct { name: &'static str, times: usize = 1 }) { .. }
-fn greet_prefix(struct {
-    name: &'static str,
-    times: usize = 1,
-    prefix: &'static str,
-}) { .. }
-
-let args = _ { name: "hello", times: 2, prefix: "-- " };
-// `prefix` stays behind
-greet(args);
-// `args` is `Copy`, so it can be used again
-greet_prefix(args);
-```
-</div>
-
-A record isn't tied to one struct, named or anonymous. The same record can fill both `fill`'s `Rgb` and `crop`'s anonymous struct from [Section 2](#2-examples):
-
-<div class="highlight-block" markdown="1">
-```rust
-let args = _ {
-    red: 0xA8, green: 0x3C, blue: 0x09,
-    width: 200,
-};
-fill(&mut shape, args);
-crop(&img, args);
-```
-</div>
-
-Any other `_ { .. }` whose struct isn't known yet, including a `let` record with `..`, takes the struct of its first use, without a conversion:
-
-<div class="highlight-block" markdown="1">
-```rust
-let args = _ { width: 200, x: 15, .. };
-crop(&img, args);
-```
-</div>
-
-Its field values are checked without the field types and coerced once the struct is known. That has limits. A closure that needs its signature from the field type only works when the struct literal is written at the call, and reading `args.x` before `crop(&img, args)` needs a type annotation, which an anonymous struct can't have.
-
-#### Structural records
-
-So what about *structural records* in general? [RFC 2584][rfc-2584] proposed `{ red: 0xA8, green: 0x3C, blue: 0x09 }` as both an expression and a type, where any two records with the same fields are the same type. The lang team [closed it][rfc-2584-close] not because it was wrong but because it was not a priority, and scottmcm cautioned against a new fundamental kind of type that [reaches the type system, MIR, Miri, derives, proc macros, and every backend][scottmcm-2023]. Their suggestion was to take the lower-impact pieces first, [struct literals whose type is inferred from use][scottmcm-2021], borrowed from [Zig][zig-anon-struct], and unnameable *Voldemort types* instead of structural ones.
-
-Anonymous structs and records follow these two pieces of advice. `_ { .. }` is an inferred struct literal, and an anonymous struct parameter or a `let` record is an unnameable struct (like a closure's type), so **none of them needs a new kind of type**. The only new rule is that a `let` record converts into other structs by field name. A bare `{ x: 1 }` is still an error, left free for a structural literal, and if records with the same fields someday become the same type, anonymous struct parameters can be redefined as structural records without changing how anyone calls them.
-
-Records, and their conversions, cover a good part of what RFC 2584 wanted structural records for. They still aren't structural records. Each record is its own unnameable struct, and it only meets another struct through a conversion, which happens where the target type is known and moves the fields into a new value. That leaves gaps:
-
-- **No type identity.** Two `let` records with the same fields are different types. `if c { r1 } else { r2 }` and `[r1, r2]` have no single type to convert into, and `r1 == r2` has no impl between them.
-- **No way to refer to a record type.** `struct { .. }` in a parameter list declares a new anonymous struct every time it's written, and never names an existing one. So one function's anonymous struct can't be used as a struct field, a return type, or another function's parameter, and a library can only hand one out by converting it into a named struct.
-- **Conversion moves, it doesn't borrow.** `&args` can't be passed as `&Rgb`, since the two structs' layouts aren't guaranteed to match, and a `Vec` of one record doesn't convert into a `Vec` of another. Generic code never reaches a conversion at all.
-- **Few traits.** A `let` record derives only `Clone` and `Copy`. It has no `Debug`, `PartialEq`, `Hash`, or `Default`, and no user `impl`s, since there's no type to name.
-
-None of these block structural records later, because each is something records leave out, not something they decide:
-
-- The bare `{ x: 1 }` syntax, for expressions, patterns, and types, is still free.
-- A record's type can't be named, so, like a closure's, its identity is unspecified. Two records with the same fields can become the same type later without changing what any caller writes, and any `fn` pointer shim like the one sketched in [Section 6](#function-types) could be retired the same way.
-- Deriving more traits for records is additive.
-
-#### Converting by field name
-
-What records do decide is the conversion itself. Once `let` records convert by field name, leaving behind fields the target lacks and filling in its defaults, structural records either inherit that rule or break it. [RFC 2584][rfc-2584-rendered] listed both larger-to-smaller and record-to-struct coercions as future possibilities, and warned that they "could also reduce robustness".
-
-The robustness risk is a field that silently goes nowhere. A misspelled field in a `let` record, `_ { width: 200, hieght: Some(50) }` passed to `crop`, stays behind, and `height` takes its default. The plan is to treat that the way Rust already treats a variable nobody reads, so a field of a `let` record that no conversion takes is unused, and gets a warning. That catches the typo. It also catches a library renaming `height` to `h`, which is already a breaking change since field names are API, because the caller's `height` no longer goes anywhere. A field that some call does take isn't unused, so one record can still feed both `fill` and `crop`.
-
-Ruby went through a harder version of this. Its automatic conversion between a trailing hash and keyword arguments had enough corner cases, like a hash landing in a positional parameter or in the keywords depending on whether that parameter had a default, that [Ruby 3.0 separated them][ruby-3-kwargs] and made callers write `**` to pass a hash as keywords. Records don't have that ambiguity. A record only ever fills the parameter in its own position, and field names are checked at compile time. The unused-field warning covers the silent part that's left.
-
-The conversion rule, not the records' types, is what has to be settled together with structural records.
-
-#### Named records?
-
-Every record so far is unnameable, which is what leaves the second gap above. A function can't return one, a struct can't hold one, and two functions can't share one except through a named struct, which doesn't convert by field name. Should there be syntax for declaring a named record, a type that has a name but still converts by field name like a `let` record?
-
-<div class="highlight-block" markdown="1">
-```rust
-// possible spellings
-type CropArgs = struct { width: u32, height: Option<u32> = None };
-#[record] struct CropArgs { width: u32, height: Option<u32> = None }
-```
-</div>
-
-A named record gives up what a named struct's name protects, so it has to be the definer's choice, never something a caller can do to an existing struct. Whether it's worth new syntax, or should wait for structural records to make the type writable directly, is open.
-  </div>
--->
-</details>
-
-<h2 id="8-whats-next">8. What’s Next</h2>
+<h2 id="6-whats-next">6. What’s Next</h2>
 
 <ul>
   <li><strong>An MCP or RFC.</strong> The 2020 named-arguments RFC was <a href="https://github.com/rust-lang/rfcs/pull/2964#issuecomment-671545486">closed</a> because the lang team wanted to see “what the roadmap looks like towards the eventual full solution” before an incremental step. This is meant to be that roadmap, with struct literals with an inferred name now, named-argument sugar on top, and structural records later if they’re wanted.</li>
+  <li><strong>The prototype.</strong> Every feature here is implemented in a rustc prototype, which the <a href="2026-09-29-anonymous-struct-parameters-prototype">follow-up post</a> walks through, along with the open questions and the more speculative ideas, optional fields and record types, that this post leaves out.</li>
   <li><strong>Follow-ups to <a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>.</strong> These are limits of default field values (<a href="https://github.com/rust-lang/rust/issues/132162">tracking issue</a>), not of anonymous structs, so they belong in follow-ups to that RFC, and anonymous and named structs keep the same rules.
     <ul>
-      <li><strong>Non-const defaults.</strong> <code class="language-plaintext highlighter-rouge">hasher: S = RandomState::new()</code> needs a non-const default. The tracking issue already has it as an open question (<a href="#non-const-defaults">Section 6</a>).</li>
+      <li><strong>Non-const defaults.</strong> <code class="language-plaintext highlighter-rouge">hasher: S = RandomState::new()</code> needs a non-const default. The tracking issue already has it as an open question (<a href="#non-const-defaults">Section 5</a>).</li>
       <li><strong>API evolution.</strong> RFC 3681 doesn’t allow <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> on structs with default field values. If the two are ever allowed together, anonymous structs could opt into <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code>, or be non-exhaustive by default, with every literal from outside the crate required to write <code class="language-plaintext highlighter-rouge">..</code>. Adding a field with a default would then never be breaking (<a href="#api-evolution-and-semver">Section 1</a>).</li>
     </ul>
   </li>
@@ -1551,7 +1108,7 @@ A named record gives up what a named struct's name protects, so it has to be the
     <ul>
       <li><strong><a href="https://github.com/rust-lang/rfcs/issues/323">rfcs#323</a>, named arguments.</strong> The wishlist issue is still open. Anonymous struct parameters with the <a href="#3-named-argument-sugar">named-argument sugar</a> would subsume it.</li>
       <li><strong><a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a>, inferred types.</strong> <code class="language-plaintext highlighter-rouge">_ { .. }</code> is the struct half of its path inference, spelled <code class="language-plaintext highlighter-rouge">_</code> instead of <code class="language-plaintext highlighter-rouge">.</code>. The two need one spelling, and the struct half doesn’t need to wait for enums.</li>
-      <li><strong><a href="https://github.com/rust-lang/rfcs/pull/2584">RFC 2584</a>, structural records.</strong> It’s closed, but a revival would inherit the <code class="language-plaintext highlighter-rouge">let</code> record <a href="#converting-by-field-name">conversion rule</a>, and anonymous struct parameters could become structural records without changing any caller.</li>
+      <li><strong><a href="https://github.com/rust-lang/rfcs/pull/2584">RFC 2584</a>, structural records.</strong> It’s closed, but a revival would inherit the <code class="language-plaintext highlighter-rouge">let</code> record <a href="2026-09-29-anonymous-struct-parameters-prototype#converting-by-field-name">conversion rule</a>, and anonymous struct parameters could become structural records without changing any caller.</li>
     </ul>
   </li>
 </ul>
@@ -1590,15 +1147,11 @@ A named record gives up what a named struct's name protects, so it has to be the
 
 <!-- RFC texts -->
 
+<!-- Follow-up post -->
+
 <!-- Comments on RFC issues and pull requests -->
 
 <!-- Issues and tracking issues -->
-
-<!-- Project goals -->
-
-<!-- rustc pull requests -->
-
-<!-- Prototype -->
 
 <!-- Internals forum threads -->
 
