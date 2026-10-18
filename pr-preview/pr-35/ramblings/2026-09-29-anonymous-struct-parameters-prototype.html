@@ -34,7 +34,7 @@
     <div class="content"><h2 class="title">
     Anonymous Struct Parameters: The Prototype
     <small>
-        5838 words
+        6274 words
         
             drafted
         
@@ -55,6 +55,7 @@ there.</p>
   </li>
   <li><a href="#2-limitations-and-open-questions" id="markdown-toc-2-limitations-and-open-questions">2. Limitations and Open Questions</a>    <ul>
       <li><a href="#nested-anonymous-structs" id="markdown-toc-nested-anonymous-structs">Nested anonymous structs</a></li>
+      <li><a href="#implied-defaults" id="markdown-toc-implied-defaults">Implied defaults</a></li>
       <li><a href="#non-const-defaults" id="markdown-toc-non-const-defaults">Non-const defaults</a></li>
       <li><a href="#function-types" id="markdown-toc-function-types">Function types</a></li>
       <li><a href="#macros" id="markdown-toc-macros">Macros</a></li>
@@ -133,7 +134,7 @@ compatible unless one of its fields mentions <code class="language-plaintext hig
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">#![feature(struct_args,</span> <span class="nd">named_arguments,</span> <span class="nd">default_field_values)]</span>
 
 <span class="k">fn</span> <span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">;</span> <span class="n">x</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{}</span>
-<span class="nf">f</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nf">f</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="o">..</span><span class="p">);</span>
 </code></pre></div>  </div>
 </div>
 
@@ -243,6 +244,46 @@ names are already unique. But I don’t think that’s the right call, it’s ju
 the easy one. A collision like this could be an error, fixed by writing the
 pattern out and renaming them, like <code class="language-plaintext highlighter-rouge">_ { from: _ { x: from_x }, to: _ { x: to_x } }</code>.</p>
 
+<h3 id="implied-defaults">Implied defaults</h3>
+
+<p>The first post requires named arguments to end with <code class="language-plaintext highlighter-rouge">..</code> to use defaults
+(<a href="2026-09-29-anonymous-struct-parameters#defaults-fa-x-1-">Defaults</a>). Implying it instead, which is what the
+prototype does, would be closer to how Swift, Python, and Julia leave out named
+arguments, but then a call never shows which fields took their defaults. For an
+anonymous struct, at least the defaults would be the function’s own, since the
+struct only exists for it.</p>
+
+<p>Named structs are less clear. If they also get the implied <code class="language-plaintext highlighter-rouge">..</code>, a library
+adding a default to a field of a public struct changes which calls compile, so
+it depends on how <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> ends up working with RFC 3681 defaults
+(<a href="2026-09-29-anonymous-struct-parameters#api-evolution-and-semver">API evolution and SemVer</a>). Writing the <code class="language-plaintext highlighter-rouge">..</code> yourself, as
+in <code class="language-plaintext highlighter-rouge">Instance::new(backends: Backends::VULKAN, ..InstanceDescriptor::new_without_display_handle())</code>,
+works either way. If they don’t get it, switching a parameter from an anonymous
+struct to a named one breaks named arguments that leave out fields, on top of
+calls that leave the struct out.</p>
+
+<p>Requiring the <code class="language-plaintext highlighter-rouge">..</code>, as the first post does, keeps the defaults visible
+and settles the named struct question. But a call that only wants the defaults
+then needs a <code class="language-plaintext highlighter-rouge">..</code> on its own, and <code class="language-plaintext highlighter-rouge">f(..)</code> is already a <code class="language-plaintext highlighter-rouge">RangeFull</code>, as in
+<code class="language-plaintext highlighter-rouge">v.drain(..)</code>, just like <code class="language-plaintext highlighter-rouge">f(..base)</code> is a <code class="language-plaintext highlighter-rouge">RangeTo</code>. One way out is to decide
+what <code class="language-plaintext highlighter-rouge">..</code> means by the type of the parameter it fills. If it’s a struct,
+<code class="language-plaintext highlighter-rouge">f(..)</code> means <code class="language-plaintext highlighter-rouge">f(_ { .. })</code> and <code class="language-plaintext highlighter-rouge">f(..base)</code> means <code class="language-plaintext highlighter-rouge">f(_ { ..base })</code>. Otherwise,
+for <code class="language-plaintext highlighter-rouge">RangeFull</code>, <code class="language-plaintext highlighter-rouge">RangeTo</code>, or a generic <code class="language-plaintext highlighter-rouge">R: RangeBounds&lt;usize&gt;</code> like
+<code class="language-plaintext highlighter-rouge">drain</code>’s, it means what it does today. Passing a range where a struct is
+expected is an error today, so no existing call would change meaning, but <code class="language-plaintext highlighter-rouge">..</code>
+could no longer be read without knowing the signature. A <code class="language-plaintext highlighter-rouge">;</code> before the named
+arguments, which the first post <a href="2026-09-29-anonymous-struct-parameters#call-syntax-fa-x-1">mentions as an option</a>, would
+avoid the question, since <code class="language-plaintext highlighter-rouge">f(a; ..)</code> can’t be a range.</p>
+
+<p>Leaving the struct out has an API evolution upside. Since adding a parameter is
+breaking, new options should usually go in the existing struct as fields with
+defaults, but a new last anonymous struct where every field has a default can
+be added too, since calls can leave it out, and <code class="language-plaintext highlighter-rouge">crop(&amp;img, width: 200, ..)</code>
+still fills the old one. The catch is that a function used as a value still
+takes the struct, so changing <code class="language-plaintext highlighter-rouge">fn f()</code> to <code class="language-plaintext highlighter-rouge">fn f(struct { a: i32 = 0 })</code> keeps
+every <code class="language-plaintext highlighter-rouge">f()</code> compiling, but breaks <code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code> (<a href="#function-types">Function
+types</a>).</p>
+
 <h3 id="non-const-defaults">Non-const defaults</h3>
 
 <p>TODO</p>
@@ -318,13 +359,10 @@ Rust has changed what a fragment matches before, with <code class="language-plai
 design hasn’t decided yet:</p>
 
 <ul>
-  <li>Named arguments imply <code class="language-plaintext highlighter-rouge">..</code> for every struct, named or anonymous, because the
-prototype adds the <code class="language-plaintext highlighter-rouge">..</code> during AST lowering, before it knows which struct the
-call is for. Whether named structs should get it is undecided. If they do, a
-library adding a default to a field of a public struct changes which calls
-compile, so it depends on how <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> ends up working with RFC
-3681 defaults and with anonymous structs (<a href="2026-09-29-anonymous-struct-parameters#api-evolution-and-semver">API evolution and
-SemVer</a>).</li>
+  <li>Named arguments imply <code class="language-plaintext highlighter-rouge">..</code>, which the first post’s design doesn’t
+(<a href="#implied-defaults">Implied defaults</a>). The prototype also implies it for
+every struct, named or anonymous, because it adds the <code class="language-plaintext highlighter-rouge">..</code> during AST
+lowering, before it knows which struct the call is for.</li>
   <li>A function whose last anonymous struct can be left out still can’t be used as
 a value without it. For <code class="language-plaintext highlighter-rouge">fn f(struct { a: i32 = 0 })</code>, <code class="language-plaintext highlighter-rouge">opt.unwrap_or_else(f)</code> is
 an error. Making it work would mean <code class="language-plaintext highlighter-rouge">f</code> implementing <code class="language-plaintext highlighter-rouge">FnOnce()</code> as well as
@@ -367,7 +405,7 @@ plain `T` instead of wrapping it. That takes two rules, which come as a pair.
 fn crop(img: &Image; width: u32, height: Option<u32>) -> Image
 // = fn crop(img: &Image, struct { width: u32, height: Option<u32> = None }) -> Image
 
-crop(&img, width: 200);
+crop(&img, width: 200, ..);
 // = crop(&img, _ { width: 200, height: None })
 crop(&img, width: 200, height: 100);
 // = crop(&img, _ { width: 200, height: Some(100) })
@@ -380,7 +418,7 @@ That makes the call most people write first, `crop(&img, width: 200, height:
 100)`, compile. It also makes changing a field from `height: u32 = 0` to
 `height: Option<u32>` non-breaking, since callers' `height: 100` still compiles.
 
-Like the implied `..` from the [named argument sugar][first-post-sugar], this would be a deliberate
+Like an [implied `..`](#implied-defaults), this would be a deliberate
 exception to "the sugar never adds meaning", and it would only apply to named
 arguments. `_ { height: 100 }` would still be an error, otherwise every struct
 literal would change. Whether it should apply to named structs is open, same as
