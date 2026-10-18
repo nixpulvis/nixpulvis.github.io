@@ -34,7 +34,7 @@
     <div class="content"><h2 class="title">
     Anonymous Struct Parameters: The Idea
     <small>
-        10985 words
+        11000 words
         
             drafted
         
@@ -180,6 +180,10 @@ parameter:</p>
 anonymous, just like anonymous closure types, e.g. <code class="language-plaintext highlighter-rouge">{closure@foo.rs:2:13:
 2:21}</code>.</p>
 
+<p>Other than lacking a name though, an anonymous struct parameter <strong>is just a
+<code class="language-plaintext highlighter-rouge">struct</code></strong>. Evaluation order, borrowing, patterns, and defaults (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC
+3681</a>) follow rules Rust already has instead of new ones.</p>
+
 <p>Anonymous struct types have come up on internals <a href="https://internals.rust-lang.org/t/pre-rfc-unnamed-struct-types/3872">since 2016</a>,
 usually as <em>structural</em> types, with <code class="language-plaintext highlighter-rouge">{ red: 25i8, .. }</code> as both a type and an
 expression, and named arguments as one of the motivations. When it came up
@@ -250,15 +254,16 @@ touches <code class="language-plaintext highlighter-rouge">enum</code> today. Iâ
 solved in a way that works naturally with <code class="language-plaintext highlighter-rouge">_ { }</code>.</p>
 </div>
 
-<p>Regardless of the exact syntax though, an anonymous struct parameter <strong>is just a
-<code class="language-plaintext highlighter-rouge">struct</code></strong>. Evaluation order, borrowing, patterns, and defaults (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC
-3681</a>) follow rules Rust already has instead of new ones.</p>
-
-<p>So we get this for free:</p>
+<p>With inferred literals, default field values (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>) carry over
+directly:</p>
 
 <div class="highlight-block">
   <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="nf">h</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="k">log</span> <span class="p">}:</span> <span class="k">struct</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="nb">i32</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="k">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="k">false</span> <span class="p">})</span> <span class="p">{}</span>
-<span class="nf">h</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="o">..</span> <span class="p">});</span>
+</code></pre></div>  </div>
+</div>
+
+<div class="highlight-block">
+  <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">h</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="o">..</span> <span class="p">});</span>
 <span class="nf">h</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="o">..</span> <span class="p">});</span>
 <span class="nf">h</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">_</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="nf">set_log</span><span class="p">(),</span> <span class="k">log</span><span class="p">:</span> <span class="nf">get_log</span><span class="p">()</span> <span class="p">});</span>
 </code></pre></div>  </div>
