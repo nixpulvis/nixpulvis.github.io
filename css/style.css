@@ -160,6 +160,16 @@ img {
   max-width: 100%;
 }
 
+figure.tikz {
+  margin: 1em 0;
+  text-align: center;
+}
+
+figure.tikz svg {
+  max-width: 100%;
+  height: auto;
+}
+
 .content {
   flex: 1 0 auto;
 }
