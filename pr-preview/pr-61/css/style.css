@@ -56,10 +56,6 @@ h2 small {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
-
-  @media only screen and (max-device-width : 600px) {
-    width: 90%;
-  }
 }
 
 header {
@@ -117,6 +113,10 @@ footer {
 
   & a {
     text-decoration: none;
+  }
+
+  & .hint {
+    float: right;
   }
 
   /* The return key. An SVG arrow, since a ⏎ glyph lands differently in every fallback font. */
@@ -427,6 +427,13 @@ figure.tikz {
 /* Rambling and project lists. */
 li.draft {
   opacity: 0.25;
+}
+
+/* The ramblings, research and projects lists sit flush with the text around
+   them. */
+.posts, .projects {
+  list-style: none;
+  padding: 0;
 }
 
 /* A project's status: complete, partially complete, in progress or incomplete.
