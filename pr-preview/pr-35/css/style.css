@@ -38,6 +38,11 @@ pre::-webkit-scrollbar {
   border-left-color: #e0645a;
 }
 
+.highlight-block.other {
+  background: #e6effd;
+  border-left-color: #5a8ee0;
+}
+
 .highlight-block pre {
   margin: 0;
 }

@@ -1231,7 +1231,7 @@ values (<a href="https://github.com/rust-lang/rust/issues/132162">tracking issue
 belong in follow-ups to that RFC, and anonymous and named structs keep the
 same rules.
     <ul>
-      <li><strong>Non-const defaults.</strong> <code class="language-plaintext highlighter-rouge">hasher: S = RandomState::new()</code> needs a non-const
+      <li><strong>Non-const defaults.</strong> <code class="language-plaintext highlighter-rouge">hasher: S = S::default()</code> needs a non-const
 default. The tracking issue already has it as an open question (<a href="#non-const-defaults">Section
 5</a>).</li>
       <li><strong>API evolution.</strong> RFC 3681 doesn’t allow <code class="language-plaintext highlighter-rouge">#[non_exhaustive]</code> on structs
