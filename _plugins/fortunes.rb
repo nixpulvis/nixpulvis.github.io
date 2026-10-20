@@ -1,12 +1,6 @@
-# Read the fortune databases in fortunes/ into `site.data.fortunes`, newest
-# year first, for fortunes.md to render.
-#
-#     [{ "year" => "2024", "path" => "/fortunes/2024",
-#        "dat" => "/fortunes/2024.dat", "entries" => ["Loose cannons..."] }]
-#
-# Each file is in strfile's format: entries separated by a line holding only
-# `%`. An empty entry fails the build, since `fortune` would print nothing for
-# it. `dat` is nil when the file hasn't been compiled (see `make fortunes`).
+# Read each year's fortunes into `site.data.fortunes`, newest year first, for
+# fortunes.md to render. Entries are separated by a line holding only `%`, and
+# an empty entry fails the build. `dat` is nil until `make fortunes` has run.
 
 module Jekyll
   class FortunesGenerator < Generator
