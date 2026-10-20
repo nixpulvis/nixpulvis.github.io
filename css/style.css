@@ -429,11 +429,10 @@ li.draft {
   opacity: 0.25;
 }
 
-/* The ramblings, research and projects lists sit flush with the text around
-   them. */
+/* The ramblings, research and projects lists keep their bullets with only
+   enough indent to fit them. */
 .posts, .projects {
-  list-style: none;
-  padding: 0;
+  padding-left: 1em;
 }
 
 /* A project's status: complete, partially complete, in progress or incomplete.
