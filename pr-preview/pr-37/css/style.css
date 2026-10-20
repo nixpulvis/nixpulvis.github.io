@@ -1,7 +1,7 @@
 /* Shared values, used throughout. */
 :root {
-  --ink: black;
-  --paper: white;
+  --black: black;
+  --white: white;
   --text: #282c34;
   --muted: #555;
   --dark: #666;
@@ -15,7 +15,7 @@
   --highlight-red-edge: #e0645a;
   --highlight-blue: #e6effd;
   --highlight-blue-edge: #5a8ee0;
-  --dashed: 1px dashed var(--ink);
+  --dashed: 1px dashed var(--black);
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
 }
@@ -208,8 +208,8 @@ blockquote {
   padding: 5px 10px;
 
   @media print {
-    border-left: 3px solid var(--ink);
-    background-color: var(--paper);
+    border-left: 3px solid var(--black);
+    background-color: var(--white);
   }
 }
 
@@ -273,7 +273,7 @@ table {
   }
 
   & th, & td {
-    border: 1px solid var(--ink);
+    border: 1px solid var(--black);
     padding: 5px 10px;
   }
 
@@ -359,7 +359,7 @@ figure.tikz {
   @media print {
     & * {
       font-family: serif;
-      color: var(--ink);
+      color: var(--black);
     }
 
     & code {
