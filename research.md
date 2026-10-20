@@ -5,7 +5,7 @@ layout: default
 
 # Research
 
-<ul>
+<ul class="posts">
 {% for research in site.research %}
     {% if research.hidden %}
         {% continue %}
@@ -19,7 +19,7 @@ layout: default
 
 ### Notes
 
-<ul>
+<ul class="posts">
 {% for research in site.research %}
     {% if research.hidden %}
         {% continue %}
