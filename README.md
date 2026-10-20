@@ -52,6 +52,17 @@ specified in the YAML front-matter.
 Additional options may exist for some layouts, and should be documented at
 some point.
 
+#### Fortunes
+
+`fortunes/` holds a `fortune` database for each year. Add to this year's with:
+
+```sh
+bin/scribe
+```
+
+It opens `$EDITOR`, checks the entry, and appends it, creating the year's file
+if needed.
+
 #### Links
 
 Write site-internal links, images, and assets through `relative_url` so they
