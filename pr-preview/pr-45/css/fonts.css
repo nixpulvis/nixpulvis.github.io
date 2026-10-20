@@ -4,33 +4,37 @@
 /* Normal */
 @font-face {
   font-family: "Computer Modern Serif";
-  src: url('../font/Serif/cmunrm.woff') format('woff');
+  src: url('../font/Serif/cmunrm.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Italic */
 @font-face {
   font-family: "Computer Modern Serif";
-  src: url('../font/Serif/cmunti.woff') format('woff');
+  src: url('../font/Serif/cmunti.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Bold */
 @font-face {
   font-family: "Computer Modern Serif";
-  src: url('../font/Serif/cmunbx.woff') format('woff');
+  src: url('../font/Serif/cmunbx.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Bold Italic */
 @font-face {
   font-family: "Computer Modern Serif";
-  src: url('../font/Serif/cmunbi.woff') format('woff');
+  src: url('../font/Serif/cmunbi.woff2') format('woff2');
   font-weight: bold;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Sans
@@ -39,33 +43,37 @@
 /* Normal */
 @font-face {
   font-family: "Computer Modern Sans";
-  src: url('../font/Sans/cmunss.woff') format('woff');
+  src: url('../font/Sans/cmunss.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Italic */
 @font-face {
   font-family: "Computer Modern Sans";
-  src: url('../font/Sans/cmunsi.woff') format('woff');
+  src: url('../font/Sans/cmunsi.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Bold */
 @font-face {
   font-family: "Computer Modern Sans";
-  src: url('../font/Sans/cmunsx.woff') format('woff');
+  src: url('../font/Sans/cmunsx.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Bold Italic */
 @font-face {
   font-family: "Computer Modern Sans";
-  src: url('../font/Sans/cmunso.woff') format('woff');
+  src: url('../font/Sans/cmunso.woff2') format('woff2');
   font-weight: bold;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Typewriter
@@ -74,33 +82,37 @@
 /* Normal */
 @font-face {
   font-family: "Computer Modern Typewriter";
-  src: url('../font/Typewriter/cmuntt.woff') format('woff');
+  src: url('../font/Typewriter/cmuntt.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Italic */
 @font-face {
   font-family: "Computer Modern Typewriter";
-  src: url('../font/Typewriter/cmunit.woff') format('woff');
+  src: url('../font/Typewriter/cmunit.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Bold */
 @font-face {
   font-family: "Computer Modern Typewriter";
-  src: url('../font/Typewriter/cmuntb.woff') format('woff');
+  src: url('../font/Typewriter/cmuntb.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Bold Italic */
 @font-face {
   font-family: "Computer Modern Typewriter";
-  src: url('../font/Typewriter/cmuntx.woff') format('woff');
+  src: url('../font/Typewriter/cmuntx.woff2') format('woff2');
   font-weight: bold;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Pixel
@@ -109,8 +121,9 @@
 /* Normal */
 @font-face {
   font-family: "Pixel";
-  src: url('../font/Pixel/wendy.woff') format('woff');
+  src: url('../font/Pixel/wendy.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 

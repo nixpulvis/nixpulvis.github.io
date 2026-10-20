@@ -2,9 +2,10 @@
 :root {
   --black: black;
   --white: white;
+  --background: var(--white);
+  --border: var(--black);
   --text: #282c34;
   --muted: #555;
-  --dark: #666;
   --shadow: #777;
   --faint: #aaa;
   --mid: #ccc;
@@ -15,9 +16,28 @@
   --highlight-red-edge: #e0645a;
   --highlight-blue: #e6effd;
   --highlight-blue-edge: #5a8ee0;
-  --dashed: 1px dashed var(--black);
+  --highlight-green: #e3f6e3;
+  --highlight-green-edge: #4caf50;
+  --dashed: 1px dashed var(--border);
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
+
+  /* On screens only, so a printed page stays black on white. */
+  @media screen and (prefers-color-scheme: dark) {
+    color-scheme: dark;
+    --background: #161616;
+    --border: #777;
+    --text: #cacaca;
+    --muted: #999;
+    --shadow: black;
+    --faint: #666;
+    --mid: #3a3a3a;
+    --light: #282828;
+    --highlight: #352d17;
+    --highlight-red: #3b1f1d;
+    --highlight-blue: #1c2840;
+    --highlight-green: #1c331d;
+  }
 }
 
 html {
@@ -31,6 +51,7 @@ body {
   font-family: "Computer Modern Serif", serif;
   font-size: 18px;
   color: var(--text);
+  background: var(--background);
 }
 
 img {
@@ -54,13 +75,10 @@ h2 small {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
-
-  @media only screen and (max-device-width : 600px) {
-    width: 90%;
-  }
 }
 
 header {
+  position: relative;
   padding: 10px 0;
   border-bottom: var(--dashed);
 
@@ -70,9 +88,15 @@ header {
     float: right;
   }
 
+  /* Shown over the lambda, covering it. Clicks pass through to the lambda,
+     so another click hides it again. */
   & #me {
     position: absolute;
-    right: 80px;
+    top: 10px;
+    right: 0;
+    width: 70px;
+    object-fit: cover;
+    pointer-events: none;
   }
 
   & .identity {
@@ -115,6 +139,25 @@ footer {
 
   & a {
     text-decoration: none;
+  }
+
+  & .hint {
+    float: right;
+  }
+
+  /* The return key. An SVG arrow, since a ⏎ glyph lands differently in every fallback font. */
+  & kbd {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 4px;
+
+    & svg {
+      width: 10px;
+      height: 8px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.2;
+    }
   }
 
   /* Links to this page in the repository: source, history and issues. */
@@ -261,6 +304,11 @@ summary {
       left: var(--details-gutter);
       margin-left: 0;
     }
+
+    /* After the marker, not floated past it. */
+    &.cramped > .anchor {
+      float: none;
+    }
   }
 }
 
@@ -270,6 +318,8 @@ kbd {
   padding: 2px 4px 0px;
   box-shadow: 1px 1px 1px var(--shadow);
   font-size: calc(100% - 6px);
+  /* A fixed height, so a fallback font's tall metrics don't push the key up. */
+  line-height: 1;
   vertical-align: middle;
   background: var(--light);
   color: var(--muted);
@@ -289,13 +339,13 @@ table {
   }
 
   & th, & td {
-    border: 1px solid var(--black);
+    border: 1px solid var(--border);
     padding: 5px 10px;
   }
 
+  /* Plain text, so links read the same as in the body, set off by a double rule. */
   & th {
-    color: var(--light);
-    background-color: var(--dark);
+    border-bottom: 3px double var(--border);
   }
 }
 
@@ -359,6 +409,22 @@ figure.tikz {
     color: inherit;
   }
 
+  /* No room in the margin, so at the start of the heading, pushing its text
+     over while shown. Floated, so the whitespace that starts a title from the
+     layouts still collapses. */
+  .cramped > & {
+    position: static;
+    float: left;
+    width: auto;
+    margin-left: 0;
+    display: none;
+  }
+
+  .cramped:hover > &,
+  .cramped > &:focus {
+    display: inline;
+  }
+
   @media print {
     display: none;
   }
@@ -374,10 +440,8 @@ figure.tikz {
   z-index: 10;
   display: flex;
   gap: 5px;
-  max-width: min(360px, calc(100vw - 20px));
-  box-sizing: border-box;
   padding: 5px;
-  background: var(--white);
+  background: var(--background);
   border: var(--dashed);
   border-radius: 5px;
   box-shadow: 1px 1px 3px var(--shadow);
@@ -393,38 +457,6 @@ figure.tikz {
     cursor: pointer;
   }
 
-  & form {
-    width: 340px;
-    max-width: 100%;
-
-    & input, & textarea, & button {
-      margin: 0 0 5px;
-      font: inherit;
-    }
-
-    & input[type=email], & textarea {
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    & .trap {
-      position: absolute;
-      left: -9999px;
-    }
-
-    & .actions {
-      display: flex;
-      gap: 5px;
-    }
-  }
-
-  & blockquote {
-    margin: 0 0 5px;
-    border-left-width: 3px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
   @media print {
     display: none;
   }
@@ -435,6 +467,67 @@ figure.tikz {
   margin: 5px 0 0;
   font-size: 12px;
   color: var(--muted);
+
+  /* Shows or hides Hypothesis, and opens its panel on phones, from js/feedback.js. */
+  & .comments-toggle, & .comments-open {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-decoration: underline dotted;
+    cursor: pointer;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  & .comments-open {
+    margin-left: 5px;
+  }
+}
+
+/* Hypothesis's sidebar on phones: `<div class="comments-panel">`, added by js/feedback.js. */
+.comments-panel {
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  border-top: var(--dashed);
+  box-shadow: 0 -1px 3px var(--shadow);
+
+  &[hidden] {
+    display: none;
+  }
+
+  & .close {
+    align-self: flex-end;
+    margin: 5px 10px;
+    padding: 3px 8px;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  & .frame {
+    flex: 1;
+
+    & iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+
+  @media print {
+    display: none;
+  }
 }
 
 /* Hypothesis's own toolbar on a selection, which .feedback replaces. */
@@ -463,6 +556,55 @@ li.draft {
   opacity: 0.25;
 }
 
+/* The ramblings, research and projects lists keep their bullets with only
+   enough indent to fit them. */
+.posts, .projects {
+  padding-left: 1em;
+}
+
+/* A post's word count and date go on their own line under the title. */
+.posts small {
+  display: block;
+}
+
+/* A project's status: complete, partially complete, in progress or incomplete.
+   Floated to the right of the title it comes before, so a long title wraps
+   around it, and nudged down to sit centered on the title's text. */
+.status {
+  float: right;
+  margin: 2px 0 0 10px;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 0 5px;
+  border: 1px solid var(--faint);
+  border-radius: 5px;
+  background: var(--light);
+
+  h2 > & {
+    margin-top: 8px;
+  }
+
+  &.complete {
+    background: var(--highlight-green);
+    border-color: var(--highlight-green-edge);
+  }
+
+  &.partially-complete {
+    background: var(--highlight);
+    border-color: var(--highlight-edge);
+  }
+
+  &.in-progress {
+    background: var(--highlight-blue);
+    border-color: var(--highlight-blue-edge);
+  }
+
+  &.incomplete {
+    background: var(--highlight-red);
+    border-color: var(--highlight-red-edge);
+  }
+}
+
 .references {
   background: var(--light);
   border: var(--dashed);
@@ -477,6 +619,24 @@ li.draft {
   }
 }
 
+/* fortunes.md: each entry keeps its own line breaks and indentation. */
+.fortunes {
+  list-style: none;
+  padding: 0;
+
+  & li {
+    white-space: pre-wrap;
+    margin: 0 0 1em;
+    padding-left: 10px;
+    border-left: 2px solid var(--mid);
+  }
+}
+
+/* The 404 page's pretend shell. */
+.not-found {
+  white-space: pre-wrap;
+}
+
 .hidden {
   visibility: hidden;
 }
@@ -484,7 +644,6 @@ li.draft {
 .nintendo {
   font-family: "Pixel";
   letter-spacing: 0px;
-  font-variant: caps;
 }
 
 @media print {

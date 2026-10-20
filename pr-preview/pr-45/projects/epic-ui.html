@@ -4,37 +4,52 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>nixpulvis - Epic UI</title>
+    
+    
+    <meta name="description" content="I used to be an avid World of Warcraft player, raiding bosses many times a week with my guild. In order to get the most out of my own performance I forked an..." />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Epic UI" />
+    <meta property="og:description" content="I used to be an avid World of Warcraft player, raiding bosses many times a week with my guild. In order to get the most out of my own performance I forked an..." />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-45/projects/epic-ui" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-45/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
     <link rel="icon" type="image/png" href="/pr-preview/pr-45/img/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/pr-preview/pr-45/img/favicon-16x16.png" sizes="16x16" />
     <link rel="icon" href="/pr-preview/pr-45/favicon.ico" sizes="48x48" />
     <link rel="apple-touch-icon" href="/pr-preview/pr-45/apple-touch-icon.png" sizes="180x180" />
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-45/feed.xml" />
     <link rel="stylesheet" type="text/css" href="/pr-preview/pr-45/css/fonts.css" />
     <link rel="stylesheet" href="/pr-preview/pr-45/css/style.css">
     <link rel="stylesheet" href="/pr-preview/pr-45/css/syntax.css">
     
-    <script src="/pr-preview/pr-45/js/mousetrap.min.js"></script>
-    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <script src="/pr-preview/pr-45/js/main.js"></script>
+    <script defer src="/pr-preview/pr-45/js/mousetrap.min.js"></script>
+    
+    <script defer src="/pr-preview/pr-45/js/main.js"></script>
     
     
   </head>
 
   <body class="container">
     <header>
-      <img id="lambda" src="/pr-preview/pr-45/img/cat-lambda.png" />
-      <img id="me" src="/pr-preview/pr-45/img/me.jpg" class="hidden" />
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-45/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-45/img/me.jpg" class="hidden" />
       <a href="/pr-preview/pr-45/" class="identity">nixpulvis</a>
       <nav>
         <ul>
           <li><a href="/pr-preview/pr-45/projects">Projects</a></li>
           <li><a href="/pr-preview/pr-45/ramblings">Ramblings</a></li>
-          <li class="icon"><a href="/pr-preview/pr-45/references">&</a></li>
-          <li class="icon"><a href="/pr-preview/pr-45/musings">♪</a></li>
+          <li class="icon"><a href="/pr-preview/pr-45/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+          <li class="icon"><a href="/pr-preview/pr-45/references" title="References" aria-label="References">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-45/musings" title="Music" aria-label="Music">♪</a></li>
         </ul>
       </nav>
     </header>
 
-    <div class="content"><h2 class="title">Epic UI</h2>
+    <div class="content"><h2 class="title">
+    <span class="status complete">complete</span>
+    Epic UI
+</h2>
 
 <ul class="references">
 
@@ -56,7 +71,7 @@ customized my UI with addons that let me drag around boxes, and put things
 inside them. All from within the game, and without a single line of code.
 <strong>At this point in my life I had never written any code.</strong></p>
 
-<p><img src="/pr-preview/pr-45/img/epic-ui/pretukui.jpg" alt="" /></p>
+<p><img src="/pr-preview/pr-45/img/epic-ui/pretukui.jpg" alt="World of Warcraft screenshot of my boxy UI before Tukui" /></p>
 
 <p>As you can see the result was a very “boxy” UI, and not one that I was very
 happy with. I was developing an opinion that the raider (PvE WoW player) is
@@ -83,7 +98,7 @@ more changes I learned more and more about LUA, and the <a href="http://wowprogr
 claw next to them in the screenshot) have player info in the middle, a design
 I’m glad to have dropped.</p>
 
-<p><img src="/pr-preview/pr-45/img/epic-ui/early.jpg" alt="" /></p>
+<p><img src="/pr-preview/pr-45/img/epic-ui/early.jpg" alt="Early version of Epic UI in World of Warcraft" /></p>
 
 <p>Many other features were added, most notably a “buff” tracker (under the
 minimap), to ensure I had every advantage possible before each boss fight.
@@ -96,12 +111,12 @@ which I had become a regular member of.</p>
 friends of mine started to use my UI, and I created a bit of a brand for the
 whole thing.</p>
 
-<p><img src="/pr-preview/pr-45/img/epic-ui/epicui_banner_v1.jpg" alt="" /></p>
+<p><img src="/pr-preview/pr-45/img/epic-ui/epicui_banner_v1.jpg" alt="Epic UI banner logo" /></p>
 
 <p>As the style grew, I updated the banner logo, and even started to version
 things (sadly 2.1.1 was the last version).</p>
 
-<p><img src="/pr-preview/pr-45/img/epic-ui/epicui_banner_v2.png" alt="" /></p>
+<p><img src="/pr-preview/pr-45/img/epic-ui/epicui_banner_v2.png" alt="Epic UI version 2.1.1 banner logo" /></p>
 
 <p>In EpicUI 2.0 I decided to move the power bar (mana/etc) to the border of the
 unitframes. This was in many ways what distinguished my UI from the rest. Even
@@ -113,7 +128,7 @@ building a UI that handles them all consistently is no small task.</p>
 UI wasn’t optimal for this role, so I started further customizing it for each
 class/spec.</p>
 
-<p><img src="/pr-preview/pr-45/img/epic-ui/healing_uf.png" alt="" /></p>
+<p><img src="/pr-preview/pr-45/img/epic-ui/healing_uf.png" alt="Shaman healer layout with labels for the class icon, timers, totem bars, mana bar and action bar" /></p>
 
 <p>I only ever made the base (caster DPS), and shaman healer layouts however.</p>
 
@@ -125,7 +140,7 @@ can have very dramatic effect. Below I managed to capture a bug that blocked a
 good part of my screen while fighting a new progression boss in Firelands,
 Majordomo Staghelm.</p>
 
-<p><img src="/pr-preview/pr-45/img/epic-ui/bug.jpg" alt="" /></p>
+<p><img src="/pr-preview/pr-45/img/epic-ui/bug.jpg" alt="UI bug blocking part of the screen during the Majordomo Staghelm fight" /></p>
 
 <p>Other bugs have caused me to be unable to perform actions, or see needed boss
 abilities. It was a delicate act balancing developing my UI, and maintaining
@@ -147,7 +162,7 @@ should be easy to figure out. Sure enough after only a few hours of programming
 I had a simple addon that would calculate the “proc-rate”, even if the addon
 looked like garbage.</p>
 
-<p><img src="/pr-preview/pr-45/img/epic-ui/dragonwrath.png" alt="" /></p>
+<p><img src="/pr-preview/pr-45/img/epic-ui/dragonwrath.png" alt="Dragonwrath Counter addon showing proc rates for Starsurge, Wrath and Starfire" /></p>
 
 <h4 id="a-hack-to-progress">A Hack to Progress</h4>
 
@@ -201,7 +216,7 @@ owe it all to a little LUA and a lot of help from the members of Tukui.</p>
 
 <p>– <cite>Epicgrim</cite></p>
 
-<p><img src="/pr-preview/pr-45/img/epic-ui/invincible.jpg" alt="" /></p>
+<p><img src="/pr-preview/pr-45/img/epic-ui/invincible.jpg" alt="Riding Invincible past a castle wall at sunset" /></p>
 
 
 </div>
@@ -213,8 +228,8 @@ owe it all to a little LUA and a lot of help from the members of Tukui.</p>
          class="copyleft"
          title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
       2026
-      <span style="float:right;">
-        You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
       </span>
       <p class="source">
         This page:
