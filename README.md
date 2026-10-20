@@ -5,8 +5,9 @@ hosted on GitHub Pages (a service which I love).
 
 ## Setup
 
-Running Jekyll requires a modern version of Ruby. See your operating system's
-help for installing that.
+The Gemfile requires the exact Ruby version in `.ruby-version` (currently
+4.0.7), so `bundle install` fails on anything else. A version manager like
+`rbenv`, `chruby` or `asdf` will pick it up from that file.
 
 ```sh
 # Only if you don't already have bundler.
@@ -16,7 +17,7 @@ gem install bundler
 bundle install
 
 # Start up a local webserver on port 4000 (by default).
-jekyll serve
+bundle exec jekyll serve
 ```
 
 TikZ figures (`_plugins/tikz.rb`) also need `latex` and `dvisvgm` from TeX Live,
