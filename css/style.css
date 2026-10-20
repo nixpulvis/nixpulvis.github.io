@@ -441,7 +441,7 @@ figure.tikz {
   display: flex;
   gap: 5px;
   padding: 5px;
-  background: var(--white);
+  background: var(--background);
   border: var(--dashed);
   border-radius: 5px;
   box-shadow: 1px 1px 3px var(--shadow);
@@ -465,6 +465,7 @@ figure.tikz {
 .feedback-hint {
   clear: both;
   margin: 5px 0 0;
+  font-size: 12px;
   color: var(--muted);
 
   /* Shows or hides Hypothesis, and opens its panel on phones, from js/feedback.js. */
@@ -497,7 +498,7 @@ figure.tikz {
   height: 60vh;
   display: flex;
   flex-direction: column;
-  background: var(--white);
+  background: var(--background);
   border-top: var(--dashed);
   box-shadow: 0 -1px 3px var(--shadow);
 
