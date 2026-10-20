@@ -275,6 +275,8 @@ kbd {
   padding: 2px 4px 0px;
   box-shadow: 1px 1px 1px var(--shadow);
   font-size: calc(100% - 6px);
+  /* A fixed height, so a fallback font's tall metrics (like the footer's ⏎) don't push the key up. */
+  line-height: 1;
   vertical-align: middle;
   background: var(--light);
   color: var(--muted);
