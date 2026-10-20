@@ -117,6 +117,22 @@ footer {
     text-decoration: none;
   }
 
+  /* Links to this page in the repository: source, history and issues. */
+  & .source {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+
+    & a {
+      color: inherit;
+      text-decoration: underline dotted;
+    }
+
+    & .issues {
+      float: right;
+    }
+  }
+
   & .copyleft {
     display: inline-block;
     margin-right: -3px;
