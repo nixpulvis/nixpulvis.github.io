@@ -58,13 +58,6 @@ h2 small {
   @media only screen and (max-device-width : 600px) {
     width: 90%;
   }
-
-  /* Room in the margin for a heading's anchor, 1.25em of a 2em `h1`, when
-     there's a pointer to hover headings with. */
-  @media (hover: hover) and (max-width: 700px) {
-    width: auto;
-    padding: 0 2.5em;
-  }
 }
 
 header {
@@ -249,6 +242,10 @@ details {
   /* Past the dashed border. */
   & .anchor {
     margin-left: var(--details-gutter);
+
+    @media (max-width: 700px) {
+      margin-left: 0;
+    }
   }
 }
 
@@ -364,6 +361,20 @@ figure.tikz {
 
   &:hover {
     color: inherit;
+  }
+
+  /* No room in the margin, so at the start of the heading, pushing its text
+     over while shown. */
+  @media (max-width: 700px) {
+    position: static;
+    width: auto;
+    margin-left: 0;
+    display: none;
+
+    :is(h1, h2, h3, h4, h5, h6):hover > &,
+    &:focus {
+      display: inline;
+    }
   }
 
   @media print {
