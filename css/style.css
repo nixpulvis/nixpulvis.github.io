@@ -242,10 +242,6 @@ details {
   /* Past the dashed border. */
   & .anchor {
     margin-left: var(--details-gutter);
-
-    @media (max-width: 700px) {
-      margin-left: 0;
-    }
   }
 }
 
@@ -264,11 +260,11 @@ summary {
     & > .anchor {
       left: var(--details-gutter);
       margin-left: 0;
+    }
 
-      /* After the marker, not floated past it. */
-      @media (max-width: 700px) {
-        float: none;
-      }
+    /* After the marker, not floated past it. */
+    &.cramped > .anchor {
+      float: none;
     }
   }
 }
@@ -371,17 +367,17 @@ figure.tikz {
   /* No room in the margin, so at the start of the heading, pushing its text
      over while shown. Floated, so the whitespace that starts a title from the
      layouts still collapses. */
-  @media (max-width: 700px) {
+  .cramped > & {
     position: static;
     float: left;
     width: auto;
     margin-left: 0;
     display: none;
+  }
 
-    :is(h1, h2, h3, h4, h5, h6):hover > &,
-    &:focus {
-      display: inline;
-    }
+  .cramped:hover > &,
+  .cramped > &:focus {
+    display: inline;
   }
 
   @media print {
