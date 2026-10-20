@@ -13,8 +13,8 @@
   --highlight-edge: #f0c94a;
   --highlight-red: #fde8e6;
   --highlight-red-edge: #e0645a;
-  --highlight-other: #e6effd;
-  --highlight-other-edge: #5a8ee0;
+  --highlight-blue: #e6effd;
+  --highlight-blue-edge: #5a8ee0;
   --dashed: 1px dashed var(--ink);
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
@@ -166,8 +166,8 @@ code {
   }
 
   &.other {
-    background: var(--highlight-other);
-    border-left-color: var(--highlight-other-edge);
+    background: var(--highlight-blue);
+    border-left-color: var(--highlight-blue-edge);
   }
 
   & pre {
