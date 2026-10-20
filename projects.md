@@ -25,10 +25,10 @@ the projects themselves.
     {% endif %}
     {% unless project.draft %}
         <li class="project">
-            <a class="name" href="{{ project.url | relative_url }}">
-                {{ project.title }}
-            </a>
             {% if project.status %}<span class="status {{ project.status | slugify }}">{{ project.status }}</span>{% endif %}
+            <a class="name" href="{{ project.url | relative_url }}">
+                {{- project.title -}}
+            </a>
             {{ project.excerpt }}
         </li>
     {% endunless %}
@@ -39,10 +39,10 @@ the projects themselves.
 {% for project in site.projects %}
     {% if project.draft %}
         <li class="project draft">
-            <a class="name" href="{{ project.url | relative_url }}">
-                {{ project.title }}
-            </a>
             {% if project.status %}<span class="status {{ project.status | slugify }}">{{ project.status }}</span>{% endif %}
+            <a class="name" href="{{ project.url | relative_url }}">
+                {{- project.title -}}
+            </a>
             {{ project.excerpt }}
         </li>
     {% endif %}
