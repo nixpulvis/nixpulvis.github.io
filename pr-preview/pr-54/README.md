@@ -77,7 +77,7 @@ Write site-internal links, images, and assets through `relative_url` so they
 keep working when the site is built under a sub-path (PR previews):
 
 ```md
-![]({{ '/img/photo.jpg' | relative_url }})
+![Photo]({{ '/img/photo.jpg' | relative_url }})
 [Ramblings]({{ '/ramblings' | relative_url }})
 ```
 

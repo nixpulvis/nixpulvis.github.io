@@ -20,16 +20,16 @@
 
   <body class="container">
     <header>
-      <img id="lambda" src="/pr-preview/pr-54/img/cat-lambda.png" />
-      <img id="me" src="/pr-preview/pr-54/img/me.jpg" class="hidden" />
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-54/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-54/img/me.jpg" class="hidden" />
       <a href="/pr-preview/pr-54/" class="identity">nixpulvis</a>
       <nav>
         <ul>
           <li><a href="/pr-preview/pr-54/projects">Projects</a></li>
           <li><a href="/pr-preview/pr-54/ramblings">Ramblings</a></li>
-          <li class="icon"><a href="/pr-preview/pr-54/fortunes/" title="Fortunes">%</a></li>
-          <li class="icon"><a href="/pr-preview/pr-54/references">&</a></li>
-          <li class="icon"><a href="/pr-preview/pr-54/musings">♪</a></li>
+          <li class="icon"><a href="/pr-preview/pr-54/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+          <li class="icon"><a href="/pr-preview/pr-54/references" title="References" aria-label="References">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-54/musings" title="Music" aria-label="Music">♪</a></li>
         </ul>
       </nav>
     </header>
@@ -111,7 +111,7 @@ than a checksum of the contents of the package.</p>
 to validate the ownership of a secret key. Other distributions have a blessed
 list of keys, held by the trusted members of the team or community.</p>
 
-<p><img src="/pr-preview/pr-54/img/ramblings/software-packaging/signing-warning.png" height="500px" /></p>
+<p><img alt="Windows protected your PC warning for Alacritty" src="/pr-preview/pr-54/img/ramblings/software-packaging/signing-warning.png" height="500px" /></p>
 
 <p>The dialog above is what Windows users will see when launching Alacritty for
 the first time when downloaded directly. This is because we do not pay for and
@@ -129,7 +129,7 @@ was created by, notarization offers the distribution platform a way to
 invalidate releases of the software as they become flagged as malware. Apple is
 the primary platform pushing this distribution requirement.</p>
 
-<p><img src="/pr-preview/pr-54/img/ramblings/software-packaging/notarization-warning.png" height="500px" /></p>
+<p><img alt="macOS warning that Alacritty cannot be opened because the developer cannot be verified" src="/pr-preview/pr-54/img/ramblings/software-packaging/notarization-warning.png" height="500px" /></p>
 
 <p>This works by flagging software as <em>quarantined</em> until, upon the first launch,
 the software notarization is checked. On macOS this flag can be removed either
@@ -185,7 +185,7 @@ community) by building it yourself</p>
  $ cargo build
 </code></pre></div>    </div>
 
-    <p><img src="/pr-preview/pr-54/img/ramblings/software-packaging/building.png" /></p>
+    <p><img alt="Terminal output of cargo compiling Alacritty's dependencies" src="/pr-preview/pr-54/img/ramblings/software-packaging/building.png" /></p>
   </li>
 </ol>
 
