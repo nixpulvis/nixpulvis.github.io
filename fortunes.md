@@ -11,17 +11,17 @@ remember thinking. Each year is kept as a [database for `fortune`]({% link
 _ramblings/2018-06-26-fortune.md %}), so they find me at random, the way they
 found me originally.
 
-{% for year in site.data.fortunes %}
-{% if year.entries.size == 0 %}{% continue %}{% endif %}
-<h2 id="{{ year.year }}">
-    {{ year.year }}
+{% for database in site.data.fortunes %}
+{% if database.entries.size == 0 %}{% continue %}{% endif %}
+<h2 id="{{ database.year }}">
+    {{ database.year }}
     <small>
-        <a href="{{ year.path | relative_url }}">text</a>{% if year.dat %},
-        <a href="{{ year.dat | relative_url }}">dat</a>{% endif %}
+        <a href="{{ database.path | relative_url }}">text</a>{% if database.dat %},
+        <a href="{{ database.dat | relative_url }}">dat</a>{% endif %}
     </small>
 </h2>
 <ul class="fortunes">
-{% for entry in year.entries %}
+{% for entry in database.entries %}
     <li>{{ entry | escape }}</li>
 {% endfor %}
 </ul>
