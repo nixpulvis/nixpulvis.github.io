@@ -16,12 +16,68 @@ body {
 
 pre {
   overflow-x: auto;
+  overflow-y: hidden;
   -ms-overflow-style: none;
   overflow: -moz-scrollbars-none;
 }
 
 pre::-webkit-scrollbar {
   display: none;
+}
+
+/* Highlighted code blocks: `<div class="highlight-block" markdown="1">` around the fence. */
+.highlight-block {
+  background: #fff6db;
+  border-left: 2px solid #f0c94a;
+  margin: 1em 0;
+  padding: 5px 10px;
+}
+
+.highlight-block.red {
+  background: #fde8e6;
+  border-left-color: #e0645a;
+}
+
+.highlight-block.other {
+  background: #e6effd;
+  border-left-color: #5a8ee0;
+}
+
+.highlight-block pre {
+  margin: 0;
+}
+
+.highlight-block > :first-child {
+  margin-top: 0;
+}
+
+.highlight-block > :last-child {
+  margin-bottom: 0;
+}
+
+/* Inline new syntax: `` `code`{:.new-syntax} ``, matching `.highlight-block`. */
+code.new-syntax {
+  background: #fff6db;
+  box-shadow: inset 0 -2px #f0c94a;
+  padding: 0 2px;
+}
+
+/* Asides: `<div class="aside" markdown="1">` around the paragraphs. */
+.aside {
+  border: 1px dashed #aaa;
+  border-radius: 5px;
+  color: #555;
+  font-size: 16px;
+  margin: 1.5em 0;
+  padding: 10px 15px;
+}
+
+.aside > :first-child {
+  margin-top: 0;
+}
+
+.aside > :last-child {
+  margin-bottom: 0;
 }
 
 code {
@@ -36,7 +92,6 @@ blockquote {
 }
 
 details {
-  cursor: pointer;
   margin: 0 0 15px;
   padding: 10px;
   border: 1px dashed black;
@@ -45,6 +100,25 @@ details {
 
 details :last-child {
   margin-bottom: 0;
+}
+
+summary {
+  cursor: pointer;
+}
+
+/* Section headings as summaries: `<summary markdown="1">` around `### …`. */
+summary:has(> :is(h1, h2, h3, h4, h5, h6)) {
+  position: relative;
+}
+
+summary > :is(h1, h2, h3, h4, h5, h6) {
+  display: inline;
+}
+
+/* Past the disclosure marker too: placed from the summary's edge, not the heading's. */
+summary > :is(h1, h2, h3, h4, h5, h6) > .anchor {
+  left: calc(-1.25em - 11px);
+  margin-left: 0;
 }
 
 hr {
@@ -68,6 +142,9 @@ kbd {
 table {
   text-align: left;
   border-collapse: collapse;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 table tr:nth-child(even) {
@@ -209,6 +286,36 @@ h2 small {
   font-size: 16px;
 }
 
+/* Heading links: `<a class="anchor">`, added by js/main.js. */
+.anchor {
+  position: absolute;
+  width: 1em;
+  margin-left: -1.25em;
+  padding-right: 0.25em;
+  text-align: right;
+  color: #aaa;
+  text-decoration: none;
+  visibility: hidden;
+}
+
+.anchored {
+  cursor: pointer;
+}
+
+/* Past the dashed border: `details` has 10px padding and a 1px border. */
+details .anchor {
+  margin-left: calc(-1.25em - 11px);
+}
+
+:is(h1, h2, h3, h4, h5, h6):hover > .anchor,
+.anchor:focus {
+  visibility: visible;
+}
+
+.anchor:hover {
+  color: inherit;
+}
+
 /* h1 a, */
 /* h1 a:link, */
 /* h1 a:active, */
@@ -297,6 +404,10 @@ li.draft {
   blockquote {
     border-left: 3px solid black;
     background-color: white;
+  }
+
+  .anchor {
+    display: none;
   }
 
   h2:first-child {

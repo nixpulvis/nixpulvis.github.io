@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<h2>{{ page.title }}</h2>
+<h2 class="title">{{ page.title }}</h2>
 
 <ul class="references">
 {% for reference in page.references %}
