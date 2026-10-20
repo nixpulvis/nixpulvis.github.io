@@ -13,23 +13,7 @@ layout: default
     {% unless research.path contains '/articles/' %}
         {% continue %}
     {% endunless %}
-    {% if research.draft %}
-        <li class="draft">
-            <a href="{{ research.url | relative_url }}">{{ research.title }}</a>
-            <small>
-                {{ research.content | strip_html | number_of_words }} words
-                drafted on {{ research.date | date: "%B %d, %Y" }}.
-            </small>
-        </li>
-    {% else %}
-        <li>
-            <a href="{{ research.url | relative_url }}">{{ research.title }}</a>
-            <small>
-                {{ research.content | strip_html | number_of_words }} words
-                published on {{ research.date | date: "%B %d, %Y" }}.
-            </small>
-        </li>
-    {% endif %}
+    {% include post-item.html post=research %}
 {% endfor %}
 </ul>
 
@@ -43,22 +27,6 @@ layout: default
     {% unless research.path contains '/notes/' %}
         {% continue %}
     {% endunless %}
-    {% if research.draft %}
-        <li class="draft">
-            <a href="{{ research.url | relative_url }}">{{ research.title }}</a>
-            <small>
-                {{ research.content | strip_html | number_of_words }} words
-                drafted on {{ research.date | date: "%B %d, %Y" }}.
-            </small>
-        </li>
-    {% else %}
-        <li>
-            <a href="{{ research.url | relative_url }}">{{ research.title }}</a>
-            <small>
-                {{ research.content | strip_html | number_of_words }} words
-                published on {{ research.date | date: "%B %d, %Y" }}.
-            </small>
-        </li>
-    {% endif %}
+    {% include post-item.html post=research %}
 {% endfor %}
 </ul>

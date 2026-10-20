@@ -22,22 +22,6 @@ assign ramblings = site.ramblings
     {% if rambling.hidden %}
         {% continue %}
     {% endif %}
-    {% if rambling.draft %}
-        <li class="draft">
-            <a href="{{ rambling.url | relative_url }}">{{ rambling.title }}</a>
-            <small>
-                {{ rambling.content | strip_html | number_of_words }} words
-                drafted on {{ rambling.date | date: "%B %d, %Y" }}.
-            </small>
-        </li>
-    {% else %}
-        <li>
-            <a href="{{ rambling.url | relative_url }}">{{ rambling.title }}</a>
-            <small>
-                {{ rambling.content | strip_html | number_of_words }} words
-                published on {{ rambling.date | date: "%B %d, %Y" }}.
-            </small>
-        </li>
-    {% endif %}
+    {% include post-item.html post=rambling %}
 {% endfor %}
 </ul>

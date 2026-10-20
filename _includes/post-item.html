@@ -1,0 +1,7 @@
+<li{% if include.post.draft %} class="draft"{% endif %}>
+    <a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
+    <small>
+        {{ include.post.content | strip_html | number_of_words }} words
+        {% if include.post.draft %}drafted{% else %}published{% endif %} on {{ include.post.date | date: "%B %d, %Y" }}.
+    </small>
+</li>

@@ -1,0 +1,7 @@
+<li class="project{% if include.project.draft %} draft{% endif %}">
+    {% if include.project.status %}<span class="status {{ include.project.status | slugify }}">{{ include.project.status }}</span>{% endif %}
+    <a class="name" href="{{ include.project.url | relative_url }}">
+        {{- include.project.title -}}
+    </a>
+    {{ include.project.excerpt }}
+</li>
