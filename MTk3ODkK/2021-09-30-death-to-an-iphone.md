@@ -1,6 +1,7 @@
 ---
 title: Death to an iPhone
-layout: rambling
+layout: default
+style: /css/MTk3ODkK.css
 ---
 
 On a personal note, yesterday I destroyed my last iPhone.

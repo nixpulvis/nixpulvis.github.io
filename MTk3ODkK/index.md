@@ -58,6 +58,7 @@ Love/
     [Fairy Tale](fairy-tale)
     [The Moon](moon)
 
+[2021-09-30-death-to-an-iphone](2021-09-30-death-to-an-iphone)
 [2023-10-23-reflections-of-a-photo](2023-10-23-reflections-of-a-photo)
 
          (λ(f)(λ
