@@ -1,4 +1,4 @@
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Toggle my hidden, ugly mug.
   document.getElementById("lambda").addEventListener("click", (e) => {
     document.getElementById("me").classList.toggle("hidden");
@@ -32,4 +32,4 @@ window.onload = () => {
       anchor.click();
     });
   });
-};
+});
