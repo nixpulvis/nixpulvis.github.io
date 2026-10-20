@@ -3,10 +3,7 @@ console.log(
   "%c  \\\n   \\\n   /\\\n  /  \\\n /    \\",
   "font: bold 16px monospace; line-height: 1;"
 );
-console.log(
-  "Poking around? The source is at https://github.com/nixpulvis/nixpulvis.github.io\n" +
-  "There's more here than the nav shows. Try ↑ ↑ ↓ ↓ ← → ← → b a ⏎"
-);
+console.log("Poking around? The source is at https://github.com/nixpulvis/nixpulvis.github.io");
 
 document.addEventListener("DOMContentLoaded", () => {
   // Toggle my hidden, ugly mug.
