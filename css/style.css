@@ -410,6 +410,32 @@ li.draft {
   opacity: 0.25;
 }
 
+/* A project's status, one of complete, active, stopped or abandoned. */
+.status {
+  font-size: 14px;
+  font-weight: normal;
+  vertical-align: middle;
+  padding: 0 5px;
+  border: 1px solid var(--faint);
+  border-radius: 5px;
+  background: var(--light);
+
+  &.complete {
+    background: var(--highlight);
+    border-color: var(--highlight-edge);
+  }
+
+  &.active {
+    background: var(--highlight-blue);
+    border-color: var(--highlight-blue-edge);
+  }
+
+  &.abandoned {
+    background: var(--highlight-red);
+    border-color: var(--highlight-red-edge);
+  }
+}
+
 .references {
   background: var(--light);
   border: var(--dashed);

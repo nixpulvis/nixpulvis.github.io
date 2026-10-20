@@ -28,6 +28,7 @@ the projects themselves.
             <a class="name" href="{{ project.url | relative_url }}">
                 {{ project.title }}
             </a>
+            {% if project.status %}<span class="status {{ project.status }}">{{ project.status }}</span>{% endif %}
             {{ project.excerpt }}
         </li>
     {% endunless %}
@@ -41,6 +42,7 @@ the projects themselves.
             <a class="name" href="{{ project.url | relative_url }}">
                 {{ project.title }}
             </a>
+            {% if project.status %}<span class="status {{ project.status }}">{{ project.status }}</span>{% endif %}
             {{ project.excerpt }}
         </li>
     {% endif %}
