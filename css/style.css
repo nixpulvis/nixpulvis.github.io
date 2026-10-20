@@ -387,6 +387,19 @@ li.draft {
   }
 }
 
+/* fortunes.md: each entry keeps its own line breaks and indentation. */
+.fortunes {
+  list-style: none;
+  padding: 0;
+
+  & li {
+    white-space: pre-wrap;
+    margin: 0 0 1em;
+    padding-left: 10px;
+    border-left: 2px solid var(--mid);
+  }
+}
+
 .hidden {
   visibility: hidden;
 }
