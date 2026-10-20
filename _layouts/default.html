@@ -6,8 +6,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>nixpulvis - {{ page.title | default: page.path | split:'/' | last }}</title>
-    {% assign description = page.description | default: page.excerpt | default: site.description %}
-    <meta name="description" content="{{ description | strip_html | normalize_whitespace | truncate: 160 | escape }}" />
+    {% assign excerpt = page.excerpt | strip_html | normalize_whitespace | strip %}
+    {% assign description = page.description | default: excerpt | default: site.description %}
+    <meta name="description" content="{{ description | strip_html | normalize_whitespace | truncate: 160 | escape_once }}" />
     <link rel="icon" type="image/png" href="{{ '/img/favicon-32x32.png' | relative_url }}" sizes="32x32" />
     <link rel="icon" type="image/png" href="{{ '/img/favicon-16x16.png' | relative_url }}" sizes="16x16" />
     <link rel="icon" href="{{ '/favicon.ico' | relative_url }}" sizes="48x48" />
