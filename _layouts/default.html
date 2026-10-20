@@ -16,13 +16,13 @@
     {% if page.style %}
       <link rel="stylesheet" href="{{ page.style | relative_url }}" />
     {% endif %}
-    <script src="{{ '/js/mousetrap.min.js' | relative_url }}"></script>
+    <script defer src="{{ '/js/mousetrap.min.js' | relative_url }}"></script>
     {% if content contains '\(' or content contains '\[' %}
       <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-chtml.js"></script>
     {% endif %}
-    <script src="{{ '/js/main.js' | relative_url }}"></script>
+    <script defer src="{{ '/js/main.js' | relative_url }}"></script>
     {% for script in page.scripts %}
-      <script src="{{ script | relative_url }}"></script>
+      <script defer src="{{ script | relative_url }}"></script>
     {% endfor %}
   </head>
 
