@@ -2,6 +2,8 @@
 :root {
   --black: black;
   --white: white;
+  --background: var(--white);
+  --border: var(--black);
   --text: #282c34;
   --muted: #555;
   --dark: #666;
@@ -17,9 +19,27 @@
   --highlight-blue-edge: #5a8ee0;
   --highlight-green: #e3f6e3;
   --highlight-green-edge: #4caf50;
-  --dashed: 1px dashed var(--black);
+  --dashed: 1px dashed var(--border);
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
+
+  /* On screens only, so a printed page stays black on white. */
+  @media screen and (prefers-color-scheme: dark) {
+    color-scheme: dark;
+    --background: #161616;
+    --border: #777;
+    --text: #cacaca;
+    --muted: #999;
+    --dark: #aaa;
+    --shadow: black;
+    --faint: #666;
+    --mid: #3a3a3a;
+    --light: #282828;
+    --highlight: #352d17;
+    --highlight-red: #3b1f1d;
+    --highlight-blue: #1c2840;
+    --highlight-green: #1c331d;
+  }
 }
 
 html {
@@ -33,6 +53,7 @@ body {
   font-family: "Computer Modern Serif", serif;
   font-size: 18px;
   color: var(--text);
+  background: var(--background);
 }
 
 img {
@@ -313,7 +334,7 @@ table {
   }
 
   & th, & td {
-    border: 1px solid var(--black);
+    border: 1px solid var(--border);
     padding: 5px 10px;
   }
 
