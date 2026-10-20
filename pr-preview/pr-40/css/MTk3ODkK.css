@@ -1,0 +1,42 @@
+body {
+  color: #cacaca;
+  background: #161616;
+}
+
+footer {
+  display: none;
+}
+
+a {
+  color: #ccc;
+}
+
+header {
+  border-color: #ccc;
+}
+
+blockquote {
+  background: #282828;
+  border-color: #050505;
+}
+
+.content {
+  font-family: "Computer Modern Typewriter";
+  white-space: pre-wrap;
+  overflow: auto;
+  padding: 30px 0;
+}
+
+.content p {
+  display: inline-block;
+  margin: 0;
+}
+
+.content pre, .content code {
+  margin: 0;
+}
+
+.content ul, .content ol {
+  margin: 0;
+  padding-left: 28px;
+}
