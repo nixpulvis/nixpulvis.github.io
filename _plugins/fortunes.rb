@@ -22,6 +22,15 @@ module Jekyll
     private
 
     def parse(file, name)
+      # strfile only splits on a bare `%`, so one with trailing whitespace or
+      # a CRLF ending would merge two fortunes there. Fail instead of quietly
+      # showing them as one.
+      File.read(file).split("\n").each_with_index do |line, n|
+        if line.match?(/\A%\s+\z/)
+          raise Errors::FatalException, "#{name}:#{n + 1}: `%` separator has trailing whitespace"
+        end
+      end
+
       # -1 keeps empty entries, so a stray `%` at the end is caught too.
       entries = File.read(file).strip.split(/^%$/, -1).map(&:strip)
       if (i = entries.index(&:empty?))
