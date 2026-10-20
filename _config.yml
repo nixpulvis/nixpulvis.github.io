@@ -25,3 +25,9 @@ tikz:
   preamble: |
     \usepackage{tikz-cd}
     \usetikzlibrary{arrows.meta,graphs,positioning,automata}
+
+exclude:
+  - Makefile
+  - README.md
+  - TODO-espresso
+  - bin/
