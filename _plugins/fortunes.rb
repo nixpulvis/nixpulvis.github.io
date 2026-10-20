@@ -31,9 +31,16 @@ module Jekyll
       # -1 keeps empty entries, so a stray `%` at the end is caught too.
       entries = File.read(file).strip.split(/^%$/, -1).map(&:strip)
       if (i = entries.index(&:empty?))
-        raise Errors::FatalException, "#{name}: fortune #{i + 1} is empty"
+        raise Errors::FatalException, "#{name}:#{separator_line(file, i)}: empty fortune"
       end
       entries
+    end
+
+    # The line of the `%` after the i-th entry, or before it for the last one.
+    def separator_line(file, i)
+      lines = File.readlines(file, chomp: true)
+      separators = lines.each_index.select { |n| lines[n] == '%' }.map { |n| n + 1 }
+      separators[i] || separators[i - 1]
     end
   end
 end
