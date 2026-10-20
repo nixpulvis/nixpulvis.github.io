@@ -6,10 +6,10 @@ permalink: /fortunes/
 
 # Fortunes
 
-Little thoughts, caught before they got away. Some are wisdom, some are
-wordplay, and some I don't remember thinking. Each year is kept as a
-[database for `fortune`]({% link _ramblings/2018-06-26-fortune.md %}), so they
-can find you at random, the way they found me.
+Caught thoughts. Some are wisdom, some are wordplay, and most I don't even
+remember thinking. Each year is kept as a [database for `fortune`]({% link
+_ramblings/2018-06-26-fortune.md %}), so they find me at random, the way they
+found me originally.
 
 {% for year in site.data.fortunes %}
 {% if year.entries.size == 0 %}{% continue %}{% endif %}
