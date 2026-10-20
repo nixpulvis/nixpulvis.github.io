@@ -434,6 +434,79 @@ figure.tikz {
   cursor: pointer;
 }
 
+/* Feedback on selected text: `<div class="feedback">`, added by js/feedback.js. */
+.feedback {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  gap: 5px;
+  max-width: min(360px, calc(100vw - 20px));
+  box-sizing: border-box;
+  padding: 5px;
+  background: var(--white);
+  border: var(--dashed);
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px var(--shadow);
+  font-size: 14px;
+
+  &[hidden] {
+    display: none;
+  }
+
+  & button {
+    font: inherit;
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+
+  & form {
+    width: 340px;
+    max-width: 100%;
+
+    & input, & textarea, & button {
+      margin: 0 0 5px;
+      font: inherit;
+    }
+
+    & input[type=email], & textarea {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    & .trap {
+      position: absolute;
+      left: -9999px;
+    }
+
+    & .actions {
+      display: flex;
+      gap: 5px;
+    }
+  }
+
+  & blockquote {
+    margin: 0 0 5px;
+    border-left-width: 3px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+.feedback-hint {
+  clear: both;
+  margin: 5px 0 0;
+  color: var(--muted);
+}
+
+/* Hypothesis's own toolbar on a selection, which .feedback replaces. */
+hypothesis-adder {
+  display: none;
+}
+
 /* Last among the components, so print overrides their colors and fonts. */
 .content {
   flex: 1 0 auto;
