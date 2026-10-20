@@ -1,9 +1,6 @@
-# The year this all began (or was it...)
-EPOCH = 2017
-# A list of all the years since, i.e. 2017 2018 2019 ...
-YEARS = $(shell seq $(EPOCH) $(shell date +"%Y"))
-
-FORTUNE_DATS = $(addsuffix .dat,$(addprefix fortunes/,$(YEARS)))
+# Each year's fortunes, i.e. fortunes/2017 fortunes/2018 ...
+FORTUNES = $(filter-out %.dat,$(wildcard fortunes/[0-9][0-9][0-9][0-9]))
+FORTUNE_DATS = $(addsuffix .dat,$(FORTUNES))
 
 # Define our non-file based targets.
 .PHONY: all clean
@@ -20,17 +17,11 @@ clean:
 _site:
 	jekyll build
 
-# Compile all the strfile .dat files for use with `fortune`.
-#
-# This expects there to be exactly one file named after the each four digit
-# year from $EPOCH till now inside the _fortunes/ directory. If it's a new
-# year and this is failing, just create the file, add it to `git` and move on
-# there will eventually be things to put in there.
-#
-# TODO: What should be done about the .dat files in git?
+# Compile the strfile .dat files for use with `fortune`. These aren't
+# committed. The build compiles them and publishes them next to the text.
 fortunes: $(FORTUNE_DATS)
 
-# General `strfile` transform for inside the _fortune directory.
+# General `strfile` transform for inside the fortunes/ directory.
 fortunes/%.dat: fortunes/%
-	strfile $^
+	strfile $<
 
