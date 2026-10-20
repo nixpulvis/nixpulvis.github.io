@@ -35,6 +35,7 @@
           <li><a href="{{ '/ramblings' | relative_url }}">Ramblings</a></li>
           <li class="icon"><a href="{{ '/references' | relative_url }}">&</a></li>
           <li class="icon"><a href="{{ '/musings' | relative_url }}">♪</a></li>
+          <li class="repo"><a href="{{ site.repository }}" title="This site's source and issues">{ }</a></li>
         </ul>
       </nav>
     </header>
@@ -51,6 +52,15 @@
       <span style="float:right;">
         You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
       </span>
+      <p class="source">
+        This page:
+        <a href="{{ site.repository }}/blob/master/{{ page.path }}">source</a>
+        &middot;
+        <a href="{{ site.repository }}/commits/master/{{ page.path }}">history</a>
+        &middot;
+        <a href="{{ site.repository }}/issues/new?title={{ page.path | prepend: 'On ' | url_encode }}">report an issue</a>
+        <span class="issues"><a href="{{ site.repository }}/issues">open issues</a></span>
+      </p>
     </footer>
   </body>
 </html>

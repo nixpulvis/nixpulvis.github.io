@@ -100,6 +100,18 @@ header {
         text-decoration: none;
       }
     }
+
+    /* The site's own repository, set off from the sections. */
+    & .repo {
+      padding-left: 10px;
+      border-left: var(--dashed);
+      font-family: "Computer Modern Typewriter", monospace;
+      font-size: 16px;
+
+      & a {
+        text-decoration: none;
+      }
+    }
   }
 
   @media print {
@@ -115,6 +127,22 @@ footer {
 
   & a {
     text-decoration: none;
+  }
+
+  /* Links to this page in the repository: source, history and issues. */
+  & .source {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+
+    & a {
+      color: inherit;
+      text-decoration: underline dotted;
+    }
+
+    & .issues {
+      float: right;
+    }
   }
 
   & .copyleft {
