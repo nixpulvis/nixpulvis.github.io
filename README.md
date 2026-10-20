@@ -52,6 +52,25 @@ specified in the YAML front-matter.
 Additional options may exist for some layouts, and should be documented at
 some point.
 
+#### Fortunes
+
+`fortunes/` holds a `fortune` database for each year, with entries separated by
+a line holding only `%`. The build lists them on `/fortunes/` and publishes the
+compiled `.dat` files next to the text. An empty entry fails the build.
+
+Add a fortune to this year's file, creating it in a new year, with:
+
+```sh
+bin/scribe
+```
+
+It opens `$EDITOR`, checks the entry and appends it. To read them locally:
+
+```sh
+make fortunes
+fortune fortunes
+```
+
 #### Links
 
 Write site-internal links, images, and assets through `relative_url` so they
