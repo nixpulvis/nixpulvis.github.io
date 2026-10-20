@@ -261,6 +261,11 @@ summary {
       left: var(--details-gutter);
       margin-left: 0;
     }
+
+    /* After the marker, not floated past it. */
+    &.cramped > .anchor {
+      float: none;
+    }
   }
 }
 
@@ -357,6 +362,22 @@ figure.tikz {
 
   &:hover {
     color: inherit;
+  }
+
+  /* No room in the margin, so at the start of the heading, pushing its text
+     over while shown. Floated, so the whitespace that starts a title from the
+     layouts still collapses. */
+  .cramped > & {
+    position: static;
+    float: left;
+    width: auto;
+    margin-left: 0;
+    display: none;
+  }
+
+  .cramped:hover > &,
+  .cramped > &:focus {
+    display: inline;
   }
 
   @media print {
