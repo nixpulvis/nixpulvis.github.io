@@ -467,13 +467,6 @@ figure.tikz {
   }
 }
 
-.feedback-hint {
-  clear: both;
-  margin: 5px 0 0;
-  font-size: 12px;
-  color: var(--muted);
-}
-
 /* Shows or hides Hypothesis, and opens its panel on phones, from js/feedback.js. */
 .comments-controls {
   &[hidden] {
