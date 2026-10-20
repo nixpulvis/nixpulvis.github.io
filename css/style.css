@@ -102,13 +102,11 @@ header {
     }
 
     /* The site's own repository. */
-    & .repo {
-      font-family: "Computer Modern Typewriter", monospace;
-      font-size: 16px;
-
-      & a {
-        text-decoration: none;
-      }
+    & .repo svg {
+      width: 0.85em;
+      height: 0.85em;
+      fill: currentColor;
+      vertical-align: -0.05em;
     }
   }
 
