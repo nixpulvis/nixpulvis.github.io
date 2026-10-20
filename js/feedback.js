@@ -10,14 +10,31 @@
 //
 // Hypothesis, with its highlights and sidebar, only loads once a reader shows
 // comments (the footer's `.comments-toggle`) or comments publicly, and stays
-// on for them until they hide comments again.
+// on for them until they hide comments again. On phones its sidebar, which
+// otherwise keeps a toolbar on the screen's edge, opens in `.comments-panel`
+// along the bottom instead.
 (() => {
   const EMAIL = {{ site.feedback.email | jsonify }};
   const STORAGE_KEY = "comments";
+  const PHONE = window.matchMedia("(max-width: 700px)");
 
   const menu = document.createElement("div");
   menu.className = "feedback";
   menu.hidden = true;
+
+  // Hypothesis's sidebar on phones, shown when it opens. Closing it here only
+  // hides it, and Hypothesis shows it again the next time it opens.
+  const panel = document.createElement("div");
+  panel.className = "comments-panel";
+  panel.hidden = true;
+  const close = document.createElement("button");
+  close.type = "button";
+  close.className = "close";
+  close.textContent = "Close comments";
+  close.addEventListener("click", () => { panel.hidden = true; });
+  const frame = document.createElement("div");
+  frame.className = "frame";
+  panel.append(close, frame);
 
   let mouseDown = false;
   let pending = null;
@@ -41,7 +58,13 @@
   // Load Hypothesis, resolving with its Annotate button once it's ready.
   function loadComments() {
     if (loading) return loading;
-    window.hypothesisConfig = () => ({ openSidebar: false });
+    window.hypothesisConfig = () => PHONE.matches
+      ? {
+          openSidebar: false,
+          externalContainerSelector: ".comments-panel .frame",
+          onLayoutChange: (layout) => { panel.hidden = !layout.expanded; },
+        }
+      : { openSidebar: false };
     const script = document.createElement("script");
     script.src = "https://hypothes.is/embed.js";
     script.async = true;
@@ -165,6 +188,8 @@
     if (!toggle) return;
     toggle.hidden = false;
     toggle.textContent = loading ? "Hide public comments" : "Show public comments";
+    const open = document.querySelector(".comments-open");
+    if (open) open.hidden = !(loading && PHONE.matches);
   }
 
   // Like Hypothesis, wait for a mouse selection to finish, and for other
@@ -178,10 +203,13 @@
   }
 
   window.addEventListener("DOMContentLoaded", () => {
-    document.body.append(menu);
+    document.body.append(menu, panel);
 
     if (remembered()) loadComments();
     updateToggle();
+    document.querySelector(".comments-open")?.addEventListener("click", () => {
+      panel.hidden = false;
+    });
     document.querySelector(".comments-toggle")?.addEventListener("click", () => {
       if (loading) {
         // Hypothesis has no way to unload, so start the page over without it.

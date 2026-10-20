@@ -467,8 +467,8 @@ figure.tikz {
   margin: 5px 0 0;
   color: var(--muted);
 
-  /* Shows or hides Hypothesis, from js/feedback.js. */
-  & .comments-toggle {
+  /* Shows or hides Hypothesis, and opens its panel on phones, from js/feedback.js. */
+  & .comments-toggle, & .comments-open {
     padding: 0;
     border: 0;
     background: none;
@@ -480,6 +480,52 @@ figure.tikz {
     &[hidden] {
       display: none;
     }
+  }
+
+  & .comments-open {
+    margin-left: 5px;
+  }
+}
+
+/* Hypothesis's sidebar on phones: `<div class="comments-panel">`, added by js/feedback.js. */
+.comments-panel {
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border-top: var(--dashed);
+  box-shadow: 0 -1px 3px var(--shadow);
+
+  &[hidden] {
+    display: none;
+  }
+
+  & .close {
+    align-self: flex-end;
+    margin: 5px 10px;
+    padding: 3px 8px;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  & .frame {
+    flex: 1;
+
+    & iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+
+  @media print {
+    display: none;
   }
 }
 
