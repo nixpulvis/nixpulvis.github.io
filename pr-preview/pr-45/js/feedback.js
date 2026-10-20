@@ -3,8 +3,9 @@
 //
 // - Comment privately: an email to `feedback.email` from _config.yml, with
 //   the quote and a link to it.
-// - Comment publicly: a Hypothesis annotation, shown inline to everyone. This
-//   drives the toolbar Hypothesis shows on a selection, which style.css hides.
+// - Comment publicly: a Hypothesis annotation in the `feedback.group` group,
+//   shown inline to everyone. This drives the toolbar Hypothesis shows on a
+//   selection, which style.css hides.
 //
 // Hypothesis, with its highlights and sidebar, only loads once a reader shows
 // comments (`.comments-toggle`, in the rambling layout's byline, with a count
@@ -14,6 +15,8 @@
 // along the bottom instead.
 (() => {
   const EMAIL = "nathan@nixpulvis.com";
+  // Public comments go to, and only show from, this Hypothesis group.
+  const GROUP = "7zXKrvvv";
   const STORAGE_KEY = "comments";
   const PHONE = window.matchMedia("(max-width: 700px)");
 
@@ -60,13 +63,15 @@
   // Load Hypothesis, resolving with its Annotate button once it's ready.
   function loadComments() {
     if (loading) return loading;
-    window.hypothesisConfig = () => PHONE.matches
-      ? {
-          openSidebar: false,
-          externalContainerSelector: ".comments-panel .frame",
-          onLayoutChange: (layout) => { panel.hidden = !layout.expanded; },
-        }
-      : { openSidebar: false };
+    window.hypothesisConfig = () => ({
+      openSidebar: false,
+      group: GROUP,
+      groupsAllowlist: [GROUP],
+      ...(PHONE.matches && {
+        externalContainerSelector: ".comments-panel .frame",
+        onLayoutChange: (layout) => { panel.hidden = !layout.expanded; },
+      }),
+    });
     script = document.createElement("script");
     script.src = "https://hypothes.is/embed.js";
     script.async = true;
@@ -211,7 +216,9 @@
     try {
       // The search API, unlike the badge one, allows other sites to read it.
       const uri = encodeURIComponent(location.origin + location.pathname);
-      const response = await fetch("https://api.hypothes.is/api/search?limit=0&uri=" + uri);
+      const response = await fetch(
+        "https://api.hypothes.is/api/search?limit=0&group=" + GROUP + "&uri=" + uri
+      );
       if (!response.ok) return;
       count = (await response.json()).total;
       updateToggle();
