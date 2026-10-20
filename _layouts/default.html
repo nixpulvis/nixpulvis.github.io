@@ -32,11 +32,11 @@
       <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-chtml.js"></script>
     {% endif %}
     <script defer src="{{ '/js/main.js' | relative_url }}"></script>
-    {% unless page.feedback == false %}
+    {% if page.collection == "ramblings" %}
       <script defer src="{{ '/js/feedback.js' | relative_url }}"></script>
       <script>window.hypothesisConfig = () => ({ openSidebar: false });</script>
       <script async src="https://hypothes.is/embed.js"></script>
-    {% endunless %}
+    {% endif %}
     {% for script in page.scripts %}
       <script defer src="{{ script | relative_url }}"></script>
     {% endfor %}
@@ -79,11 +79,11 @@
         <a href="{{ site.repository }}/issues/new?body={{ page.url | absolute_url | url_encode }}">report an issue</a>
         <span class="issues"><a href="{{ site.repository }}/issues">open issues</a></span>
       </p>
-      {% unless page.feedback == false %}
+      {% if page.collection == "ramblings" %}
         <p class="feedback-hint">
           Select any text to suggest a change, or to comment publicly.
         </p>
-      {% endunless %}
+      {% endif %}
     </footer>
   </body>
 </html>
