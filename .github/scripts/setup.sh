@@ -3,9 +3,11 @@
 # Runs on Debian or Ubuntu, like GitHub's runners.
 set -euo pipefail
 
-# LaTeX and dvisvgm for TikZ figures (_plugins/tikz.rb).
+# LaTeX and dvisvgm for TikZ figures (_plugins/tikz.rb), and fortune-mod for
+# `strfile`, which compiles the fortunes/ databases.
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
   texlive-latex-base \
   texlive-pictures \
-  dvisvgm
+  dvisvgm \
+  fortune-mod

@@ -3,6 +3,9 @@
 # `--drafts` or `--baseurl /some/path`.
 set -euo pipefail
 
+# Compile the fortunes first, so Jekyll publishes the .dat files with them.
+make fortunes
+
 bundle exec jekyll build "$@"
 
 # The site is already built, so stop Pages from running Jekyll over it.
