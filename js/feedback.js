@@ -9,8 +9,9 @@
 //   drives the toolbar Hypothesis shows on a selection, which style.css hides.
 //
 // Hypothesis, with its highlights and sidebar, only loads once a reader shows
-// comments (the footer's `.comments-toggle`) or comments publicly, and stays
-// on for them until they hide comments again. On phones its sidebar, which
+// comments (`.comments-toggle`, in the rambling layout's byline, with a count
+// of them from Hypothesis's API) or comments publicly, and stays on for them
+// until they hide comments again. On phones its sidebar, which
 // otherwise keeps a toolbar on the screen's edge, opens in `.comments-panel`
 // along the bottom instead.
 (() => {
@@ -39,6 +40,7 @@
   let mouseDown = false;
   let pending = null;
   let loading = null;
+  let count = 0;
 
   // Remembered per browser; storage can be unavailable, e.g. when blocked.
   function remember(on) {
@@ -184,12 +186,22 @@
   }
 
   function updateToggle() {
-    const toggle = document.querySelector(".comments-toggle");
-    if (!toggle) return;
-    toggle.hidden = false;
-    toggle.textContent = loading ? "Hide public comments" : "Show public comments";
-    const open = document.querySelector(".comments-open");
-    if (open) open.hidden = !(loading && PHONE.matches);
+    const controls = document.querySelector(".comments-controls");
+    if (!controls) return;
+    controls.hidden = false;
+    const label = count === 1 ? "Show 1 comment" : count ? `Show ${count} comments` : "Show comments";
+    controls.querySelector(".comments-toggle").textContent = loading ? "Hide comments" : label;
+    controls.querySelector(".comments-open").hidden = !(loading && PHONE.matches);
+  }
+
+  // How many public comments the page has, without loading Hypothesis.
+  async function countComments() {
+    try {
+      const uri = encodeURIComponent(location.origin + location.pathname);
+      const response = await fetch("https://hypothes.is/api/badge?uri=" + uri);
+      count = (await response.json()).total || 0;
+      updateToggle();
+    } catch {}
   }
 
   // Like Hypothesis, wait for a mouse selection to finish, and for other
@@ -207,6 +219,7 @@
 
     if (remembered()) loadComments();
     updateToggle();
+    countComments();
     document.querySelector(".comments-open")?.addEventListener("click", () => {
       panel.hidden = false;
     });
