@@ -10,7 +10,7 @@
 //
 // Hypothesis, with its highlights and sidebar, only loads once a reader shows
 // comments (`.comments-toggle`, in the rambling layout's byline, with a count
-// of them from Hypothesis's API) or comments publicly, and stays on for them
+// of them from Hypothesis's search API) or comments publicly, and stays on for them
 // until they hide comments again. On phones its sidebar, which
 // otherwise keeps a toolbar on the screen's edge, opens in `.comments-panel`
 // along the bottom instead.
@@ -210,9 +210,11 @@
   // How many public comments the page has, without loading Hypothesis.
   async function countComments() {
     try {
+      // The search API, unlike the badge one, allows other sites to read it.
       const uri = encodeURIComponent(location.origin + location.pathname);
-      const response = await fetch("https://hypothes.is/api/badge?uri=" + uri);
-      count = (await response.json()).total || 0;
+      const response = await fetch("https://api.hypothes.is/api/search?limit=0&uri=" + uri);
+      if (!response.ok) return;
+      count = (await response.json()).total;
       updateToggle();
     } catch {}
   }
