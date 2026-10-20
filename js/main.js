@@ -1,8 +1,7 @@
 ---
 ---
-// A note for anyone who opens the console: a random fortune, like 404.md,
-// and where to find the source. In a block, since 404.md has its own
-// `fortunes`.
+// A random fortune, like 404.md, for anyone who opens the console. In a
+// block, since 404.md has its own `fortunes`.
 {%- assign fortunes = "" | split: "" %}
 {%- for database in site.data.fortunes %}
 {%- assign fortunes = fortunes | concat: database.entries %}
@@ -10,8 +9,7 @@
 {
   const fortunes = {{ fortunes | jsonify }};
   console.log("%cλ", "font: 48px serif;");
-  console.log("%s\nThe source is at {{ site.repository }}",
-    fortunes[Math.floor(Math.random() * fortunes.length)]);
+  console.log("%s", fortunes[Math.floor(Math.random() * fortunes.length)]);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
