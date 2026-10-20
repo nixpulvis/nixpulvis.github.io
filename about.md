@@ -3,7 +3,7 @@ layout: default
 title: About
 ---
 
-![]({{ '/img/photographs/me-camera-caution.jpg' | relative_url }})
+![Nathan taking a photo in a mirror, with caution tape behind him]({{ '/img/photographs/me-camera-caution.jpg' | relative_url }})
 
 -----
 

@@ -9,7 +9,7 @@ Plot[
 ]
 ```
 
-![]({{ '/img/fourier_euler.png' | relative_url }})
+![Plot of four sine waves of increasing amplitude]({{ '/img/fourier_euler.png' | relative_url }})
 
 Unlike the "Euler series" we above, which is purely constructive, a <b>square
 wave</b> can be constructed with the Fourier series:
@@ -29,8 +29,8 @@ Plot[
 ]
 ```
 
-![]({{ '/img/fourier_square.png' | relative_url }})
-![]({{ '/img/fourier_square.gif' | relative_url }})
+![Plot of sin(x), sin(3x)/3 and sin(5x)/5 for a square wave]({{ '/img/fourier_square.png' | relative_url }})
+![Animation of rotating circles drawing a square wave]({{ '/img/fourier_square.gif' | relative_url }})
 
 And a <b>saw wave</b> can be constructed by another:
 
@@ -49,5 +49,5 @@ Plot[
 ]
 ```
 
-![]({{ '/img/fourier_saw.png' | relative_url }})
-![]({{ '/img/fourier_saw.gif' | relative_url }})
+![Plot of the first few sine terms for a sawtooth wave]({{ '/img/fourier_saw.png' | relative_url }})
+![Animation of rotating circles drawing a sawtooth wave]({{ '/img/fourier_saw.gif' | relative_url }})

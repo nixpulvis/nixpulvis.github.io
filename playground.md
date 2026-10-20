@@ -100,7 +100,7 @@ First Header | Second Header
 Content cell 1 | Content cell 2
 Content column 1 | Content column 2
 
-![](img/dust.jpg)
+![Pardon our dust banner](img/dust.jpg)
 
 <form>
     <label for="textInput">Text:</label>
