@@ -1,5 +1,15 @@
 ---
 ---
+// A note for anyone who opens the console.
+console.log(
+  "%c  \\\n   \\\n   /\\\n  /  \\\n /    \\",
+  "font: bold 16px monospace; line-height: 1;"
+);
+console.log(
+  "Poking around? The source is at {{ site.repository }}\n" +
+  "There's more here than the nav shows. Try ↑ ↑ ↓ ↓ ← → ← → b a ⏎"
+);
+
 document.addEventListener("DOMContentLoaded", () => {
   // Toggle my hidden, ugly mug.
   document.getElementById("lambda").addEventListener("click", (e) => {
