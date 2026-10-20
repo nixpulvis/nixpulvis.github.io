@@ -7,13 +7,12 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 file="$root/fortunes/$(date +%Y)"
 
+# The draft is removed once it's added, or if it's empty. Otherwise it's kept
+# and its path printed, whether the entry was rejected, the editor failed or
+# the script was interrupted.
 draft="$(mktemp "${TMPDIR:-/tmp}/fortune.XXXXXX")"
+trap '[ ! -e "$draft" ] || echo "scribe: draft kept in $draft" >&2' EXIT
 "${EDITOR:-vi}" "$draft"
-
-reject() {
-  echo "scribe: $1, draft kept in $draft" >&2
-  exit 1
-}
 
 # Drop trailing whitespace on each line, and blank lines at either end.
 entry="$(sed -e 's/[[:space:]]*$//' "$draft" | sed -e '/./,$!d')"
@@ -23,7 +22,8 @@ if [ -z "$entry" ]; then
   exit 1
 fi
 if grep -qx '%' <<< "$entry"; then
-  reject "a line holding only % would split the fortune"
+  echo "scribe: a line holding only % would split the fortune" >&2
+  exit 1
 fi
 
 # Separate it from the last entry, which may not end in a newline.

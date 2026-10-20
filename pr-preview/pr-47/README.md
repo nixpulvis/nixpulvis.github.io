@@ -19,11 +19,12 @@ bundle install
 jekyll serve
 ```
 
-TikZ figures (`_plugins/tikz.rb`) also need `latex` and `dvisvgm` from TeX Live:
+TikZ figures (`_plugins/tikz.rb`) also need `latex` and `dvisvgm` from TeX Live,
+and `make fortunes` needs `strfile` from fortune-mod:
 
 ```sh
-.github/scripts/setup.sh      # Debian/Ubuntu
-brew install texlive dvisvgm  # macOS
+.github/scripts/setup.sh              # Debian/Ubuntu
+brew install texlive dvisvgm fortune  # macOS
 ```
 
 ## Usage
