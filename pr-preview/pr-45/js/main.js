@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
     heading.classList.add("anchored");
     anchored.push(heading);
     heading.addEventListener("click", (e) => {
-      // Skip clicks on links, and clicks that end a text selection.
-      if (e.target.closest("a") || !window.getSelection().isCollapsed) return;
+      // Skip clicks on links and buttons, and clicks that end a text selection.
+      if (e.target.closest("a, button") || !window.getSelection().isCollapsed) return;
       anchor.click();
     });
   });
