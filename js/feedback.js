@@ -7,8 +7,13 @@
 //   the quote and a link to it.
 // - Comment publicly: a Hypothesis annotation, shown inline to everyone. This
 //   drives the toolbar Hypothesis shows on a selection, which style.css hides.
+//
+// Hypothesis, with its highlights and sidebar, only loads once a reader shows
+// comments (the footer's `.comments-toggle`) or comments publicly, and stays
+// on for them until they hide comments again.
 (() => {
   const EMAIL = {{ site.feedback.email | jsonify }};
+  const STORAGE_KEY = "comments";
 
   const menu = document.createElement("div");
   menu.className = "feedback";
@@ -16,6 +21,49 @@
 
   let mouseDown = false;
   let pending = null;
+  let loading = null;
+
+  // Remembered per browser; storage can be unavailable, e.g. when blocked.
+  function remember(on) {
+    try {
+      on ? localStorage.setItem(STORAGE_KEY, "on") : localStorage.removeItem(STORAGE_KEY);
+    } catch {}
+  }
+
+  function remembered() {
+    try {
+      return localStorage.getItem(STORAGE_KEY) === "on";
+    } catch {
+      return false;
+    }
+  }
+
+  // Load Hypothesis, resolving with its Annotate button once it's ready.
+  function loadComments() {
+    if (loading) return loading;
+    window.hypothesisConfig = () => ({ openSidebar: false });
+    const script = document.createElement("script");
+    script.src = "https://hypothes.is/embed.js";
+    script.async = true;
+    loading = new Promise((resolve, reject) => {
+      script.addEventListener("error", reject);
+      const started = Date.now();
+      const poll = setInterval(() => {
+        const adder = document.querySelector("hypothesis-adder");
+        const annotate = adder?.shadowRoot?.querySelector('button[title^="Annotate"]');
+        if (annotate) {
+          clearInterval(poll);
+          resolve(annotate);
+        } else if (Date.now() - started > 15000) {
+          clearInterval(poll);
+          reject(new Error("Hypothesis didn't load"));
+        }
+      }, 100);
+    });
+    loading.catch(() => {});
+    document.head.append(script);
+    return loading;
+  }
 
   function button(label, onClick) {
     const b = document.createElement("button");
@@ -67,9 +115,10 @@
 
   function show(range) {
     const quote = range.toString().trim().replace(/\s+/g, " ");
+    const saved = range.cloneRange();
     menu.replaceChildren(
       button("Suggest privately", () => email(quote)),
-      button("Comment publicly", comment)
+      button("Comment publicly", () => comment(saved))
     );
     place(range);
   }
@@ -84,17 +133,38 @@
     hide();
   }
 
-  function comment() {
-    const adder = document.querySelector("hypothesis-adder");
-    const annotate = adder?.shadowRoot?.querySelector('button[title^="Annotate"]');
-    if (annotate) {
-      annotate.click();
-      hide();
-    } else {
+  async function comment(range) {
+    const wasLoaded = !!loading;
+    menu.replaceChildren(document.createTextNode("Loading comments…"));
+    let annotate;
+    try {
+      annotate = await loadComments();
+    } catch {
       menu.replaceChildren(document.createTextNode(
-        "Public comments are still loading, or blocked by this browser."
+        "Public comments couldn't load in this browser."
       ));
+      return;
     }
+    remember(true);
+    updateToggle();
+    if (!wasLoaded) {
+      // Hypothesis only sees selections made after it loads, so make this one
+      // again (a tap on the menu may also have dropped it on touch screens),
+      // and give it time to notice.
+      const selection = document.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
+    annotate.click();
+    hide();
+  }
+
+  function updateToggle() {
+    const toggle = document.querySelector(".comments-toggle");
+    if (!toggle) return;
+    toggle.hidden = false;
+    toggle.textContent = loading ? "Hide public comments" : "Show public comments";
   }
 
   // Like Hypothesis, wait for a mouse selection to finish, and for other
@@ -109,6 +179,20 @@
 
   window.addEventListener("DOMContentLoaded", () => {
     document.body.append(menu);
+
+    if (remembered()) loadComments();
+    updateToggle();
+    document.querySelector(".comments-toggle")?.addEventListener("click", () => {
+      if (loading) {
+        // Hypothesis has no way to unload, so start the page over without it.
+        remember(false);
+        location.reload();
+      } else {
+        remember(true);
+        loadComments();
+        updateToggle();
+      }
+    });
     document.addEventListener("mousedown", (e) => {
       if (!menu.contains(e.target)) mouseDown = true;
     });

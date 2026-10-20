@@ -34,8 +34,6 @@
     <script defer src="{{ '/js/main.js' | relative_url }}"></script>
     {% if page.collection == "ramblings" %}
       <script defer src="{{ '/js/feedback.js' | relative_url }}"></script>
-      <script>window.hypothesisConfig = () => ({ openSidebar: false });</script>
-      <script async src="https://hypothes.is/embed.js"></script>
     {% endif %}
     {% for script in page.scripts %}
       <script defer src="{{ script | relative_url }}"></script>
@@ -82,6 +80,7 @@
       {% if page.collection == "ramblings" %}
         <p class="feedback-hint">
           Select any text to suggest a change, or to comment publicly.
+          <button type="button" class="comments-toggle" hidden></button>
         </p>
       {% endif %}
     </footer>
