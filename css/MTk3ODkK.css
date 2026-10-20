@@ -3,6 +3,13 @@ body {
   background: #161616;
 }
 
+/* Wide enough for 80 columns of the typewriter font. The font is set here so
+   `ch` measures it, and the header keeps the serif. */
+.container {
+  max-width: 80ch;
+  font-family: "Computer Modern Typewriter", monospace;
+}
+
 footer {
   display: none;
 }
@@ -13,6 +20,7 @@ a {
 
 header {
   border-color: #ccc;
+  font-family: "Computer Modern Serif", serif;
 }
 
 blockquote {
@@ -21,7 +29,6 @@ blockquote {
 }
 
 .content {
-  font-family: "Computer Modern Typewriter";
   white-space: pre-wrap;
   overflow: auto;
   padding: 30px 0;
