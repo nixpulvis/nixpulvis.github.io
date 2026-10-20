@@ -498,9 +498,11 @@ figure.tikz {
   height: 60vh;
   display: flex;
   flex-direction: column;
-  background: var(--background);
-  border-top: var(--dashed);
-  box-shadow: 0 -1px 3px var(--shadow);
+  /* Light even in dark mode, like the Hypothesis sidebar it holds. */
+  color-scheme: light;
+  background: var(--white);
+  border-top: 1px dashed var(--black);
+  box-shadow: 0 -1px 3px var(--black);
 
   &[hidden] {
     display: none;
