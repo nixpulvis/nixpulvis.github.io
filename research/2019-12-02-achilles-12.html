@@ -20,16 +20,16 @@
 
   <body class="container">
     <header>
-      <img id="lambda" src="/img/cat-lambda.png" />
-      <img id="me" src="/img/me.jpg" class="hidden" />
+      <img id="lambda" alt="Show photo of Nathan" src="/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/img/me.jpg" class="hidden" />
       <a href="/" class="identity">nixpulvis</a>
       <nav>
         <ul>
           <li><a href="/projects">Projects</a></li>
           <li><a href="/ramblings">Ramblings</a></li>
-          <li class="icon"><a href="/fortunes/" title="Fortunes">%</a></li>
-          <li class="icon"><a href="/references">&</a></li>
-          <li class="icon"><a href="/musings">♪</a></li>
+          <li class="icon"><a href="/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+          <li class="icon"><a href="/references" title="References" aria-label="References">&</a></li>
+          <li class="icon"><a href="/musings" title="Music" aria-label="Music">♪</a></li>
         </ul>
       </nav>
     </header>
@@ -68,7 +68,7 @@ following shows a simple network of four parties:</p>
 <pre><code class="language-graph">G = { A, B, C, D }
 </code></pre>
 
-<p><img src="/img/research/achilles/connected-graph.png" alt="" /></p>
+<p><img src="/img/research/achilles/connected-graph.png" alt="Fully connected graph of nodes A, B, C and D" /></p>
 
 <p>We can nest sets within each other:</p>
 
@@ -87,7 +87,7 @@ G = { Q, R }
 
 <p>We can also define fully disconnected graphs with <code class="language-plaintext highlighter-rouge">[]</code>.</p>
 
-<p><img src="/img/research/achilles/disconnected-graph.png" alt="" /></p>
+<p><img src="/img/research/achilles/disconnected-graph.png" alt="Nodes A, B, C and D with no edges between them" /></p>
 
 <pre><code class="language-graph">G = [A, B, C, D]
 </code></pre>
@@ -101,7 +101,7 @@ topologies of graphs (TODO: is this actually true?).</p>
 <p>For example a “star” network with four edge nodes and a single center node can
 be represented like this:</p>
 
-<p><img src="/img/research/achilles/star-graph.png" alt="" /></p>
+<p><img src="/img/research/achilles/star-graph.png" alt="Star graph with S in the center connected to A, B, C and D" /></p>
 
 <pre><code class="language-graph">G = { S, [A, B, C, D] }
   = [{ S, A }, { S, B }, { S, C }, { S, D }]
@@ -143,7 +143,7 @@ architectures for the constituent parties. A single pair of nodes \(A\) and
 
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">P</span> <span class="o">=</span> <span class="nd">protocol!</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">]);</span>
 </code></pre></div></div>
-<p><img src="/img/research/achilles/single-mpc-graph.png" alt="" /></p>
+<p><img src="/img/research/achilles/single-mpc-graph.png" alt="Party P connected to A and B, with a dashed line between A and B" /></p>
 
 <p>This gives <code class="language-plaintext highlighter-rouge">conceal</code> and <code class="language-plaintext highlighter-rouge">reveal</code> operations (solid edges) going up and down
 the graph with respect to the virtual party \(P\), as well as <code class="language-plaintext highlighter-rouge">send</code> and <code class="language-plaintext highlighter-rouge">recv</code>
@@ -160,7 +160,7 @@ a Yao protocol.</p>
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">A</span> <span class="o">=</span> <span class="nd">protocol!</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">]);</span>
 <span class="k">let</span> <span class="n">Y</span> <span class="o">=</span> <span class="nd">protocol!</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">]);</span>
 </code></pre></div></div>
-<p><img src="/img/research/achilles/double-mpc-graph.png" alt="" /></p>
+<p><img src="/img/research/achilles/double-mpc-graph.png" alt="Parties A and Y each connected to nodes A and B, with a dashed line between the two parties" /></p>
 
 <p>In addition to parties participating in multiple protocols, the protocols
 themselves may participate in other protocols. This leads to “MPC in the head”
@@ -170,7 +170,7 @@ style protocols.</p>
 <span class="k">let</span> <span class="n">P2</span> <span class="o">=</span> <span class="nd">protocol!</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">]);</span>
 <span class="k">let</span> <span class="n">PP</span> <span class="o">=</span> <span class="nd">protocol!</span><span class="p">([</span><span class="n">P1</span><span class="p">,</span> <span class="n">P2</span><span class="p">]);</span>
 </code></pre></div></div>
-<p><img src="/img/research/achilles/head-mpc-graph.png" alt="" /></p>
+<p><img src="/img/research/achilles/head-mpc-graph.png" alt="Head party P prime over parties P1 and P2 connected to A and B, and over P1 through Pn connected to A" /></p>
 
 <p>Finally, we can construct protocols for which each layer is a recursive
 application of a protocol through some form of party-polymorphism.</p>
@@ -181,7 +181,7 @@ application of a protocol through some form of party-polymorphism.</p>
 <span class="k">let</span> <span class="n">P3</span> <span class="o">=</span> <span class="n">P</span><span class="o">&lt;</span><span class="n">G</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">I</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="k">let</span> <span class="n">PH</span> <span class="o">=</span> <span class="n">P</span><span class="o">&lt;</span><span class="n">P1</span><span class="p">,</span> <span class="n">P2</span><span class="p">,</span> <span class="n">P3</span><span class="o">&gt;</span><span class="p">;</span>
 </code></pre></div></div>
-<p><img src="/img/research/achilles/recursive-mpc-graph.png" alt="" /></p>
+<p><img src="/img/research/achilles/recursive-mpc-graph.png" alt="Tree with P hat at the root over P1, P2 and P3, each with three leaf nodes A through I" /></p>
 
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fn</span> <span class="n">calc3</span><span class="o">&lt;@</span><span class="n">P</span><span class="o">&gt;</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">bool</span><span class="o">@</span><span class="n">P</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bool</span><span class="o">@</span><span class="n">P</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">bool</span><span class="o">@</span><span class="n">P</span><span class="p">);</span>
 

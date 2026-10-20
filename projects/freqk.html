@@ -20,16 +20,16 @@
 
   <body class="container">
     <header>
-      <img id="lambda" src="/img/cat-lambda.png" />
-      <img id="me" src="/img/me.jpg" class="hidden" />
+      <img id="lambda" alt="Show photo of Nathan" src="/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/img/me.jpg" class="hidden" />
       <a href="/" class="identity">nixpulvis</a>
       <nav>
         <ul>
           <li><a href="/projects">Projects</a></li>
           <li><a href="/ramblings">Ramblings</a></li>
-          <li class="icon"><a href="/fortunes/" title="Fortunes">%</a></li>
-          <li class="icon"><a href="/references">&</a></li>
-          <li class="icon"><a href="/musings">♪</a></li>
+          <li class="icon"><a href="/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+          <li class="icon"><a href="/references" title="References" aria-label="References">&</a></li>
+          <li class="icon"><a href="/musings" title="Music" aria-label="Music">♪</a></li>
         </ul>
       </nav>
     </header>
@@ -62,7 +62,7 @@ encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 <p>We have 28 LEDs along the width of the synth, going 15 deep back away from the
 keys. Six on top and nine down the back.</p>
 
-<p><img src="/img/freqk/korg-ms20.jpeg" alt="" /></p>
+<p><img src="/img/freqk/korg-ms20.jpeg" alt="Korg MS-20 with a grid of LEDs mounted on top" /></p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define DISPLAY_WIDTH 28
 #define DISPLAY_BAND_WIDTH 4
@@ -74,7 +74,7 @@ keys. Six on top and nine down the back.</p>
 <p>Using the Arduino has many advantages, but eventually I’d like to use the board
 we etched by hand.</p>
 
-<p><img src="/img/freqk/arduino.jpeg" height="250" style="float:right; margin-left: 1em;" /></p>
+<p><img alt="Arduino Pro Mini" src="/img/freqk/arduino.jpeg" height="250" style="float:right; margin-left: 1em;" /></p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define ANALOG_PIN A1
 #define STROBE_PIN 10
@@ -82,9 +82,9 @@ we etched by hand.</p>
 #define DISPLAY_PIN 8
 </span></code></pre></div></div>
 
-<p><img src="/img/freqk/arduino-pinout.png" alt="" /></p>
+<p><img src="/img/freqk/arduino-pinout.png" alt="Schematic of the microcontroller pins wired to the display and MSGEQ7" /></p>
 
-<p><img src="/img/freqk/msgeq7.jpeg" height="100" style="float: left; margin-right: 1em; transform: rotate(-90deg);" /></p>
+<p><img alt="MSGEQ7 chip" src="/img/freqk/msgeq7.jpeg" height="100" style="float: left; margin-right: 1em; transform: rotate(-90deg);" /></p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define BANDS 7
 </span></code></pre></div></div>
@@ -106,12 +106,12 @@ Display.</p>
 
 <h3 id="read_msgeq7"><code class="language-plaintext highlighter-rouge">read_msgeq7</code></h3>
 
-<p><img src="/img/freqk/msgeq7-schematic.png" alt="" /></p>
+<p><img src="/img/freqk/msgeq7-schematic.png" alt="MSGEQ7 schematic with the audio jack input and STROBE, RESET and OUT lines" /></p>
 
 <p>In order from first to last, the bands are centered around the following
 acoustic frequencies: 63Hz, 160Hz, 400Hz, 1kHz, 2.5kHz, 6.25kHz, 16kHz.</p>
 
-<p><img src="/img/freqk/msgeq7-timing.png" alt="" /></p>
+<p><img src="/img/freqk/msgeq7-timing.png" alt="MSGEQ7 strobe timing diagram" /></p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">read_msgeq7</span><span class="p">(</span><span class="kt">int</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">BANDS</span><span class="p">])</span> <span class="p">{</span>
   <span class="c1">// TODO: Dynamically set this value somehow?</span>
@@ -177,8 +177,8 @@ happen consistently on every other cycle.</p>
 
 <h3 id="update_display"><code class="language-plaintext highlighter-rouge">update_display</code></h3>
 
-<p><img src="/img/freqk/28x6.jpeg" width="95%" />
-<img src="/img/freqk/msgeq7-response.png" alt="" /></p>
+<p><img alt="Strip of LEDs 28 wide and 6 deep" src="/img/freqk/28x6.jpeg" width="95%" />
+<img src="/img/freqk/msgeq7-response.png" alt="MSGEQ7 frequency response, seven peaks from 63Hz to 16kHz" /></p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">update_display</span><span class="p">(</span><span class="kt">int</span> <span class="n">spectrums</span><span class="p">[</span><span class="n">DISPLAY_DEPTH</span><span class="p">][</span><span class="n">BANDS</span><span class="p">])</span> <span class="p">{</span>
   <span class="kt">int</span> <span class="n">intensity</span><span class="p">;</span>
@@ -210,7 +210,7 @@ happen consistently on every other cycle.</p>
 
 <h3 id="colors">Colors</h3>
 
-<p><img src="/img/freqk/grid.jpeg" width="300" /></p>
+<p><img alt="Close up of the LED grid wiring" src="/img/freqk/grid.jpeg" width="300" /></p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define COLOR COLOR_MIXED
 </span></code></pre></div></div>
@@ -263,11 +263,11 @@ the loudest band to change the color of the whole strip.</p>
 
 <h3 id="setup-and-loop-revisited">Setup and Loop (Revisited)</h3>
 
-<p><img src="/img/freqk/box.jpeg" alt="" /></p>
+<p><img src="/img/freqk/box.jpeg" alt="Black control box with an on/off switch, in front of the lit LEDs" /></p>
 
 <h2 id="next-steps">Next Steps</h2>
 
-<p><img src="/img/freqk/schematic.png" style="transform: rotate(90deg); margin: 2em 0 2.5em" /></p>
+<p><img alt="Circuit board layout" src="/img/freqk/schematic.png" style="transform: rotate(90deg); margin: 2em 0 2.5em" /></p>
 
 <ul>
   <li>Think about display mode inputs</li>
