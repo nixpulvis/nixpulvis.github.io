@@ -432,6 +432,11 @@ figure.tikz {
 
 .anchored {
   cursor: pointer;
+
+  /* A title's byline isn't part of the link, as js/main.js skips it. */
+  & small {
+    cursor: auto;
+  }
 }
 
 /* Feedback on selected text: `<div class="feedback">`, added by js/feedback.js. */
