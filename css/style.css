@@ -494,6 +494,11 @@ li.draft {
   }
 }
 
+/* The 404 page's pretend shell. */
+.not-found {
+  white-space: pre-wrap;
+}
+
 .hidden {
   visibility: hidden;
 }
