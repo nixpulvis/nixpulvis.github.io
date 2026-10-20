@@ -60,6 +60,13 @@ img {
   max-width: 100%;
 }
 
+/* Video embeds shrink to fit a phone, keeping their shape. */
+iframe {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 hr {
   border: 0;
   border-bottom: var(--dashed);
@@ -437,6 +444,14 @@ figure.tikz {
 /* Last among the components, so print overrides their colors and fonts. */
 .content {
   flex: 1 0 auto;
+  /* Long URLs and inline code break rather than widen the page. */
+  overflow-wrap: break-word;
+
+  /* Display math too wide for the page scrolls on its own, like a code block. */
+  & mjx-container[display="true"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 
   @media print {
     & * {
