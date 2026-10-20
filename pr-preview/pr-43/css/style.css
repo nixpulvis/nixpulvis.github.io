@@ -101,10 +101,8 @@ header {
       }
     }
 
-    /* The site's own repository, set off from the sections. */
+    /* The site's own repository. */
     & .repo {
-      padding-left: 10px;
-      border-left: var(--dashed);
       font-family: "Computer Modern Typewriter", monospace;
       font-size: 16px;
 
