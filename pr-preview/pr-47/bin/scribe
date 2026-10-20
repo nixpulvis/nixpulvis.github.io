@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
-# Write a new fortune in $EDITOR and add it to this year's database, e.g.
-# fortunes/2026, creating the file if it's a new year.
-#
-# The entry is checked first: it can't be empty or contain a line holding only
-# `%`, which strfile reads as the end of an entry. If it's rejected, the draft
-# is kept and its path printed, so nothing is lost.
+# Write a new fortune in $EDITOR and add it to this year's file in fortunes/,
+# creating the file in a new year. An empty entry, or one with a line holding
+# only `%`, is rejected and the draft is kept.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
