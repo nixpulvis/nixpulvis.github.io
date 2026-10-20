@@ -100,14 +100,6 @@ header {
         text-decoration: none;
       }
     }
-
-    /* The site's own repository. */
-    & .repo svg {
-      width: 0.85em;
-      height: 0.85em;
-      fill: currentColor;
-      vertical-align: -0.05em;
-    }
   }
 
   @media print {
