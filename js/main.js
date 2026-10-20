@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Link each heading to itself, shown on hover by `.anchor` in style.css. A
-  // page's title (`.title`, from the layouts) links to the page itself.
+  // page's title (`.title`, from the layouts) links to the page itself. The
+  // anchor goes last, so it can follow the text when the margin is too narrow.
   // Headings can contain their own links, so rather than wrapping the heading
   // in a link, clicks elsewhere on it are forwarded to the anchor.
   document.querySelectorAll(".content :is(h1, h2, h3, h4, h5, h6):is([id], .title)").forEach((heading) => {
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       anchor.setAttribute("aria-label", "Link to this page");
     }
     anchor.textContent = "#";
-    heading.prepend(anchor);
+    heading.append(anchor);
     heading.classList.add("anchored");
     heading.addEventListener("click", (e) => {
       // Skip clicks on links, and clicks that end a text selection.
