@@ -10,8 +10,6 @@
 
 module Jekyll
   class FortunesGenerator < Generator
-    priority :high
-
     def generate(site)
       dir = File.join(site.source, 'fortunes')
       files = Dir.glob(File.join(dir, '[0-9][0-9][0-9][0-9]')).sort.reverse
