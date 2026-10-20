@@ -56,10 +56,6 @@ h2 small {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
-
-  @media only screen and (max-device-width : 600px) {
-    width: 90%;
-  }
 }
 
 header {
@@ -117,6 +113,10 @@ footer {
 
   & a {
     text-decoration: none;
+  }
+
+  & .hint {
+    float: right;
   }
 
   /* The return key. An SVG arrow, since a ⏎ glyph lands differently in every fallback font. */
