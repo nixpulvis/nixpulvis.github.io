@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<h2>
+<h2 class="title">
     {{ page.title }}
     <small>
         written by Nathan Lilienthal

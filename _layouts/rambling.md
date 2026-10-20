@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<h2>
+<h2 class="title">
     {{ page.title }}
     <small>
         {{ page.content | strip_html | number_of_words }} words
