@@ -1,8 +1,5 @@
 // A note for anyone who opens the console.
-console.log(
-  "%c  \\\n   \\\n   /\\\n  /  \\\n /    \\",
-  "font: bold 16px monospace; line-height: 1;"
-);
+console.log("%cλ", "font: 48px serif;");
 console.log("Poking around? The source is at https://github.com/nixpulvis/nixpulvis.github.io");
 
 document.addEventListener("DOMContentLoaded", () => {
