@@ -15,6 +15,8 @@
   --highlight-red-edge: #e0645a;
   --highlight-blue: #e6effd;
   --highlight-blue-edge: #5a8ee0;
+  --highlight-green: #e3f6e3;
+  --highlight-green-edge: #4caf50;
   --dashed: 1px dashed var(--black);
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
@@ -117,9 +119,19 @@ footer {
     text-decoration: none;
   }
 
-  /* The ⏎ sits lower than a letter, so even out the padding meant for caps. */
+  /* The return key. An SVG arrow, since a ⏎ glyph lands differently in every fallback font. */
   & kbd {
-    padding: 1px 4px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 4px;
+
+    & svg {
+      width: 10px;
+      height: 8px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.2;
+    }
   }
 
   /* Links to this page in the repository: source, history and issues. */
@@ -280,7 +292,7 @@ kbd {
   padding: 2px 4px 0px;
   box-shadow: 1px 1px 1px var(--shadow);
   font-size: calc(100% - 6px);
-  /* A fixed height, so a fallback font's tall metrics (like the footer's ⏎) don't push the key up. */
+  /* A fixed height, so a fallback font's tall metrics don't push the key up. */
   line-height: 1;
   vertical-align: middle;
   background: var(--light);
@@ -415,6 +427,44 @@ figure.tikz {
 /* Rambling and project lists. */
 li.draft {
   opacity: 0.25;
+}
+
+/* A project's status: complete, partially complete, in progress or incomplete.
+   Floated to the right of the title it comes before, so a long title wraps
+   around it, and nudged down to sit centered on the title's text. */
+.status {
+  float: right;
+  margin: 2px 0 0 10px;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 0 5px;
+  border: 1px solid var(--faint);
+  border-radius: 5px;
+  background: var(--light);
+
+  h2 > & {
+    margin-top: 8px;
+  }
+
+  &.complete {
+    background: var(--highlight-green);
+    border-color: var(--highlight-green-edge);
+  }
+
+  &.partially-complete {
+    background: var(--highlight);
+    border-color: var(--highlight-edge);
+  }
+
+  &.in-progress {
+    background: var(--highlight-blue);
+    border-color: var(--highlight-blue-edge);
+  }
+
+  &.incomplete {
+    background: var(--highlight-red);
+    border-color: var(--highlight-red-edge);
+  }
 }
 
 .references {
