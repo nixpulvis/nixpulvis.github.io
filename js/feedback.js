@@ -3,7 +3,7 @@
 // Feedback on a selection of the page's text, styled by `.feedback` in
 // style.css. Selecting text in `.content` offers two choices:
 //
-// - Suggest privately: an email to `feedback.email` from _config.yml, with
+// - Comment privately: an email to `feedback.email` from _config.yml, with
 //   the quote and a link to it.
 // - Comment publicly: a Hypothesis annotation, shown inline to everyone. This
 //   drives the toolbar Hypothesis shows on a selection, which style.css hides.
@@ -156,7 +156,7 @@
     const quote = range.toString().trim().replace(/\s+/g, " ");
     const saved = range.cloneRange();
     menu.replaceChildren(
-      button("Suggest privately", () => email(quote)),
+      button("Comment privately", () => email(quote)),
       button("Comment publicly", () => comment(saved))
     );
     place(range);
@@ -165,7 +165,7 @@
   function email(quote) {
     const body = [`> ${quote}`, "", "", quoteLink(quote)].join("\n");
     location.href = "mailto:" + EMAIL
-      + "?subject=" + encodeURIComponent("Suggestion for " + document.title)
+      + "?subject=" + encodeURIComponent("Comment on " + document.title)
       + "&body=" + encodeURIComponent(body);
     // Done with the selection, as Hypothesis is after annotating it.
     document.getSelection().removeAllRanges();
