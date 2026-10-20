@@ -1159,13 +1159,13 @@ send_feedback(_ {
 </div>
 
 Seriously though, I'd like to hear what you think, where this breaks, what APIs
-it doesn't fit, or rules that surprise you, over on the [users.rust-lang.org
-thread][users-thread].
+it doesn't fit, or rules that surprise you, over on the [internals.rust-lang.org
+thread][internals-thread].
 
 <!-- References -->
 
 <!-- Discussion -->
-[users-thread]: https://users.rust-lang.org/t/named-arguments-are-just-structs-anonymous-struct-parameters/143160
+[internals-thread]: https://internals.rust-lang.org/t/named-arguments-are-just-structs-anonymous-struct-parameters/24683
 
 <!-- Blog posts -->
 [botahamec]: https://botahamec.dev/named-optional-args
