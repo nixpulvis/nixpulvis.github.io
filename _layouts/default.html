@@ -51,6 +51,15 @@
       <span style="float:right;">
         You <span class="nintendo">start</span> where you <kbd>⏎</kbd>
       </span>
+      <p class="source">
+        This page:
+        <a href="{{ site.repository }}/blob/master/{{ page.path }}">source</a>
+        &middot;
+        <a href="{{ site.repository }}/commits/master/{{ page.path }}">history</a>
+        &middot;
+        <a href="{{ site.repository }}/issues/new?body={{ page.url | absolute_url | url_encode }}">report an issue</a>
+        <span class="issues"><a href="{{ site.repository }}/issues">open issues</a></span>
+      </p>
     </footer>
   </body>
 </html>
