@@ -3,6 +3,7 @@
   --text: #cacaca;
   --background: #161616;
   --light: #282828;
+  --mid: #ccc;
   --dashed: 1px dashed var(--mid);
 }
 
