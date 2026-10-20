@@ -56,10 +56,6 @@ h2 small {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
-
-  @media only screen and (max-device-width : 600px) {
-    width: 90%;
-  }
 }
 
 header {
@@ -117,6 +113,10 @@ footer {
 
   & a {
     text-decoration: none;
+  }
+
+  & .hint {
+    float: right;
   }
 
   /* The return key. An SVG arrow, since a ⏎ glyph lands differently in every fallback font. */
@@ -429,6 +429,12 @@ li.draft {
   opacity: 0.25;
 }
 
+/* The ramblings, research and projects lists keep their bullets with only
+   enough indent to fit them. */
+.posts, .projects {
+  padding-left: 1em;
+}
+
 /* A project's status: complete, partially complete, in progress or incomplete.
    Floated to the right of the title it comes before, so a long title wraps
    around it, and nudged down to sit centered on the title's text. */
@@ -506,7 +512,6 @@ li.draft {
 .nintendo {
   font-family: "Pixel";
   letter-spacing: 0px;
-  font-variant: caps;
 }
 
 @media print {
