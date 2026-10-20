@@ -132,12 +132,13 @@
     return location.origin + location.pathname + "#:~:text=" + text;
   }
 
-  // Above the selection, clear of the menu phones show below it.
+  // Centered above the selection, clear of the menu phones show below it.
   function place(range) {
-    const first = range.getClientRects()[0] || range.getBoundingClientRect();
+    const bounds = range.getBoundingClientRect();
+    const first = range.getClientRects()[0] || bounds;
     menu.hidden = false;
     const left = Math.min(
-      Math.max(first.left, 10),
+      Math.max(bounds.left + bounds.width / 2 - menu.offsetWidth / 2, 10),
       document.documentElement.clientWidth - menu.offsetWidth - 10
     );
     menu.style.left = left + window.scrollX + "px";
