@@ -57,7 +57,7 @@
         &middot;
         <a href="{{ site.repository }}/commits/master/{{ page.path }}">history</a>
         &middot;
-        <a href="{{ site.repository }}/issues/new?title={{ page.path | prepend: 'On ' | url_encode }}">report an issue</a>
+        <a href="{{ site.repository }}/issues/new?body={{ page.url | absolute_url | url_encode }}">report an issue</a>
         <span class="issues"><a href="{{ site.repository }}/issues">open issues</a></span>
       </p>
     </footer>
