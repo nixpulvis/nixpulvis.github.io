@@ -16,8 +16,8 @@
   --highlight-blue: #e6effd;
   --highlight-blue-edge: #5a8ee0;
   --dashed: 1px dashed var(--black);
-  /* Where a heading's anchor sits, left of the heading. */
-  --anchor-offset: -1.25em;
+  /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
+  --details-gutter: calc(-1.25em - 11px);
 }
 
 html {
@@ -57,6 +57,13 @@ h2 small {
 
   @media only screen and (max-device-width : 600px) {
     width: 90%;
+  }
+
+  /* Room in the margin for a heading's anchor, 1.25em of a 2em `h1`, when
+     there's a pointer to hover headings with. */
+  @media (hover: hover) and (max-width: 700px) {
+    width: auto;
+    padding: 0 2.5em;
   }
 }
 
@@ -239,8 +246,10 @@ details {
     margin-bottom: 0;
   }
 
-  /* Past the 10px padding and 1px dashed border. */
-  --anchor-offset: calc(-1.25em - 11px);
+  /* Past the dashed border. */
+  & .anchor {
+    margin-left: var(--details-gutter);
+  }
 }
 
 summary {
@@ -255,8 +264,9 @@ summary {
     display: inline;
 
     /* Past the disclosure marker too: placed from the summary's edge, not the heading's. */
-    &.anchored {
-      position: static;
+    & > .anchor {
+      left: var(--details-gutter);
+      margin-left: 0;
     }
   }
 }
@@ -339,9 +349,8 @@ figure.tikz {
 /* Heading links: `<a class="anchor">`, added by js/main.js. */
 .anchor {
   position: absolute;
-  top: 0;
-  left: var(--anchor-offset);
   width: 1em;
+  margin-left: -1.25em;
   padding-right: 0.25em;
   text-align: right;
   color: var(--faint);
@@ -357,22 +366,12 @@ figure.tikz {
     color: inherit;
   }
 
-  /* No room in the margin, so after the heading's text instead: unplaced, it
-     stays where it falls in the text, still out of the flow. */
-  @media (max-width: 700px) {
-    top: auto;
-    left: auto;
-    width: auto;
-    padding: 0 0 0 0.25em;
-  }
-
   @media print {
     display: none;
   }
 }
 
 .anchored {
-  position: relative;
   cursor: pointer;
 }
 
