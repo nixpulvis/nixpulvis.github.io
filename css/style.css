@@ -264,6 +264,11 @@ summary {
     & > .anchor {
       left: var(--details-gutter);
       margin-left: 0;
+
+      /* After the marker, not floated past it. */
+      @media (max-width: 700px) {
+        float: none;
+      }
     }
   }
 }
@@ -364,9 +369,11 @@ figure.tikz {
   }
 
   /* No room in the margin, so at the start of the heading, pushing its text
-     over while shown. */
+     over while shown. Floated, so the whitespace that starts a title from the
+     layouts still collapses. */
   @media (max-width: 700px) {
     position: static;
+    float: left;
     width: auto;
     margin-left: 0;
     display: none;
