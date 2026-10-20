@@ -50,7 +50,7 @@ $$
 <details>
   <summary>Tangent on Fourier Series</summary>
   <div markdown="1">
-{% include_relative 001_fourier.md %}
+{% include_relative _fourier.md %}
   </div>
 </details>
 
