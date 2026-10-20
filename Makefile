@@ -3,19 +3,20 @@ FORTUNES = $(filter-out %.dat,$(wildcard fortunes/[0-9][0-9][0-9][0-9]))
 FORTUNE_DATS = $(addsuffix .dat,$(FORTUNES))
 
 # Define our non-file based targets.
-.PHONY: all clean
+.PHONY: all clean _site fortunes
 
 # Build the site, and our fortunes.
-all: _site fortunes
+all: _site
 
 # Clean up the project directory.
 clean:
 	rm -rf _site/
 	rm -f $(FORTUNE_DATS)
 
-# Build the static site, in all its glory.
-_site:
-	jekyll build
+# Build the static site, in all its glory. The fortunes come first so Jekyll
+# publishes the .dat files with them.
+_site: fortunes
+	bundle exec jekyll build
 
 # Compile the strfile .dat files for use with `fortune`. These aren't
 # committed. The build compiles them and publishes them next to the text.
