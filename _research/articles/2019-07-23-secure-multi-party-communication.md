@@ -89,18 +89,18 @@ reviewing some earlier notes, and I think I like the looks of a paint bucket
 $$\bullet$$, and something like $$\lambda_{\bullet}$$ in general:
 
 $$
-(\lambda_{\bullet} \ \color{blue}{x} \ \color{red}{y} \ . \color{blue}{\bullet}\ e) \
-\color{blue}{\bullet}a \
-\color{red}{\bullet}b
-\rightarrow \color{blue}{\bullet \
-e[\color{black}a/\color{blue}x,\color{black}b/\color{red}y]}
+(\lambda_{\bullet} \ \textcolor{blue}{x} \ \textcolor{red}{y} \ . \textcolor{blue}{\bullet}\ e) \
+\textcolor{blue}{\bullet}a \
+\textcolor{red}{\bullet}b
+\rightarrow \textcolor{blue}{\bullet \
+e[\textcolor{black}a/\textcolor{blue}x,\textcolor{black}b/\textcolor{red}y]}
 $$
 
 $$
 \begin{align*}
-e \ \color{blue}x \ \color{red}y &= f(\color{blue}x,\color{red}y) \\
-\color{blue}{\bullet} \ e \ \color{blue}x \ \color{red}y &= \color{blue}{f(x,\color{red}y)} \\
-\color{red}{\bullet} \ e \ \color{blue}x \ \color{red}y &= \color{red}{f(\color{blue}x,y)}
+e \ \textcolor{blue}x \ \textcolor{red}y &= f(\textcolor{blue}x,\textcolor{red}y) \\
+\textcolor{blue}{\bullet} \ e \ \textcolor{blue}x \ \textcolor{red}y &= \textcolor{blue}{f(x,\textcolor{red}y)} \\
+\textcolor{red}{\bullet} \ e \ \textcolor{blue}x \ \textcolor{red}y &= \textcolor{red}{f(\textcolor{blue}x,y)}
 \end{align*}
 $$
 
