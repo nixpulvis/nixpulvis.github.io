@@ -10,7 +10,7 @@ promise of complete clearity, nor do I wish to ramble to the point of insanity.
 If you find something you like here, I've done my job. Otherwise, be gone with
 you.
 
-<ul>
+<ul class="posts">
 {%
 assign ramblings = site.ramblings
                  | concat: site.mathematics
@@ -22,22 +22,6 @@ assign ramblings = site.ramblings
     {% if rambling.hidden %}
         {% continue %}
     {% endif %}
-    {% if rambling.draft %}
-        <li class="draft">
-            <a href="{{ rambling.url | relative_url }}">{{ rambling.title }}</a>
-            <small>
-                {{ rambling.content | strip_html | number_of_words }} words
-                drafted on {{ rambling.date | date: "%B %d, %Y" }}.
-            </small>
-        </li>
-    {% else %}
-        <li>
-            <a href="{{ rambling.url | relative_url }}">{{ rambling.title }}</a>
-            <small>
-                {{ rambling.content | strip_html | number_of_words }} words
-                published on {{ rambling.date | date: "%B %d, %Y" }}.
-            </small>
-        </li>
-    {% endif %}
+    {% include post-item.html post=rambling %}
 {% endfor %}
 </ul>
