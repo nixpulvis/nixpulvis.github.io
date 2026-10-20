@@ -440,8 +440,6 @@ figure.tikz {
   z-index: 10;
   display: flex;
   gap: 5px;
-  max-width: min(360px, calc(100vw - 20px));
-  box-sizing: border-box;
   padding: 5px;
   background: var(--white);
   border: var(--dashed);
@@ -457,38 +455,6 @@ figure.tikz {
     font: inherit;
     padding: 3px 8px;
     cursor: pointer;
-  }
-
-  & form {
-    width: 340px;
-    max-width: 100%;
-
-    & input, & textarea, & button {
-      margin: 0 0 5px;
-      font: inherit;
-    }
-
-    & input[type=email], & textarea {
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    & .trap {
-      position: absolute;
-      left: -9999px;
-    }
-
-    & .actions {
-      display: flex;
-      gap: 5px;
-    }
-  }
-
-  & blockquote {
-    margin: 0 0 5px;
-    border-left-width: 3px;
-    font-size: 13px;
-    color: var(--muted);
   }
 
   @media print {

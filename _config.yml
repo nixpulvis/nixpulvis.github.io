@@ -33,8 +33,6 @@ exclude:
   - TODO-espresso
   - bin/
 
-# Private notes on selected text, from js/feedback.js. With no endpoint (a
-# Formspree-style form URL), notes open an email to `email` instead.
+# Where private notes on selected text are emailed, from js/feedback.js.
 feedback:
-  endpoint:
   email: nathan@nixpulvis.com
