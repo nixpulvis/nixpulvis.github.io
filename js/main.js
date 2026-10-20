@@ -1,16 +1,21 @@
 ---
 ---
-// A random fortune, like 404.md, for anyone who opens the console. In a
-// block, since 404.md has its own `fortunes`.
+// Every fortune, for `fortune()`. Gathered here once, so pages like 404.md
+// can share them rather than inlining their own copy.
 {%- assign fortunes = "" | split: "" %}
 {%- for database in site.data.fortunes %}
 {%- assign fortunes = fortunes | concat: database.entries %}
 {%- endfor %}
-{
-  const fortunes = {{ fortunes | jsonify }};
-  console.log("%cλ", "font: 48px serif;");
-  console.log("%s", fortunes[Math.floor(Math.random() * fortunes.length)]);
+const fortunes = {{ fortunes | jsonify }};
+
+// A random fortune, like `fortune` itself.
+function fortune() {
+  return fortunes[Math.floor(Math.random() * fortunes.length)];
 }
+
+// For anyone who opens the console.
+console.log("%cλ", "font: 48px serif;");
+console.log("%s", fortune());
 
 document.addEventListener("DOMContentLoaded", () => {
   // Toggle my hidden, ugly mug.
