@@ -16,11 +16,11 @@
     {% if page.style %}
       <link rel="stylesheet" href="{{ page.style | relative_url }}" />
     {% endif %}
-    <script src="{{ '/js/mousetrap.min.js' | relative_url }}"></script>
+    <script defer src="{{ '/js/mousetrap.min.js' | relative_url }}"></script>
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <script src="{{ '/js/main.js' | relative_url }}"></script>
+    <script defer src="{{ '/js/main.js' | relative_url }}"></script>
     {% for script in page.scripts %}
-      <script src="{{ script | relative_url }}"></script>
+      <script defer src="{{ script | relative_url }}"></script>
     {% endfor %}
   </head>
 
