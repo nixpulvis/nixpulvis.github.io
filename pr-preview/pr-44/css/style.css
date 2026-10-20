@@ -1,0 +1,409 @@
+/* Shared values, used throughout. */
+:root {
+  --black: black;
+  --white: white;
+  --text: #282c34;
+  --muted: #555;
+  --dark: #666;
+  --shadow: #777;
+  --faint: #aaa;
+  --mid: #ccc;
+  --light: #eee;
+  --highlight: #fff6db;
+  --highlight-edge: #f0c94a;
+  --highlight-red: #fde8e6;
+  --highlight-red-edge: #e0645a;
+  --highlight-blue: #e6effd;
+  --highlight-blue-edge: #5a8ee0;
+  --dashed: 1px dashed var(--black);
+  /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
+  --details-gutter: calc(-1.25em - 11px);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  font-family: "Computer Modern Serif", serif;
+  font-size: 18px;
+  color: var(--text);
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+hr {
+  border: 0;
+  border-bottom: var(--dashed);
+}
+
+h2 small {
+  display: block;
+  font-size: 16px;
+}
+
+/* Page layout: `<body class="container">`. */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  @media only screen and (max-device-width : 600px) {
+    width: 90%;
+  }
+}
+
+header {
+  padding: 10px 0;
+  border-bottom: var(--dashed);
+
+  & img {
+    height: 60px;
+    margin-top: 5px;
+    float: right;
+  }
+
+  & #me {
+    position: absolute;
+    right: 80px;
+  }
+
+  & .identity {
+    font-size: 32px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  & nav {
+    & ul {
+      margin: -7px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    & li {
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    & .icon {
+      max-height: 24px;
+
+      & a {
+        text-decoration: none;
+      }
+    }
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+footer {
+  margin-top: 50px;
+  padding: 10px 0;
+  font-size: 14px;
+  border-top: var(--dashed);
+
+  & a {
+    text-decoration: none;
+  }
+
+  & .copyleft {
+    display: inline-block;
+    margin-right: -3px;
+    padding-bottom: 3px;
+    font-size: 10px;
+    vertical-align: middle;
+    transform: scale(-1, 1);
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+pre {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+code {
+  font-family: "Computer Modern Typewriter", monospace;
+
+  /* Inline new syntax: `` `code`{:.new-syntax} ``, matching `.highlight-block`. */
+  &.new-syntax {
+    background: var(--highlight);
+    box-shadow: inset 0 -2px var(--highlight-edge);
+    padding: 0 2px;
+  }
+}
+
+/* Highlighted code blocks: `<div class="highlight-block" markdown="1">` around the fence. */
+.highlight-block {
+  background: var(--highlight);
+  border-left: 2px solid var(--highlight-edge);
+  margin: 1em 0;
+  padding: 5px 10px;
+
+  &.red {
+    background: var(--highlight-red);
+    border-left-color: var(--highlight-red-edge);
+  }
+
+  &.other {
+    background: var(--highlight-blue);
+    border-left-color: var(--highlight-blue-edge);
+  }
+
+  & pre {
+    margin: 0;
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Asides: `<div class="aside" markdown="1">` around the paragraphs. */
+.aside {
+  border: 1px dashed var(--faint);
+  border-radius: 5px;
+  color: var(--muted);
+  font-size: 16px;
+  margin: 1.5em 0;
+  padding: 10px 15px;
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+blockquote {
+  background: var(--light);
+  border-left: 10px solid var(--mid);
+  margin: 1.5em 0;
+  padding: 5px 10px;
+
+  @media print {
+    border-left: 3px solid var(--black);
+    background-color: var(--white);
+  }
+}
+
+details {
+  margin: 0 0 15px;
+  padding: 10px;
+  border: var(--dashed);
+  border-radius: 5px;
+
+  & :last-child {
+    margin-bottom: 0;
+  }
+
+  /* Past the dashed border. */
+  & .anchor {
+    margin-left: var(--details-gutter);
+  }
+}
+
+summary {
+  cursor: pointer;
+
+  /* Section headings as summaries: `<summary markdown="1">` around `### …`. */
+  &:has(> :is(h1, h2, h3, h4, h5, h6)) {
+    position: relative;
+  }
+
+  & > :is(h1, h2, h3, h4, h5, h6) {
+    display: inline;
+
+    /* Past the disclosure marker too: placed from the summary's edge, not the heading's. */
+    & > .anchor {
+      left: var(--details-gutter);
+      margin-left: 0;
+    }
+  }
+}
+
+kbd {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 2px 4px 0px;
+  box-shadow: 1px 1px 1px var(--shadow);
+  font-size: calc(100% - 6px);
+  vertical-align: middle;
+  background: var(--light);
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+table {
+  text-align: left;
+  border-collapse: collapse;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+
+  & tr:nth-child(even) {
+    background-color: var(--mid);
+  }
+
+  & th, & td {
+    border: 1px solid var(--black);
+    padding: 5px 10px;
+  }
+
+  & th {
+    color: var(--light);
+    background-color: var(--dark);
+  }
+}
+
+form {
+  & input, & textarea, & fieldset, & select, & button {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  & input[type=text], & textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  & input[type=radio] {
+    display: inline-block;
+  }
+
+  & input[type=submit], & button {
+    margin-top: 15px;
+  }
+}
+
+figure.tikz {
+  margin: 1em 0;
+  text-align: center;
+
+  & svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.gif-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  & img {
+    margin: 10px 5px auto;
+  }
+}
+
+/* Heading links: `<a class="anchor">`, added by js/main.js. */
+.anchor {
+  position: absolute;
+  width: 1em;
+  margin-left: -1.25em;
+  padding-right: 0.25em;
+  text-align: right;
+  color: var(--faint);
+  text-decoration: none;
+  visibility: hidden;
+
+  :is(h1, h2, h3, h4, h5, h6):hover > &,
+  &:focus {
+    visibility: visible;
+  }
+
+  &:hover {
+    color: inherit;
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+.anchored {
+  cursor: pointer;
+}
+
+/* Last among the components, so print overrides their colors and fonts. */
+.content {
+  flex: 1 0 auto;
+
+  @media print {
+    & * {
+      font-family: serif;
+      color: var(--black);
+    }
+
+    & code {
+      font-family: monospace;
+    }
+  }
+}
+
+/* Rambling and project lists. */
+li.draft {
+  opacity: 0.25;
+}
+
+.references {
+  background: var(--light);
+  border: var(--dashed);
+  border-radius: 5px;
+  font-size: 14px;
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+
+  & li:before {
+    content: '- ';
+  }
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.nintendo {
+  font-family: "Pixel";
+  letter-spacing: 0px;
+  font-variant: caps;
+}
+
+@media print {
+  h2:first-child {
+    margin-top: 0;
+  }
+
+  /* TODO: How to handle safari? */
+  @page {
+    margin-top: 70px;
+  }
+}
