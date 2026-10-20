@@ -400,7 +400,10 @@ figure.tikz {
   text-decoration: none;
   visibility: hidden;
 
-  :is(h1, h2, h3, h4, h5, h6):hover > &,
+  /* Not from a title's byline (`small`), which isn't part of the link: on
+     touch screens, a tap that reveals this is spent doing only that, so the
+     byline's own buttons would need two taps. */
+  :is(h1, h2, h3, h4, h5, h6):hover:not(:has(small:hover)) > &,
   &:focus {
     visibility: visible;
   }
@@ -420,7 +423,7 @@ figure.tikz {
     display: none;
   }
 
-  .cramped:hover > &,
+  .cramped:hover:not(:has(small:hover)) > &,
   .cramped > &:focus {
     display: inline;
   }
