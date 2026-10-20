@@ -6,7 +6,6 @@
   --border: var(--black);
   --text: #282c34;
   --muted: #555;
-  --dark: #666;
   --shadow: #777;
   --faint: #aaa;
   --mid: #ccc;
@@ -30,7 +29,6 @@
     --border: #777;
     --text: #cacaca;
     --muted: #999;
-    --dark: #4a4a4a;
     --shadow: black;
     --faint: #666;
     --mid: #3a3a3a;
@@ -345,14 +343,9 @@ table {
     padding: 5px 10px;
   }
 
+  /* Plain text, so links read the same as in the body, set off by a double rule. */
   & th {
-    color: var(--light);
-    background-color: var(--dark);
-
-    /* --light is a dark fill in dark mode, so use the text color. */
-    @media screen and (prefers-color-scheme: dark) {
-      color: var(--text);
-    }
+    border-bottom: 3px double var(--border);
   }
 }
 
