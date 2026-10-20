@@ -476,8 +476,6 @@ figure.tikz {
 
 /* Shows or hides Hypothesis, and opens its panel on phones, from js/feedback.js. */
 .comments-controls {
-  margin-left: 5px;
-
   &[hidden] {
     display: none;
   }
@@ -494,10 +492,6 @@ figure.tikz {
     &[hidden] {
       display: none;
     }
-  }
-
-  & .comments-open {
-    margin-left: 5px;
   }
 }
 
