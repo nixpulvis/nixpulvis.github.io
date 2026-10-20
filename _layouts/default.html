@@ -26,16 +26,16 @@
 
   <body class="container">
     <header>
-      <img id="lambda" src="{{ '/img/cat-lambda.png' | relative_url }}" />
-      <img id="me" src="{{ '/img/me.jpg' | relative_url }}" class="hidden" />
+      <img id="lambda" alt="λ" src="{{ '/img/cat-lambda.png' | relative_url }}" />
+      <img id="me" alt="Photo of Nathan" src="{{ '/img/me.jpg' | relative_url }}" class="hidden" />
       <a href="{{ '/' | relative_url }}" class="identity">nixpulvis</a>
       <nav>
         <ul>
           <li><a href="{{ '/projects' | relative_url }}">Projects</a></li>
           <li><a href="{{ '/ramblings' | relative_url }}">Ramblings</a></li>
-          <li class="icon"><a href="{{ '/fortunes/' | relative_url }}" title="Fortunes">%</a></li>
-          <li class="icon"><a href="{{ '/references' | relative_url }}">&</a></li>
-          <li class="icon"><a href="{{ '/musings' | relative_url }}">♪</a></li>
+          <li class="icon"><a href="{{ '/fortunes/' | relative_url }}" title="Fortunes" aria-label="Fortunes">%</a></li>
+          <li class="icon"><a href="{{ '/references' | relative_url }}" title="References" aria-label="References">&</a></li>
+          <li class="icon"><a href="{{ '/musings' | relative_url }}" title="Music" aria-label="Music">♪</a></li>
         </ul>
       </nav>
     </header>

@@ -28,8 +28,6 @@ creators. A Yagi is a directional antenna which operates with a single driven
 element, a reflecting element, and many directing elements. These are the same
 design as many household TV antennas from the old days.
 
-![]()
-
 I'm not going to get into the design of these things, because frankly that's
 above my pay-grade at the moment, but there are a few key things to know about
 these antennas:

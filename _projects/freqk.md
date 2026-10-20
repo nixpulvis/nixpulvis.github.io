@@ -25,7 +25,7 @@ encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 We have 28 LEDs along the width of the synth, going 15 deep back away from the
 keys. Six on top and nine down the back.
 
-![]({{ '/img/freqk/korg-ms20.jpeg' | relative_url }})
+![Korg MS-20 with a grid of LEDs mounted on top]({{ '/img/freqk/korg-ms20.jpeg' | relative_url }})
 
 ```c
 #define DISPLAY_WIDTH 28
@@ -38,7 +38,7 @@ keys. Six on top and nine down the back.
 Using the Arduino has many advantages, but eventually I'd like to use the board
 we etched by hand.
 
-<img src="{{ '/img/freqk/arduino.jpeg' | relative_url }}"
+<img alt="Arduino Pro Mini" src="{{ '/img/freqk/arduino.jpeg' | relative_url }}"
      height=250
      style="float:right; margin-left: 1em;" />
 
@@ -49,9 +49,9 @@ we etched by hand.
 #define DISPLAY_PIN 8
 ```
 
-![]({{ '/img/freqk/arduino-pinout.png' | relative_url }})
+![Schematic of the microcontroller pins wired to the display and MSGEQ7]({{ '/img/freqk/arduino-pinout.png' | relative_url }})
 
-<img src="{{ '/img/freqk/msgeq7.jpeg' | relative_url }}"
+<img alt="MSGEQ7 chip" src="{{ '/img/freqk/msgeq7.jpeg' | relative_url }}"
      height=100
      style="float: left; margin-right: 1em; transform: rotate(-90deg);" />
 
@@ -77,12 +77,12 @@ void loop() {
 
 ### `read_msgeq7`
 
-![]({{ '/img/freqk/msgeq7-schematic.png' | relative_url }})
+![MSGEQ7 schematic with the audio jack input and STROBE, RESET and OUT lines]({{ '/img/freqk/msgeq7-schematic.png' | relative_url }})
 
 In order from first to last, the bands are centered around the following
 acoustic frequencies: 63Hz, 160Hz, 400Hz, 1kHz, 2.5kHz, 6.25kHz, 16kHz.
 
-![]({{ '/img/freqk/msgeq7-timing.png' | relative_url }})
+![MSGEQ7 strobe timing diagram]({{ '/img/freqk/msgeq7-timing.png' | relative_url }})
 
 ```c
 void read_msgeq7(int spectrum[BANDS]) {
@@ -152,8 +152,8 @@ void shift(int spectrums[DISPLAY_DEPTH][BANDS]) {
 
 ### `update_display`
 
-<img src="{{ '/img/freqk/28x6.jpeg' | relative_url }}" width="95%" />
-![]({{ '/img/freqk/msgeq7-response.png' | relative_url }})
+<img alt="Strip of LEDs 28 wide and 6 deep" src="{{ '/img/freqk/28x6.jpeg' | relative_url }}" width="95%" />
+![MSGEQ7 frequency response, seven peaks from 63Hz to 16kHz]({{ '/img/freqk/msgeq7-response.png' | relative_url }})
 
 ```c
 void update_display(int spectrums[DISPLAY_DEPTH][BANDS]) {
@@ -186,7 +186,7 @@ void update_display(int spectrums[DISPLAY_DEPTH][BANDS]) {
 
 ### Colors
 
-<img src="{{ '/img/freqk/grid.jpeg' | relative_url }}" width=300 />
+<img alt="Close up of the LED grid wiring" src="{{ '/img/freqk/grid.jpeg' | relative_url }}" width=300 />
 
 ```c
 #define COLOR COLOR_MIXED
@@ -241,11 +241,11 @@ unsigned int max_index(int spectrum[BANDS]) {
 
 ### Setup and Loop (Revisited)
 
-![]({{ '/img/freqk/box.jpeg' | relative_url }})
+![Black control box with an on/off switch, in front of the lit LEDs]({{ '/img/freqk/box.jpeg' | relative_url }})
 
 ## Next Steps
 
-<img src="{{ '/img/freqk/schematic.png' | relative_url }}"
+<img alt="Circuit board layout" src="{{ '/img/freqk/schematic.png' | relative_url }}"
      style="transform: rotate(90deg); margin: 2em 0 2.5em" />
 
 - Think about display mode inputs
