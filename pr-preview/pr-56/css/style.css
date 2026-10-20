@@ -497,16 +497,6 @@ li.draft {
 /* The 404 page's pretend shell. */
 .not-found {
   white-space: pre-wrap;
-
-  & .cursor {
-    animation: blink 1s steps(1) infinite;
-  }
-}
-
-@keyframes blink {
-  50% {
-    visibility: hidden;
-  }
 }
 
 .hidden {
