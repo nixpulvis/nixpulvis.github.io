@@ -1,7 +1,6 @@
 ---
 layout: rambling
 title: "Anonymous Struct Parameters: The Idea"
-draft: true
 ---
 
 There have been a few [recent posts](#4-relating-to-recent-posts) on how Rust
@@ -1160,11 +1159,13 @@ send_feedback(_ {
 </div>
 
 Seriously though, I'd like to hear what you think, where this breaks, what APIs
-it doesn't fit, or rules that surprise you.
-
-TODO: users.rust-lang.org link.
+it doesn't fit, or rules that surprise you, over on the [users.rust-lang.org
+thread][users-thread].
 
 <!-- References -->
+
+<!-- Discussion -->
+[users-thread]: https://users.rust-lang.org/t/named-arguments-are-just-structs-anonymous-struct-parameters/143160
 
 <!-- Blog posts -->
 [botahamec]: https://botahamec.dev/named-optional-args
