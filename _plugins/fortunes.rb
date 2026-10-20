@@ -28,28 +28,12 @@ module Jekyll
     private
 
     def parse(file, name)
-      # A new year's file starts out empty.
-      return [] if File.read(file).strip.empty?
-
-      entries = [[]]
-      starts = [1]
-      File.readlines(file, chomp: true).each_with_index do |line, i|
-        if line == '%'
-          entries << []
-          starts << i + 2
-        else
-          entries.last << line
-        end
+      # -1 keeps empty entries, so a stray `%` at the end is caught too.
+      entries = File.read(file).strip.split(/^%$/, -1).map(&:strip)
+      if (i = entries.index(&:empty?))
+        raise Errors::FatalException, "#{name}: fortune #{i + 1} is empty"
       end
-
-      entries.zip(starts).map do |lines, start|
-        text = lines.join("\n").strip
-        if text.empty?
-          raise Errors::FatalException,
-                "#{name}:#{start}: empty fortune (a `%` line with nothing before it)"
-        end
-        text
-      end
+      entries
     end
   end
 end
