@@ -59,6 +59,7 @@ h2 small {
 }
 
 header {
+  position: relative;
   padding: 10px 0;
   border-bottom: var(--dashed);
 
@@ -68,9 +69,15 @@ header {
     float: right;
   }
 
+  /* Shown over the lambda, covering it. Clicks pass through to the lambda,
+     so another click hides it again. */
   & #me {
     position: absolute;
-    right: 80px;
+    top: 10px;
+    right: 0;
+    width: 70px;
+    object-fit: cover;
+    pointer-events: none;
   }
 
   & .identity {
