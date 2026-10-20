@@ -17,15 +17,110 @@ html {
 }
 
 body {
-  min-height: 100%;
-}
-
-body {
   display: flex;
   flex-direction: column;
+  min-height: 100%;
   font-family: "Computer Modern Serif", serif;
   font-size: 18px;
   color: var(--text);
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+hr {
+  border: 0;
+  border-bottom: var(--dashed);
+}
+
+h2 small {
+  display: block;
+  font-size: 16px;
+}
+
+/* Page layout: `<body class="container">`. */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  @media only screen and (max-device-width : 600px) {
+    width: 90%;
+  }
+}
+
+header {
+  padding: 10px 0;
+  border-bottom: var(--dashed);
+
+  & img {
+    height: 60px;
+    margin-top: 5px;
+    float: right;
+  }
+
+  & #me {
+    position: absolute;
+    right: 80px;
+  }
+
+  & .identity {
+    font-size: 32px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  & nav {
+    & ul {
+      margin: -7px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    & li {
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    & .icon {
+      max-height: 24px;
+
+      & a {
+        text-decoration: none;
+      }
+    }
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+footer {
+  margin-top: 50px;
+  padding: 10px 0;
+  font-size: 14px;
+  border-top: var(--dashed);
+
+  & a {
+    text-decoration: none;
+  }
+
+  & .copyleft {
+    display: inline-block;
+    margin-right: -3px;
+    padding-bottom: 3px;
+    font-size: 10px;
+    vertical-align: middle;
+    transform: scale(-1, 1);
+  }
+
+  @media print {
+    display: none;
+  }
 }
 
 pre {
@@ -33,10 +128,21 @@ pre {
   overflow-y: hidden;
   -ms-overflow-style: none;
   overflow: -moz-scrollbars-none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-pre::-webkit-scrollbar {
-  display: none;
+code {
+  font-family: "Computer Modern Typewriter", monospace;
+
+  /* Inline new syntax: `` `code`{:.new-syntax} ``, matching `.highlight-block`. */
+  &.new-syntax {
+    background: var(--highlight);
+    box-shadow: inset 0 -2px var(--highlight-edge);
+    padding: 0 2px;
+  }
 }
 
 /* Highlighted code blocks: `<div class="highlight-block" markdown="1">` around the fence. */
@@ -45,35 +151,28 @@ pre::-webkit-scrollbar {
   border-left: 2px solid var(--highlight-edge);
   margin: 1em 0;
   padding: 5px 10px;
-}
 
-.highlight-block.red {
-  background: #fde8e6;
-  border-left-color: #e0645a;
-}
+  &.red {
+    background: #fde8e6;
+    border-left-color: #e0645a;
+  }
 
-.highlight-block.other {
-  background: #e6effd;
-  border-left-color: #5a8ee0;
-}
+  &.other {
+    background: #e6effd;
+    border-left-color: #5a8ee0;
+  }
 
-.highlight-block pre {
-  margin: 0;
-}
+  & pre {
+    margin: 0;
+  }
 
-.highlight-block > :first-child {
-  margin-top: 0;
-}
+  & > :first-child {
+    margin-top: 0;
+  }
 
-.highlight-block > :last-child {
-  margin-bottom: 0;
-}
-
-/* Inline new syntax: `` `code`{:.new-syntax} ``, matching `.highlight-block`. */
-code.new-syntax {
-  background: var(--highlight);
-  box-shadow: inset 0 -2px var(--highlight-edge);
-  padding: 0 2px;
+  & > :last-child {
+    margin-bottom: 0;
+  }
 }
 
 /* Asides: `<div class="aside" markdown="1">` around the paragraphs. */
@@ -84,18 +183,14 @@ code.new-syntax {
   font-size: 16px;
   margin: 1.5em 0;
   padding: 10px 15px;
-}
 
-.aside > :first-child {
-  margin-top: 0;
-}
+  & > :first-child {
+    margin-top: 0;
+  }
 
-.aside > :last-child {
-  margin-bottom: 0;
-}
-
-code {
-  font-family: "Computer Modern Typewriter", monospace;
+  & > :last-child {
+    margin-bottom: 0;
+  }
 }
 
 blockquote {
@@ -103,6 +198,11 @@ blockquote {
   border-left: 10px solid var(--mid);
   margin: 1.5em 0;
   padding: 5px 10px;
+
+  @media print {
+    border-left: 3px solid black;
+    background-color: white;
+  }
 }
 
 details {
@@ -110,34 +210,34 @@ details {
   padding: 10px;
   border: var(--dashed);
   border-radius: 5px;
-}
 
-details :last-child {
-  margin-bottom: 0;
+  & :last-child {
+    margin-bottom: 0;
+  }
+
+  /* Past the dashed border. */
+  & .anchor {
+    margin-left: var(--details-gutter);
+  }
 }
 
 summary {
   cursor: pointer;
-}
 
-/* Section headings as summaries: `<summary markdown="1">` around `### …`. */
-summary:has(> :is(h1, h2, h3, h4, h5, h6)) {
-  position: relative;
-}
+  /* Section headings as summaries: `<summary markdown="1">` around `### …`. */
+  &:has(> :is(h1, h2, h3, h4, h5, h6)) {
+    position: relative;
+  }
 
-summary > :is(h1, h2, h3, h4, h5, h6) {
-  display: inline;
-}
+  & > :is(h1, h2, h3, h4, h5, h6) {
+    display: inline;
 
-/* Past the disclosure marker too: placed from the summary's edge, not the heading's. */
-summary > :is(h1, h2, h3, h4, h5, h6) > .anchor {
-  left: var(--details-gutter);
-  margin-left: 0;
-}
-
-hr {
-  border: 0;
-  border-bottom: var(--dashed);
+    /* Past the disclosure marker too: placed from the summary's edge, not the heading's. */
+    & > .anchor {
+      left: var(--details-gutter);
+      margin-left: 0;
+    }
+  }
 }
 
 kbd {
@@ -159,145 +259,60 @@ table {
   display: block;
   max-width: 100%;
   overflow-x: auto;
-}
 
-table tr:nth-child(even) {
-  background-color: var(--mid);
-}
+  & tr:nth-child(even) {
+    background-color: var(--mid);
+  }
 
-table th {
-  border: 1px solid black;
-  color: var(--light);
-  background-color: #666;
-}
+  & th, & td {
+    border: 1px solid black;
+    padding: 5px 10px;
+  }
 
-table th, table td {
-  border: 1px solid black;
-  padding: 5px 10px;
-}
-
-form input,
-form textarea,
-form fieldset,
-form select,
-form button
-{
-  display: block;
-  margin-bottom: 10px;
-}
-
-form input[type=text], form textarea {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-form input[type=radio] {
-  display: inline-block;
-}
-
-form input[type=submit], form button {
-  margin-top: 15px;
-}
-
-.hidden {
-  visibility: hidden;
-}
-
-.nintendo {
-  font-family: "Pixel";
-  letter-spacing: 0px;
-  font-variant: caps;
-}
-
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-@media only screen
-and (max-device-width : 600px) {
-  .container {
-    width: 90%;
+  & th {
+    color: var(--light);
+    background-color: #666;
   }
 }
 
-.identity {
-  font-size: 32px;
-  text-decoration: none;
-  color: inherit;
-}
+form {
+  & input, & textarea, & fieldset, & select, & button {
+    display: block;
+    margin-bottom: 10px;
+  }
 
+  & input[type=text], & textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
 
-#me {
-  position: absolute;
-  right: 80px;
-}
+  & input[type=radio] {
+    display: inline-block;
+  }
 
-header {
-  padding: 10px 0;
-  border-bottom: var(--dashed);
-}
-
-header img {
-  height: 60px;
-  margin-top: 5px;
-  float: right;
-}
-
-img {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
+  & input[type=submit], & button {
+    margin-top: 15px;
+  }
 }
 
 figure.tikz {
   margin: 1em 0;
   text-align: center;
-}
 
-figure.tikz svg {
-  max-width: 100%;
-  height: auto;
-}
-
-.content {
-  flex: 1 0 auto;
+  & svg {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 .gif-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-}
 
-.gif-grid img {
+  & img {
     margin: 10px 5px auto;
-}
-
-footer {
-  margin-top: 50px;
-  padding: 10px 0;
-  font-size: 14px;
-  border-top: var(--dashed);
-}
-
-footer a {
-  text-decoration: none;
-}
-
-footer .copyleft {
-  display: inline-block;
-  margin-right: -3px;
-  padding-bottom: 3px;
-  font-size: 10px;
-  vertical-align: middle;
-  transform: scale(-1, 1);
-}
-
-h2 small {
-  display: block;
-  font-size: 16px;
+  }
 }
 
 /* Heading links: `<a class="anchor">`, added by js/main.js. */
@@ -310,75 +325,42 @@ h2 small {
   color: var(--faint);
   text-decoration: none;
   visibility: hidden;
+
+  :is(h1, h2, h3, h4, h5, h6):hover > &,
+  &:focus {
+    visibility: visible;
+  }
+
+  &:hover {
+    color: inherit;
+  }
+
+  @media print {
+    display: none;
+  }
 }
 
 .anchored {
   cursor: pointer;
 }
 
-/* Past the dashed border: `details` has 10px padding and a 1px border. */
-details .anchor {
-  margin-left: var(--details-gutter);
+/* Last among the components, so print overrides their colors and fonts. */
+.content {
+  flex: 1 0 auto;
+
+  @media print {
+    & * {
+      font-family: serif;
+      color: black;
+    }
+
+    & code {
+      font-family: monospace;
+    }
+  }
 }
 
-:is(h1, h2, h3, h4, h5, h6):hover > .anchor,
-.anchor:focus {
-  visibility: visible;
-}
-
-.anchor:hover {
-  color: inherit;
-}
-
-/* h1 a, */
-/* h1 a:link, */
-/* h1 a:active, */
-/* h1 a:visited */
-/* h2 a, */
-/* h2 a:link, */
-/* h2 a:active, */
-/* h2 a:visited */
-/* h3 a, */
-/* h3 a:link, */
-/* h3 a:active, */
-/* h3 a:visited */
-/* h4 a, */
-/* h4 a:link, */
-/* h4 a:active, */
-/* h4 a:visited */
-/* h5 a, */
-/* h5 a:link, */
-/* h5 a:active, */
-/* h5 a:visited, */
-/* h6 a, */
-/* h6 a:link, */
-/* h6 a:active, */
-/* h6 a:visited */
-/* { */
-/*   color: var(--text) !important; */
-/* } */
-
-nav ul {
-  margin: -7px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-nav ul li {
-  display: inline-block;
-  margin-right: 5px;
-}
-
-nav .icon {
-  max-height: 24px;
-}
-
-nav .icon a {
-  text-decoration: none;
-}
-
-/* Rambling and Project Styles */
-
+/* Rambling and project lists. */
 li.draft {
   opacity: 0.25;
 }
@@ -391,39 +373,23 @@ li.draft {
   list-style: none;
   padding: 10px;
   margin: 0;
+
+  & li:before {
+    content: '- ';
+  }
 }
 
-.references li:before {
-  content: '- ';
+.hidden {
+  visibility: hidden;
+}
+
+.nintendo {
+  font-family: "Pixel";
+  letter-spacing: 0px;
+  font-variant: caps;
 }
 
 @media print {
-  header {
-    display: none;
-  }
-
-  footer {
-    display: none;
-  }
-
-  .content * {
-    font-family: serif;
-    color: black;
-  }
-
-  .content code {
-    font-family: monospace;
-  }
-
-  blockquote {
-    border-left: 3px solid black;
-    background-color: white;
-  }
-
-  .anchor {
-    display: none;
-  }
-
   h2:first-child {
     margin-top: 0;
   }
