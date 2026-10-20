@@ -506,7 +506,6 @@ li.draft {
 .nintendo {
   font-family: "Pixel";
   letter-spacing: 0px;
-  font-variant: caps;
 }
 
 @media print {
