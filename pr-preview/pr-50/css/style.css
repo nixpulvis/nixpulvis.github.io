@@ -117,6 +117,11 @@ footer {
     text-decoration: none;
   }
 
+  /* The ⏎ sits lower than a letter, so even out the padding meant for caps. */
+  & kbd {
+    padding: 1px 4px;
+  }
+
   /* Links to this page in the repository: source, history and issues. */
   & .source {
     margin: 5px 0 0;
