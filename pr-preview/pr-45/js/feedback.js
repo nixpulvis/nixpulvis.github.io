@@ -38,7 +38,9 @@
   let mouseDown = false;
   let pending = null;
   let loading = null;
-  let count = 0;
+  let script = null;
+  // How many public comments the page has, once Hypothesis's API says.
+  let count = null;
 
   // Remembered per browser; storage can be unavailable, e.g. when blocked.
   function remember(on) {
@@ -65,7 +67,7 @@
           onLayoutChange: (layout) => { panel.hidden = !layout.expanded; },
         }
       : { openSidebar: false };
-    const script = document.createElement("script");
+    script = document.createElement("script");
     script.src = "https://hypothes.is/embed.js";
     script.async = true;
     loading = new Promise((resolve, reject) => {
@@ -86,6 +88,17 @@
     loading.catch(() => {});
     document.head.append(script);
     return loading;
+  }
+
+  // Unload Hypothesis, as its browser extension does: its highlights, sidebar
+  // and the files it added all go, and it can load again later.
+  function unloadComments() {
+    document.querySelector('link[type="application/annotator+html"][rel="sidebar"]')
+      ?.dispatchEvent(new Event("destroy"));
+    script?.remove();
+    script = null;
+    loading = null;
+    panel.hidden = true;
   }
 
   function button(label, onClick) {
@@ -187,8 +200,8 @@
     const controls = document.querySelector(".comments-controls");
     if (!controls) return;
     controls.hidden = false;
-    const label = count === 1 ? "Show 1 comment" : count ? `Show ${count} comments` : "Show comments";
-    controls.querySelector(".comments-toggle").textContent = loading ? "Hide comments" : label;
+    const label = (loading ? "Hide comments" : "Show comments") + (count === null ? "" : ` (${count})`);
+    controls.querySelector(".comments-toggle").textContent = label;
     controls.querySelector(".comments-open").hidden = !(loading && PHONE.matches);
   }
 
@@ -223,14 +236,13 @@
     });
     document.querySelector(".comments-toggle")?.addEventListener("click", () => {
       if (loading) {
-        // Hypothesis has no way to unload, so start the page over without it.
         remember(false);
-        location.reload();
+        unloadComments();
       } else {
         remember(true);
         loadComments();
-        updateToggle();
       }
+      updateToggle();
     });
     document.addEventListener("mousedown", (e) => {
       if (!menu.contains(e.target)) mouseDown = true;
