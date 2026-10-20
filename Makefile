@@ -21,7 +21,12 @@ _site:
 # committed. The build compiles them and publishes them next to the text.
 fortunes: $(FORTUNE_DATS)
 
-# General `strfile` transform for inside the fortunes/ directory.
+# General `strfile` transform for inside the fortunes/ directory. strfile
+# only splits on a bare `%`, so stop on one with trailing whitespace or a
+# CRLF ending rather than merge the fortunes around it.
 fortunes/%.dat: fortunes/%
+	@if grep -Hn '^%[[:space:]]\{1,\}$$' $< >&2; then \
+		echo "$<: \`%\` separator has trailing whitespace" >&2; exit 1; \
+	fi
 	strfile $<
 
