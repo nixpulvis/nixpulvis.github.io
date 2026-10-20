@@ -18,7 +18,7 @@ _site:
 	jekyll build
 
 # Compile the strfile .dat files for use with `fortune`. These aren't
-# committed; the build compiles them and publishes them next to the text.
+# committed. The build compiles them and publishes them next to the text.
 fortunes: $(FORTUNE_DATS)
 
 # General `strfile` transform for inside the fortunes/ directory.
