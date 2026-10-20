@@ -117,9 +117,19 @@ footer {
     text-decoration: none;
   }
 
-  /* The ⏎ sits lower than a letter, so even out the padding meant for caps. */
+  /* The return key. An SVG arrow, since a ⏎ glyph lands differently in every fallback font. */
   & kbd {
-    padding: 1px 4px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 4px;
+
+    & svg {
+      width: 10px;
+      height: 8px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.2;
+    }
   }
 
   /* Links to this page in the repository: source, history and issues. */
@@ -280,7 +290,7 @@ kbd {
   padding: 2px 4px 0px;
   box-shadow: 1px 1px 1px var(--shadow);
   font-size: calc(100% - 6px);
-  /* A fixed height, so a fallback font's tall metrics (like the footer's ⏎) don't push the key up. */
+  /* A fixed height, so a fallback font's tall metrics don't push the key up. */
   line-height: 1;
   vertical-align: middle;
   background: var(--light);
