@@ -7,6 +7,7 @@
   src: url('../font/Serif/cmunrm.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Italic */
@@ -15,6 +16,7 @@
   src: url('../font/Serif/cmunti.woff') format('woff');
   font-weight: normal;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Bold */
@@ -23,6 +25,7 @@
   src: url('../font/Serif/cmunbx.woff') format('woff');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Bold Italic */
@@ -31,6 +34,7 @@
   src: url('../font/Serif/cmunbi.woff') format('woff');
   font-weight: bold;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Sans
@@ -42,6 +46,7 @@
   src: url('../font/Sans/cmunss.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Italic */
@@ -50,6 +55,7 @@
   src: url('../font/Sans/cmunsi.woff') format('woff');
   font-weight: normal;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Bold */
@@ -58,6 +64,7 @@
   src: url('../font/Sans/cmunsx.woff') format('woff');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Bold Italic */
@@ -66,6 +73,7 @@
   src: url('../font/Sans/cmunso.woff') format('woff');
   font-weight: bold;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Typewriter
@@ -77,6 +85,7 @@
   src: url('../font/Typewriter/cmuntt.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Italic */
@@ -85,6 +94,7 @@
   src: url('../font/Typewriter/cmunit.woff') format('woff');
   font-weight: normal;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Bold */
@@ -93,6 +103,7 @@
   src: url('../font/Typewriter/cmuntb.woff') format('woff');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Bold Italic */
@@ -101,6 +112,7 @@
   src: url('../font/Typewriter/cmuntx.woff') format('woff');
   font-weight: bold;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Pixel
@@ -112,5 +124,6 @@
   src: url('../font/Pixel/wendy.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
