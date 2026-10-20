@@ -1,6 +1,7 @@
 ---
 title: Freqk Display (7 band audio EQ)
 layout: project
+status: partially complete
 references:
 - https://github.com/nixpulvis/freqk
 ---

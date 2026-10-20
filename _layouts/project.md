@@ -4,7 +4,7 @@ layout: default
 
 <h2 class="title">
     {{ page.title }}
-    {% if page.status %}<span class="status {{ page.status }}">{{ page.status }}</span>{% endif %}
+    {% if page.status %}<span class="status {{ page.status | slugify }}">{{ page.status }}</span>{% endif %}
 </h2>
 
 <ul class="references">

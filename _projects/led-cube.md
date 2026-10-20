@@ -1,5 +1,6 @@
 ---
 layout: project
+status: incomplete
 draft: true
 references:
 - https://github.com/nixpulvis/led-cube

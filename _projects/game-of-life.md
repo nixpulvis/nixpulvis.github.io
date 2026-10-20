@@ -1,5 +1,6 @@
 ---
 layout: project
+status: complete
 draft: true
 references:
 - https://github.com/nixpulvis/game_of_life
