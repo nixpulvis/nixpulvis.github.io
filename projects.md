@@ -37,6 +37,9 @@ the projects themselves.
 
 <ul class="projects drafted">
 {% for project in site.projects %}
+    {% if project.hidden %}
+        {% continue %}
+    {% endif %}
     {% if project.draft %}
         <li class="project draft">
             {% if project.status %}<span class="status {{ project.status | slugify }}">{{ project.status }}</span>{% endif %}
