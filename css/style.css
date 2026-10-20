@@ -30,7 +30,7 @@
     --border: #777;
     --text: #cacaca;
     --muted: #999;
-    --dark: #aaa;
+    --dark: #4a4a4a;
     --shadow: black;
     --faint: #666;
     --mid: #3a3a3a;
@@ -341,6 +341,11 @@ table {
   & th {
     color: var(--light);
     background-color: var(--dark);
+
+    /* --light is a dark fill in dark mode, so use the text color. */
+    @media screen and (prefers-color-scheme: dark) {
+      color: var(--text);
+    }
   }
 }
 
