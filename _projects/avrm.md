@@ -1,5 +1,6 @@
 ---
 layout: project
+status: partially complete
 draft: true
 references:
 - https://github.com/nixpulvis/avrm

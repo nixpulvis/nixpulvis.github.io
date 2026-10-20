@@ -1,5 +1,6 @@
 ---
 layout: project
+status: in progress
 draft: true
 references:
 - https://github.com/nixpulvis/quadcopter

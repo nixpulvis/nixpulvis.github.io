@@ -1,5 +1,6 @@
 ---
 layout: project
+status: complete
 title: Epic UI
 references:
 - https://github.com/nixpulvis/EpicUI-2.0

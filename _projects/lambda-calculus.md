@@ -1,6 +1,7 @@
 ---
 title: The λ-calculus
 layout: project
+status: incomplete
 references:
 - https://github.com/nixpulvis/lalrpop-lambda
 - https://github.com/nixpulvis/lambash
