@@ -132,16 +132,21 @@
     return location.origin + location.pathname + "#:~:text=" + text;
   }
 
+  // Above the selection, clear of the menu phones show below it, unless
+  // there's no room above.
   function place(range) {
     const rects = range.getClientRects();
-    const rect = rects[rects.length - 1] || range.getBoundingClientRect();
+    const first = rects[0] || range.getBoundingClientRect();
+    const last = rects[rects.length - 1] || first;
     menu.hidden = false;
     const left = Math.min(
-      Math.max(rect.right - menu.offsetWidth / 2, 10),
+      Math.max(first.left, 10),
       document.documentElement.clientWidth - menu.offsetWidth - 10
     );
+    const above = first.top - menu.offsetHeight - 8;
+    const top = above >= 0 ? above : last.bottom + 8;
     menu.style.left = left + window.scrollX + "px";
-    menu.style.top = rect.bottom + window.scrollY + 8 + "px";
+    menu.style.top = top + window.scrollY + "px";
   }
 
   function hide() {
