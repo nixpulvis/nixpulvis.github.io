@@ -435,6 +435,11 @@ li.draft {
   padding-left: 1em;
 }
 
+/* A post's word count and date go on their own line under the title. */
+.posts small {
+  display: block;
+}
+
 /* A project's status: complete, partially complete, in progress or incomplete.
    Floated to the right of the title it comes before, so a long title wraps
    around it, and nudged down to sit centered on the title's text. */
