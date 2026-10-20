@@ -1,20 +1,13 @@
-window.onload = function() {
-  let path = document.getElementById("score").dataset.musicXml;
-  var request = new XMLHttpRequest();
-  request.open('GET', path);
-  request.responseType = 'blob';
-  request.onload = function() {
-    var reader = new FileReader();
-    reader.readAsText(request.response);
-    reader.onload = renderMusic;
-  };
-  request.send();
-}
+window.addEventListener('load', function() {
+  let score = document.getElementById("score");
+  fetch(score.dataset.musicXml)
+    .then(response => response.text())
+    .then(renderMusic);
+});
 
-function renderMusic(event) {
+function renderMusic(xml) {
   var display = new opensheetmusicdisplay.OpenSheetMusicDisplay('score');
-  display.load(event.target.result).then(function() {
+  display.load(xml).then(function() {
     display.render();
   });
 }
-
