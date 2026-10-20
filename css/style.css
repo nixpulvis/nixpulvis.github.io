@@ -56,10 +56,6 @@ h2 small {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
-
-  @media only screen and (max-device-width : 600px) {
-    width: 90%;
-  }
 }
 
 header {
