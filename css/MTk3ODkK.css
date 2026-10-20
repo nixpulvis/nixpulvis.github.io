@@ -1,6 +1,13 @@
+/* A dark palette, over the shared one in style.css. */
+:root {
+  --text: #cacaca;
+  --background: #161616;
+  --light: #282828;
+  --dashed: 1px dashed var(--mid);
+}
+
 body {
-  color: #cacaca;
-  background: #161616;
+  background: var(--background);
 }
 
 /* Wide enough for 80 columns of the typewriter font. The font is set here so
@@ -15,17 +22,15 @@ footer {
 }
 
 a {
-  color: #ccc;
+  color: var(--mid);
 }
 
 header {
-  border-color: #ccc;
   font-family: "Computer Modern Serif", serif;
 }
 
 blockquote {
-  background: #282828;
-  border-color: #050505;
+  border-color: var(--black);
 }
 
 .content {
