@@ -11,5 +11,3 @@ layout: reference
 - LEDs
     - [NeoPixels Revealed](https://wp.josh.com/2014/05/13/ws2812-neopixels-are-not-so-finicky-once-you-get-to-know-them/)
     - [OctoWS2811](https://www.pjrc.com/teensy/td_libs_OctoWS2811.html)
-- [Awesome Electronics](https://github.com/monostable/awesome-electronics)
-- [OSH Park](https://oshpark.com/)
