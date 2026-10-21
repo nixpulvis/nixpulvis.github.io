@@ -1,0 +1,10 @@
+body.container {
+  max-width: none;
+}
+
+/* The score is drawn in black, so flip it for dark mode. */
+#score {
+  @media screen and (prefers-color-scheme: dark) {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
