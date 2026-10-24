@@ -9,7 +9,7 @@ title: Chunky Bacon
 [j](justice)u[d](daggers)[g](gaze)[e](everyday) [m](maxim)y [v](vermont)o[w](wild)!
 
 [T](the-well)[h](hole)[e](the-eternal-depression) quick b[r](rhyme)o[w](who)n [f](fga)ox
-ju[m](mountain-view)[p](passion)[s](scale) over a [l](lap)azy do[g](goodboy).
+ju[m](mountain-view)[p](passion)[s](scale) over [a](duel) [l](lap)azy do[g](goodboy).
 
 <span class="gif-grid">
 ![Best viewed 800 x 600]({{ '/img/index/800x600a.gif' | relative_url }})
