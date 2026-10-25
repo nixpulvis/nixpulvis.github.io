@@ -20,7 +20,7 @@
     <link rel="apple-touch-icon" href="/pr-preview/pr-81/apple-touch-icon.png" sizes="180x180" />
     <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-81/feed.xml" />
     <link rel="stylesheet" type="text/css" href="/pr-preview/pr-81/css/fonts.css" />
-    <link rel="stylesheet" href="/pr-preview/pr-81/css/style.css?v=1792940680">
+    <link rel="stylesheet" href="/pr-preview/pr-81/css/style.css?v=1792941000">
     <link rel="stylesheet" href="/pr-preview/pr-81/css/syntax.css">
     
     <script defer src="/pr-preview/pr-81/js/mousetrap.min.js"></script>
@@ -57,9 +57,11 @@
 
 .tagged:has(#contracts:target) li:not([data-tags~="contracts"]) { display: none; }
 
-.tagged:has(#cs:target) li:not([data-tags~="cs"]) { display: none; }
-
 .tagged:has(#electronics:target) li:not([data-tags~="electronics"]) { display: none; }
+
+.tagged:has(#foundations:target) li:not([data-tags~="foundations"]) { display: none; }
+
+.tagged:has(#functional:target) li:not([data-tags~="functional"]) { display: none; }
 
 .tagged:has(#pl:target) li:not([data-tags~="pl"]) { display: none; }
 
@@ -86,11 +88,15 @@
 
 
     
+    <a href="#functional" id="functional" class="scale-1">functional <small>1</small></a>
+
+
+    
     <a href="#contracts" id="contracts" class="scale-1">contracts <small>6</small></a>
 
 
     
-    <a href="#cs" id="cs" class="scale-2">cs <small>3</small></a>
+    <a href="#foundations" id="foundations" class="scale-2">foundations <small>2</small></a>
 
 
     
@@ -182,9 +188,9 @@
 </span>
     </li>
 
-    <li data-tags="cs">
+    <li data-tags="foundations">
         <a href="http://www.cs.man.ac.uk/~hsimmons/zCATS.pdf">Category Theory</a>
-        <span class="tags"><a href="#cs" class="scale-2">cs</a>
+        <span class="tags"><a href="#foundations" class="scale-2">foundations</a>
 </span>
     </li>
 
@@ -376,9 +382,9 @@
 </span>
     </li>
 
-    <li data-tags="cs">
+    <li data-tags="foundations">
         <a href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic</a>
-        <span class="tags"><a href="#cs" class="scale-2">cs</a>
+        <span class="tags"><a href="#foundations" class="scale-2">foundations</a>
 </span>
     </li>
 
@@ -406,9 +412,9 @@
 </span>
     </li>
 
-    <li data-tags="cs">
+    <li data-tags="functional">
         <a href="http://blog.ezyang.com/2010/04/you-could-have-invented-zippers/">You Could Have Invented Zippers</a>
-        <span class="tags"><a href="#cs" class="scale-2">cs</a>
+        <span class="tags"><a href="#functional" class="scale-1">functional</a>
 </span>
     </li>
 
