@@ -1,0 +1,10 @@
+{%- comment -%}
+A tag on the References page, as a pill colored by its family in
+_data/reference_tags.yml. With `count`, it's one of the tags to pick from at
+the top of the page, so it's given the id that picking it targets.
+{%- endcomment -%}
+{%- assign family = "" -%}
+{%- for group in site.data.reference_tags -%}
+{%- if group.tags contains include.tag -%}{%- assign family = group.family -%}{%- endif -%}
+{%- endfor -%}
+<a href="#{{ include.tag }}"{% if include.count %} id="{{ include.tag }}"{% endif %} class="{{ family }}">{{ include.tag }}{% if include.count %} <small>{{ include.count }}</small>{% endif %}</a>

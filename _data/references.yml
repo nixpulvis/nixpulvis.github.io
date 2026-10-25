@@ -115,10 +115,10 @@
   tags: [bare-metal]
 - title: NeoPixels Revealed
   url: https://wp.josh.com/2014/05/13/ws2812-neopixels-are-not-so-finicky-once-you-get-to-know-them/
-  tags: [bare-metal, leds]
+  tags: [electronics]
 - title: OctoWS2811
   url: https://www.pjrc.com/teensy/td_libs_OctoWS2811.html
-  tags: [bare-metal, leds]
+  tags: [electronics]
 
 - title: Reflections on Rusting Trust
   url: http://manishearth.github.io/blog/2016/12/02/reflections-on-rusting-trust/

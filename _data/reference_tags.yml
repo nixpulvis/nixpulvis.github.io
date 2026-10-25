@@ -1,0 +1,12 @@
+# Reference tags, grouped into families. Each family has its own color on
+# the References page, so related tags look alike, and the tags are listed
+# in this order. A tag not listed here is shown in gray, at the end.
+
+- family: languages
+  tags: [programming-languages, contracts, racket, rust]
+- family: systems
+  tags: [unix, processes, terminal]
+- family: hardware
+  tags: [bare-metal, avr, electronics]
+- family: theory
+  tags: [computer-science, unicode]

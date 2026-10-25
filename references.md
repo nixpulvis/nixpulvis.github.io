@@ -12,6 +12,17 @@ layout: default
 {% endfor %}
 {% assign tags = tags | uniq | sort %}
 
+{% comment %} Tags in family order, then any without a family. {% endcomment %}
+{% assign ordered = "" | split: "" %}
+{% for group in site.data.reference_tags %}
+{% for tag in group.tags %}
+{% if tags contains tag %}{% assign ordered = ordered | push: tag %}{% endif %}
+{% endfor %}
+{% endfor %}
+{% for tag in tags %}
+{% unless ordered contains tag %}{% assign ordered = ordered | push: tag %}{% endunless %}
+{% endfor %}
+
 <!-- Picking a tag targets its link, and these rules hide every reference
      without that tag. With no tag picked, everything shows. -->
 <style>
@@ -23,9 +34,9 @@ layout: default
 <div class="tagged">
 <nav class="tags">
     <a href="#all" id="all">all</a>
-{% for tag in tags %}
+{% for tag in ordered %}
     {% assign count = references | where_exp: "reference", "reference.tags contains tag" | size %}
-    <a href="#{{ tag }}" id="{{ tag }}">{{ tag }} <small>{{ count }}</small></a>
+    {% include reference-tag.html tag=tag count=count %}
 {% endfor %}
 </nav>
 
@@ -33,7 +44,7 @@ layout: default
 {% for reference in references %}
     <li data-tags="{{ reference.tags | join: ' ' }}">
         <a href="{{ reference.url }}">{{ reference.title }}</a>
-        <span class="tags">{% for tag in reference.tags %}<a href="#{{ tag }}">{{ tag }}</a>{% endfor %}</span>
+        <span class="tags">{% for tag in reference.tags %}{% include reference-tag.html tag=tag %}{% endfor %}</span>
     </li>
 {% endfor %}
 </ul>
