@@ -1,9 +1,9 @@
 # Reference tags on a scale, from the deepest computer science (red) to the
 # most general topics (green). Each step down the scale shifts the color
 # toward green, and the tags in a step share a color. Within a step, broader
-# tags come before narrower ones. The `outside` tags
-# don't fit the scale and are blue. A tag not listed here is gray. Tags are
-# listed in this order at the top of the References page.
+# tags come before narrower ones. The `outside` tags don't fit the scale and
+# are blue. A tag not listed here is gray. Tags are listed in this order at
+# the top of the References page.
 
 scale:
   - [pl, contracts]
