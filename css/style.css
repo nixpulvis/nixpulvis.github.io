@@ -16,6 +16,8 @@
   --highlight-red-edge: #e0645a;
   --highlight-blue: #e6effd;
   --highlight-blue-edge: #5a8ee0;
+  --highlight-purple: #f1e8fb;
+  --highlight-purple-edge: #9a6ad6;
   --highlight-green: #e3f6e3;
   --highlight-green-edge: #4caf50;
   --dashed: 1px dashed var(--border);
@@ -36,6 +38,7 @@
     --highlight: #352d17;
     --highlight-red: #3b1f1d;
     --highlight-blue: #1c2840;
+    --highlight-purple: #2e2240;
     --highlight-green: #1c331d;
   }
 }
@@ -543,6 +546,90 @@ li.draft {
     margin: 0 0 1em;
     padding-left: 10px;
     border-left: 2px solid var(--mid);
+  }
+}
+
+/* references.md: every reference with its tags. Picking a tag narrows the
+   list to it, by rules on the page that hide the rest. */
+.tagged {
+  /* The tags to pick from at the top, and each reference's own tags. */
+  & .tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 14px;
+    vertical-align: middle;
+
+    & a {
+      --fill: var(--light);
+      --edge: var(--faint);
+      padding: 0 6px;
+      border: 1px solid var(--edge);
+      border-radius: 5px;
+      background: var(--fill);
+      color: inherit;
+      text-decoration: none;
+      /* Picking a tag scrolls to the top of the page, not to the tag. */
+      scroll-margin-top: 100vh;
+
+      /* Each tag's place on the scale in _data/reference_tags.yml, from red
+         for the deepest computer science to green for the most general. */
+      &[class^="scale-"] {
+        --fill: color-mix(in oklch, var(--highlight-red) var(--red), var(--highlight-green));
+        --edge: color-mix(in oklch, var(--highlight-red-edge) var(--red), var(--highlight-green-edge));
+      }
+
+      &.scale-1 { --red: 100%; }
+      &.scale-2 { --red: 75%; }
+      &.scale-3 { --red: 50%; }
+      &.scale-4 { --red: 25%; }
+      &.scale-5 { --red: 0%; }
+
+      /* The groups off the scale, each in its own color. */
+      &.math {
+        --fill: var(--highlight-purple);
+        --edge: var(--highlight-purple-edge);
+      }
+
+      &.hardware {
+        --fill: var(--highlight-blue);
+        --edge: var(--highlight-blue-edge);
+      }
+
+      &:hover {
+        border-color: var(--text);
+      }
+
+      /* The picked tag is filled with its edge color. */
+      &:target {
+        background: var(--edge);
+        color: var(--background);
+
+        & small {
+          color: inherit;
+        }
+      }
+    }
+
+    & small {
+      color: var(--muted);
+    }
+  }
+
+  & nav.tags:not(:has(:target)) #all {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--background);
+  }
+
+  & ul {
+    padding-left: 1em;
+  }
+
+  & li .tags {
+    gap: 4px;
+    margin-left: 4px;
+    font-size: 12px;
   }
 }
 

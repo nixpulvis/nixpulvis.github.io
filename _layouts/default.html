@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" href="{{ '/apple-touch-icon.png' | relative_url }}" sizes="180x180" />
     <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="{{ '/feed.xml' | relative_url }}" />
     <link rel="stylesheet" type="text/css" href="{{ '/css/fonts.css' | relative_url }}" />
-    <link rel="stylesheet" href="{{ '/css/style.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/css/style.css' | relative_url }}?v={{ site.time | date: '%s' }}">
     <link rel="stylesheet" href="{{ '/css/syntax.css' | relative_url }}">
     {% if page.style %}
       <link rel="stylesheet" href="{{ page.style | relative_url }}" />

@@ -1,0 +1,143 @@
+# Each reference is a link with a title and one or more tags. references.md
+# lists them all, and lets you narrow the list to a single tag.
+
+- title: fork(2)
+  url: https://man7.org/linux/man-pages/man2/fork.2.html
+  tags: [processes, unix]
+- title: posix_spawn(3)
+  url: https://man7.org/linux/man-pages/man3/posix_spawn.3.html
+  tags: [processes, unix]
+- title: clone(2)
+  url: https://man7.org/linux/man-pages/man2/clone.2.html
+  tags: [processes, unix]
+- title: Fibers Under the Magnifying Glass
+  url: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1364r0.pdf
+  tags: [processes]
+- title: The Native POSIX Thread Library for Linux
+  url: https://akkadia.org/drepper/nptl-design.pdf
+  tags: [processes, unix]
+- title: Launching Linux Threads and Processes with clone
+  url: https://eli.thegreenplace.net/2018/launching-linux-threads-and-processes-with-clone
+  tags: [processes, unix]
+- title: Measuring Context Switching and Memory Overheads for Linux Threads
+  url: https://eli.thegreenplace.net/2018/measuring-context-switching-and-memory-overheads-for-linux-threads
+  tags: [processes, unix]
+
+- title: Alacritty
+  url: https://github.com/alacritty/alacritty
+  tags: [terminal, rust]
+- title: XTerm
+  url: https://invisible-island.net/xterm/xterm.html
+  tags: [terminal]
+- title: XTerm Control Sequences
+  url: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Operating-System-Commands
+  tags: [terminal]
+
+- title: Unix Edition Zero
+  url: https://doc.cat-v.org/unix/v0/UnixEditionZero.pdf
+  tags: [unix]
+- title: Basics of the Unix Philosophy
+  url: http://www.catb.org/esr/writings/taoup/html/ch01s06.html
+  tags: [unix]
+
+- title: Protection in Programming Languages
+  url: http://www.erights.org/history/morris73.pdf
+  tags: [contracts]
+- title: Contracts for Higher-Order Functions
+  url: https://www2.ccs.neu.edu/racket/pubs/NU-CCIS-02-05.pdf
+  tags: [contracts]
+- title: Correct Blame for Contracts
+  url: https://users.cs.northwestern.edu/~robby/pubs/papers/popl2011-dfff.pdf
+  tags: [contracts]
+- title: Chaperones and Impersonators
+  url: https://users.cs.northwestern.edu/~robby/pubs/papers/oopsla2012-stff.pdf
+  tags: [contracts, racket]
+- title: Parametric Polymorphism through Run-Time Sealing
+  url: http://www.ccs.neu.edu/home/amal/papers/parpolyseal.pdf
+  tags: [contracts]
+- title: Stateful Contracts for Affine Types
+  url: https://users.cs.northwestern.edu/~jesse/pubs/affine-contracts/affinecontracts10.pdf
+  tags: [contracts]
+- title: Racket Guide to Contracts
+  url: https://docs.racket-lang.org/guide/contracts.html
+  tags: [contracts, racket]
+
+- title: Exploring Rust on Teensy
+  url: https://branan.github.io/teensy/2017/01/12/bootup.html
+  tags: [bare-metal, rust]
+- title: Rust on an ARM Microcontroller
+  url: https://antoinealb.net/programming/2015/05/01/rust-on-arm-microcontroller.html
+  tags: [bare-metal, rust]
+- title: avr-none Target
+  url: https://doc.rust-lang.org/rustc/platform-support/avr-none.html
+  tags: [bare-metal, rust, avr]
+- title: avr-hal
+  url: https://github.com/rust-atmel-avr/avr-hal
+  tags: [bare-metal, rust, avr]
+- title: avr-device
+  url: https://docs.rs/avr-device
+  tags: [bare-metal, rust, avr]
+- title: ravedude
+  url: https://blog.rahix.de/ravedude/
+  tags: [bare-metal, rust, avr]
+- title: Write Your Own OS
+  url: https://mikeos.sourceforge.net/write-your-own-os.html
+  tags: [bare-metal]
+- title: Bootloader
+  url: http://glob.inamidst.com/bootloader
+  tags: [bare-metal]
+- title: Cross-compilation using Clang
+  url: https://clang.llvm.org/docs/CrossCompilation.html
+  tags: [bare-metal]
+- title: NeoPixels Revealed
+  url: https://wp.josh.com/2014/05/13/ws2812-neopixels-are-not-so-finicky-once-you-get-to-know-them/
+  tags: [electronics]
+- title: OctoWS2811
+  url: https://www.pjrc.com/teensy/td_libs_OctoWS2811.html
+  tags: [electronics]
+
+- title: Reflections on Rusting Trust
+  url: https://manishearth.github.io/blog/2016/12/02/reflections-on-rusting-trust/
+  tags: [rust]
+- title: Thoughts on Trusting Types and Unsafe Code
+  url: https://smallcultfollowing.com/babysteps/blog/2016/09/12/thoughts-on-trusting-types-and-unsafe-code/
+  tags: [rust]
+- title: Surfaces and Signatures
+  url: https://blog.pnkfx.org/blog/2015/12/19/signatures-and-surfaces-thoughts-on-privacy-versus-dependency/
+  tags: [rust]
+- title: Efficient Integer Overflow Checking in LLVM
+  url: https://blog.regehr.org/archives/1384
+  tags: [rust]
+- title: afl.rs
+  url: https://github.com/rust-fuzz/afl.rs
+  tags: [rust]
+
+- title: "Programming Languages: Application and Interpretation"
+  url: https://cs.brown.edu/courses/cs173/2012/book/
+  tags: [pl]
+- title: PLT Redex
+  url: https://redex.racket-lang.org/
+  tags: [pl, racket]
+- title: Racket Macros
+  url: https://docs.racket-lang.org/guide/macros.html
+  tags: [pl, racket]
+
+- title: You Could Have Invented Zippers
+  url: https://blog.ezyang.com/2010/04/you-could-have-invented-zippers/
+  tags: [functional]
+- title: What Every Computer Scientist Should Know About Floating-Point Arithmetic
+  url: https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
+  tags: [foundations]
+- title: Category Theory
+  url: http://www.cs.man.ac.uk/~hsimmons/zCATS.pdf
+  tags: [foundations, math]
+
+- title: Let's Stop Ascribing Meaning to Code Points
+  url: https://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/
+  tags: [unicode]
+- title: Why Unicode Won't Work on the Internet
+  url: https://www.hastingsresearch.com/net/04-unicode-limitations.shtml
+  tags: [unicode]
+- title: Noto
+  url: https://fonts.google.com/noto
+  tags: [unicode]
