@@ -5,6 +5,11 @@ layout: reference
 
 - [Exploring Rust on Teensy](https://branan.github.io/teensy/2017/01/12/bootup.html)
 - [Rust on an ARM Microcontroller](https://antoinealb.net/programming/2015/05/01/rust-on-arm-microcontroller.html)
+- AVR
+    - [`avr-none` Target](https://doc.rust-lang.org/rustc/platform-support/avr-none.html)
+    - [avr-hal](https://github.com/rust-atmel-avr/avr-hal)
+    - [avr-device](https://docs.rs/avr-device)
+    - [ravedude](https://blog.rahix.de/ravedude/)
 - [Write Your Own OS](http://mikeos.sourceforge.net/write-your-own-os.html)
 - [Bootloader](http://glob.inamidst.com/bootloader)
 - [Cross-compilation using Clang](https://clang.llvm.org/docs/CrossCompilation.html)
