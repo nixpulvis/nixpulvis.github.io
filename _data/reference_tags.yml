@@ -7,8 +7,8 @@
 
 scale:
   - [pl, contracts]
-  - [cs, racket]
-  - [processes, rust]
+  - [cs, racket, rust]
+  - [processes]
   - [unix, bare-metal, avr]
   - [terminal, unicode]
 outside: [electronics]
