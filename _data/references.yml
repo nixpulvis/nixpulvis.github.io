@@ -55,6 +55,9 @@
 - title: Parametric Polymorphism through Run-Time Sealing
   url: http://www.ccs.neu.edu/home/amal/papers/parpolyseal.pdf
   tags: [contracts]
+- title: Stateful Contracts for Affine Types
+  url: https://users.cs.northwestern.edu/~jesse/pubs/affine-contracts/affinecontracts10.pdf
+  tags: [contracts]
 - title: Racket Guide to Contracts
   url: https://docs.racket-lang.org/guide/contracts.html
   tags: [contracts, racket]
