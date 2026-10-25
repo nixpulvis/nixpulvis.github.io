@@ -47,27 +47,342 @@
 
     <div class="content"><h1 id="references">References</h1>
 
+<!-- Picking a tag targets its link, and these rules hide every reference
+     without that tag. With no tag picked, everything shows. -->
+<style>
+
+.tagged:has(#avr:target) li:not([data-tags~="avr"]) { display: none; }
+
+.tagged:has(#bare-metal:target) li:not([data-tags~="bare-metal"]) { display: none; }
+
+.tagged:has(#computer-science:target) li:not([data-tags~="computer-science"]) { display: none; }
+
+.tagged:has(#contracts:target) li:not([data-tags~="contracts"]) { display: none; }
+
+.tagged:has(#leds:target) li:not([data-tags~="leds"]) { display: none; }
+
+.tagged:has(#processes:target) li:not([data-tags~="processes"]) { display: none; }
+
+.tagged:has(#programming-languages:target) li:not([data-tags~="programming-languages"]) { display: none; }
+
+.tagged:has(#racket:target) li:not([data-tags~="racket"]) { display: none; }
+
+.tagged:has(#rust:target) li:not([data-tags~="rust"]) { display: none; }
+
+.tagged:has(#terminal:target) li:not([data-tags~="terminal"]) { display: none; }
+
+.tagged:has(#unicode:target) li:not([data-tags~="unicode"]) { display: none; }
+
+.tagged:has(#unix:target) li:not([data-tags~="unix"]) { display: none; }
+
+</style>
+
+<div class="tagged">
+<nav class="tags">
+    <a href="#all" id="all">all</a>
+
+    
+    <a href="#avr" id="avr">avr <small>4</small></a>
+
+    
+    <a href="#bare-metal" id="bare-metal">bare-metal <small>11</small></a>
+
+    
+    <a href="#computer-science" id="computer-science">computer-science <small>3</small></a>
+
+    
+    <a href="#contracts" id="contracts">contracts <small>15</small></a>
+
+    
+    <a href="#leds" id="leds">leds <small>2</small></a>
+
+    
+    <a href="#processes" id="processes">processes <small>7</small></a>
+
+    
+    <a href="#programming-languages" id="programming-languages">programming-languages <small>3</small></a>
+
+    
+    <a href="#racket" id="racket">racket <small>5</small></a>
+
+    
+    <a href="#rust" id="rust">rust <small>12</small></a>
+
+    
+    <a href="#terminal" id="terminal">terminal <small>3</small></a>
+
+    
+    <a href="#unicode" id="unicode">unicode <small>3</small></a>
+
+    
+    <a href="#unix" id="unix">unix <small>8</small></a>
+
+</nav>
+
 <ul>
 
-    <li><a href="/pr-preview/pr-81/references/bare-metal">Bare Metal</a></li>
+    <li data-tags="rust">
+        <a href="https://github.com/rust-fuzz/afl.rs">afl.rs</a>
+        <small><a href="#rust">rust</a></small>
+    </li>
 
-    <li><a href="/pr-preview/pr-81/references/computer-science">Computer Science</a></li>
+    <li data-tags="terminal rust">
+        <a href="https://github.com/alacritty/alacritty">Alacritty</a>
+        <small><a href="#terminal">terminal</a>, <a href="#rust">rust</a></small>
+    </li>
 
-    <li><a href="/pr-preview/pr-81/references/contracts">Contracts</a></li>
+    <li data-tags="bare-metal rust avr">
+        <a href="https://docs.rs/avr-device">avr-device</a>
+        <small><a href="#bare-metal">bare-metal</a>, <a href="#rust">rust</a>, <a href="#avr">avr</a></small>
+    </li>
 
-    <li><a href="/pr-preview/pr-81/references/fork-spawn-and-clone">Fork, Spawn, &amp; Clone</a></li>
+    <li data-tags="bare-metal rust avr">
+        <a href="https://github.com/rust-atmel-avr/avr-hal">avr-hal</a>
+        <small><a href="#bare-metal">bare-metal</a>, <a href="#rust">rust</a>, <a href="#avr">avr</a></small>
+    </li>
 
-    <li><a href="/pr-preview/pr-81/references/programming-languages">Programming Languages</a></li>
+    <li data-tags="bare-metal rust avr">
+        <a href="https://doc.rust-lang.org/rustc/platform-support/avr-none.html">avr-none Target</a>
+        <small><a href="#bare-metal">bare-metal</a>, <a href="#rust">rust</a>, <a href="#avr">avr</a></small>
+    </li>
 
-    <li><a href="/pr-preview/pr-81/references/rust">Rust</a></li>
+    <li data-tags="unix">
+        <a href="http://www.catb.org/esr/writings/taoup/html/ch01s06.html">Basics of the Unix Philosophy</a>
+        <small><a href="#unix">unix</a></small>
+    </li>
 
-    <li><a href="/pr-preview/pr-81/references/terminal">The Terminal</a></li>
+    <li data-tags="bare-metal">
+        <a href="http://glob.inamidst.com/bootloader">Bootloader</a>
+        <small><a href="#bare-metal">bare-metal</a></small>
+    </li>
 
-    <li><a href="/pr-preview/pr-81/references/unicode">Unicode</a></li>
+    <li data-tags="computer-science">
+        <a href="http://www.cs.man.ac.uk/~hsimmons/zCATS.pdf">Category Theory</a>
+        <small><a href="#computer-science">computer-science</a></small>
+    </li>
 
-    <li><a href="/pr-preview/pr-81/references/unix">Unix</a></li>
+    <li data-tags="contracts racket">
+        <a href="http://www.eecs.northwestern.edu/~robby/pubs/papers/oopsla2012-stff.pdf">Chaperones and Impersonators</a>
+        <small><a href="#contracts">contracts</a>, <a href="#racket">racket</a></small>
+    </li>
+
+    <li data-tags="processes unix">
+        <a href="https://man7.org/linux/man-pages/man2/clone.2.html">clone(2)</a>
+        <small><a href="#processes">processes</a>, <a href="#unix">unix</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://scheme2011.ucombinator.org/papers/Scholliers2011.pdf">Computational Contracts</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.ccs.neu.edu/racket/pubs/oopsla01-ff.pdf">Contract Soundness for Object-Oriented Languages</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.ccs.neu.edu/racket/pubs/dls10-sf.pdf">Contracts for First-Class Classes</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.ccs.neu.edu/racket/pubs/NU-CCIS-02-05.pdf">Contracts for Higher-Order Functions</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.eecs.northwestern.edu/~robby/pubs/papers/popl2011-dfff.pdf">Correct Blame for Contracts</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="bare-metal">
+        <a href="https://clang.llvm.org/docs/CrossCompilation.html">Cross-compilation using Clang</a>
+        <small><a href="#bare-metal">bare-metal</a></small>
+    </li>
+
+    <li data-tags="rust">
+        <a href="https://blog.regehr.org/archives/1384">Efficient Integer Overflow Checking in LLVM</a>
+        <small><a href="#rust">rust</a></small>
+    </li>
+
+    <li data-tags="bare-metal rust">
+        <a href="https://branan.github.io/teensy/2017/01/12/bootup.html">Exploring Rust on Teensy</a>
+        <small><a href="#bare-metal">bare-metal</a>, <a href="#rust">rust</a></small>
+    </li>
+
+    <li data-tags="processes">
+        <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1364r0.pdf">Fibers Under the Magnifying Glass</a>
+        <small><a href="#processes">processes</a></small>
+    </li>
+
+    <li data-tags="processes unix">
+        <a href="https://man7.org/linux/man-pages/man2/fork.2.html">fork(2)</a>
+        <small><a href="#processes">processes</a>, <a href="#unix">unix</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.ccs.neu.edu/racket/pubs/oopsla12-tsdthf.pdf">Gradual Typing for First-Class Classes</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="processes unix">
+        <a href="https://eli.thegreenplace.net/2018/launching-linux-threads-and-processes-with-clone">Launching Linux Threads and Processes with clone</a>
+        <small><a href="#processes">processes</a>, <a href="#unix">unix</a></small>
+    </li>
+
+    <li data-tags="unicode">
+        <a href="http://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/">Let's Stop Ascribing Meaning to Code Points</a>
+        <small><a href="#unicode">unicode</a></small>
+    </li>
+
+    <li data-tags="processes unix">
+        <a href="https://eli.thegreenplace.net/2018/measuring-context-switching-and-memory-overheads-for-linux-threads">Measuring Context Switching and Memory Overheads for Linux Threads</a>
+        <small><a href="#processes">processes</a>, <a href="#unix">unix</a></small>
+    </li>
+
+    <li data-tags="bare-metal leds">
+        <a href="https://wp.josh.com/2014/05/13/ws2812-neopixels-are-not-so-finicky-once-you-get-to-know-them/">NeoPixels Revealed</a>
+        <small><a href="#bare-metal">bare-metal</a>, <a href="#leds">leds</a></small>
+    </li>
+
+    <li data-tags="unicode">
+        <a href="https://fonts.google.com/noto">Noto</a>
+        <small><a href="#unicode">unicode</a></small>
+    </li>
+
+    <li data-tags="bare-metal leds">
+        <a href="https://www.pjrc.com/teensy/td_libs_OctoWS2811.html">OctoWS2811</a>
+        <small><a href="#bare-metal">bare-metal</a>, <a href="#leds">leds</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.ccs.neu.edu/racket/pubs/oopsla13-dff.pdf">Option Contracts</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.ccs.neu.edu/home/amal/papers/parpolyseal.pdf">Parametric Polymorphism through Run-Time Sealing</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="programming-languages racket">
+        <a href="https://redex.racket-lang.org/">PLT Redex</a>
+        <small><a href="#programming-languages">programming-languages</a>, <a href="#racket">racket</a></small>
+    </li>
+
+    <li data-tags="processes unix">
+        <a href="https://man7.org/linux/man-pages/man3/posix_spawn.3.html">posix_spawn(3)</a>
+        <small><a href="#processes">processes</a>, <a href="#unix">unix</a></small>
+    </li>
+
+    <li data-tags="programming-languages">
+        <a href="http://cs.brown.edu/courses/cs173/2012/book/">Programming Languages: Application and Interpretation</a>
+        <small><a href="#programming-languages">programming-languages</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.erights.org/history/morris73.pdf">Protection in Programming Languages</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="contracts racket">
+        <a href="https://docs.racket-lang.org/guide/contracts.html">Racket Guide to Contracts</a>
+        <small><a href="#contracts">contracts</a>, <a href="#racket">racket</a></small>
+    </li>
+
+    <li data-tags="programming-languages racket">
+        <a href="https://docs.racket-lang.org/guide/macros.html">Racket Macros</a>
+        <small><a href="#programming-languages">programming-languages</a>, <a href="#racket">racket</a></small>
+    </li>
+
+    <li data-tags="contracts racket">
+        <a href="https://docs.racket-lang.org/reference/contracts.html">Racket Reference for Contracts</a>
+        <small><a href="#contracts">contracts</a>, <a href="#racket">racket</a></small>
+    </li>
+
+    <li data-tags="bare-metal rust avr">
+        <a href="https://blog.rahix.de/ravedude/">ravedude</a>
+        <small><a href="#bare-metal">bare-metal</a>, <a href="#rust">rust</a>, <a href="#avr">avr</a></small>
+    </li>
+
+    <li data-tags="rust">
+        <a href="http://manishearth.github.io/blog/2016/12/02/reflections-on-rusting-trust/">Reflections on Rusting Trust</a>
+        <small><a href="#rust">rust</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://cs.brown.edu/~sk/Publications/Papers/Published/gmfk-rel-par-poly-cont/paper.pdf">Relationally-Parametric Polymorphic Contracts</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="bare-metal rust">
+        <a href="https://antoinealb.net/programming/2015/05/01/rust-on-arm-microcontroller.html">Rust on an ARM Microcontroller</a>
+        <small><a href="#bare-metal">bare-metal</a>, <a href="#rust">rust</a></small>
+    </li>
+
+    <li data-tags="rust">
+        <a href="http://blog.pnkfx.org/blog/2015/12/19/signatures-and-surfaces-thoughts-on-privacy-versus-dependency/">Surfaces and Signatures</a>
+        <small><a href="#rust">rust</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="https://users.soe.ucsc.edu/~cormac/papers/icfp11.pdf">Temporal Higher-Order Contracts</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="processes unix">
+        <a href="https://akkadia.org/drepper/nptl-design.pdf">The Native POSIX Thread Library for Linux</a>
+        <small><a href="#processes">processes</a>, <a href="#unix">unix</a></small>
+    </li>
+
+    <li data-tags="rust">
+        <a href="http://smallcultfollowing.com/babysteps/blog/2016/09/12/thoughts-on-trusting-types-and-unsafe-code/">Thoughts on Trusting Types and Unsafe Code</a>
+        <small><a href="#rust">rust</a></small>
+    </li>
+
+    <li data-tags="contracts">
+        <a href="http://www.andres-loeh.de/Contract.pdf">Typed Contracts for Functional Programming</a>
+        <small><a href="#contracts">contracts</a></small>
+    </li>
+
+    <li data-tags="unix">
+        <a href="http://doc.cat-v.org/unix/v0/UnixEditionZero.pdf">Unix Edition Zero</a>
+        <small><a href="#unix">unix</a></small>
+    </li>
+
+    <li data-tags="computer-science">
+        <a href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic</a>
+        <small><a href="#computer-science">computer-science</a></small>
+    </li>
+
+    <li data-tags="unicode">
+        <a href="https://www.hastingsresearch.com/net/04-unicode-limitations.shtml">Why Unicode Won't Work on the Internet</a>
+        <small><a href="#unicode">unicode</a></small>
+    </li>
+
+    <li data-tags="bare-metal">
+        <a href="http://mikeos.sourceforge.net/write-your-own-os.html">Write Your Own OS</a>
+        <small><a href="#bare-metal">bare-metal</a></small>
+    </li>
+
+    <li data-tags="terminal">
+        <a href="https://invisible-island.net/xterm/xterm.html">XTerm</a>
+        <small><a href="#terminal">terminal</a></small>
+    </li>
+
+    <li data-tags="terminal">
+        <a href="https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Operating-System-Commands">XTerm Control Sequences</a>
+        <small><a href="#terminal">terminal</a></small>
+    </li>
+
+    <li data-tags="computer-science">
+        <a href="http://blog.ezyang.com/2010/04/you-could-have-invented-zippers/">You Could Have Invented Zippers</a>
+        <small><a href="#computer-science">computer-science</a></small>
+    </li>
 
 </ul>
+</div>
 </div>
 
     <footer>
