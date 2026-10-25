@@ -546,6 +546,59 @@ li.draft {
   }
 }
 
+/* references.md: every reference with its tags. Picking a tag narrows the
+   list to it, by rules on the page that hide the rest. */
+.tagged {
+  & .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 14px;
+
+    & a {
+      padding: 0 6px;
+      border: 1px solid var(--faint);
+      border-radius: 5px;
+      background: var(--light);
+      color: inherit;
+      text-decoration: none;
+      /* Picking a tag scrolls to the top of the page, not to the tag. */
+      scroll-margin-top: 100vh;
+
+      &:target {
+        background: var(--highlight-blue);
+        border-color: var(--highlight-blue-edge);
+      }
+    }
+
+    &:not(:has(:target)) #all {
+      background: var(--highlight-blue);
+      border-color: var(--highlight-blue-edge);
+    }
+
+    & small {
+      color: var(--muted);
+    }
+  }
+
+  & ul {
+    padding-left: 1em;
+  }
+
+  & li small {
+    color: var(--muted);
+
+    & a {
+      color: inherit;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
 /* The 404 page's pretend shell. */
 .not-found {
   white-space: pre-wrap;
