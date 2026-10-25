@@ -1,12 +1,13 @@
-# Reference tags, grouped into families. Each family has its own color on
-# the References page, so related tags look alike, and the tags are listed
-# in this order. A tag not listed here is shown in gray, at the end.
+# Reference tags on a scale, from the deepest computer science (red) to the
+# most general topics (green). Each step down the scale shifts the color
+# toward green, and the tags in a step share a color. The `outside` tags
+# don't fit the scale and are blue. A tag not listed here is gray. Tags are
+# listed in this order at the top of the References page.
 
-- family: languages
-  tags: [programming-languages, contracts, racket, rust]
-- family: systems
-  tags: [unix, processes, terminal]
-- family: hardware
-  tags: [bare-metal, avr, electronics]
-- family: theory
-  tags: [computer-science, unicode]
+scale:
+  - [contracts, pl]
+  - [cs, racket]
+  - [rust, processes]
+  - [bare-metal, avr, unix]
+  - [terminal, unicode]
+outside: [electronics]

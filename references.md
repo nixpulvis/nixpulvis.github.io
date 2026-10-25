@@ -12,10 +12,11 @@ layout: default
 {% endfor %}
 {% assign tags = tags | uniq | sort %}
 
-{% comment %} Tags in family order, then any without a family. {% endcomment %}
+{% comment %} Tags in scale order, then the rest. {% endcomment %}
 {% assign ordered = "" | split: "" %}
-{% for group in site.data.reference_tags %}
-{% for tag in group.tags %}
+{% assign steps = site.data.reference_tags.scale | push: site.data.reference_tags.outside %}
+{% for step in steps %}
+{% for tag in step %}
 {% if tags contains tag %}{% assign ordered = ordered | push: tag %}{% endif %}
 {% endfor %}
 {% endfor %}

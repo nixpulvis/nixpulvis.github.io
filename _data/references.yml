@@ -49,41 +49,14 @@
 - title: Correct Blame for Contracts
   url: http://www.eecs.northwestern.edu/~robby/pubs/papers/popl2011-dfff.pdf
   tags: [contracts]
-- title: Contract Soundness for Object-Oriented Languages
-  url: http://www.ccs.neu.edu/racket/pubs/oopsla01-ff.pdf
-  tags: [contracts]
-- title: Contracts for First-Class Classes
-  url: http://www.ccs.neu.edu/racket/pubs/dls10-sf.pdf
-  tags: [contracts]
-- title: Gradual Typing for First-Class Classes
-  url: http://www.ccs.neu.edu/racket/pubs/oopsla12-tsdthf.pdf
-  tags: [contracts]
 - title: Chaperones and Impersonators
   url: http://www.eecs.northwestern.edu/~robby/pubs/papers/oopsla2012-stff.pdf
   tags: [contracts, racket]
-- title: Option Contracts
-  url: http://www.ccs.neu.edu/racket/pubs/oopsla13-dff.pdf
-  tags: [contracts]
-- title: Temporal Higher-Order Contracts
-  url: https://users.soe.ucsc.edu/~cormac/papers/icfp11.pdf
-  tags: [contracts]
-- title: Typed Contracts for Functional Programming
-  url: http://www.andres-loeh.de/Contract.pdf
-  tags: [contracts]
-- title: Relationally-Parametric Polymorphic Contracts
-  url: http://cs.brown.edu/~sk/Publications/Papers/Published/gmfk-rel-par-poly-cont/paper.pdf
-  tags: [contracts]
 - title: Parametric Polymorphism through Run-Time Sealing
   url: http://www.ccs.neu.edu/home/amal/papers/parpolyseal.pdf
   tags: [contracts]
-- title: Computational Contracts
-  url: http://scheme2011.ucombinator.org/papers/Scholliers2011.pdf
-  tags: [contracts]
 - title: Racket Guide to Contracts
   url: https://docs.racket-lang.org/guide/contracts.html
-  tags: [contracts, racket]
-- title: Racket Reference for Contracts
-  url: https://docs.racket-lang.org/reference/contracts.html
   tags: [contracts, racket]
 
 - title: Exploring Rust on Teensy
@@ -138,23 +111,23 @@
 
 - title: "Programming Languages: Application and Interpretation"
   url: http://cs.brown.edu/courses/cs173/2012/book/
-  tags: [programming-languages]
+  tags: [pl]
 - title: PLT Redex
   url: https://redex.racket-lang.org/
-  tags: [programming-languages, racket]
+  tags: [pl, racket]
 - title: Racket Macros
   url: https://docs.racket-lang.org/guide/macros.html
-  tags: [programming-languages, racket]
+  tags: [pl, racket]
 
 - title: You Could Have Invented Zippers
   url: http://blog.ezyang.com/2010/04/you-could-have-invented-zippers/
-  tags: [computer-science]
+  tags: [cs]
 - title: What Every Computer Scientist Should Know About Floating-Point Arithmetic
   url: https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
-  tags: [computer-science]
+  tags: [cs]
 - title: Category Theory
   url: http://www.cs.man.ac.uk/~hsimmons/zCATS.pdf
-  tags: [computer-science]
+  tags: [cs]
 
 - title: Let's Stop Ascribing Meaning to Code Points
   url: http://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/

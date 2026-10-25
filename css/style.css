@@ -569,25 +569,23 @@ li.draft {
       /* Picking a tag scrolls to the top of the page, not to the tag. */
       scroll-margin-top: 100vh;
 
-      /* Each family of tags, from _data/reference_tags.yml. */
-      &.languages {
-        --fill: var(--highlight-red);
-        --edge: var(--highlight-red-edge);
+      /* Each tag's place on the scale in _data/reference_tags.yml, from red
+         for the deepest computer science to green for the most general. */
+      &[class^="scale-"] {
+        --fill: color-mix(in oklch, var(--highlight-red) var(--red), var(--highlight-green));
+        --edge: color-mix(in oklch, var(--highlight-red-edge) var(--red), var(--highlight-green-edge));
       }
 
-      &.systems {
+      &.scale-1 { --red: 100%; }
+      &.scale-2 { --red: 75%; }
+      &.scale-3 { --red: 50%; }
+      &.scale-4 { --red: 25%; }
+      &.scale-5 { --red: 0%; }
+
+      /* Tags that don't fit on the scale. */
+      &.outside {
         --fill: var(--highlight-blue);
         --edge: var(--highlight-blue-edge);
-      }
-
-      &.hardware {
-        --fill: var(--highlight-green);
-        --edge: var(--highlight-green-edge);
-      }
-
-      &.theory {
-        --fill: var(--highlight);
-        --edge: var(--highlight-edge);
       }
 
       &:hover {
