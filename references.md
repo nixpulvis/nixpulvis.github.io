@@ -14,7 +14,7 @@ layout: default
 
 {% comment %} Tags in scale order, then the rest. {% endcomment %}
 {% assign ordered = "" | split: "" %}
-{% assign steps = site.data.reference_tags.scale | push: site.data.reference_tags.outside %}
+{% assign steps = site.data.reference_tags.scale | push: site.data.reference_tags.hardware %}
 {% for step in steps %}
 {% for tag in step %}
 {% if tags contains tag %}{% assign ordered = ordered | push: tag %}{% endif %}

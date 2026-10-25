@@ -582,8 +582,8 @@ li.draft {
       &.scale-4 { --red: 25%; }
       &.scale-5 { --red: 0%; }
 
-      /* Tags that don't fit on the scale. */
-      &.outside {
+      /* Hardware tags, off the scale. */
+      &.hardware {
         --fill: var(--highlight-blue);
         --edge: var(--highlight-blue-edge);
       }
