@@ -6,8 +6,8 @@
 # the References page.
 
 scale:
-  - [pl, contracts]
-  - [cs, racket, rust]
+  - [pl, functional, contracts]
+  - [foundations, racket, rust]
   - [bare-metal, avr]
   - [unix, processes]
   - [terminal, unicode]
