@@ -1,13 +1,14 @@
 # Reference tags on a scale, from the deepest computer science (red) to the
 # most general topics (green). Each step down the scale shifts the color
-# toward green, and the tags in a step share a color. The `outside` tags
+# toward green, and the tags in a step share a color. Within a step, broader
+# tags come before narrower ones. The `outside` tags
 # don't fit the scale and are blue. A tag not listed here is gray. Tags are
 # listed in this order at the top of the References page.
 
 scale:
-  - [contracts, pl]
+  - [pl, contracts]
   - [cs, racket]
-  - [rust, processes]
-  - [bare-metal, avr, unix]
+  - [processes, rust]
+  - [unix, bare-metal, avr]
   - [terminal, unicode]
 outside: [electronics]
