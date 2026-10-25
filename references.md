@@ -12,9 +12,12 @@ layout: default
 {% endfor %}
 {% assign tags = tags | uniq | sort %}
 
-{% comment %} Tags in scale order, then the rest. {% endcomment %}
+{% comment %} Tags in scale order, then the groups, then the rest. {% endcomment %}
 {% assign ordered = "" | split: "" %}
-{% assign steps = site.data.reference_tags.scale | push: site.data.reference_tags.hardware %}
+{% assign steps = site.data.reference_tags.scale %}
+{% for group in site.data.reference_tags.groups %}
+{% assign steps = steps | push: group[1] %}
+{% endfor %}
 {% for step in steps %}
 {% for tag in step %}
 {% if tags contains tag %}{% assign ordered = ordered | push: tag %}{% endif %}

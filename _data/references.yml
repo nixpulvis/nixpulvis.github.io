@@ -127,7 +127,7 @@
   tags: [foundations]
 - title: Category Theory
   url: http://www.cs.man.ac.uk/~hsimmons/zCATS.pdf
-  tags: [foundations]
+  tags: [foundations, math]
 
 - title: Let's Stop Ascribing Meaning to Code Points
   url: http://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/

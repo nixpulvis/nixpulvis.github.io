@@ -7,5 +7,7 @@ the top of the page, so it's given the id that picking it targets.
 {%- for step in site.data.reference_tags.scale -%}
 {%- if step contains include.tag -%}{%- assign class = "scale-" | append: forloop.index -%}{%- endif -%}
 {%- endfor -%}
-{%- if site.data.reference_tags.hardware contains include.tag -%}{%- assign class = "hardware" -%}{%- endif -%}
+{%- for group in site.data.reference_tags.groups -%}
+{%- if group[1] contains include.tag -%}{%- assign class = group[0] -%}{%- endif -%}
+{%- endfor -%}
 <a href="#{{ include.tag }}"{% if include.count %} id="{{ include.tag }}"{% endif %} class="{{ class }}">{{ include.tag }}{% if include.count %} <small>{{ include.count }}</small>{% endif %}</a>

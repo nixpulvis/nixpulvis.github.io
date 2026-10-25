@@ -16,6 +16,8 @@
   --highlight-red-edge: #e0645a;
   --highlight-blue: #e6effd;
   --highlight-blue-edge: #5a8ee0;
+  --highlight-purple: #f1e8fb;
+  --highlight-purple-edge: #9a6ad6;
   --highlight-green: #e3f6e3;
   --highlight-green-edge: #4caf50;
   --dashed: 1px dashed var(--border);
@@ -36,6 +38,7 @@
     --highlight: #352d17;
     --highlight-red: #3b1f1d;
     --highlight-blue: #1c2840;
+    --highlight-purple: #2e2240;
     --highlight-green: #1c331d;
   }
 }
@@ -582,7 +585,12 @@ li.draft {
       &.scale-4 { --red: 25%; }
       &.scale-5 { --red: 0%; }
 
-      /* Hardware tags, off the scale. */
+      /* The groups off the scale, each in its own color. */
+      &.math {
+        --fill: var(--highlight-purple);
+        --edge: var(--highlight-purple-edge);
+      }
+
       &.hardware {
         --fill: var(--highlight-blue);
         --edge: var(--highlight-blue-edge);
