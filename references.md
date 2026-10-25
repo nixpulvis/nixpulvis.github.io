@@ -33,7 +33,7 @@ layout: default
 {% for reference in references %}
     <li data-tags="{{ reference.tags | join: ' ' }}">
         <a href="{{ reference.url }}">{{ reference.title }}</a>
-        <small>{% for tag in reference.tags %}<a href="#{{ tag }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</small>
+        <span class="tags">{% for tag in reference.tags %}<a href="#{{ tag }}">{{ tag }}</a>{% endfor %}</span>
     </li>
 {% endfor %}
 </ul>
