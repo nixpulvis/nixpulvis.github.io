@@ -1,6 +1,7 @@
 ---
 title: Set Builder Notation
 date: '2020-03-16'
+words: 449
 collection: ramblings
 ---
 

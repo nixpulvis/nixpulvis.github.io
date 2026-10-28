@@ -1,6 +1,7 @@
 ---
 title: "(S)MPC & An Uncertain Calculus"
 date: '2019-07-23'
+words: 617
 collection: research
 ---
 

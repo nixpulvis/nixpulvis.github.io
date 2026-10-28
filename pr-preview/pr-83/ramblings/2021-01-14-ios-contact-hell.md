@@ -1,6 +1,7 @@
 ---
 title: iOS Contact Hell
 date: '2021-01-14'
+words: 485
 collection: ramblings
 ---
 

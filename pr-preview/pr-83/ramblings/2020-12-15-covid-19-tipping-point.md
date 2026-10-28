@@ -1,6 +1,7 @@
 ---
 title: COVID-19 Tipping Point
 date: '2020-12-15'
+words: 339
 collection: ramblings
 ---
 

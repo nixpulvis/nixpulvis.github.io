@@ -2,6 +2,7 @@
 title: Keep It To Yourself
 date: '2020-04-02'
 draft: true
+words: 1199
 collection: ramblings
 ---
 

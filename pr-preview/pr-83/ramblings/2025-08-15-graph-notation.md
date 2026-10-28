@@ -1,6 +1,7 @@
 ---
 title: Graph Notation
 date: '2025-08-15'
+words: 534
 collection: ramblings
 ---
 

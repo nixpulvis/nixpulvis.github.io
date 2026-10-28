@@ -1,6 +1,7 @@
 ---
 title: Nesting Git Repositories
 date: '2024-04-24'
+words: 242
 collection: ramblings
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Building a Shell - Part 2
 date: '2018-10-15'
+words: 1645
 collection: ramblings
 ---
 

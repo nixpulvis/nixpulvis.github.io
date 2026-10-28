@@ -1,6 +1,7 @@
 ---
 title: Analog Espresso
 date: '2023-02-11'
+words: 919
 collection: ramblings
 ---
 

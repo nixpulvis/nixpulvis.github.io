@@ -1,6 +1,7 @@
 ---
 title: More Damn Writing
 date: '2020-10-13'
+words: 148
 collection: ramblings
 ---
 

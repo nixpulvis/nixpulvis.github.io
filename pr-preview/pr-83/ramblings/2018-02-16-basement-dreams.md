@@ -1,6 +1,7 @@
 ---
 title: Basement Dreams
 date: '2018-02-16'
+words: 308
 collection: ramblings
 ---
 

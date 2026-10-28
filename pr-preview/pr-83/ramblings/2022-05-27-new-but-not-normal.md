@@ -1,6 +1,7 @@
 ---
 title: New but not Normal
 date: '2022-05-27'
+words: 556
 collection: ramblings
 ---
 

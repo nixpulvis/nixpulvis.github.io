@@ -1,6 +1,7 @@
 ---
 title: Comments in Code
 date: '2018-09-29'
+words: 116
 collection: ramblings
 ---
 

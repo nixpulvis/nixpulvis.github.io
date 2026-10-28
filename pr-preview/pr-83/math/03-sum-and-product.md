@@ -1,6 +1,7 @@
 ---
 title: Factorials & Triangular Numbers
 draft: true
+words: 25
 collection: mathematics
 ---
 

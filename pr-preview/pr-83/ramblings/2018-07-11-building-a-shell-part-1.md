@@ -1,6 +1,7 @@
 ---
 title: Building a Shell - Part 1
 date: '2018-07-11'
+words: 1099
 collection: ramblings
 ---
 

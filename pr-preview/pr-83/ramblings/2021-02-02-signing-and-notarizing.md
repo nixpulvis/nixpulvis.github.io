@@ -1,6 +1,7 @@
 ---
 title: Signing And Notarizing
 date: '2021-02-02'
+words: 1248
 collection: ramblings
 ---
 

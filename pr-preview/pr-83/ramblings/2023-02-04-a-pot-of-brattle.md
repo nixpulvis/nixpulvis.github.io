@@ -1,6 +1,7 @@
 ---
 title: A Pot of Brattle
 date: '2023-02-04'
+words: 509
 collection: ramblings
 ---
 

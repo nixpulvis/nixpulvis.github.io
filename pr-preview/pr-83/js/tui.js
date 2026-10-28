@@ -22,6 +22,8 @@ async function start() {
       module_or_path: `${base}/tui/tui_bg.wasm?v=${version}`,
     });
     tui.start(`${base}/`, location.pathname);
+    // So keys work straight away, without a click first.
+    element.focus();
   } catch (error) {
     // Most likely a build without Rust, which skips the terminal view.
     console.warn("The terminal view isn't available:", error);

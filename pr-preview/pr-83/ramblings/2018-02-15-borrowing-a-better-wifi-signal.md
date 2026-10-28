@@ -2,6 +2,7 @@
 title: '"Borrowing" a Better WiFi Signal'
 date: '2018-02-15'
 draft: true
+words: 804
 collection: ramblings
 ---
 

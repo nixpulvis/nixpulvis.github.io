@@ -1,6 +1,7 @@
 ---
 title: Hard Problems
 date: '2021-08-25'
+words: 60
 collection: ramblings
 ---
 
