@@ -29,6 +29,7 @@
       "title": "Music",
       "url": "/musings",
       "icon": "♪",
+      "tui": false,
       "source": "/musings.md"
     }
   ],
