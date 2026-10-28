@@ -410,7 +410,10 @@ figure.tikz {
   text-decoration: none;
   visibility: hidden;
 
-  :is(h1, h2, h3, h4, h5, h6):hover > &,
+  /* Not from a title's byline (`small`), which isn't part of the link: on
+     touch screens, a tap that reveals this is spent doing only that, so the
+     byline's own buttons would need two taps. */
+  :is(h1, h2, h3, h4, h5, h6):hover:not(:has(small:hover)) > &,
   &:focus {
     visibility: visible;
   }
@@ -430,7 +433,7 @@ figure.tikz {
     display: none;
   }
 
-  .cramped:hover > &,
+  .cramped:hover:not(:has(small:hover)) > &,
   .cramped > &:focus {
     display: inline;
   }
@@ -442,6 +445,109 @@ figure.tikz {
 
 .anchored {
   cursor: pointer;
+
+  /* A title's byline isn't part of the link, as js/main.js skips it. */
+  & small {
+    cursor: auto;
+  }
+}
+
+/* Feedback on selected text: `<div class="feedback">`, added by js/feedback.js. */
+.feedback {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  background: var(--background);
+  border: var(--dashed);
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px var(--shadow);
+  font-size: 14px;
+
+  &[hidden] {
+    display: none;
+  }
+
+  & button {
+    font: inherit;
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+/* Shows or hides Hypothesis, and opens its panel on phones, from js/feedback.js. */
+.comments-controls {
+  &[hidden] {
+    display: none;
+  }
+
+  & button {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-decoration: underline dotted;
+    cursor: pointer;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}
+
+/* Hypothesis's sidebar on phones: `<div class="comments-panel">`, added by js/feedback.js. */
+.comments-panel {
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  /* Light even in dark mode, like the Hypothesis sidebar it holds. */
+  color-scheme: light;
+  background: var(--white);
+  border-top: 1px dashed var(--black);
+  box-shadow: 0 -1px 3px var(--black);
+
+  &[hidden] {
+    display: none;
+  }
+
+  & .close {
+    align-self: flex-end;
+    margin: 5px 10px;
+    padding: 3px 8px;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  & .frame {
+    flex: 1;
+
+    & iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+/* Hypothesis's own toolbar on a selection, which .feedback replaces. */
+hypothesis-adder {
+  display: none;
 }
 
 /* Last among the components, so print overrides their colors and fonts. */

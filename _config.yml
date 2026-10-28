@@ -29,3 +29,9 @@ exclude:
   - README.md
   - TODO-espresso
   - bin/
+
+# Where private notes on selected text are emailed, from js/feedback.js.
+# Public comments go to this Hypothesis group, hypothes.is/groups/<group>.
+feedback:
+  email: nathan@nixpulvis.com
+  group: 7zXKrvvv
