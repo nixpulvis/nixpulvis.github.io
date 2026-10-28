@@ -21,6 +21,11 @@ async function start() {
     await tui.default({
       module_or_path: `${base}/tui/tui_bg.wasm?v=${version}`,
     });
+    // Tab moves between links in the view, so the browser shouldn't also
+    // move its focus through them.
+    element.addEventListener("keydown", (event) => {
+      if (event.key === "Tab") event.preventDefault();
+    });
     tui.start(`${base}/`, location.pathname);
     // So keys work straight away, without a click first.
     element.focus();
