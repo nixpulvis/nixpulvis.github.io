@@ -2,9 +2,17 @@
 title: Racket Contracts With Blame
 date: '2018-02-18'
 draft: true
-words: 1710
 collection: ramblings
 ---
+
+<h2 class="title">
+    Racket Contracts With Blame<br>
+    <small>
+        1710 words
+        drafted
+        on February 18, 2018
+    </small>
+</h2>
 
 The idea of a contract isn't all that different from a type, since both are
 used to describe the shape of data. However, due to the dynamic nature of
@@ -357,3 +365,4 @@ delaying execution of the contracts until the function itself returns.
 ### `contract`, `make-contract` and Other Juicy Details
 
 TODO...
+

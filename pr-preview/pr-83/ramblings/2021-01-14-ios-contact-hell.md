@@ -1,9 +1,17 @@
 ---
 title: iOS Contact Hell
 date: '2021-01-14'
-words: 485
 collection: ramblings
 ---
+
+<h2 class="title">
+    iOS Contact Hell<br>
+    <small>
+        485 words
+        published
+        on January 14, 2021
+    </small>
+</h2>
 
 All I want to do is move my contacts to one location.
 
@@ -60,3 +68,4 @@ supports multiple accounts.
 In summary, it's best to stick with exporting and managing your contacts on a
 computer. This way you can make use of proper tools, or scripts to fix your
 issues for free.
+

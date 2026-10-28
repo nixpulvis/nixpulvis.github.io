@@ -1,9 +1,17 @@
 ---
 title: Signing And Notarizing
 date: '2021-02-02'
-words: 1248
 collection: ramblings
 ---
+
+<h2 class="title">
+    Signing And Notarizing<br>
+    <small>
+        1248 words
+        published
+        on February 02, 2021
+    </small>
+</h2>
 
 As I've been a contributor to
 [Alacritty](https://github.com/alacritty/alacritty), I've had to read and
@@ -179,3 +187,4 @@ This is how I install it, and is probably the best way to do things in general.
 If build times are a concern of yours, then there may be hoops to jump through
 (like passing homebrew's `--no-quarantine` flag), but that's not stopping you
 from using the software either.
+

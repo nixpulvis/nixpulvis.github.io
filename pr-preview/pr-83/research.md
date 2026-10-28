@@ -2,7 +2,7 @@
 title: Research
 ---
 
-# Research
+<h1 id="research">Research</h1>
 
 <ul class="posts"><li>
     <a href="/pr-preview/pr-83/research/2019-07-23-secure-multi-party-communication">Secure Multi-Party Communication & Rust</a>
@@ -79,3 +79,4 @@ title: Research
     </small>
 </li>
 </ul>
+

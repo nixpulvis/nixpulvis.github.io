@@ -2,7 +2,7 @@
 title: Fortunes
 ---
 
-# Fortunes
+<h1 id="fortunes">Fortunes</h1>
 
 Caught thoughts. Some are wisdom, some are wordplay, and most I don't even
 remember thinking. Each year is kept as a [database for `fortune`](/pr-preview/pr-83/ramblings/2018-06-26-fortune), so they find me at random, the way they

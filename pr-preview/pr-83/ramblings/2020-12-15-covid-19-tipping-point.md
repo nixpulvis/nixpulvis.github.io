@@ -1,9 +1,17 @@
 ---
 title: COVID-19 Tipping Point
 date: '2020-12-15'
-words: 339
 collection: ramblings
 ---
+
+<h2 class="title">
+    COVID-19 Tipping Point<br>
+    <small>
+        339 words
+        published
+        on December 15, 2020
+    </small>
+</h2>
 
 It's been about 9 months now since the [pandemic became a reality for me](2020-03-24-covid-19-pandemic).
 I may be in a new apartment but the situation has been much the same.
@@ -40,3 +48,4 @@ Fingers crossed.
 [deaths]: https://apnews.com/article/new-york-new-york-city-coronavirus-pandemic-health-california-e127e1b20f80ea521e9a3fa7c1b5bdf2
 [vaccine]: https://apnews.com/article/pandemics-coronavirus-pandemic-0437add2a9245e1f9c57e04e085c6cbc
 [electoral]: https://apnews.com/article/joe-biden-270-electoral-college-vote-d429ef97af2bf574d16463384dc7cc1e
+

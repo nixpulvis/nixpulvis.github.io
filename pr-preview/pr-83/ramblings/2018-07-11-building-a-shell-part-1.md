@@ -1,9 +1,17 @@
 ---
 title: Building a Shell - Part 1
 date: '2018-07-11'
-words: 1099
 collection: ramblings
 ---
+
+<h2 class="title">
+    Building a Shell - Part 1<br>
+    <small>
+        1099 words
+        published
+        on July 11, 2018
+    </small>
+</h2>
 
 A shell is one of the best computer interfaces I've ever used.
 Twas *declarative*, before being declarative was cool. It's
@@ -211,3 +219,4 @@ variables, job control, user groups, glob syntax, locale, and much more.
 [system]:  https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-system
 [proc]:    https://ruby-doc.org/core-2.2.0/Proc.html
 [trap]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-trap
+

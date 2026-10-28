@@ -2,7 +2,7 @@
 title: Ramblings
 ---
 
-# Ramblings
+<h1 id="ramblings">Ramblings</h1>
 
 Here in lies a collection of words both technical and opinionated. I make no
 promise of complete clearity, nor do I wish to ramble to the point of insanity.
@@ -248,3 +248,4 @@ you.
     </small>
 </li>
 </ul>
+

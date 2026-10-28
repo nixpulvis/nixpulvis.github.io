@@ -1,9 +1,17 @@
 ---
 title: New but not Normal
 date: '2022-05-27'
-words: 556
 collection: ramblings
 ---
+
+<h2 class="title">
+    New but not Normal<br>
+    <small>
+        556 words
+        published
+        on May 27, 2022
+    </small>
+</h2>
 
 I've been thinking about what is _normal_ more and more over the last few
 years. Even moreso now, given the "new normal", caused primarily by the
@@ -65,3 +73,4 @@ of today.
 Onto better times, forever holding the best ideas higher. Strung and strum
 together late into the night, before rest calms. We find ourselves together
 once again in the gradual bright light of morning.
+

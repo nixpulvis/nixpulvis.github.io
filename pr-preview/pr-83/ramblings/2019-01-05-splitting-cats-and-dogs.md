@@ -1,9 +1,17 @@
 ---
 title: Splitting Cats and Dogs
 date: '2019-01-05'
-words: 1225
 collection: ramblings
 ---
+
+<h2 class="title">
+    Splitting Cats and Dogs<br>
+    <small>
+        1225 words
+        published
+        on January 05, 2019
+    </small>
+</h2>
 
 Often when you're programming you find the need to split things up a bit. This
 is such a fundamental part of programming that almost every language gives you
@@ -332,3 +340,4 @@ Just try to remember this:
 Hopefully in the process of thinking through how to split up your programs
 you'll discover elegant abstractions, and clean implementations. Or at least as
 clean as a bunch of functions that deal with `poop` can ever be.
+

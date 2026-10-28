@@ -2,7 +2,7 @@
 title: Projects
 ---
 
-# Projects
+<h1 id="projects">Projects</h1>
 
 I work on projects from time to time, and try to post about them here. If you
 learn something, that's great. If you are inspired, that's even better. Half
@@ -115,3 +115,4 @@ controlable, and semi-autonomus flying drone (yes with a camera).</p>
 
 </li>
 </ul>
+

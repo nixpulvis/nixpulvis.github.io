@@ -1,9 +1,17 @@
 ---
 title: COVID-19 Pandemic
 date: '2020-03-24'
-words: 450
 collection: ramblings
 ---
+
+<h2 class="title">
+    COVID-19 Pandemic<br>
+    <small>
+        450 words
+        published
+        on March 24, 2020
+    </small>
+</h2>
 
 I've been sheltering in place now for nearly two weeks, which was probably not
 as soon as it should have been, but better late than never. In these times I've
@@ -78,3 +86,4 @@ Be smart out there ❤
 [transmission]: https://www.nejm.org/doi/full/10.1056/NEJMc2004973
 [recession]: https://www.bloomberg.com/graphics/us-economic-recession-tracker/
 [kinsa-thermometer]: https://techcrunch.com/2020/03/23/kinsas-fever-map-could-show-just-how-crucial-it-is-to-stay-home-to-stop-covid-19-spread/
+

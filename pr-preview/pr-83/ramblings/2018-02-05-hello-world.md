@@ -1,9 +1,17 @@
 ---
 title: Hello World
 date: '2018-02-05'
-words: 123
 collection: ramblings
 ---
+
+<h2 class="title">
+    Hello World<br>
+    <small>
+        123 words
+        published
+        on February 05, 2018
+    </small>
+</h2>
 
 All things start with a "Hello World".
 
@@ -24,4 +32,5 @@ ensures that when you do, everyone will hear it.
 
 This post is my "Hello World" for all the future rambling I may do. If you are
 reading this now, then my system's dependencies are working.
+
 

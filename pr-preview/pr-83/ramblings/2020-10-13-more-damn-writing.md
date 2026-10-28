@@ -1,9 +1,17 @@
 ---
 title: More Damn Writing
 date: '2020-10-13'
-words: 148
 collection: ramblings
 ---
+
+<h2 class="title">
+    More Damn Writing<br>
+    <small>
+        148 words
+        published
+        on October 13, 2020
+    </small>
+</h2>
 
 I realize I've been in a bit of a writers block as of late. I think part of the
 problem can be addressed by simply writing more at all costs. What this means
@@ -21,3 +29,4 @@ Perhaps this is also part of my problem...
 
 Good night,  
 my dearest reader
+

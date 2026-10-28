@@ -2,9 +2,17 @@
 title: Keep It To Yourself
 date: '2020-04-02'
 draft: true
-words: 1199
 collection: ramblings
 ---
+
+<h2 class="title">
+    Keep It To Yourself<br>
+    <small>
+        1199 words
+        drafted
+        on April 02, 2020
+    </small>
+</h2>
 
 Keeping yourself secure in the modern age of digital computers and the internet
 is a daunting task. While I like to think I'm somewhat sophisticated in this
@@ -238,3 +246,4 @@ contacts/<name> -> <gpg_fingerprint>
 ```
 
 - TODO: Private set of contact names
+

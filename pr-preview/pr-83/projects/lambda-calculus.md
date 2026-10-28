@@ -7,6 +7,16 @@ references:
 collection: projects
 ---
 
+<h2 class="title">
+    <span class="status incomplete">incomplete</span>
+    The λ-calculus
+</h2>
+
+<ul class="references">
+    <li><a href="https://github.com/nixpulvis/lalrpop-lambda">https://github.com/nixpulvis/lalrpop-lambda</a></li>
+    <li><a href="https://github.com/nixpulvis/lambash">https://github.com/nixpulvis/lambash</a></li>
+</ul>
+
 λ-calculus one of the most fundamental programing languages, being made up of
 only **three primative types** of objects. It's the basis for functional
 programming, and is just as powerful as any other programming language. I've
@@ -175,3 +185,4 @@ TODO: Add this section after we have a type checker implemented.
 [documentation]: https://docs.rs/lalrpop-lambda
 [euler]: /pr-preview/pr-83/math/00-euler
 [lalrpop]: https://github.com/lalrpop/lalrpop
+

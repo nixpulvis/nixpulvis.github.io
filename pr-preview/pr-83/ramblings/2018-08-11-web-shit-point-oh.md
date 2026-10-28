@@ -1,9 +1,17 @@
 ---
 title: Web, Shit . Oh
 date: '2018-08-11'
-words: 321
 collection: ramblings
 ---
+
+<h2 class="title">
+    Web, Shit . Oh<br>
+    <small>
+        321 words
+        published
+        on August 11, 2018
+    </small>
+</h2>
 
 Oh shit... What have we done. The promise of rich interactive websites turned
 into a plague of half baked and evil UX.
@@ -40,3 +48,4 @@ let me read in peace.
 P.S. Hopefully y'all can still even get to this page, and the ISPs haven't
 started offering "economy" plans to limited blessed holy grounds of the
 internet.
+

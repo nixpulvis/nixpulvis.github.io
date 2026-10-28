@@ -1,9 +1,16 @@
 ---
 title: Overview of Mathematics
 draft: true
-words: 1064
 collection: mathematics
 ---
+
+<h2 class="title">
+    Overview of Mathematics<br>
+    <small>
+        1064 words
+        written by Nathan Lilienthal
+    </small>
+</h2>
 
 ## Overview of Mathematics
 
@@ -305,3 +312,4 @@ f(n) =
     -(n+1)/2  & \quad \text{if } n \text{ is odd}
   \end{cases}
 $$
+

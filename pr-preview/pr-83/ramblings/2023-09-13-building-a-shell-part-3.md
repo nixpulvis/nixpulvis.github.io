@@ -2,9 +2,17 @@
 title: Building a Shell - Part 3
 date: '2023-09-13'
 draft: true
-words: 658
 collection: ramblings
 ---
+
+<h2 class="title">
+    Building a Shell - Part 3<br>
+    <small>
+        658 words
+        drafted
+        on September 13, 2023
+    </small>
+</h2>
 
 This is the long awaited part 3 of a series I'm writing on the creation of
 [`oursh`][oursh]. Oursh's goals are to be POSIX compatible, while implementing
@@ -109,3 +117,4 @@ What about windows?
 [repl]:         https://nixpulvis.com/oursh/oursh/repl
 [termion]:      https://nixpulvis.com/oursh/termion
 [bash-invoke]:  https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Invoking-Bash
+

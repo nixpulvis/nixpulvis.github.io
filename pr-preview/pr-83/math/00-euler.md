@@ -1,9 +1,16 @@
 ---
 title: Euler's Identity
 date: '2019-10-30'
-words: 574
 collection: mathematics
 ---
+
+<h2 class="title">
+    Euler's Identity<br>
+    <small>
+        574 words
+        written by Nathan Lilienthal
+    </small>
+</h2>
 
 $$
 e^{\pi i} + 1 = 0
@@ -212,3 +219,4 @@ implementations trouble, including some of mine.
 http://brainfuck.org/
 </code></pre>
 </details>
+

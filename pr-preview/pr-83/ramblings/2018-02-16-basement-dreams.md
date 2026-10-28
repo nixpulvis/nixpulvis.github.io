@@ -1,9 +1,17 @@
 ---
 title: Basement Dreams
 date: '2018-02-16'
-words: 308
 collection: ramblings
 ---
+
+<h2 class="title">
+    Basement Dreams<br>
+    <small>
+        308 words
+        published
+        on February 16, 2018
+    </small>
+</h2>
 
 Sometimes I like to pretend I was around for the settlement of the West. Much
 wonder and excitement must have been felt for the new frontier, and unlike the
@@ -36,4 +44,5 @@ separate from ourselves, and look outwards. We forget the masks we wear after a
 while, and all that remains is real.
 
 🤠🌎
+
 

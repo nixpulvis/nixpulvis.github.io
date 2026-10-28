@@ -2,9 +2,17 @@
 title: Language Of Purpose
 date: '2020-12-25'
 draft: true
-words: 1262
 collection: ramblings
 ---
+
+<h2 class="title">
+    Language Of Purpose<br>
+    <small>
+        1262 words
+        drafted
+        on December 25, 2020
+    </small>
+</h2>
 
 I believe language is how we come to understand the world we live in.  While
 the student adopts the languages of their teachers, we must impose our language
@@ -123,3 +131,4 @@ something for their constituents who I would like to see empowered to protect
 user's integrity.  To accomplish this, I see no other way than for an effort to
 be made in industry based on solid foundations I hope to help develop with my
 research one day.
+

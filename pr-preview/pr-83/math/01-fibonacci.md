@@ -1,9 +1,16 @@
 ---
 title: Fibonacci's Sequence
 date: '2019-05-10'
-words: 929
 collection: mathematics
 ---
+
+<h2 class="title">
+    Fibonacci's Sequence<br>
+    <small>
+        929 words
+        written by Nathan Lilienthal
+    </small>
+</h2>
 
 The sequence 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987,
 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418,
@@ -518,3 +525,4 @@ cargo run fixtures/fib.b
 44225333398004061429732838340729878012027363723832270745251370289
 71558092601766452430641106302905217344934236440122960529002115744
 ```
+

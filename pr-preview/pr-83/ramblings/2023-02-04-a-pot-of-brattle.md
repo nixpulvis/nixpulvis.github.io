@@ -1,9 +1,17 @@
 ---
 title: A Pot of Brattle
 date: '2023-02-04'
-words: 509
 collection: ramblings
 ---
+
+<h2 class="title">
+    A Pot of Brattle<br>
+    <small>
+        509 words
+        published
+        on February 04, 2023
+    </small>
+</h2>
 
 > Be the morning cold or hot, the pot performs roughly the same.
 
@@ -51,3 +59,4 @@ chalkboard-like chill of the metal cylinders as the petroleum rushes through
 it's cavities.  Much like the caffeine in my blood, the low-octane gasoline
 brings life to the car. We wait for warmth before we set off for the day. A day
 of wondering and exploring.
+

@@ -2,7 +2,7 @@
 title: Mathematics
 ---
 
-# Mathematics
+<h1 id="mathematics">Mathematics</h1>
 
 > The study of the measurement, properties, and relationships of quantities and
 > sets, using numbers and symbols.
@@ -28,3 +28,4 @@ title: Mathematics
                 published on May 10, 2019
             </small>
         </li></ul>
+

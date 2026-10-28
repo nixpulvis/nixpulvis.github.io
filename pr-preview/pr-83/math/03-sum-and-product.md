@@ -1,9 +1,16 @@
 ---
 title: Factorials & Triangular Numbers
 draft: true
-words: 25
 collection: mathematics
 ---
+
+<h2 class="title">
+    Factorials & Triangular Numbers<br>
+    <small>
+        25 words
+        written by Nathan Lilienthal
+    </small>
+</h2>
 
 $$
 \begin{align}
@@ -19,3 +26,4 @@ $$
       &= \binom{n+1}{2}
 \end{align}
 $$
+

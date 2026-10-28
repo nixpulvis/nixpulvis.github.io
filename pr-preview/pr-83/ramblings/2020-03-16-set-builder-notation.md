@@ -1,9 +1,17 @@
 ---
 title: Set Builder Notation
 date: '2020-03-16'
-words: 449
 collection: ramblings
 ---
+
+<h2 class="title">
+    Set Builder Notation<br>
+    <small>
+        449 words
+        published
+        on March 16, 2020
+    </small>
+</h2>
 
 I'm not a fan of set builder notation, and let me explain why...
 
@@ -73,3 +81,4 @@ One more thing, what about **chained** array comprehensions?
 
 My head hurts looking at this code. Where is `x` bound? Where is `b` bound?
 It's all so unclear, it really makes me wonder...
+

@@ -1,9 +1,16 @@
 ---
 title: "(S)MPC & An Uncertain Calculus"
 date: '2019-07-23'
-words: 617
 collection: research
 ---
+
+<h2 class="title">
+    (S)MPC & An Uncertain Calculus<br>
+    <small>
+        617 words
+        written by Nathan Lilienthal
+    </small>
+</h2>
 
 > Abstract: Towards a minimal language for multi-party communication and
 > computations. I (we?) define **two** new languages: $$\lambda_\div$$, a
@@ -132,3 +139,4 @@ $$
 $$
 
 Much more work is clearly needed on this idea...
+

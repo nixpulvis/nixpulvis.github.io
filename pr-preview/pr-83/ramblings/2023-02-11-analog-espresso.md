@@ -1,9 +1,17 @@
 ---
 title: Analog Espresso
 date: '2023-02-11'
-words: 919
 collection: ramblings
 ---
+
+<h2 class="title">
+    Analog Espresso<br>
+    <small>
+        919 words
+        published
+        on February 11, 2023
+    </small>
+</h2>
 
 This is how I currently make my espresso.
 
@@ -170,3 +178,4 @@ The afternoon is for straight espresso, "No milk, thanks".
 ![Black and white cat stretched out next to an empty shot glass](/pr-preview/pr-83/img/ramblings/2023-02-11-analog-espresso/5.jpeg)
 
 Enjoy.
+

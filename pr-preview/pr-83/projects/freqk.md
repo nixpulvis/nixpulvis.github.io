@@ -6,6 +6,15 @@ references:
 collection: projects
 ---
 
+<h2 class="title">
+    <span class="status partially-complete">partially complete</span>
+    Freqk Display
+</h2>
+
+<ul class="references">
+    <li><a href="https://github.com/nixpulvis/freqk">https://github.com/nixpulvis/freqk</a></li>
+</ul>
+
 I own a Korg MS-20 Mini, and have been using it to learn a bit more about music
 and signal generation. It has configurable oscilators, envelopes, and filters.
 The primary way we interact with sound is with our ears, but electronic tools
@@ -252,3 +261,4 @@ unsigned int max_index(int spectrum[BANDS]) {
 - Investigate power and hardware requirements for back LED strips
 - Firmware for etched board
 - [GitHub Issues](https://github.com/nixpulvis/synth/issues)
+

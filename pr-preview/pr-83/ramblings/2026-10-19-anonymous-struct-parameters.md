@@ -1,9 +1,17 @@
 ---
 title: 'Anonymous Struct Parameters: The Idea'
 date: '2026-10-19'
-words: 7121
 collection: ramblings
 ---
+
+<h2 class="title">
+    Anonymous Struct Parameters: The Idea<br>
+    <small>
+        7121 words
+        published
+        on October 19, 2026
+    </small>
+</h2>
 
 There have been a few [recent posts](#4-relating-to-recent-posts) on how Rust
 should adopt _named arguments_, and I even had some thoughts on the matter back
@@ -1229,3 +1237,4 @@ thread][internals-thread].
 [python-kwargs]: https://docs.python.org/3/tutorial/controlflow.html#keyword-arguments
 [julia-kwargs]: https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments
 [pep-3102]: https://peps.python.org/pep-3102/
+

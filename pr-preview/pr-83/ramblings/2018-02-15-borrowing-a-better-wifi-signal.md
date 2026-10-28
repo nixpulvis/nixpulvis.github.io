@@ -2,9 +2,17 @@
 title: '"Borrowing" a Better WiFi Signal'
 date: '2018-02-15'
 draft: true
-words: 804
 collection: ramblings
 ---
+
+<h2 class="title">
+    "Borrowing" a Better WiFi Signal<br>
+    <small>
+        804 words
+        drafted
+        on February 15, 2018
+    </small>
+</h2>
 
 Let me start by saying that "stealing" WiFi (or anything for that matter) is
 wrong, and bad. Please don't do it. But if you happen to find yourself
@@ -143,3 +151,4 @@ TODO: a bit of info on this.
 
 With an optimal setup, I've heard of people beaming WiFi over a kilometer, so
 this could be fun indeed! Tune in next time...
+
