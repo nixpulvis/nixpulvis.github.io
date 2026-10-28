@@ -5,14 +5,12 @@ words: 485
 collection: ramblings
 ---
 
-<h2 class="title">
-    iOS Contact Hell<br>
-    <small>
-        485 words
-        published
-        on January 14, 2021
-    </small>
-</h2>
+<h2 class="title">iOS Contact Hell</h2>
+<p class="meta">
+    485 words
+    published
+    on January 14, 2021
+</p>
 
 All I want to do is move my contacts to one location.
 

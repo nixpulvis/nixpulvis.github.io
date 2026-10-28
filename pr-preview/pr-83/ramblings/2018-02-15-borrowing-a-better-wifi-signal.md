@@ -6,14 +6,12 @@ words: 804
 collection: ramblings
 ---
 
-<h2 class="title">
-    "Borrowing" a Better WiFi Signal<br>
-    <small>
-        804 words
-        drafted
-        on February 15, 2018
-    </small>
-</h2>
+<h2 class="title">"Borrowing" a Better WiFi Signal</h2>
+<p class="meta">
+    804 words
+    drafted
+    on February 15, 2018
+</p>
 
 Let me start by saying that "stealing" WiFi (or anything for that matter) is
 wrong, and bad. Please don't do it. But if you happen to find yourself

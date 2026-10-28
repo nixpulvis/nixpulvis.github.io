@@ -5,14 +5,12 @@ words: 116
 collection: ramblings
 ---
 
-<h2 class="title">
-    Comments in Code<br>
-    <small>
-        116 words
-        published
-        on September 29, 2018
-    </small>
-</h2>
+<h2 class="title">Comments in Code</h2>
+<p class="meta">
+    116 words
+    published
+    on September 29, 2018
+</p>
 
 I've had many discussions and heated debates about the use of comments in code.
 The conversation is usually geared toward looking for a _rule_. One side

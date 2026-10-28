@@ -5,13 +5,11 @@ words: 25
 collection: mathematics
 ---
 
-<h2 class="title">
-    Factorials & Triangular Numbers<br>
-    <small>
-        25 words
-        written by Nathan Lilienthal
-    </small>
-</h2>
+<h2 class="title">Factorials & Triangular Numbers</h2>
+<p class="meta">
+    25 words
+    written by Nathan Lilienthal
+</p>
 
 $$
 \begin{align}

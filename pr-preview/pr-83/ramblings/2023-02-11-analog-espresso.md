@@ -5,14 +5,12 @@ words: 919
 collection: ramblings
 ---
 
-<h2 class="title">
-    Analog Espresso<br>
-    <small>
-        919 words
-        published
-        on February 11, 2023
-    </small>
-</h2>
+<h2 class="title">Analog Espresso</h2>
+<p class="meta">
+    919 words
+    published
+    on February 11, 2023
+</p>
 
 This is how I currently make my espresso.
 

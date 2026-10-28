@@ -5,14 +5,12 @@ words: 556
 collection: ramblings
 ---
 
-<h2 class="title">
-    New but not Normal<br>
-    <small>
-        556 words
-        published
-        on May 27, 2022
-    </small>
-</h2>
+<h2 class="title">New but not Normal</h2>
+<p class="meta">
+    556 words
+    published
+    on May 27, 2022
+</p>
 
 I've been thinking about what is _normal_ more and more over the last few
 years. Even moreso now, given the "new normal", caused primarily by the

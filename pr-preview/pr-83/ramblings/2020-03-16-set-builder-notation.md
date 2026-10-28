@@ -5,14 +5,12 @@ words: 449
 collection: ramblings
 ---
 
-<h2 class="title">
-    Set Builder Notation<br>
-    <small>
-        449 words
-        published
-        on March 16, 2020
-    </small>
-</h2>
+<h2 class="title">Set Builder Notation</h2>
+<p class="meta">
+    449 words
+    published
+    on March 16, 2020
+</p>
 
 I'm not a fan of set builder notation, and let me explain why...
 

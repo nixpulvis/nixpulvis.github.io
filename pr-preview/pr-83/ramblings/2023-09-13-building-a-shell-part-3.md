@@ -6,14 +6,12 @@ words: 658
 collection: ramblings
 ---
 
-<h2 class="title">
-    Building a Shell - Part 3<br>
-    <small>
-        658 words
-        drafted
-        on September 13, 2023
-    </small>
-</h2>
+<h2 class="title">Building a Shell - Part 3</h2>
+<p class="meta">
+    658 words
+    drafted
+    on September 13, 2023
+</p>
 
 This is the long awaited part 3 of a series I'm writing on the creation of
 [`oursh`][oursh]. Oursh's goals are to be POSIX compatible, while implementing

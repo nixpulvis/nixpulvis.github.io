@@ -5,14 +5,12 @@ words: 507
 collection: ramblings
 ---
 
-<h2 class="title">
-    Why Feynman, Why?<br>
-    <small>
-        507 words
-        published
-        on July 16, 2021
-    </small>
-</h2>
+<h2 class="title">Why Feynman, Why?</h2>
+<p class="meta">
+    507 words
+    published
+    on July 16, 2021
+</p>
 
 > “Physics is like sex: sure, it may give some practical results, but that's
 > not why we do it.”

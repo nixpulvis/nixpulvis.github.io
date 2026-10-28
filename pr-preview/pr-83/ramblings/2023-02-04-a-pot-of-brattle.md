@@ -5,14 +5,12 @@ words: 509
 collection: ramblings
 ---
 
-<h2 class="title">
-    A Pot of Brattle<br>
-    <small>
-        509 words
-        published
-        on February 04, 2023
-    </small>
-</h2>
+<h2 class="title">A Pot of Brattle</h2>
+<p class="meta">
+    509 words
+    published
+    on February 04, 2023
+</p>
 
 > Be the morning cold or hot, the pot performs roughly the same.
 

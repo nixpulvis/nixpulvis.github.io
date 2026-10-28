@@ -5,14 +5,12 @@ words: 321
 collection: ramblings
 ---
 
-<h2 class="title">
-    Web, Shit . Oh<br>
-    <small>
-        321 words
-        published
-        on August 11, 2018
-    </small>
-</h2>
+<h2 class="title">Web, Shit . Oh</h2>
+<p class="meta">
+    321 words
+    published
+    on August 11, 2018
+</p>
 
 Oh shit... What have we done. The promise of rich interactive websites turned
 into a plague of half baked and evil UX.

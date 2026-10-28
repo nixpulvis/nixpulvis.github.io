@@ -5,14 +5,12 @@ words: 1099
 collection: ramblings
 ---
 
-<h2 class="title">
-    Building a Shell - Part 1<br>
-    <small>
-        1099 words
-        published
-        on July 11, 2018
-    </small>
-</h2>
+<h2 class="title">Building a Shell - Part 1</h2>
+<p class="meta">
+    1099 words
+    published
+    on July 11, 2018
+</p>
 
 A shell is one of the best computer interfaces I've ever used.
 Twas *declarative*, before being declarative was cool. It's

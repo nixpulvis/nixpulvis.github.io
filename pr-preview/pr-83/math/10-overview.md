@@ -5,13 +5,11 @@ words: 1064
 collection: mathematics
 ---
 
-<h2 class="title">
-    Overview of Mathematics<br>
-    <small>
-        1064 words
-        written by Nathan Lilienthal
-    </small>
-</h2>
+<h2 class="title">Overview of Mathematics</h2>
+<p class="meta">
+    1064 words
+    written by Nathan Lilienthal
+</p>
 
 ## Overview of Mathematics
 

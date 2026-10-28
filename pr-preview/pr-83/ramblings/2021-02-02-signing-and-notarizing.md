@@ -5,14 +5,12 @@ words: 1248
 collection: ramblings
 ---
 
-<h2 class="title">
-    Signing And Notarizing<br>
-    <small>
-        1248 words
-        published
-        on February 02, 2021
-    </small>
-</h2>
+<h2 class="title">Signing And Notarizing</h2>
+<p class="meta">
+    1248 words
+    published
+    on February 02, 2021
+</p>
 
 As I've been a contributor to
 [Alacritty](https://github.com/alacritty/alacritty), I've had to read and

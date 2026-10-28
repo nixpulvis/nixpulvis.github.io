@@ -5,14 +5,12 @@ words: 1225
 collection: ramblings
 ---
 
-<h2 class="title">
-    Splitting Cats and Dogs<br>
-    <small>
-        1225 words
-        published
-        on January 05, 2019
-    </small>
-</h2>
+<h2 class="title">Splitting Cats and Dogs</h2>
+<p class="meta">
+    1225 words
+    published
+    on January 05, 2019
+</p>
 
 Often when you're programming you find the need to split things up a bit. This
 is such a fundamental part of programming that almost every language gives you

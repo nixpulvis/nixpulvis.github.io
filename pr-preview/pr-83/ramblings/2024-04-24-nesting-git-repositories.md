@@ -5,14 +5,12 @@ words: 242
 collection: ramblings
 ---
 
-<h2 class="title">
-    Nesting Git Repositories<br>
-    <small>
-        242 words
-        published
-        on April 24, 2024
-    </small>
-</h2>
+<h2 class="title">Nesting Git Repositories</h2>
+<p class="meta">
+    242 words
+    published
+    on April 24, 2024
+</p>
 
 So I had an idea last night... what if we could simply nest git repositories
 inside each other, without all the added complexity of `git-submodule`?

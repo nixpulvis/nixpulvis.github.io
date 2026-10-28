@@ -6,14 +6,12 @@ words: 1710
 collection: ramblings
 ---
 
-<h2 class="title">
-    Racket Contracts With Blame<br>
-    <small>
-        1710 words
-        drafted
-        on February 18, 2018
-    </small>
-</h2>
+<h2 class="title">Racket Contracts With Blame</h2>
+<p class="meta">
+    1710 words
+    drafted
+    on February 18, 2018
+</p>
 
 The idea of a contract isn't all that different from a type, since both are
 used to describe the shape of data. However, due to the dynamic nature of

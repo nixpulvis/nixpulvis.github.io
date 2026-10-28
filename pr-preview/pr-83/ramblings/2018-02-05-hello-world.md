@@ -5,14 +5,12 @@ words: 123
 collection: ramblings
 ---
 
-<h2 class="title">
-    Hello World<br>
-    <small>
-        123 words
-        published
-        on February 05, 2018
-    </small>
-</h2>
+<h2 class="title">Hello World</h2>
+<p class="meta">
+    123 words
+    published
+    on February 05, 2018
+</p>
 
 All things start with a "Hello World".
 

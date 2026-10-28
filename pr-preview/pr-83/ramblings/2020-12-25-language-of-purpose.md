@@ -6,14 +6,12 @@ words: 1262
 collection: ramblings
 ---
 
-<h2 class="title">
-    Language Of Purpose<br>
-    <small>
-        1262 words
-        drafted
-        on December 25, 2020
-    </small>
-</h2>
+<h2 class="title">Language Of Purpose</h2>
+<p class="meta">
+    1262 words
+    drafted
+    on December 25, 2020
+</p>
 
 I believe language is how we come to understand the world we live in.  While
 the student adopts the languages of their teachers, we must impose our language

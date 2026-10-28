@@ -5,13 +5,11 @@ words: 574
 collection: mathematics
 ---
 
-<h2 class="title">
-    Euler's Identity<br>
-    <small>
-        574 words
-        written by Nathan Lilienthal
-    </small>
-</h2>
+<h2 class="title">Euler's Identity</h2>
+<p class="meta">
+    574 words
+    written by Nathan Lilienthal
+</p>
 
 $$
 e^{\pi i} + 1 = 0

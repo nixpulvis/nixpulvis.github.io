@@ -5,14 +5,12 @@ words: 1645
 collection: ramblings
 ---
 
-<h2 class="title">
-    Building a Shell - Part 2<br>
-    <small>
-        1645 words
-        published
-        on October 15, 2018
-    </small>
-</h2>
+<h2 class="title">Building a Shell - Part 2</h2>
+<p class="meta">
+    1645 words
+    published
+    on October 15, 2018
+</p>
 
 This is part 2 of a series I'll be writing on the creation of [`oursh`][oursh],
 a modern POSIX compatible shell written in Rust. If you haven't read [Part

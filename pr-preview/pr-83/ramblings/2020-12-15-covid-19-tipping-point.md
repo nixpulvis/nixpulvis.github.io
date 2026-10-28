@@ -5,14 +5,12 @@ words: 339
 collection: ramblings
 ---
 
-<h2 class="title">
-    COVID-19 Tipping Point<br>
-    <small>
-        339 words
-        published
-        on December 15, 2020
-    </small>
-</h2>
+<h2 class="title">COVID-19 Tipping Point</h2>
+<p class="meta">
+    339 words
+    published
+    on December 15, 2020
+</p>
 
 It's been about 9 months now since the [pandemic became a reality for me](2020-03-24-covid-19-pandemic).
 I may be in a new apartment but the situation has been much the same.

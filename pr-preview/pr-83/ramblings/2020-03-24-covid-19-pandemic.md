@@ -5,14 +5,12 @@ words: 450
 collection: ramblings
 ---
 
-<h2 class="title">
-    COVID-19 Pandemic<br>
-    <small>
-        450 words
-        published
-        on March 24, 2020
-    </small>
-</h2>
+<h2 class="title">COVID-19 Pandemic</h2>
+<p class="meta">
+    450 words
+    published
+    on March 24, 2020
+</p>
 
 I've been sheltering in place now for nearly two weeks, which was probably not
 as soon as it should have been, but better late than never. In these times I've

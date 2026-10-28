@@ -5,14 +5,12 @@ words: 534
 collection: ramblings
 ---
 
-<h2 class="title">
-    Graph Notation<br>
-    <small>
-        534 words
-        published
-        on August 15, 2025
-    </small>
-</h2>
+<h2 class="title">Graph Notation</h2>
+<p class="meta">
+    534 words
+    published
+    on August 15, 2025
+</p>
 
 Expressing graphs is a useful thing to be able to do. Most libraries I've seen
 in the past give you a way to declare _nodes_ and _edges_ directly. In some

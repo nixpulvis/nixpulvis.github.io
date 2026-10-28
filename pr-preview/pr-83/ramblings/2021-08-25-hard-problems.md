@@ -5,14 +5,12 @@ words: 60
 collection: ramblings
 ---
 
-<h2 class="title">
-    Hard Problems<br>
-    <small>
-        60 words
-        published
-        on August 25, 2021
-    </small>
-</h2>
+<h2 class="title">Hard Problems</h2>
+<p class="meta">
+    60 words
+    published
+    on August 25, 2021
+</p>
 
 > There are only two hard things in Computer Science: cache invalidation and naming things.
 >

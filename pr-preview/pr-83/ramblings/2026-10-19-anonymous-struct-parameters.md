@@ -5,14 +5,12 @@ words: 7121
 collection: ramblings
 ---
 
-<h2 class="title">
-    Anonymous Struct Parameters: The Idea<br>
-    <small>
-        7121 words
-        published
-        on October 19, 2026
-    </small>
-</h2>
+<h2 class="title">Anonymous Struct Parameters: The Idea</h2>
+<p class="meta">
+    7121 words
+    published
+    on October 19, 2026
+</p>
 
 There have been a few [recent posts](#4-relating-to-recent-posts) on how Rust
 should adopt _named arguments_, and I even had some thoughts on the matter back
