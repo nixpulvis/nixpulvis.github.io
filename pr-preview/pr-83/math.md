@@ -10,21 +10,21 @@ title: Mathematics
 <ul><li class="draft">
             <a href="/pr-preview/pr-83/math/10-overview">Overview of Mathematics</a>
             <small>
-                drafted on October 28, 2026.
+                drafted on October 28, 2026
             </small>
         </li><li class="draft">
             <a href="/pr-preview/pr-83/math/03-sum-and-product">Factorials & Triangular Numbers</a>
             <small>
-                drafted on October 28, 2026.
+                drafted on October 28, 2026
             </small>
         </li><li>
             <a href="/pr-preview/pr-83/math/00-euler">Euler's Identity</a>
             <small>
-                published on October 30, 2019.
+                published on October 30, 2019
             </small>
         </li><li>
             <a href="/pr-preview/pr-83/math/01-fibonacci">Fibonacci's Sequence</a>
             <small>
-                published on May 10, 2019.
+                published on May 10, 2019
             </small>
         </li></ul>
