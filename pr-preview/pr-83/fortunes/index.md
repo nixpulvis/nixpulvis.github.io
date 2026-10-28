@@ -15,10 +15,7 @@ found me originally.
         <a href="/pr-preview/pr-83/fortunes/2026.dat">dat</a>
     </small>
 </h2>
-<ul class="fortunes"><li>It’s about time we till the pasture.</li><li>I bought you black roses for your birthday.
-But you still can’t see.
-I brought you four more flowers.
-But your freckles got in the way.</li><li>Wallpaint like jawbreakers. Seemingly endless, but shrinking.</li></ul><h2 id="2024">
+<ul class="fortunes"><li>It’s about time we till the pasture.</li><li>I bought you black roses for your birthday.<br />But you still can’t see.<br />I brought you four more flowers.<br />But your freckles got in the way.</li><li>Wallpaint like jawbreakers. Seemingly endless, but shrinking.</li></ul><h2 id="2024">
     2024
     <small>
         <a href="/pr-preview/pr-83/fortunes/2024">text</a>,
@@ -39,53 +36,28 @@ But your freckles got in the way.</li><li>Wallpaint like jawbreakers. Seemingly 
         <a href="/pr-preview/pr-83/fortunes/2022.dat">dat</a>
     </small>
 </h2>
-<ul class="fortunes"><li>Today&#39;s new diets are just food for thought.</li><li>Always first describe *what* must be done, then move on to *how* if necessary.</li><li>No, *you&#39;re* wearing my clothes!</li><li>I just want to squeeze you into juice
-and drink the concentrated pulp nectar
-until we&#39;re balanced level</li><li>Times are changing too fast. I leave and I never come back.</li><li>If family is your rock, good friends are like the trees and the ferns.</li><li>Unreasonable -&gt; Unfair</li><li>Be patient but persistent</li><li>Subtle changes to perfection are interesting.</li></ul><h2 id="2021">
+<ul class="fortunes"><li>Today&#39;s new diets are just food for thought.</li><li>Always first describe *what* must be done, then move on to *how* if necessary.</li><li>No, *you&#39;re* wearing my clothes!</li><li>I just want to squeeze you into juice<br />and drink the concentrated pulp nectar<br />until we&#39;re balanced level</li><li>Times are changing too fast. I leave and I never come back.</li><li>If family is your rock, good friends are like the trees and the ferns.</li><li>Unreasonable -&gt; Unfair</li><li>Be patient but persistent</li><li>Subtle changes to perfection are interesting.</li></ul><h2 id="2021">
     2021
     <small>
         <a href="/pr-preview/pr-83/fortunes/2021">text</a>,
         <a href="/pr-preview/pr-83/fortunes/2021.dat">dat</a>
     </small>
 </h2>
-<ul class="fortunes"><li>Design to the highest degree but target the lowest common denominator.</li><li>Practice good posture.</li><li>Don&#39;t let just for fun mean it&#39;s never done.</li><li>Idea #7289172
-
-Buy (in bulk) from Amazon and resell (even through themselves),
-Return broken and invalid / wrong products,
-    and forward on the products to the customers.
-Challenge amazon to perform better,
-Profit off customer reliability, something amazon is known to be bad at.</li><li>Interests alone a friend don&#39;t they make.</li><li>Refine your definition
-Define your reality</li><li>Life is a puzzle without borders, and success is that feeling you get when you find the next piece.</li><li>You can&#39;t even see me face, cause I&#39;m way off in space.</li><li>Not all intelligences are smart.</li><li>Shadow
-
-He leads and he follows.</li><li>Oh great One, how should I best address you!</li><li>The young happily build sand castles, knowing the tide is coming. The old have since become attached to the stone, forgetting what sand is made of.</li><li>Programming is like building sand castles.</li><li>Don&#39;t confuse ego with purpose.</li><li>Do as I say not as I do.
-Because I&#39;d say I do do as I say
-Just not all the time.
-Let your words betray you.</li><li>The movement will be behind me one day
-As long as I keep walking
-and walk stronger.</li><li>Trust but verify.</li><li>Illogical statements carry strong impact when spoken truthfully.</li><li>Luck favors a prepared mind.
-
-- Hamming</li><li>I was put here, so I will not be put out</li><li>I&#39;m a caretaker without a care at all.</li><li>Government should be transparent and invisible.</li><li>Go out with your vapor and come back with your gut.</li><li>Be different without definition.</li><li>What was once possible may not be, impossible also.</li><li>Everything is a little thing and the little things are everything.</li><li>Try as you might, nothing&#39;s ever quite right.</li><li>There exist true unifying principals underlying life and everything else, but
-they must go unspoken. For the moment you give them names, they cease to be
-unifying, degrading into muddy waters. All other truths are mere
-approximations, no matter how precise.</li><li>Search can fail, scanning should not.</li><li>Sometimes it&#39;s easier to clean up a mess than to avoid making it.</li></ul><h2 id="2020">
+<ul class="fortunes"><li>Design to the highest degree but target the lowest common denominator.</li><li>Practice good posture.</li><li>Don&#39;t let just for fun mean it&#39;s never done.</li><li>Idea #7289172<br /><br />Buy (in bulk) from Amazon and resell (even through themselves),<br />Return broken and invalid / wrong products,<br />    and forward on the products to the customers.<br />Challenge amazon to perform better,<br />Profit off customer reliability, something amazon is known to be bad at.</li><li>Interests alone a friend don&#39;t they make.</li><li>Refine your definition<br />Define your reality</li><li>Life is a puzzle without borders, and success is that feeling you get when you find the next piece.</li><li>You can&#39;t even see me face, cause I&#39;m way off in space.</li><li>Not all intelligences are smart.</li><li>Shadow<br /><br />He leads and he follows.</li><li>Oh great One, how should I best address you!</li><li>The young happily build sand castles, knowing the tide is coming. The old have since become attached to the stone, forgetting what sand is made of.</li><li>Programming is like building sand castles.</li><li>Don&#39;t confuse ego with purpose.</li><li>Do as I say not as I do.<br />Because I&#39;d say I do do as I say<br />Just not all the time.<br />Let your words betray you.</li><li>The movement will be behind me one day<br />As long as I keep walking<br />and walk stronger.</li><li>Trust but verify.</li><li>Illogical statements carry strong impact when spoken truthfully.</li><li>Luck favors a prepared mind.<br /><br />- Hamming</li><li>I was put here, so I will not be put out</li><li>I&#39;m a caretaker without a care at all.</li><li>Government should be transparent and invisible.</li><li>Go out with your vapor and come back with your gut.</li><li>Be different without definition.</li><li>What was once possible may not be, impossible also.</li><li>Everything is a little thing and the little things are everything.</li><li>Try as you might, nothing&#39;s ever quite right.</li><li>There exist true unifying principals underlying life and everything else, but<br />they must go unspoken. For the moment you give them names, they cease to be<br />unifying, degrading into muddy waters. All other truths are mere<br />approximations, no matter how precise.</li><li>Search can fail, scanning should not.</li><li>Sometimes it&#39;s easier to clean up a mess than to avoid making it.</li></ul><h2 id="2020">
     2020
     <small>
         <a href="/pr-preview/pr-83/fortunes/2020">text</a>,
         <a href="/pr-preview/pr-83/fortunes/2020.dat">dat</a>
     </small>
 </h2>
-<ul class="fortunes"><li>Why stop now?</li><li>Take your head off, rinse, put it back on, repeat.</li><li>OCD: Order, Construction, Discipline</li><li>Cry as you will, a bugs a bug.</li><li>Wear watches when the seconds matter.</li><li>All abstractions are simplifications.</li><li>We used to fight over the important issues, now we fight for the importance
-of issues.</li><li>Know own, No one...</li><li>Do not make rules you are not willing to defend.</li></ul><h2 id="2019">
+<ul class="fortunes"><li>Why stop now?</li><li>Take your head off, rinse, put it back on, repeat.</li><li>OCD: Order, Construction, Discipline</li><li>Cry as you will, a bugs a bug.</li><li>Wear watches when the seconds matter.</li><li>All abstractions are simplifications.</li><li>We used to fight over the important issues, now we fight for the importance<br />of issues.</li><li>Know own, No one...</li><li>Do not make rules you are not willing to defend.</li></ul><h2 id="2019">
     2019
     <small>
         <a href="/pr-preview/pr-83/fortunes/2019">text</a>,
         <a href="/pr-preview/pr-83/fortunes/2019.dat">dat</a>
     </small>
 </h2>
-<ul class="fortunes"><li>You&#39;re *just* wrong!</li><li>There&#39;s no limit to what can be taught to those willing to learn.</li><li>Don&#39;t fear the unknown, there&#39;s plenty of known to fear.</li><li>You&#39;re always yourself, forever and beyond.</li><li>If 2016-2019 has taught us anything it&#39;s that we may not be able to trust
-everyone will be sane and competent, but it&#39;s how we deal with it that defines
-us.</li><li>Nothing eats time like a terminal and some wine.</li><li>Better to be confused clearly, than clearly confused.</li><li>If you present me the same argument enough times, I&#39;ll eventually get irritated.</li><li>Doing things you do a lot can be fast.</li><li>Better take &#39;em down to the karmic apothecary.</li><li>Color emoji are defined as eldritch horrors from a cursed world.
-		-- Yaniel</li><li>Haste makes explosive diarrhea</li><li>I just need to know the things I care about.</li></ul><h2 id="2018">
+<ul class="fortunes"><li>You&#39;re *just* wrong!</li><li>There&#39;s no limit to what can be taught to those willing to learn.</li><li>Don&#39;t fear the unknown, there&#39;s plenty of known to fear.</li><li>You&#39;re always yourself, forever and beyond.</li><li>If 2016-2019 has taught us anything it&#39;s that we may not be able to trust<br />everyone will be sane and competent, but it&#39;s how we deal with it that defines<br />us.</li><li>Nothing eats time like a terminal and some wine.</li><li>Better to be confused clearly, than clearly confused.</li><li>If you present me the same argument enough times, I&#39;ll eventually get irritated.</li><li>Doing things you do a lot can be fast.</li><li>Better take &#39;em down to the karmic apothecary.</li><li>Color emoji are defined as eldritch horrors from a cursed world.<br />		-- Yaniel</li><li>Haste makes explosive diarrhea</li><li>I just need to know the things I care about.</li></ul><h2 id="2018">
     2018
     <small>
         <a href="/pr-preview/pr-83/fortunes/2018">text</a>,
