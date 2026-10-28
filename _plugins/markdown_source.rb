@@ -35,10 +35,11 @@ module Jekyll
     end
 
     # Renderer#convert runs right after Liquid, on the document's content
-    # alone, so this is the one place the Liquid output is in hand.
+    # alone, so this is the one place the Liquid output is in hand. Excerpts
+    # share their document's data but only hold its first paragraph.
     module Capture
       def convert(content)
-        if document.data['markdown']
+        if document.data['markdown'] && !document.is_a?(Excerpt)
           MarkdownSource.sources[document] = content
         end
         super

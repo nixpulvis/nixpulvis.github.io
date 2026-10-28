@@ -19,23 +19,23 @@ documents. I may update them without notice to add detail or track changes to
 the projects themselves.
 
 <ul class="projects finished">
-{% for project in site.projects %}
-    {% if project.hidden %}
-        {% continue %}
-    {% endif %}
-    {% unless project.draft %}
-        {% include project-item.html project=project %}
-    {% endunless %}
-{% endfor %}
+{%- for project in site.projects -%}
+    {%- if project.hidden -%}
+        {%- continue -%}
+    {%- endif -%}
+    {%- unless project.draft -%}
+        {%- include project-item.html project=project -%}
+    {%- endunless -%}
+{%- endfor -%}
 </ul>
 
 <ul class="projects drafted">
-{% for project in site.projects %}
-    {% if project.hidden %}
-        {% continue %}
-    {% endif %}
-    {% if project.draft %}
-        {% include project-item.html project=project %}
-    {% endif %}
-{% endfor %}
+{%- for project in site.projects -%}
+    {%- if project.hidden -%}
+        {%- continue -%}
+    {%- endif -%}
+    {%- if project.draft -%}
+        {%- include project-item.html project=project -%}
+    {%- endif -%}
+{%- endfor -%}
 </ul>
