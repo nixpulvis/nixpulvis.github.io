@@ -1,0 +1,469 @@
+{
+  "title": "nixpulvis",
+  "url": "https://nixpulvis.com",
+  "baseurl": "/pr-preview/pr-83",
+  "nav": [
+    {
+      "title": "Projects",
+      "url": "/projects",
+      "source": "/projects.md"
+    },
+    {
+      "title": "Ramblings",
+      "url": "/ramblings",
+      "source": "/ramblings.md"
+    },
+    {
+      "title": "Fortunes",
+      "url": "/fortunes/",
+      "icon": "%",
+      "source": "/fortunes/index.md"
+    },
+    {
+      "title": "References",
+      "url": "/references",
+      "icon": "&",
+      "source": "/references.md"
+    },
+    {
+      "title": "Music",
+      "url": "/musings",
+      "icon": "♪",
+      "source": "/musings.md"
+    }
+  ],
+  "pages": [
+    {
+      "title": "Fibonacci's Sequence",
+      "date": "2019-05-10",
+      "collection": "mathematics",
+      "url": "/math/01-fibonacci",
+      "source": "/math/01-fibonacci.md"
+    },
+    {
+      "title": "Euler's Identity",
+      "date": "2019-10-30",
+      "collection": "mathematics",
+      "url": "/math/00-euler",
+      "source": "/math/00-euler.md"
+    },
+    {
+      "title": "Factorials & Triangular Numbers",
+      "date": "2026-10-28",
+      "collection": "mathematics",
+      "draft": true,
+      "url": "/math/03-sum-and-product",
+      "source": "/math/03-sum-and-product.md"
+    },
+    {
+      "title": "Overview of Mathematics",
+      "date": "2026-10-28",
+      "collection": "mathematics",
+      "draft": true,
+      "url": "/math/10-overview",
+      "source": "/math/10-overview.md"
+    },
+    {
+      "title": "Beyer",
+      "collection": "musings",
+      "url": "/musings/beyer",
+      "source": "/musings/beyer.md"
+    },
+    {
+      "title": "Conway's Origination",
+      "collection": "musings",
+      "url": "/musings/conways-origination",
+      "source": "/musings/conways-origination.md"
+    },
+    {
+      "title": "My Sound",
+      "collection": "musings",
+      "url": "/musings/my-sound",
+      "source": "/musings/my-sound.md"
+    },
+    {
+      "title": "Sample",
+      "collection": "musings",
+      "url": "/musings/sample",
+      "source": "/musings/sample.md"
+    },
+    {
+      "title": "Avrm",
+      "date": "2026-10-28",
+      "collection": "projects",
+      "draft": true,
+      "status": "partially complete",
+      "url": "/projects/avrm",
+      "source": "/projects/avrm.md"
+    },
+    {
+      "title": "Clock",
+      "date": "2026-10-28",
+      "collection": "projects",
+      "draft": true,
+      "status": "incomplete",
+      "url": "/projects/clock",
+      "source": "/projects/clock.md"
+    },
+    {
+      "title": "Epic UI",
+      "collection": "projects",
+      "status": "complete",
+      "url": "/projects/epic-ui",
+      "source": "/projects/epic-ui.md"
+    },
+    {
+      "title": "Freqk Display",
+      "collection": "projects",
+      "status": "partially complete",
+      "url": "/projects/freqk",
+      "source": "/projects/freqk.md"
+    },
+    {
+      "title": "Game Of Life",
+      "date": "2026-10-28",
+      "collection": "projects",
+      "draft": true,
+      "status": "complete",
+      "url": "/projects/game-of-life",
+      "source": "/projects/game-of-life.md"
+    },
+    {
+      "title": "The λ-calculus",
+      "collection": "projects",
+      "status": "incomplete",
+      "url": "/projects/lambda-calculus",
+      "source": "/projects/lambda-calculus.md"
+    },
+    {
+      "title": "Led Cube",
+      "date": "2026-10-28",
+      "collection": "projects",
+      "draft": true,
+      "status": "incomplete",
+      "url": "/projects/led-cube",
+      "source": "/projects/led-cube.md"
+    },
+    {
+      "title": "Maze Gl",
+      "date": "2026-10-28",
+      "collection": "projects",
+      "draft": true,
+      "status": "complete",
+      "url": "/projects/maze-gl",
+      "source": "/projects/maze-gl.md"
+    },
+    {
+      "title": "Parser Combinator",
+      "date": "2026-10-28",
+      "collection": "projects",
+      "draft": true,
+      "status": "complete",
+      "url": "/projects/parser-combinator",
+      "source": "/projects/parser-combinator.md"
+    },
+    {
+      "title": "Quadcopter",
+      "date": "2026-10-28",
+      "collection": "projects",
+      "draft": true,
+      "status": "in progress",
+      "url": "/projects/quadcopter",
+      "source": "/projects/quadcopter.md"
+    },
+    {
+      "title": "Hello World",
+      "date": "2018-02-05",
+      "collection": "ramblings",
+      "url": "/ramblings/2018-02-05-hello-world",
+      "source": "/ramblings/2018-02-05-hello-world.md"
+    },
+    {
+      "title": "\"Borrowing\" a Better WiFi Signal",
+      "date": "2018-02-15",
+      "collection": "ramblings",
+      "draft": true,
+      "url": "/ramblings/2018-02-15-borrowing-a-better-wifi-signal",
+      "source": "/ramblings/2018-02-15-borrowing-a-better-wifi-signal.md"
+    },
+    {
+      "title": "Basement Dreams",
+      "date": "2018-02-16",
+      "collection": "ramblings",
+      "url": "/ramblings/2018-02-16-basement-dreams",
+      "source": "/ramblings/2018-02-16-basement-dreams.md"
+    },
+    {
+      "title": "Racket Contracts With Blame",
+      "date": "2018-02-18",
+      "collection": "ramblings",
+      "draft": true,
+      "url": "/ramblings/2018-02-18-racket-contracts-with-blame",
+      "source": "/ramblings/2018-02-18-racket-contracts-with-blame.md"
+    },
+    {
+      "title": "Fortune",
+      "date": "2018-06-26",
+      "collection": "ramblings",
+      "url": "/ramblings/2018-06-26-fortune",
+      "source": "/ramblings/2018-06-26-fortune.md"
+    },
+    {
+      "title": "Building a Shell - Part 1",
+      "date": "2018-07-11",
+      "collection": "ramblings",
+      "url": "/ramblings/2018-07-11-building-a-shell-part-1",
+      "source": "/ramblings/2018-07-11-building-a-shell-part-1.md"
+    },
+    {
+      "title": "Web, Shit . Oh",
+      "date": "2018-08-11",
+      "collection": "ramblings",
+      "url": "/ramblings/2018-08-11-web-shit-point-oh",
+      "source": "/ramblings/2018-08-11-web-shit-point-oh.md"
+    },
+    {
+      "title": "Comments in Code",
+      "date": "2018-09-29",
+      "collection": "ramblings",
+      "url": "/ramblings/2018-09-29-comments-in-code",
+      "source": "/ramblings/2018-09-29-comments-in-code.md"
+    },
+    {
+      "title": "Building a Shell - Part 2",
+      "date": "2018-10-15",
+      "collection": "ramblings",
+      "url": "/ramblings/2018-10-15-building-a-shell-part-2",
+      "source": "/ramblings/2018-10-15-building-a-shell-part-2.md"
+    },
+    {
+      "title": "Splitting Cats and Dogs",
+      "date": "2019-01-05",
+      "collection": "ramblings",
+      "url": "/ramblings/2019-01-05-splitting-cats-and-dogs",
+      "source": "/ramblings/2019-01-05-splitting-cats-and-dogs.md"
+    },
+    {
+      "title": "Why I Should Work at Mozilla",
+      "date": "2019-05-13",
+      "collection": "ramblings",
+      "url": "/ramblings/2019-05-13-mozilla",
+      "source": "/ramblings/2019-05-13-mozilla.md"
+    },
+    {
+      "title": "Set Builder Notation",
+      "date": "2020-03-16",
+      "collection": "ramblings",
+      "url": "/ramblings/2020-03-16-set-builder-notation",
+      "source": "/ramblings/2020-03-16-set-builder-notation.md"
+    },
+    {
+      "title": "COVID-19 Pandemic",
+      "date": "2020-03-24",
+      "collection": "ramblings",
+      "url": "/ramblings/2020-03-24-covid-19-pandemic",
+      "source": "/ramblings/2020-03-24-covid-19-pandemic.md"
+    },
+    {
+      "title": "Keep It To Yourself",
+      "date": "2020-04-02",
+      "collection": "ramblings",
+      "draft": true,
+      "url": "/ramblings/2020-04-02-keep-it-to-yourself",
+      "source": "/ramblings/2020-04-02-keep-it-to-yourself.md"
+    },
+    {
+      "title": "More Damn Writing",
+      "date": "2020-10-13",
+      "collection": "ramblings",
+      "url": "/ramblings/2020-10-13-more-damn-writing",
+      "source": "/ramblings/2020-10-13-more-damn-writing.md"
+    },
+    {
+      "title": "COVID-19 Tipping Point",
+      "date": "2020-12-15",
+      "collection": "ramblings",
+      "url": "/ramblings/2020-12-15-covid-19-tipping-point",
+      "source": "/ramblings/2020-12-15-covid-19-tipping-point.md"
+    },
+    {
+      "title": "Language Of Purpose",
+      "date": "2020-12-25",
+      "collection": "ramblings",
+      "draft": true,
+      "url": "/ramblings/2020-12-25-language-of-purpose",
+      "source": "/ramblings/2020-12-25-language-of-purpose.md"
+    },
+    {
+      "title": "iOS Contact Hell",
+      "date": "2021-01-14",
+      "collection": "ramblings",
+      "url": "/ramblings/2021-01-14-ios-contact-hell",
+      "source": "/ramblings/2021-01-14-ios-contact-hell.md"
+    },
+    {
+      "title": "Signing And Notarizing",
+      "date": "2021-02-02",
+      "collection": "ramblings",
+      "url": "/ramblings/2021-02-02-signing-and-notarizing",
+      "source": "/ramblings/2021-02-02-signing-and-notarizing.md"
+    },
+    {
+      "title": "\"Visual\" Voicemail from Ruby",
+      "date": "2021-04-27",
+      "collection": "ramblings",
+      "url": "/ramblings/2021-04-27-vvm",
+      "source": "/ramblings/2021-04-27-vvm.md"
+    },
+    {
+      "title": "Why Feynman, Why?",
+      "date": "2021-07-16",
+      "collection": "ramblings",
+      "url": "/ramblings/2021-07-16-why-feynman-why",
+      "source": "/ramblings/2021-07-16-why-feynman-why.md"
+    },
+    {
+      "title": "Hard Problems",
+      "date": "2021-08-25",
+      "collection": "ramblings",
+      "url": "/ramblings/2021-08-25-hard-problems",
+      "source": "/ramblings/2021-08-25-hard-problems.md"
+    },
+    {
+      "title": "New but not Normal",
+      "date": "2022-05-27",
+      "collection": "ramblings",
+      "url": "/ramblings/2022-05-27-new-but-not-normal",
+      "source": "/ramblings/2022-05-27-new-but-not-normal.md"
+    },
+    {
+      "title": "Moving",
+      "date": "2022-06-20",
+      "collection": "ramblings",
+      "url": "/ramblings/2022-06-20-moving",
+      "source": "/ramblings/2022-06-20-moving.md"
+    },
+    {
+      "title": "A Pot of Brattle",
+      "date": "2023-02-04",
+      "collection": "ramblings",
+      "url": "/ramblings/2023-02-04-a-pot-of-brattle",
+      "source": "/ramblings/2023-02-04-a-pot-of-brattle.md"
+    },
+    {
+      "title": "Analog Espresso",
+      "date": "2023-02-11",
+      "collection": "ramblings",
+      "url": "/ramblings/2023-02-11-analog-espresso",
+      "source": "/ramblings/2023-02-11-analog-espresso.md"
+    },
+    {
+      "title": "Building a Shell - Part 3",
+      "date": "2023-09-13",
+      "collection": "ramblings",
+      "draft": true,
+      "url": "/ramblings/2023-09-13-building-a-shell-part-3",
+      "source": "/ramblings/2023-09-13-building-a-shell-part-3.md"
+    },
+    {
+      "title": "Building a Shell - Part 4",
+      "date": "2023-09-15",
+      "collection": "ramblings",
+      "draft": true,
+      "url": "/ramblings/2023-09-15-building-a-shell-part-4",
+      "source": "/ramblings/2023-09-15-building-a-shell-part-4.md"
+    },
+    {
+      "title": "Nesting Git Repositories",
+      "date": "2024-04-24",
+      "collection": "ramblings",
+      "url": "/ramblings/2024-04-24-nesting-git-repositories",
+      "source": "/ramblings/2024-04-24-nesting-git-repositories.md"
+    },
+    {
+      "title": "Graph Notation",
+      "date": "2025-08-15",
+      "collection": "ramblings",
+      "url": "/ramblings/2025-08-15-graph-notation",
+      "source": "/ramblings/2025-08-15-graph-notation.md"
+    },
+    {
+      "title": "Anonymous Struct Parameters: The Idea",
+      "date": "2026-10-19",
+      "collection": "ramblings",
+      "url": "/ramblings/2026-10-19-anonymous-struct-parameters",
+      "source": "/ramblings/2026-10-19-anonymous-struct-parameters.md"
+    },
+    {
+      "title": "Secure Multi-Party Communication & Rust",
+      "date": "2019-07-23",
+      "collection": "research",
+      "url": "/research/2019-07-23-secure-multi-party-communication",
+      "source": "/research/2019-07-23-secure-multi-party-communication.md"
+    },
+    {
+      "title": "(S)MPC & An Uncertain Calculus",
+      "date": "2019-07-23",
+      "collection": "research",
+      "url": "/research/2019-07-23-uncertainty-calculus",
+      "source": "/research/2019-07-23-uncertainty-calculus.md"
+    },
+    {
+      "title": "Achilles' Tent Notes &#35;8",
+      "date": "2019-10-13",
+      "collection": "research",
+      "url": "/research/2019-10-13-achilles-8",
+      "source": "/research/2019-10-13-achilles-8.md"
+    },
+    {
+      "title": "Achilles' Tent Notes &#35;9",
+      "date": "2019-10-15",
+      "collection": "research",
+      "url": "/research/2019-10-15-achilles-9",
+      "source": "/research/2019-10-15-achilles-9.md"
+    },
+    {
+      "title": "Achilles' Tent Notes &#35;10",
+      "date": "2019-10-28",
+      "collection": "research",
+      "url": "/research/2019-10-28-achilles-10",
+      "source": "/research/2019-10-28-achilles-10.md"
+    },
+    {
+      "title": "Achilles' Tent Notes &#35;11",
+      "date": "2019-11-11",
+      "collection": "research",
+      "url": "/research/2019-11-11-achilles-11",
+      "source": "/research/2019-11-11-achilles-11.md"
+    },
+    {
+      "title": "Achilles' Tent Notes &#35;12",
+      "date": "2019-12-02",
+      "collection": "research",
+      "url": "/research/2019-12-02-achilles-12",
+      "source": "/research/2019-12-02-achilles-12.md"
+    },
+    {
+      "title": "Achilles' Tent Notes &#35;13",
+      "date": "2019-12-13",
+      "collection": "research",
+      "url": "/research/2019-12-13-achilles-13",
+      "source": "/research/2019-12-13-achilles-13.md"
+    },
+    {
+      "title": "Wish",
+      "date": "2020-05-25",
+      "collection": "research",
+      "draft": true,
+      "url": "/research/2020-05-25-wish",
+      "source": "/research/2020-05-25-wish.md"
+    },
+    {
+      "title": "Achilles' Tent Notes &#35;14",
+      "date": "2023-09-12",
+      "collection": "research",
+      "url": "/research/2023-09-12-achilles-14",
+      "source": "/research/2023-09-12-achilles-14.md"
+    }
+  ]
+}
