@@ -1,7 +1,7 @@
 ---
 title: Factorials & Triangular Numbers
-date: '2026-10-28'
 draft: true
+words: 25
 collection: mathematics
 ---
 

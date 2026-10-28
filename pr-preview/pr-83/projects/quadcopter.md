@@ -1,6 +1,5 @@
 ---
 title: Quadcopter
-date: '2026-10-28'
 draft: true
 status: in progress
 references:

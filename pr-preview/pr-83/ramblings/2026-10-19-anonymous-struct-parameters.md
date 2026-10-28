@@ -1,6 +1,7 @@
 ---
 title: 'Anonymous Struct Parameters: The Idea'
 date: '2026-10-19'
+words: 7121
 collection: ramblings
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Fibonacci's Sequence
 date: '2019-05-10'
+words: 929
 collection: mathematics
 ---
 

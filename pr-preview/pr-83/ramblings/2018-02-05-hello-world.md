@@ -1,6 +1,7 @@
 ---
 title: Hello World
 date: '2018-02-05'
+words: 123
 collection: ramblings
 ---
 

@@ -49,7 +49,6 @@
     },
     {
       "title": "Factorials & Triangular Numbers",
-      "date": "2026-10-28",
       "collection": "mathematics",
       "draft": true,
       "url": "/math/03-sum-and-product",
@@ -57,7 +56,6 @@
     },
     {
       "title": "Overview of Mathematics",
-      "date": "2026-10-28",
       "collection": "mathematics",
       "draft": true,
       "url": "/math/10-overview",
@@ -89,7 +87,6 @@
     },
     {
       "title": "Avrm",
-      "date": "2026-10-28",
       "collection": "projects",
       "draft": true,
       "status": "partially complete",
@@ -98,7 +95,6 @@
     },
     {
       "title": "Clock",
-      "date": "2026-10-28",
       "collection": "projects",
       "draft": true,
       "status": "incomplete",
@@ -121,7 +117,6 @@
     },
     {
       "title": "Game Of Life",
-      "date": "2026-10-28",
       "collection": "projects",
       "draft": true,
       "status": "complete",
@@ -137,7 +132,6 @@
     },
     {
       "title": "Led Cube",
-      "date": "2026-10-28",
       "collection": "projects",
       "draft": true,
       "status": "incomplete",
@@ -146,7 +140,6 @@
     },
     {
       "title": "Maze Gl",
-      "date": "2026-10-28",
       "collection": "projects",
       "draft": true,
       "status": "complete",
@@ -155,7 +148,6 @@
     },
     {
       "title": "Parser Combinator",
-      "date": "2026-10-28",
       "collection": "projects",
       "draft": true,
       "status": "complete",
@@ -164,7 +156,6 @@
     },
     {
       "title": "Quadcopter",
-      "date": "2026-10-28",
       "collection": "projects",
       "draft": true,
       "status": "in progress",

@@ -1,6 +1,7 @@
 ---
 title: Incomplete List of iPhone Problems
 date: '2202-02-23'
+words: 127
 ---
 
 - [Headphone Limits](https://discussions.apple.com/thread/252113205)

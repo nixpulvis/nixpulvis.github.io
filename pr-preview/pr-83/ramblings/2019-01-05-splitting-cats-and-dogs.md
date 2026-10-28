@@ -1,6 +1,7 @@
 ---
 title: Splitting Cats and Dogs
 date: '2019-01-05'
+words: 1225
 collection: ramblings
 ---
 

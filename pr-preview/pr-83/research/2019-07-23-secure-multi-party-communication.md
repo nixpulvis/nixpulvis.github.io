@@ -1,6 +1,7 @@
 ---
 title: Secure Multi-Party Communication & Rust
 date: '2019-07-23'
+words: 579
 collection: research
 ---
 
