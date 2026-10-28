@@ -6,3 +6,6 @@ collection: ramblings
 ---
 
 This will probably turn into part 3.
+
+
+### Environment Variables

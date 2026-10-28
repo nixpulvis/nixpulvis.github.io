@@ -17,17 +17,7 @@ Please be aware, unlike my [Ramblings](/pr-preview/pr-82/ramblings), these proje
 documents. I may update them without notice to add detail or track changes to
 the projects themselves.
 
-<ul class="projects finished">
-
-    
-    
-
-    
-    
-
-    
-    
-        <li class="project">
+<ul class="projects finished"><li class="project">
     <span class="status complete">complete</span>
     <a class="name" href="/pr-preview/pr-82/projects/epic-ui">Epic UI</a>
     <p>I used to be an avid World of Warcraft player, raiding bosses many times a
@@ -37,12 +27,7 @@ named Epic UI (after my gamertag, Epicgrim).</p>
 
 
 </li>
-
-    
-
-    
-    
-        <li class="project">
+<li class="project">
     <span class="status partially-complete">partially complete</span>
     <a class="name" href="/pr-preview/pr-82/projects/freqk">Freqk Display</a>
     <p>I own a Korg MS-20 Mini, and have been using it to learn a bit more about music
@@ -53,15 +38,7 @@ built an LED display (on top of the synth) to visualize the intensity of 7
 frequency bands (4 LEDs) of our audible spectrum, log scale.</p>
 
 </li>
-
-    
-
-    
-    
-
-    
-    
-        <li class="project">
+<li class="project">
     <span class="status incomplete">incomplete</span>
     <a class="name" href="/pr-preview/pr-82/projects/lambda-calculus">The λ-calculus</a>
     <p>λ-calculus one of the most fundamental programing languages, being made up of
@@ -72,28 +49,9 @@ created a parser and reducer for this language which, for example, will reduce
 set of Rust macros: <code class="language-plaintext highlighter-rouge">var!</code>, <code class="language-plaintext highlighter-rouge">abs!</code> (<code class="language-plaintext highlighter-rouge">λ!</code>), and <code class="language-plaintext highlighter-rouge">app!</code> (<code class="language-plaintext highlighter-rouge">γ!</code>) are provided.</p>
 
 </li>
-
-    
-
-    
-    
-
-    
-    
-
-    
-    
-
-    
-    
-
 </ul>
 
-<ul class="projects drafted">
-
-    
-    
-        <li class="project draft">
+<ul class="projects drafted"><li class="project draft">
     <span class="status partially-complete">partially complete</span>
     <a class="name" href="/pr-preview/pr-82/projects/avrm">Avrm</a>
     <p>I write a decent bit of code for AVRs, those tiny little processors that power
@@ -103,12 +61,7 @@ a minimal library I’ve named AVRM. This library now powers a few other firmwar
 libraries I’ve written over the years.</p>
 
 </li>
-
-    
-
-    
-    
-        <li class="project draft">
+<li class="project draft">
     <span class="status incomplete">incomplete</span>
     <a class="name" href="/pr-preview/pr-82/projects/clock">Clock</a>
     <p>Clocks have been a large motivator in the world of information technology. With
@@ -117,18 +70,7 @@ syncroniced clocks for granted. This project is an attempt to build a fully
 functional clock.</p>
 
 </li>
-
-    
-
-    
-    
-
-    
-    
-
-    
-    
-        <li class="project draft">
+<li class="project draft">
     <span class="status complete">complete</span>
     <a class="name" href="/pr-preview/pr-82/projects/game-of-life">Game Of Life</a>
     <p>Conway’s Game of Life is a cult classic amungst programmers. It’s a beautiful
@@ -138,15 +80,7 @@ the game. Here I’ve implemented life on a 32x32 LED grid, powered by a (ARM)
 Teensy 3.1.</p>
 
 </li>
-
-    
-
-    
-    
-
-    
-    
-        <li class="project draft">
+<li class="project draft">
     <span class="status incomplete">incomplete</span>
     <a class="name" href="/pr-preview/pr-82/projects/led-cube">Led Cube</a>
     <p>I’ve wanted to build an LED cube for a while now, and I finnally did. This
@@ -154,12 +88,7 @@ project was my first experiance etching a PCB, as well as a great feat of
 soldering. The result is an 8x8x8 red LED cube of my own design.</p>
 
 </li>
-
-    
-
-    
-    
-        <li class="project draft">
+<li class="project draft">
     <span class="status complete">complete</span>
     <a class="name" href="/pr-preview/pr-82/projects/maze-gl">Maze Gl</a>
     <p>A friend of mine once asked if we could build something in OpenGL just to see
@@ -167,12 +96,7 @@ how that all works. We began enthusiastically making a 3D maze which you could
 run around in.</p>
 
 </li>
-
-    
-
-    
-    
-        <li class="project draft">
+<li class="project draft">
     <span class="status complete">complete</span>
     <a class="name" href="/pr-preview/pr-82/projects/parser-combinator">Parser Combinator</a>
     <p>Lexers and Parsers are at the core of every language. The main goal is to turn
@@ -181,12 +105,7 @@ hand. Here I show how the parser library I wrote works by combining small
 parsers into larger ones with only a few kinds of combinators.</p>
 
 </li>
-
-    
-
-    
-    
-        <li class="project draft">
+<li class="project draft">
     <span class="status in-progress">in progress</span>
     <a class="name" href="/pr-preview/pr-82/projects/quadcopter">Quadcopter</a>
     <p>Quadcopters are amazing flying devices, able to move somewhat freely in our
@@ -195,7 +114,4 @@ all my own electronics and software. The end goal is to have a fully
 controlable, and semi-autonomus flying drone (yes with a camera).</p>
 
 </li>
-
-    
-
 </ul>
