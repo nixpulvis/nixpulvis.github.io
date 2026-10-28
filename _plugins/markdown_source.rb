@@ -8,6 +8,15 @@ module Jekyll
     # Front matter worth keeping in the published source.
     KEYS = %w[title date description draft status references].freeze
 
+    # Layouts that show a word count under the title.
+    WORD_COUNT_LAYOUTS = %w[rambling article].freeze
+
+    # Counted the way the layouts count, from the rendered content.
+    def self.word_count(doc)
+      Liquid::Template.parse('{{ c | strip_html | number_of_words }}')
+        .render!({ 'c' => doc.content }, registers: { site: doc.site }).to_i
+    end
+
     def self.sources
       @sources ||= {}
     end
@@ -23,13 +32,17 @@ module Jekyll
       data = KEYS.each_with_object({}) do |key, h|
         h[key] = doc.data[key] unless doc.data[key].nil?
       end
-      # Jekyll dates undated documents with the build time, which means nothing.
-      if data['date'] == doc.site.time
+      # Jekyll dates undated documents with the build time, or with the file's
+      # modified time for drafts, neither of which means anything.
+      if [doc.site.time, File.mtime(doc.path)].include?(data['date'])
         data.delete('date')
       elsif data['date'].respond_to?(:strftime)
         data['date'] = data['date'].strftime('%Y-%m-%d')
       end
       data.delete('draft') unless data['draft']
+      if WORD_COUNT_LAYOUTS.include?(doc.data['layout'])
+        data['words'] = word_count(doc)
+      end
       data['collection'] = doc.collection.label if doc.respond_to?(:collection)
       data
     end
