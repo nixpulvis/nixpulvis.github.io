@@ -22,7 +22,8 @@ title: References
 
 <div class="tagged">
 <nav class="tags">
-    <a href="#all" id="all">all</a><a href="#pl" id="pl" class="scale-1">pl <small>3</small></a>
+    <a href="#all" id="all">all</a>
+<a href="#pl" id="pl" class="scale-1">pl <small>3</small></a>
 <a href="#functional" id="functional" class="scale-1">functional <small>1</small></a>
 <a href="#contracts" id="contracts" class="scale-1">contracts <small>7</small></a>
 <a href="#foundations" id="foundations" class="scale-2">foundations <small>2</small></a>
