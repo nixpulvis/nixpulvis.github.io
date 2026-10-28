@@ -1,6 +1,7 @@
 ---
 title: Why Feynman, Why?
 date: '2021-07-16'
+words: 507
 collection: ramblings
 ---
 

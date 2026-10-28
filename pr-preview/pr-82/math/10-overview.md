@@ -1,7 +1,7 @@
 ---
 title: Overview of Mathematics
-date: '2026-10-28'
 draft: true
+words: 1064
 collection: mathematics
 ---
 

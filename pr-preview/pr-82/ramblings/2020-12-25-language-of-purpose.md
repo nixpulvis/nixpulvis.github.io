@@ -2,6 +2,7 @@
 title: Language Of Purpose
 date: '2020-12-25'
 draft: true
+words: 1262
 collection: ramblings
 ---
 

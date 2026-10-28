@@ -2,6 +2,7 @@
 title: Building a Shell - Part 3
 date: '2023-09-13'
 draft: true
+words: 658
 collection: ramblings
 ---
 

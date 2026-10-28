@@ -2,6 +2,7 @@
 title: Racket Contracts With Blame
 date: '2018-02-18'
 draft: true
+words: 1710
 collection: ramblings
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Euler's Identity
 date: '2019-10-30'
+words: 574
 collection: mathematics
 ---
 

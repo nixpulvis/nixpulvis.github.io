@@ -1,6 +1,7 @@
 ---
 title: COVID-19 Pandemic
 date: '2020-03-24'
+words: 450
 collection: ramblings
 ---
 
