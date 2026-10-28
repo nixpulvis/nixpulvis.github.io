@@ -1,11 +1,20 @@
 <!doctype html>
-<html lang="en" data-baseurl="/pr-preview/pr-83" data-build="1793229091">
+<html lang="en" data-baseurl="/pr-preview/pr-83" data-build="1793229170">
   <head>
     <meta charset="utf-8">
     <script>
-      // Hide the page straight away when the terminal view is on, rather
-      // than flash it before js/tui.js takes over.
-      try { if (localStorage.getItem("tui")) document.documentElement.classList.add("tui"); } catch (e) {}
+      // A link ending in `?tui` turns the terminal view on, like the $ does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>nixpulvis - Game Of Life</title>
@@ -28,13 +37,13 @@
     
     <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-83/feed.xml" />
     <link rel="stylesheet" type="text/css" href="/pr-preview/pr-83/css/fonts.css" />
-    <link rel="stylesheet" href="/pr-preview/pr-83/css/style.css?v=1793229091">
+    <link rel="stylesheet" href="/pr-preview/pr-83/css/style.css?v=1793229170">
     <link rel="stylesheet" href="/pr-preview/pr-83/css/syntax.css">
     
     <script defer src="/pr-preview/pr-83/js/mousetrap.min.js"></script>
     
     <script defer src="/pr-preview/pr-83/js/main.js"></script>
-    <script type="module" src="/pr-preview/pr-83/js/tui.js?v=1793229091"></script>
+    <script type="module" src="/pr-preview/pr-83/js/tui.js?v=1793229170"></script>
     
   </head>
 
