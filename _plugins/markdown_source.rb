@@ -11,10 +11,15 @@ module Jekyll
     # Layouts that show a word count under the title.
     WORD_COUNT_LAYOUTS = %w[rambling article].freeze
 
+    # The filters the layouts count words with.
+    module Filters
+      extend Liquid::StandardFilters
+      extend Jekyll::Filters
+    end
+
     # Counted the way the layouts count, from the rendered content.
     def self.word_count(doc)
-      Liquid::Template.parse('{{ c | strip_html | number_of_words }}')
-        .render!({ 'c' => doc.content }, registers: { site: doc.site }).to_i
+      Filters.number_of_words(Filters.strip_html(doc.content))
     end
 
     def self.sources
