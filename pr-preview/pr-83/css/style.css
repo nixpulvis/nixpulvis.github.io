@@ -721,8 +721,15 @@ li.draft {
 
 /* The terminal view, from js/tui.js. It covers the page, which stays hidden
    underneath. */
-html.tui body > :not(#tui) {
-  visibility: hidden;
+html.tui {
+  /* The view does its own scrolling, so the page underneath shouldn't move,
+     show a scrollbar, or bounce and pull to refresh on phones. */
+  overflow: hidden;
+  overscroll-behavior: none;
+
+  & body > :not(#tui) {
+    visibility: hidden;
+  }
 }
 
 #tui {
@@ -730,6 +737,8 @@ html.tui body > :not(#tui) {
   inset: 0;
   z-index: 10;
   overflow: hidden;
+  /* Touches are the view's to scroll with, not the browser's. */
+  touch-action: none;
   background: #161616;
   font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
   font-size: 15px;
