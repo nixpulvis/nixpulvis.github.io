@@ -8,6 +8,9 @@ module Jekyll
     # Front matter worth keeping in the published source.
     KEYS = %w[title date description draft status references].freeze
 
+    # The front matter each page in `site.json` carries.
+    INDEX_KEYS = %w[title date collection draft status].freeze
+
     # Layouts that show a word count under the title.
     WORD_COUNT_LAYOUTS = %w[rambling article].freeze
 
@@ -17,39 +20,103 @@ module Jekyll
       extend Jekyll::Filters
     end
 
-    # Counted the way the layouts count, from the rendered content.
-    def self.word_count(doc)
-      Filters.number_of_words(Filters.strip_html(doc.content))
-    end
-
+    # Every page's source this build, by document.
     def self.sources
       @sources ||= {}
     end
 
-    # The path a document's Markdown is published at, e.g. `/ramblings/foo.md`
-    # or `/fortunes/index.md`.
-    def self.url(url)
+    # The path a page at `url` publishes its Markdown at, e.g.
+    # `/ramblings/foo.md` or `/fortunes/index.md`.
+    def self.path_for(url)
       url += 'index' if url.end_with?('/')
       url.sub(/\.html\z/, '') + '.md'
     end
 
-    def self.front_matter(doc)
-      data = KEYS.each_with_object({}) do |key, h|
-        h[key] = doc.data[key] unless doc.data[key].nil?
+    # A page's Markdown, as Liquid left it, and the front matter it's
+    # published with.
+    class Source
+      attr_reader :doc
+
+      def initialize(doc, content)
+        @doc = doc
+        @content = content
       end
-      # Jekyll dates undated documents with the build time, or with the file's
-      # modified time for drafts, neither of which means anything.
-      if [doc.site.time, File.mtime(doc.path)].include?(data['date'])
-        data.delete('date')
-      elsif data['date'].respond_to?(:strftime)
-        data['date'] = data['date'].strftime('%Y-%m-%d')
+
+      def path
+        doc.data['markdown']
       end
-      data.delete('draft') unless data['draft']
-      if WORD_COUNT_LAYOUTS.include?(doc.data['layout'])
-        data['words'] = word_count(doc)
+
+      def front_matter
+        @front_matter ||= begin
+          data = doc.data.slice(*KEYS).compact
+          # Jekyll dates undated documents with the build time, or with the
+          # file's modified time for drafts, neither of which means anything.
+          if [doc.site.time, File.mtime(doc.path)].include?(data['date'])
+            data.delete('date')
+          elsif data['date'].respond_to?(:strftime)
+            data['date'] = data['date'].strftime('%Y-%m-%d')
+          end
+          data.delete('draft') unless data['draft']
+          data['words'] = word_count if WORD_COUNT_LAYOUTS.include?(doc.data['layout'])
+          data['collection'] = doc.collection.label if doc.respond_to?(:collection)
+          data
+        end
       end
-      data['collection'] = doc.collection.label if doc.respond_to?(:collection)
-      data
+
+      def write
+        file = doc.site.in_dest_dir(path)
+        FileUtils.mkdir_p(File.dirname(file))
+        File.write(file, body)
+      end
+
+      # This page's entry in `site.json`.
+      def index_entry
+        front_matter.slice(*INDEX_KEYS).merge('url' => doc.url, 'source' => path)
+      end
+
+      private
+
+      def body
+        return @content if front_matter.empty?
+
+        "#{front_matter.to_yaml}---\n\n#{@content}"
+      end
+
+      # Counted the way the layouts count, from the rendered content.
+      def word_count
+        Filters.number_of_words(Filters.strip_html(doc.content))
+      end
+    end
+
+    # `site.json`, the nav and every collection document with a source.
+    class Index
+      def initialize(site)
+        @site = site
+      end
+
+      def write
+        File.write(@site.in_dest_dir('site.json'), JSON.pretty_generate(to_h))
+      end
+
+      private
+
+      def to_h
+        {
+          'title' => 'nixpulvis',
+          'url' => @site.config['url'],
+          'baseurl' => @site.config['baseurl'].to_s,
+          'nav' => @site.data['nav'].map do |item|
+            item.merge('source' => MarkdownSource.path_for(item['url']))
+          end,
+          'pages' => pages.map(&:index_entry),
+        }
+      end
+
+      def pages
+        @site.collections.values.flat_map(&:docs).filter_map do |doc|
+          MarkdownSource.sources[doc]
+        end
+      end
     end
 
     # Renderer#convert runs right after Liquid, on the document's content
@@ -58,7 +125,7 @@ module Jekyll
     module Capture
       def convert(content)
         if document.data['markdown'] && !document.is_a?(Excerpt)
-          MarkdownSource.sources[document] = content
+          MarkdownSource.sources[document] = Source.new(document, content)
         end
         super
       end
@@ -72,7 +139,7 @@ module Jekyll
   Hooks.register :site, :pre_render do |site|
     (site.pages + site.documents).each do |doc|
       next unless doc.extname == '.md' && doc.output_ext == '.html'
-      doc.data['markdown'] = MarkdownSource.url(doc.url)
+      doc.data['markdown'] = MarkdownSource.path_for(doc.url)
     end
   end
 
@@ -81,31 +148,7 @@ module Jekyll
   end
 
   Hooks.register :site, :post_write do |site|
-    MarkdownSource.sources.each do |doc, content|
-      front = MarkdownSource.front_matter(doc)
-      body = front.empty? ? content : "#{front.to_yaml}---\n\n#{content}"
-      path = site.in_dest_dir(doc.data['markdown'])
-      FileUtils.mkdir_p(File.dirname(path))
-      File.write(path, body)
-    end
-
-    pages = site.collections.values.flat_map(&:docs).select do |doc|
-      MarkdownSource.sources.key?(doc)
-    end
-    index = {
-      'title' => 'nixpulvis',
-      'url' => site.config['url'],
-      'baseurl' => site.config['baseurl'].to_s,
-      'nav' => site.data['nav'].map do |item|
-        item.merge('source' => MarkdownSource.url(item['url']))
-      end,
-      'pages' => pages.map do |doc|
-        MarkdownSource.front_matter(doc).slice('title', 'date', 'collection', 'draft', 'status').merge(
-          'url' => doc.url,
-          'source' => doc.data['markdown'],
-        )
-      end,
-    }
-    File.write(site.in_dest_dir('site.json'), JSON.pretty_generate(index))
+    MarkdownSource.sources.each_value(&:write)
+    MarkdownSource::Index.new(site).write
   end
 end
