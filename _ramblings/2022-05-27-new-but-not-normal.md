@@ -1,6 +1,7 @@
 ---
 title: New but not Normal
 layout: rambling
+archived: true
 ---
 
 I've been thinking about what is _normal_ more and more over the last few

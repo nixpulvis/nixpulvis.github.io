@@ -19,9 +19,11 @@ assign ramblings = site.ramblings
 -%}
 
 {%- for rambling in ramblings -%}
-    {%- if rambling.hidden -%}
+    {%- if rambling.hidden or rambling.archived -%}
         {%- continue -%}
     {%- endif -%}
     {%- include post-item.html post=rambling -%}
 {%- endfor -%}
 </ul>
+
+<small><a href="{{ '/ramblings/archive' | relative_url }}">Archive</a></small>
