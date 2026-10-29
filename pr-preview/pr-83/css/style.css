@@ -117,13 +117,12 @@ header {
     pointer-events: none;
   }
 
-  /* The name, followed by a shell prompt that switches the terminal view
-     on. Clear of the lambda, and the prompt's command is cut short before
-     it runs into it. */
+  /* The name, followed by the key that switches the terminal view on. Clear
+     of the lambda. */
   & .title {
     display: flex;
-    align-items: baseline;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
     margin-right: 100px;
     white-space: nowrap;
   }
@@ -134,52 +133,26 @@ header {
     color: inherit;
   }
 
+  /* A small framed key showing a prompt, in the footer's return key's
+     style. */
   & #tui-toggle {
-    display: flex;
-    align-items: baseline;
-    min-width: 0;
-    padding: 0;
-    border: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 5px 0;
+    border: 1px solid var(--border);
+    border-radius: 3px;
     background: none;
     color: var(--muted);
-    font: 14px "Computer Modern Typewriter", monospace;
+    font: 13px/1.2 "Computer Modern Typewriter", monospace;
     cursor: pointer;
-    /* From the name's baseline up to the middle of its lowercase letters,
-       which is where the eye puts the middle of a mostly lowercase name. */
+    /* Down a touch, so it sits on the middle of the name's lowercase
+       letters rather than its full height. */
     position: relative;
-    top: -2.5px;
-
-    /* The command is rewritten as it types, and Safari drops a click whose
-       press and release land on different nodes, so clicks go to the
-       button itself. */
-    & > * {
-      pointer-events: none;
-    }
-
-    & .prompt {
-      margin-right: 0.6em;
-    }
-
-    & .command {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* A block cursor, like a terminal's. */
-    & .cursor {
-      flex: none;
-      width: 0.6em;
-      height: 0.9em;
-      align-self: center;
-      background: var(--muted);
-    }
+    top: 2px;
 
     &:hover, &:focus-visible {
       color: var(--text);
-
-      & .cursor {
-        background: var(--text);
-      }
+      border-color: var(--text);
     }
   }
 

@@ -60,23 +60,17 @@ function open() {
   start();
 }
 
-// The prompt after the name, `$ █`, which opens the view. It's only added
-// here, so without JavaScript it isn't shown at all.
+// The key after the name, `>_`, which opens the view. It's only added here,
+// so without JavaScript it isn't shown at all. Hovering it says what it does,
+// `less <page>.md`.
 const title = document.querySelector("header .title");
-let toggle;
 if (title) {
-  toggle = document.createElement("button");
+  const toggle = document.createElement("button");
   toggle.id = "tui-toggle";
   toggle.type = "button";
+  toggle.textContent = ">_";
+  toggle.title = `less ${title.dataset.source}`;
   toggle.ariaLabel = "Read this page in a terminal";
-  const span = (name) => {
-    const element = document.createElement("span");
-    element.className = name;
-    return element;
-  };
-  const prompt = span("prompt");
-  prompt.textContent = "$";
-  toggle.append(prompt, span("command"), span("cursor"));
   toggle.addEventListener("click", open);
   title.append(toggle);
 }
@@ -89,61 +83,6 @@ document.addEventListener("keydown", (event) => {
   event.preventDefault();
   open();
 });
-
-// The prompt types out its command, `less <page>.md`, on hover or focus, so
-// it says what it does before it's clicked. A first visit plays it once on
-// its own, for phones with no hover and anyone who'd never think to try.
-const command = toggle?.querySelector(".command");
-if (command) {
-  const text = `less ${title.dataset.source}`;
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let timer;
-
-  // A letter every 50ms, three frames at 60Hz, timed by the frames
-  // themselves so the letters land evenly. A 45ms timer fell between frames,
-  // so letters came two or three frames apart.
-  const type = () => {
-    cancelAnimationFrame(timer);
-    if (still) {
-      command.textContent = text;
-      return;
-    }
-    const typed = command.textContent.length;
-    let start;
-    const frame = (now) => {
-      start ??= now;
-      const length = Math.min(typed + 1 + Math.floor((now - start) / 50), text.length);
-      if (command.textContent.length !== length) {
-        command.textContent = text.slice(0, length);
-      }
-      if (length < text.length) timer = requestAnimationFrame(frame);
-    };
-    timer = requestAnimationFrame(frame);
-  };
-  const erase = () => {
-    cancelAnimationFrame(timer);
-    command.textContent = "";
-  };
-
-  toggle.addEventListener("mouseenter", type);
-  toggle.addEventListener("focus", type);
-  toggle.addEventListener("mouseleave", () => {
-    if (document.activeElement !== toggle) erase();
-  });
-  toggle.addEventListener("blur", erase);
-
-  let seen = true;
-  try {
-    seen = localStorage.getItem("tui-seen") !== null;
-    localStorage.setItem("tui-seen", "1");
-  } catch (e) {}
-  if (!seen) {
-    setTimeout(type, 1000);
-    setTimeout(() => {
-      if (!toggle.matches(":hover, :focus")) erase();
-    }, 4000);
-  }
-}
 
 if (root.classList.contains("tui")) {
   start();
