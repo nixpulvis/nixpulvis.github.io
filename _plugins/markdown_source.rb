@@ -102,7 +102,7 @@ module Jekyll
 
       def to_h
         {
-          'title' => 'nixpulvis',
+          'title' => @site.config['title'],
           'url' => @site.config['url'],
           'baseurl' => @site.config['baseurl'].to_s,
           'nav' => @site.data['nav'].map do |item|

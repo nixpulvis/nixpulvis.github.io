@@ -10,7 +10,7 @@ assign ramblings = site.ramblings
 %}
 <feed xmlns="http://www.w3.org/2005/Atom" xml:base="{{ '/' | absolute_url }}">
   <id>{{ '/ramblings' | absolute_url }}</id>
-  <title>nixpulvis - Ramblings</title>
+  <title>{{ site.title }} - Ramblings</title>
   <author><name>Nathan Lilienthal</name></author>
   <link rel="self" href="{{ page.url | absolute_url }}" />
   <link rel="alternate" type="text/html" href="{{ '/ramblings' | absolute_url }}" />
