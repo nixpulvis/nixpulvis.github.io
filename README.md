@@ -48,6 +48,7 @@ specified in the YAML front-matter.
 
 - `draft: <bool>` - Indicate that this post is unfinished (grayed out)
 - `hidden: <bool>` - Hide/show the post from index page
+- `archived: <bool>` - Move the post from the index page to its archive
 - `published: <bool>` - Do/don't generate the page entirely
 
 Additional options may exist for some layouts, and should be documented at

@@ -1,5 +1,6 @@
 ---
 layout: rambling
+archived: true
 ---
 
 I realize I've been in a bit of a writers block as of late. I think part of the

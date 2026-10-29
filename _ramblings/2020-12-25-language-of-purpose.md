@@ -1,5 +1,6 @@
 ---
 layout: rambling
+archived: true
 draft: true
 ---
 

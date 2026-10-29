@@ -16,7 +16,7 @@ assign ramblings = site.ramblings
   <link rel="alternate" type="text/html" href="{{ '/ramblings' | absolute_url }}" />
   <updated>{{ site.time | date_to_xmlschema }}</updated>
   {% for rambling in ramblings %}
-    {% if rambling.hidden or rambling.draft %}
+    {% if rambling.hidden or rambling.draft or rambling.archived %}
       {% continue %}
     {% endif %}
     <entry>
