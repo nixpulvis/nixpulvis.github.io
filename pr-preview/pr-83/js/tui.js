@@ -61,15 +61,13 @@ function open() {
 }
 
 // The key after the name, `>_`, which opens the view. It's only added here,
-// so without JavaScript it isn't shown at all. Hovering it says what it does,
-// `less <page>.md`.
+// so without JavaScript it isn't shown at all.
 const title = document.querySelector("header .title");
 if (title) {
   const toggle = document.createElement("button");
   toggle.id = "tui-toggle";
   toggle.type = "button";
   toggle.textContent = ">_";
-  toggle.title = `less ${title.dataset.source}`;
   toggle.ariaLabel = "Read this page in a terminal";
   toggle.addEventListener("click", open);
   title.append(toggle);
