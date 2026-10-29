@@ -6,7 +6,7 @@
   <author><name>Nathan Lilienthal</name></author>
   <link rel="self" href="https://nixpulvis.com/pr-preview/pr-85/feed.xml" />
   <link rel="alternate" type="text/html" href="https://nixpulvis.com/pr-preview/pr-85/ramblings" />
-  <updated>2026-10-29T13:58:05+00:00</updated>
+  <updated>2026-10-29T14:07:04+00:00</updated>
   
     
       
@@ -2593,8 +2593,6 @@ http://brainfuck.org/
 </content>
     </entry>
   
-    
-      
     
     <entry>
       <id>https://nixpulvis.com/pr-preview/pr-85/math/01-fibonacci</id>
