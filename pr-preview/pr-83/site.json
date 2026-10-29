@@ -383,5 +383,17 @@
       "collection": "research",
       "url": "/research/2023-09-12-achilles-14"
     }
+  ],
+  "files": [
+    "/CNAME",
+    "/fortunes/2017",
+    "/fortunes/2018",
+    "/fortunes/2019",
+    "/fortunes/2020",
+    "/fortunes/2021",
+    "/fortunes/2022",
+    "/fortunes/2023",
+    "/fortunes/2024",
+    "/fortunes/2026"
   ]
 }
