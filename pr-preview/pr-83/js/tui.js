@@ -35,7 +35,7 @@ async function start() {
     element.addEventListener("keydown", (event) => {
       if (event.key === "Tab") event.preventDefault();
     });
-    tui.start(`${base}/`, location.pathname, screen);
+    tui.start(`${base}/`, location.pathname + location.hash, screen);
     // So keys work straight away, without a click first.
     screen.focus();
   } catch (error) {
