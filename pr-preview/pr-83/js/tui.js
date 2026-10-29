@@ -99,19 +99,29 @@ if (command) {
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let timer;
 
+  // A letter every 50ms, three frames at 60Hz, timed by the frames
+  // themselves so the letters land evenly. A 45ms timer fell between frames,
+  // so letters came two or three frames apart.
   const type = () => {
-    clearInterval(timer);
+    cancelAnimationFrame(timer);
     if (still) {
       command.textContent = text;
       return;
     }
-    timer = setInterval(() => {
-      command.textContent = text.slice(0, command.textContent.length + 1);
-      if (command.textContent === text) clearInterval(timer);
-    }, 45);
+    const typed = command.textContent.length;
+    let start;
+    const frame = (now) => {
+      start ??= now;
+      const length = Math.min(typed + 1 + Math.floor((now - start) / 50), text.length);
+      if (command.textContent.length !== length) {
+        command.textContent = text.slice(0, length);
+      }
+      if (length < text.length) timer = requestAnimationFrame(frame);
+    };
+    timer = requestAnimationFrame(frame);
   };
   const erase = () => {
-    clearInterval(timer);
+    cancelAnimationFrame(timer);
     command.textContent = "";
   };
 
