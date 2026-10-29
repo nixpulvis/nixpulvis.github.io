@@ -719,8 +719,8 @@ li.draft {
   }
 }
 
-/* The terminal view, from js/tui.js. It covers the page, which stays hidden
-   underneath. */
+/* The terminal view, from js/tui.js. It takes the page's place, which isn't
+   laid out at all while it's open. */
 html.tui {
   /* The view does its own scrolling, so the page underneath shouldn't move,
      show a scrollbar, or bounce and pull to refresh on phones. */
@@ -728,7 +728,7 @@ html.tui {
   overscroll-behavior: none;
 
   & body > :not(#tui) {
-    visibility: hidden;
+    display: none;
   }
 }
 
