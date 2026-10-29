@@ -149,6 +149,13 @@ header {
     position: relative;
     top: -2.5px;
 
+    /* The command is rewritten as it types, and Safari drops a click whose
+       press and release land on different nodes, so clicks go to the
+       button itself. */
+    & > * {
+      pointer-events: none;
+    }
+
     & .prompt {
       margin-right: 0.6em;
     }
