@@ -51,8 +51,26 @@ function open() {
   start();
 }
 
-const toggle = document.getElementById("tui-toggle");
-toggle?.addEventListener("click", open);
+// The prompt after the name, `$ █`, which opens the view. It's only added
+// here, so without JavaScript it isn't shown at all.
+const title = document.querySelector("header .title");
+let toggle;
+if (title) {
+  toggle = document.createElement("button");
+  toggle.id = "tui-toggle";
+  toggle.type = "button";
+  toggle.ariaLabel = "Read this page in a terminal";
+  const span = (name) => {
+    const element = document.createElement("span");
+    element.className = name;
+    return element;
+  };
+  const prompt = span("prompt");
+  prompt.textContent = "$";
+  toggle.append(prompt, span("command"), span("cursor"));
+  toggle.addEventListener("click", open);
+  title.append(toggle);
+}
 
 // Backtick anywhere opens it too, unless it's being typed somewhere.
 document.addEventListener("keydown", (event) => {
@@ -68,7 +86,7 @@ document.addEventListener("keydown", (event) => {
 // its own, for phones with no hover and anyone who'd never think to try.
 const command = toggle?.querySelector(".command");
 if (command) {
-  const text = command.dataset.command;
+  const text = `less ${title.dataset.source}`;
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let timer;
 
