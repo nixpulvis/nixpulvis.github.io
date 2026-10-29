@@ -10,12 +10,12 @@ title: Mathematics
 <ul><li class="draft">
             <a href="/pr-preview/pr-82/math/10-overview">Overview of Mathematics</a>
             <small>
-                drafted on October 28, 2026.
+                drafted on October 29, 2026.
             </small>
         </li><li class="draft">
             <a href="/pr-preview/pr-82/math/03-sum-and-product">Factorials & Triangular Numbers</a>
             <small>
-                drafted on October 28, 2026.
+                drafted on October 29, 2026.
             </small>
         </li><li>
             <a href="/pr-preview/pr-82/math/00-euler">Euler's Identity</a>
