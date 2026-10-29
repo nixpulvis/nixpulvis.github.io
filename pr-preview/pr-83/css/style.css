@@ -95,6 +95,12 @@ h2 + .meta {
   padding: 0 20px;
 }
 
+@keyframes blink {
+  50% {
+    visibility: hidden;
+  }
+}
+
 header {
   position: relative;
   padding: 10px 0;
@@ -117,19 +123,66 @@ header {
     pointer-events: none;
   }
 
-  /* Switches the terminal view on. Sits next to the lambda, on the nav's
-     line. */
-  & #tui-toggle {
-    position: absolute;
-    right: 85px;
-    bottom: 16px;
-    text-decoration: none;
+  /* The name, followed by a shell prompt that switches the terminal view
+     on. Clear of the lambda, and the prompt's command is cut short before
+     it runs into it. */
+  & .title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-right: 100px;
+    white-space: nowrap;
   }
 
   & .identity {
     font-size: 32px;
     text-decoration: none;
     color: inherit;
+  }
+
+  & #tui-toggle {
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font: 16px "Computer Modern Typewriter", monospace;
+    cursor: pointer;
+
+    & .prompt {
+      margin-right: 0.6em;
+    }
+
+    & .command {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* A block cursor, blinking like a terminal's. */
+    & .cursor {
+      flex: none;
+      width: 0.6em;
+      height: 1em;
+      align-self: center;
+      background: var(--muted);
+      animation: blink 1s steps(1) infinite;
+    }
+
+    &:hover, &:focus-visible {
+      color: var(--text);
+
+      & .cursor {
+        background: var(--text);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      & .cursor {
+        animation: none;
+      }
+    }
   }
 
   & nav {
