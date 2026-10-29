@@ -73,6 +73,15 @@ make fortunes
 fortune fortunes
 ```
 
+#### Markdown
+
+Every page is also published as Markdown next to its HTML, after Liquid runs,
+so `/ramblings/foo` is readable at `/ramblings/foo.md` with a short front
+matter (title, date and so on). `/site.json` lists the nav and every post with
+its URL, title, date, collection and draft flag. Both come from
+`_plugins/markdown_source.rb`, for clients that read the site without scraping
+HTML.
+
 #### Links
 
 Write site-internal links, images, and assets through `relative_url` so they
