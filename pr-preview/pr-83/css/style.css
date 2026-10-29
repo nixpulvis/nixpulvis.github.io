@@ -122,7 +122,7 @@ header {
      it runs into it. */
   & .title {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 10px;
     margin-right: 100px;
     white-space: nowrap;
@@ -142,8 +142,12 @@ header {
     border: 0;
     background: none;
     color: var(--muted);
-    font: 16px "Computer Modern Typewriter", monospace;
+    font: 14px "Computer Modern Typewriter", monospace;
     cursor: pointer;
+    /* From the name's baseline up to the middle of its lowercase letters,
+       which is where the eye puts the middle of a mostly lowercase name. */
+    position: relative;
+    top: -4px;
 
     & .prompt {
       margin-right: 0.6em;
