@@ -9,7 +9,7 @@ module Jekyll
     KEYS = %w[title date description draft status references].freeze
 
     # The front matter each page in `site.json` carries.
-    INDEX_KEYS = %w[title date collection draft status].freeze
+    INDEX_KEYS = %w[title date collection draft].freeze
 
     # Layouts that show a word count under the title.
     WORD_COUNT_LAYOUTS = %w[rambling article].freeze
@@ -71,7 +71,7 @@ module Jekyll
 
       # This page's entry in `site.json`.
       def index_entry
-        front_matter.slice(*INDEX_KEYS).merge('url' => doc.url, 'source' => path)
+        front_matter.slice(*INDEX_KEYS).merge('url' => doc.url)
       end
 
       private
@@ -105,9 +105,7 @@ module Jekyll
           'title' => @site.config['title'],
           'url' => @site.config['url'],
           'baseurl' => @site.config['baseurl'].to_s,
-          'nav' => @site.data['nav'].map do |item|
-            item.merge('source' => MarkdownSource.path_for(item['url']))
-          end,
+          'nav' => @site.data['nav'],
           'pages' => pages.map(&:index_entry),
         }
       end
