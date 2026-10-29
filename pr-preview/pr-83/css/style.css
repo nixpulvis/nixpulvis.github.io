@@ -147,7 +147,7 @@ header {
     /* From the name's baseline up to the middle of its lowercase letters,
        which is where the eye puts the middle of a mostly lowercase name. */
     position: relative;
-    top: -4px;
+    top: -2.5px;
 
     & .prompt {
       margin-right: 0.6em;
