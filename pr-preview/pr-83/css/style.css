@@ -750,8 +750,4 @@ html.tui {
   font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
   font-size: 15px;
   line-height: normal;
-
-  pre {
-    margin: 0;
-  }
 }

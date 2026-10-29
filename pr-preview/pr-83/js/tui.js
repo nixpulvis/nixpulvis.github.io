@@ -16,6 +16,15 @@ async function start() {
     element.id = "tui";
     document.body.append(element);
   }
+  // The view draws in a shadow root, out of sight of the page's own
+  // scripts. Ad blockers watch the page for changes and re-scan it, and the
+  // view changes on every frame of a scroll.
+  const shadow = element.shadowRoot ?? element.attachShadow({ mode: "open" });
+  const screen = document.createElement("div");
+  screen.className = "screen";
+  const style = document.createElement("style");
+  style.textContent = ".screen { height: 100%; } pre { margin: 0; }";
+  shadow.replaceChildren(style, screen);
   try {
     const tui = await import(`${base}/tui/tui.js?v=${version}`);
     await tui.default({
@@ -26,9 +35,9 @@ async function start() {
     element.addEventListener("keydown", (event) => {
       if (event.key === "Tab") event.preventDefault();
     });
-    tui.start(`${base}/`, location.pathname);
+    tui.start(`${base}/`, location.pathname, screen);
     // So keys work straight away, without a click first.
-    element.focus();
+    screen.focus();
   } catch (error) {
     // Most likely a build without Rust, which skips the terminal view.
     console.warn("The terminal view isn't available:", error);
