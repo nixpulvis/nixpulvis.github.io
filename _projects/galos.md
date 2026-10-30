@@ -7,29 +7,31 @@ references:
 - https://github.com/nixpulvis/galos
 ---
 
-Galos is a map of the galaxy in Elite: Dangerous, built from what players
-report as they fly, and compared against the sky as it's actually measured
-from Earth. It started as a way to keep track of factions and systems, and
-slowly turned into a 3D map that can draw all of explored space without a
-database behind it.
+Galos keeps its own copy of the galaxy in Elite: Dangerous, built from what
+players report as they fly. It subscribes to the game's shared event feed,
+stores what it hears in a database, and derives a spatial index from that. On
+top sits a 3D map, which is the main way to look at it all, and beside it a
+comparison against the sky as it's actually measured from Earth. It started as
+a way to keep track of factions and systems, and grew from there.
 
 TODO: One or two sentences on why you care about it. The longer personal story
 lives in the [introduction rambling]({{ '/ramblings/2026-10-30-galos' | relative_url }}).
 
 ![The galaxy from above, the core at the top]({{ '/img/galos/galaxy.jpg' | relative_url }})
 
-### How it Works
+### The Feed, the Database and the Index
 
 Elite's galaxy arrives as a stream of events. Every commander running a tool
-like EDMC forwards what their game sees to [EDDN][eddn], and Galos listens to
-that feed and keeps it in Postgres (with PostGIS for the positions). Dumps from
+like EDMC forwards what their game sees to [EDDN][eddn]. `galos` subscribes to
+that feed and keeps it in Postgres (with PostGIS for the positions), and can
+answer searches and routes from the command line. Dumps from
 [Spansh][spansh] and [EDSM][edsm] fill in the history that came before. Your
 own game writes a directory of journal files, and Galos reads those too, so the
 world and your own commander end up in one place.
 
 From that data a builder derives a single spatial index, an octree written to
-disk in its own format. The map reads only that index. No database, no server,
-just a directory of files.
+disk in its own format. The map reads only that index, with no database or server
+behind it, just a directory of files.
 
 ```sh
 cargo run --release --bin galos -- ingest --from eddn --index ~/.galos_index
