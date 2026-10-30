@@ -1,0 +1,22 @@
+[package]
+name = "nixpulvis"
+version = "0.1.0"
+description = "Browse nixpulvis.com in a terminal, shared by the native and web views"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+ratatui = { workspace = true, features = ["std"] }
+ratmark.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+web-time = "1"
+
+[features]
+# Color code blocks. Worth it in a terminal, but it adds a couple of
+# megabytes of syntax definitions to the web build.
+syntax = ["ratmark/syntax"]
+# Real links, like OSC 8 in a terminal, where the backend supports them.
+native-links = ["ratmark/native-links", "ratatui/cell-extensions"]

@@ -1,0 +1,14 @@
+[package]
+name = "nixpulvis-tui"
+version = "0.1.0"
+description = "Read nixpulvis.com in your terminal"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+nixpulvis = { path = "../app", features = ["syntax", "native-links"] }
+ratatui = { workspace = true, features = ["crossterm", "cell-extensions"] }
+ureq = "3"
+open = "5"

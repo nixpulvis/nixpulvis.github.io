@@ -95,6 +95,28 @@ keep working when the site is built under a sub-path (PR previews):
 
 A bare `/img/photo.jpg` still works on nixpulvis.com but breaks in previews.
 
+## Terminal view
+
+The site can also be read as a terminal app, drawn with [Ratatui] from the
+published Markdown and `/site.json` described above. The code is in `tui/`:
+
+- `tui/app` is the app itself, shared by both clients
+- `tui/term` runs it in a real terminal, fetching pages over HTTP
+- `tui/web` builds it to WebAssembly for the browser
+
+#### Running from source
+
+The terminal client reads nixpulvis.com by default. To read a local build
+instead, start `jekyll serve` as above and, in another shell:
+
+```sh
+cargo run                                     # nixpulvis.com
+cargo run -- --url http://localhost:4000      # a local build
+cargo run -- /ramblings                       # start on a page
+```
+
+[Ratatui]: https://ratatui.rs
+
 ## Publishing
 
 GitHub Pages serves the `gh-pages` branch. Pushing to `master` runs
