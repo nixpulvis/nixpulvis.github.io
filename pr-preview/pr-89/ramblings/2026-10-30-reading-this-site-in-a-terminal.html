@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-baseurl="/pr-preview/pr-89" data-build="1793401496">
+<html lang="en" data-baseurl="/pr-preview/pr-89" data-build="1793401610">
   <head>
     <meta charset="utf-8">
     <script>
@@ -38,14 +38,14 @@
     
     <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-89/feed.xml" />
     <link rel="stylesheet" type="text/css" href="/pr-preview/pr-89/css/fonts.css" />
-    <link rel="stylesheet" href="/pr-preview/pr-89/css/style.css?v=1793401496">
+    <link rel="stylesheet" href="/pr-preview/pr-89/css/style.css?v=1793401610">
     <link rel="stylesheet" href="/pr-preview/pr-89/css/syntax.css">
     
     <script defer src="/pr-preview/pr-89/js/mousetrap.min.js"></script>
     
     <script defer src="/pr-preview/pr-89/js/main.js"></script>
     <!-- If the view's script can't load, show the page the head script hid. -->
-    <script type="module" src="/pr-preview/pr-89/js/tui.js?v=1793401496" onerror="document.documentElement.classList.remove('tui')"></script>
+    <script type="module" src="/pr-preview/pr-89/js/tui.js?v=1793401610" onerror="document.documentElement.classList.remove('tui')"></script>
     
   </head>
 
@@ -85,7 +85,7 @@
 
     <div class="content"><h2 class="title">Reading this Site in a Terminal</h2>
 <p class="meta">
-    1547 words
+    1554 words
     drafted
     on October 30, 2026
 </p>
@@ -141,37 +141,43 @@ default. It would have been easy to lump them together as “Jekyll support”,
 but they’re really different things, and plenty of Markdown wants one without
 the others.</p>
 
-<dl>
-  <dt><code class="language-plaintext highlighter-rouge">front-matter</code></dt>
-  <dd>Splits the YAML (<code class="language-plaintext highlighter-rouge">---</code>) or TOML (<code class="language-plaintext highlighter-rouge">+++</code>) block off the top of a document,
-and has a small helper for reading a value like the title. This isn’t a
-Markdown thing at all, it’s a static site generator thing. Jekyll, Hugo and
-Zola all do it, with nothing else in common. It doesn’t pull in a YAML
-parser either, it just hands you the text and lets you parse it however you
-want.</dd>
-  <dt><code class="language-plaintext highlighter-rouge">html</code></dt>
-  <dd>Raw HTML is part of CommonMark itself, so any Markdown might have some.
-A GitHub README is full of it, with no front matter in sight. Without this
-feature the HTML is just left out. With it, ratmark runs <a href="https://github.com/untitaker/html5gum">html5gum</a>’s
-tokenizer over the tags and keeps what makes sense in a terminal: text,
-links, emphasis, lists, tables, <code class="language-plaintext highlighter-rouge">&lt;kbd&gt;</code> and so on. There’s no DOM, just a
-stream of tags, and anything like <code class="language-plaintext highlighter-rouge">&lt;script&gt;</code> or <code class="language-plaintext highlighter-rouge">&lt;svg&gt;</code> is skipped.</dd>
-  <dt><code class="language-plaintext highlighter-rouge">kramdown</code></dt>
-  <dd>kramdown is the Markdown dialect Jekyll uses, and it reads a few things
-differently than CommonMark. <code class="language-plaintext highlighter-rouge">* TOC</code> with <code class="language-plaintext highlighter-rouge">{:toc}</code> turns into a list of
-links to the headings, Markdown inside a <code class="language-plaintext highlighter-rouge">markdown="1"</code> element gets read
-as Markdown, heading ids match the ones kramdown gives the HTML (so <code class="language-plaintext highlighter-rouge">#foo</code>
-links land in the same place), and attribute lists like <code class="language-plaintext highlighter-rouge">{:.no_toc}</code> are
-dropped instead of showing up as text. A class after inline code, like the
-<code class="language-plaintext highlighter-rouge">{:.new-syntax}</code> in my <a href="/pr-preview/pr-89/ramblings/2026-10-19-anonymous-struct-parameters">anonymous struct post</a>, can even pick
-a style from the theme.</dd>
-  <dt><code class="language-plaintext highlighter-rouge">syntax</code></dt>
-  <dd>Highlights fenced code blocks with <a href="https://github.com/trishume/syntect">syntect</a>. It uses syntect’s pure Rust
-regex engine, so it still builds for wasm.</dd>
-  <dt><code class="language-plaintext highlighter-rouge">native-links</code></dt>
-  <dd>Puts each link’s URL on the cells it covers, which is what makes the real
-links below work. It’s the only feature that needs an unreleased Ratatui.</dd>
-</dl>
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">front-matter</code> splits the YAML (<code class="language-plaintext highlighter-rouge">---</code>) or TOML (<code class="language-plaintext highlighter-rouge">+++</code>) block off the top of a
+document, and has a small helper for reading a value like the title. This
+isn’t a Markdown thing at all, it’s a static site generator thing. Jekyll,
+Hugo and Zola all do it, each with its own flavor of Markdown. It doesn’t pull in a
+YAML parser either, it just hands you the text and lets you parse it however
+you want.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">html</code> is for raw HTML, which is part of CommonMark itself, so any Markdown
+might have some. A GitHub README is full of it, with no front matter in sight.
+Without this feature the HTML is just left out. With it, ratmark runs
+<a href="https://github.com/untitaker/html5gum">html5gum</a>’s tokenizer over the tags and keeps what makes sense in a terminal:
+text, links, emphasis, lists, tables, <code class="language-plaintext highlighter-rouge">&lt;kbd&gt;</code> and so on. There’s no DOM, just
+a stream of tags, and anything like <code class="language-plaintext highlighter-rouge">&lt;script&gt;</code> or <code class="language-plaintext highlighter-rouge">&lt;svg&gt;</code> is skipped.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">kramdown</code> is for Markdown written for kramdown, the dialect Jekyll uses,
+which reads a few things differently than CommonMark. <code class="language-plaintext highlighter-rouge">* TOC</code> with <code class="language-plaintext highlighter-rouge">{:toc}</code>
+turns into a list of links to the headings, Markdown inside a <code class="language-plaintext highlighter-rouge">markdown="1"</code>
+element gets read as Markdown, heading ids match the ones kramdown gives the
+HTML (so <code class="language-plaintext highlighter-rouge">#foo</code> links land in the same place), and attribute lists like
+<code class="language-plaintext highlighter-rouge">{:.no_toc}</code> are dropped instead of showing up as text. A class after inline
+code, like the <code class="language-plaintext highlighter-rouge">{:.new-syntax}</code> in my <a href="/pr-preview/pr-89/ramblings/2026-10-19-anonymous-struct-parameters">anonymous struct post</a>,
+can even pick a style from the theme.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">syntax</code> highlights fenced code blocks with <a href="https://github.com/trishume/syntect">syntect</a>. It uses syntect’s pure
+Rust regex engine, so it still builds for wasm.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">native-links</code> puts each link’s URL on the cells it covers, which is what
+makes the real links below work. It’s the only feature that needs an
+unreleased Ratatui.</p>
+  </li>
+</ul>
 
 <p>So the site turns on all five, but something reading Hugo content would want
 <code class="language-plaintext highlighter-rouge">front-matter</code> and <code class="language-plaintext highlighter-rouge">html</code> and nothing to do with kramdown, and a README viewer

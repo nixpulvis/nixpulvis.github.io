@@ -2,13 +2,13 @@
 title: Reading this Site in a Terminal
 date: '2026-10-30'
 draft: true
-words: 1547
+words: 1554
 collection: ramblings
 ---
 
 <h2 class="title">Reading this Site in a Terminal</h2>
 <p class="meta">
-    1547 words
+    1554 words
     drafted
     on October 30, 2026
 </p>
@@ -65,39 +65,35 @@ default. It would have been easy to lump them together as "Jekyll support",
 but they're really different things, and plenty of Markdown wants one without
 the others.
 
-`front-matter`
-: Splits the YAML (`---`) or TOML (`+++`) block off the top of a document,
-  and has a small helper for reading a value like the title. This isn't a
-  Markdown thing at all, it's a static site generator thing. Jekyll, Hugo and
-  Zola all do it, with nothing else in common. It doesn't pull in a YAML
-  parser either, it just hands you the text and lets you parse it however you
-  want.
+- `front-matter` splits the YAML (`---`) or TOML (`+++`) block off the top of a
+  document, and has a small helper for reading a value like the title. This
+  isn't a Markdown thing at all, it's a static site generator thing. Jekyll,
+  Hugo and Zola all do it, each with its own flavor of Markdown. It doesn't pull in a
+  YAML parser either, it just hands you the text and lets you parse it however
+  you want.
 
-`html`
-: Raw HTML is part of CommonMark itself, so any Markdown might have some.
-  A GitHub README is full of it, with no front matter in sight. Without this
-  feature the HTML is just left out. With it, ratmark runs [html5gum]'s
-  tokenizer over the tags and keeps what makes sense in a terminal: text,
-  links, emphasis, lists, tables, `<kbd>` and so on. There's no DOM, just a
-  stream of tags, and anything like `<script>` or `<svg>` is skipped.
+- `html` is for raw HTML, which is part of CommonMark itself, so any Markdown
+  might have some. A GitHub README is full of it, with no front matter in sight.
+  Without this feature the HTML is just left out. With it, ratmark runs
+  [html5gum]'s tokenizer over the tags and keeps what makes sense in a terminal:
+  text, links, emphasis, lists, tables, `<kbd>` and so on. There's no DOM, just
+  a stream of tags, and anything like `<script>` or `<svg>` is skipped.
 
-`kramdown`
-: kramdown is the Markdown dialect Jekyll uses, and it reads a few things
-  differently than CommonMark. `* TOC` with `{:toc}` turns into a list of
-  links to the headings, Markdown inside a `markdown="1"` element gets read
-  as Markdown, heading ids match the ones kramdown gives the HTML (so `#foo`
-  links land in the same place), and attribute lists like `{:.no_toc}` are
-  dropped instead of showing up as text. A class after inline code, like the
-  `{:.new-syntax}` in my [anonymous struct post][anon-struct], can even pick
-  a style from the theme.
+- `kramdown` is for Markdown written for kramdown, the dialect Jekyll uses,
+  which reads a few things differently than CommonMark. `* TOC` with `{:toc}`
+  turns into a list of links to the headings, Markdown inside a `markdown="1"`
+  element gets read as Markdown, heading ids match the ones kramdown gives the
+  HTML (so `#foo` links land in the same place), and attribute lists like
+  `{:.no_toc}` are dropped instead of showing up as text. A class after inline
+  code, like the `{:.new-syntax}` in my [anonymous struct post][anon-struct],
+  can even pick a style from the theme.
 
-`syntax`
-: Highlights fenced code blocks with [syntect]. It uses syntect's pure Rust
-  regex engine, so it still builds for wasm.
+- `syntax` highlights fenced code blocks with [syntect]. It uses syntect's pure
+  Rust regex engine, so it still builds for wasm.
 
-`native-links`
-: Puts each link's URL on the cells it covers, which is what makes the real
-  links below work. It's the only feature that needs an unreleased Ratatui.
+- `native-links` puts each link's URL on the cells it covers, which is what
+  makes the real links below work. It's the only feature that needs an
+  unreleased Ratatui.
 
 So the site turns on all five, but something reading Hugo content would want
 `front-matter` and `html` and nothing to do with kramdown, and a README viewer
