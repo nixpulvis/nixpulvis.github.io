@@ -16,7 +16,7 @@ Items in the site's lists, called from the pages listing them.
 {# A project, with its status and first paragraph. #}
 {% macro project_item(project) -%}
 <li class="project{% if project.front.draft %} draft{% endif %}">
-    {% if let Some(status) = project.front.status %}<span class="status {{ project.status_class() }}">{{ status }}</span>{% endif %}
+    {% if let Some(status) = project.front.extra.status %}<span class="status {{ project.status_class() }}">{{ status }}</span>{% endif %}
     <a class="name" href="{{ project.url }}">
         {{- project.title() -}}
     </a>

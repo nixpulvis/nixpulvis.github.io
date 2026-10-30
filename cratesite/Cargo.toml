@@ -1,0 +1,38 @@
+[package]
+name = "cratesite"
+version = "0.1.0"
+readme = "README.md"
+description = "A static site generator where the site is a crate, and every page a documented module"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+# Renders and writes the site, and serves it while writing.
+generate = [
+  "dep:chrono",
+  "dep:serde",
+  "dep:serde_yaml",
+  "dep:sha2",
+  "dep:syntect",
+  "pulldown-cmark/html",
+]
+# The build script helper, which makes a module of every page.
+build = ["dep:serde_yaml"]
+# Reads Markdown the way kramdown does: `{:.class}` attribute lists,
+# kramdown's heading ids, and `$$` for all math.
+kramdown = ["dep:ratmark", "ratmark/kramdown"]
+
+[dependencies]
+pulldown-cmark = { version = "0.13", default-features = false }
+chrono = { version = "0.4", optional = true, default-features = false, features = ["clock", "std"] }
+ratmark = { git = "https://github.com/nixpulvis/ratmark", branch = "hyperlinks", optional = true, default-features = false }
+serde = { workspace = true, optional = true }
+serde_yaml = { version = "0.9", optional = true }
+sha2 = { version = "0.10", optional = true }
+syntect = { version = "5.3", optional = true, default-features = false, features = ["default-syntaxes", "html", "regex-fancy"] }
+
+[package.metadata.docs.rs]
+all-features = true

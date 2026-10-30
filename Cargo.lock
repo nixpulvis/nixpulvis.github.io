@@ -393,6 +393,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "cratesite"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "pulldown-cmark",
+ "ratmark",
+ "serde",
+ "serde_yaml",
+ "sha2",
+ "syntect",
+]
+
+[[package]]
 name = "crc32fast"
 version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1104,15 +1117,12 @@ name = "nixpulvis"
 version = "0.1.0"
 dependencies = [
  "askama",
- "chrono",
- "pulldown-cmark",
+ "cratesite",
  "ratatui",
  "ratmark",
  "serde",
  "serde_json",
  "serde_yaml",
- "sha2",
- "syntect",
  "web-time",
 ]
 

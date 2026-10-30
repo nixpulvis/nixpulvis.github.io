@@ -10,7 +10,7 @@ layout: null
   <link rel="alternate" type="text/html" href="{{ site.absolute_url("/ramblings") }}" />
   <updated>{{ site.xml_time() }}</updated>
   {% for rambling in site.ramblings() %}
-    {% if rambling.front.hidden || rambling.front.draft || rambling.front.archived %}
+    {% if rambling.front.extra.hidden || rambling.front.draft || rambling.front.extra.archived %}
       {% continue %}
     {% endif %}
     <entry>

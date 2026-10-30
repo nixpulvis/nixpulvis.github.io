@@ -25,7 +25,7 @@
     <meta property="og:description" content="{{ self.description() }}" />
     <meta property="og:url" content="{{ site.absolute_url(page.url.as_str()) }}" />
     <meta property="og:type" content="{% if page.collection.is_some() %}article{% else %}website{% endif %}" />
-    <meta property="og:image" content="{{ site.absolute_url(page.front.image.as_deref().unwrap_or("/img/link-preview.png")) }}" />
+    <meta property="og:image" content="{{ site.absolute_url(page.front.extra.image.as_deref().unwrap_or("/img/link-preview.png")) }}" />
     <meta name="twitter:card" content="summary" />
     <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
@@ -38,7 +38,7 @@
     <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/style.css?v={{ site.build_id() }}">
     <link rel="stylesheet" href="/css/syntax.css">
-    {% if let Some(style) = page.front.style %}
+    {% if let Some(style) = page.front.extra.style %}
       <link rel="stylesheet" href="{{ style }}" />
     {% endif %}
     <script defer src="/js/mousetrap.min.js"></script>
@@ -48,7 +48,7 @@
     <script defer src="/js/main.js"></script>
     <!-- If the view's script can't load, show the page the head script hid. -->
     <script type="module" src="/js/tui.js?v={{ site.build_id() }}" onerror="document.documentElement.classList.remove('tui')"></script>
-    {% for script in page.front.scripts %}
+    {% for script in page.front.extra.scripts %}
       <script defer src="{{ script }}"></script>
     {% endfor %}
   </head>
