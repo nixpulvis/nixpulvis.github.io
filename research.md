@@ -1,9 +1,7 @@
 ---
 title: Research
-layout: default
+layout: page
 ---
-
-# Research
 
 <ul class="posts">
 {%- for research in site.research -%}

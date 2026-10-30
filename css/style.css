@@ -75,9 +75,17 @@ hr {
   border-bottom: var(--dashed);
 }
 
-h2 small {
-  display: block;
+/* A line under a heading, like a post's word count and date. Set tight
+   under it, in the heading's weight, taking over its space below. */
+h2:has(+ .meta) {
+  margin-bottom: 0;
+}
+
+h2 + .meta {
+  margin-top: 0;
+  margin-bottom: 1.4em;
   font-size: 16px;
+  font-weight: bold;
 }
 
 /* Page layout: `<body class="container">`. */
