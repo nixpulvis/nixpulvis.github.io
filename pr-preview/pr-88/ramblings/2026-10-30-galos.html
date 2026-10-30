@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Galos</title>
+    
+    
+    <meta name="description" content="TODO: Opening. How you got into Elite: Dangerous, and what about it kept you around. Something about the scale of the galaxy, 400 billion systems and most of..." />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Galos" />
+    <meta property="og:description" content="TODO: Opening. How you got into Elite: Dangerous, and what about it kept you around. Something about the scale of the galaxy, 400 billion systems and most of..." />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-88/ramblings/2026-10-30-galos" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-88/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-88/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-88/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/pr-preview/pr-88/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/pr-preview/pr-88/apple-touch-icon.png" sizes="180x180" />
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-88/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-88/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-88/css/style.css?v=1793400574">
+    <link rel="stylesheet" href="/pr-preview/pr-88/css/syntax.css">
+    
+    <script defer src="/pr-preview/pr-88/js/mousetrap.min.js"></script>
+    
+    <script defer src="/pr-preview/pr-88/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-88/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-88/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-88/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-88/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-88/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-88/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+          <li class="icon"><a href="/pr-preview/pr-88/references" title="References" aria-label="References">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-88/musings" title="Music" aria-label="Music">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    Galos
+    <small>
+        390 words
+        
+            drafted
+        
+        on October 30, 2026.
+    </small>
+</h2>
+
+<p>TODO: Opening. How you got into Elite: Dangerous, and what about it kept you
+around. Something about the scale of the galaxy, 400 billion systems and most
+of them never visited.</p>
+
+<p>I’ve been working on <a href="/pr-preview/pr-88/projects/galos">Galos</a>, on and
+off, for almost six years now. This is the story of how a script for tracking
+a faction turned into a map of the galaxy.</p>
+
+<h3 id="2021-the-faction">2021: The Faction</h3>
+
+<p>The first commit is from February 23rd, 2021. It just printed the EDDN feed to
+the terminal. Within a few days it was saving systems and factions to Postgres,
+and by the end of the month it was tracking influence.</p>
+
+<p>TODO: Who were ED-NEWP? The early pull requests were merged from that GitHub
+org. What were you all trying to do with the background simulation, and why did
+influence tracking matter?</p>
+
+<p>March was the busiest month of that first year. Search, syncing from a local
+journal directory, basic fuel costs, and <a href="https://github.com/yevk">Yev</a> added a Discord bot.</p>
+
+<p>TODO: What happened to the group and the bot? The bot was removed in May 2021.</p>
+
+<p>In October I got it compiling to WASM with a small GUI, and in January 2022 it
+learned about planets and moons. Then it mostly sat.</p>
+
+<p>TODO: What pulled you away? Did you stop playing?</p>
+
+<h3 id="2023-keeping-the-lights-on">2023: Keeping the Lights On</h3>
+
+<p>A handful of commits in 2023, all of them “update deps and keep the build
+working.” TODO: Or skip this section, if there isn’t more to say.</p>
+
+<h3 id="2024-a-map">2024: A Map</h3>
+
+<p>In August 2024 it came back with a burst of work. Importing from the EDSM API,
+stations with their services and economies, and then the start of a 3D map in
+Bevy. By the end of September I could fly a camera around, search for a
+system, and see a route drawn through the stars.</p>
+
+<p>TODO: What brought you back? Was there a moment you wanted a map the game
+doesn’t give you?</p>
+
+<h3 id="2026-the-whole-galaxy">2026: The Whole Galaxy</h3>
+
+<p>Then this August, about nine hundred commits in three months.</p>
+
+<p>TODO: What changed? The map stopped needing a database, the index became its
+own on-disk octree, and the real sky (star catalogs, photometry, a CPU
+renderer) showed up. How did that come about, and how did it feel to finally
+see the whole galaxy drawn at once?</p>
+
+<p><img src="/pr-preview/pr-88/img/galos/galaxy.jpg" alt="The galaxy from above, the core at the top" /></p>
+
+<h3 id="whats-next">What’s Next</h3>
+
+<p>TODO: Where it goes from here.</p>
+
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-88/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2026-10-30-galos.md">source</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/commits/master/_ramblings/2026-10-30-galos.md">history</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/issues/new?body=https%3A%2F%2Fnixpulvis.com%2Fpr-preview%2Fpr-88%2Framblings%2F2026-10-30-galos">report an issue</a>
+        <span class="issues"><a href="https://github.com/nixpulvis/nixpulvis.github.io/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>

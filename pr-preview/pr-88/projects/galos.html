@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Galos</title>
+    
+    
+    <meta name="description" content="Galos is a map of the galaxy in Elite: Dangerous, built from what players report as they fly, and compared against the sky as it’s actually measured from Ear..." />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Galos" />
+    <meta property="og:description" content="Galos is a map of the galaxy in Elite: Dangerous, built from what players report as they fly, and compared against the sky as it’s actually measured from Ear..." />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-88/projects/galos" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-88/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-88/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-88/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/pr-preview/pr-88/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/pr-preview/pr-88/apple-touch-icon.png" sizes="180x180" />
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-88/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-88/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-88/css/style.css?v=1793400574">
+    <link rel="stylesheet" href="/pr-preview/pr-88/css/syntax.css">
+    
+    <script defer src="/pr-preview/pr-88/js/mousetrap.min.js"></script>
+    
+    <script defer src="/pr-preview/pr-88/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-88/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-88/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-88/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-88/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-88/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-88/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+          <li class="icon"><a href="/pr-preview/pr-88/references" title="References" aria-label="References">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-88/musings" title="Music" aria-label="Music">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    <span class="status in-progress">in progress</span>
+    Galos
+</h2>
+
+<ul class="references">
+
+    <li><a href="https://github.com/nixpulvis/galos">https://github.com/nixpulvis/galos</a></li>
+
+</ul>
+
+<p>Galos is a map of the galaxy in Elite: Dangerous, built from what players
+report as they fly, and compared against the sky as it’s actually measured
+from Earth. It started as a way to keep track of factions and systems, and
+slowly turned into a 3D map that can draw all of explored space without a
+database behind it.</p>
+
+<p>TODO: One or two sentences on why you care about it. The longer personal story
+lives in the <a href="/pr-preview/pr-88/ramblings/galos">introduction rambling</a>.</p>
+
+<p><img src="/pr-preview/pr-88/img/galos/galaxy.jpg" alt="The galaxy from above, the core at the top" /></p>
+
+<h3 id="how-it-works">How it Works</h3>
+
+<p>Elite’s galaxy arrives as a stream of events. Every commander running a tool
+like EDMC forwards what their game sees to <a href="https://github.com/EDCD/EDDN">EDDN</a>, and Galos listens to
+that feed and keeps it in Postgres (with PostGIS for the positions). Dumps from
+<a href="https://spansh.co.uk">Spansh</a> and <a href="https://www.edsm.net">EDSM</a> fill in the history that came before. Your
+own game writes a directory of journal files, and Galos reads those too, so the
+world and your own commander end up in one place.</p>
+
+<p>From that data a builder derives a single spatial index, an octree written to
+disk in its own format. The map reads only that index. No database, no server,
+just a directory of files.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cargo run <span class="nt">--release</span> <span class="nt">--bin</span> galos <span class="nt">--</span> ingest <span class="nt">--from</span> eddn <span class="nt">--index</span> ~/.galos_index
+<span class="nb">cd </span>galos_map <span class="o">&amp;&amp;</span> cargo run <span class="nt">--release</span> <span class="nt">--</span> <span class="nt">--index</span> ~/.galos_index
+</code></pre></div></div>
+
+<p>TODO: Check these commands against the current CLI before publishing.</p>
+
+<h3 id="the-map">The Map</h3>
+
+<p>The map is written in Rust with <a href="https://bevyengine.org">Bevy</a>. From far away it draws every
+known system as one glowing field, and as you fly in the systems separate into
+points, then named stars, then a system’s own planets at their real geometry.
+Planets are drawn where the game has carried them by now, run forward from
+whenever someone last scanned them, rather than where they happened to be at
+the time.</p>
+
+<p><img src="/pr-preview/pr-88/img/galos/local.jpg" alt="The stars around Sol, named" /></p>
+
+<p>It can also route. The router builds a jump graph over the index, knows about
+neutron star “supercharge” highways, and can order a set of stops into a
+sensible trip.</p>
+
+<h3 id="the-real-sky">The Real Sky</h3>
+
+<p>Elite’s galaxy is a procedural model of the Milky Way, seeded with real
+catalog stars near Sol. So the question is, how close is it? Galos reads
+published star catalogs and compares them against the game. The photometry
+crate works out magnitudes, temperatures and color, and a small CPU renderer
+draws a patch of sky, which is how the Big Dipper ends up as a golden test
+image.</p>
+
+<p>TODO: A side by side of a real constellation and the game’s version would be
+great here.</p>
+
+<h3 id="status">Status</h3>
+
+<p>TODO: What works today, what you want next, and whether anyone else should
+try running it yet.</p>
+
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-88/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_projects/galos.md">source</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/commits/master/_projects/galos.md">history</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/issues/new?body=https%3A%2F%2Fnixpulvis.com%2Fpr-preview%2Fpr-88%2Fprojects%2Fgalos">report an issue</a>
+        <span class="issues"><a href="https://github.com/nixpulvis/nixpulvis.github.io/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>
