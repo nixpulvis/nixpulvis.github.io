@@ -20,7 +20,7 @@
     <link rel="apple-touch-icon" href="/pr-preview/pr-88/apple-touch-icon.png" sizes="180x180" />
     <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-88/feed.xml" />
     <link rel="stylesheet" type="text/css" href="/pr-preview/pr-88/css/fonts.css" />
-    <link rel="stylesheet" href="/pr-preview/pr-88/css/style.css?v=1793400656">
+    <link rel="stylesheet" href="/pr-preview/pr-88/css/style.css?v=1793400855">
     <link rel="stylesheet" href="/pr-preview/pr-88/css/syntax.css">
     
     <script defer src="/pr-preview/pr-88/js/mousetrap.min.js"></script>
@@ -179,11 +179,12 @@ functional clock.</p>
         <li class="project draft">
     <span class="status in-progress">in progress</span>
     <a class="name" href="/pr-preview/pr-88/projects/galos">Galos</a>
-    <p>Galos is a map of the galaxy in Elite: Dangerous, built from what players
-report as they fly, and compared against the sky as it’s actually measured
-from Earth. It started as a way to keep track of factions and systems, and
-slowly turned into a 3D map that can draw all of explored space without a
-database behind it.</p>
+    <p>Galos keeps its own copy of the galaxy in Elite: Dangerous, built from what
+players report as they fly. It subscribes to the game’s shared event feed,
+stores what it hears in a database, and derives a spatial index from that. On
+top sits a 3D map, which is the main way to look at it all, and beside it a
+comparison against the sky as it’s actually measured from Earth. It started as
+a way to keep track of factions and systems, and grew from there.</p>
 
 </li>
 
