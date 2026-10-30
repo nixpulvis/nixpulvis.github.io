@@ -14,7 +14,7 @@ slowly turned into a 3D map that can draw all of explored space without a
 database behind it.
 
 TODO: One or two sentences on why you care about it. The longer personal story
-lives in the [introduction rambling]({{ '/ramblings/galos' | relative_url }}).
+lives in the [introduction rambling]({{ '/ramblings/2026-10-30-galos' | relative_url }}).
 
 ![The galaxy from above, the core at the top]({{ '/img/galos/galaxy.jpg' | relative_url }})
 
