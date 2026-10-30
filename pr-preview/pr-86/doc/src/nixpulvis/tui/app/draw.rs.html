@@ -38,233 +38,239 @@
 <a href=#29 id=29 data-nosnippet>29</a>            Block::new().style(Style::new().bg(BACKGROUND).fg(TEXT)),
 <a href=#30 id=30 data-nosnippet>30</a>            area,
 <a href=#31 id=31 data-nosnippet>31</a>        );
-<a href=#32 id=32 data-nosnippet>32</a>        <span class="kw">let </span>footer = <span class="self">self</span>.footer(area.width);
-<a href=#33 id=33 data-nosnippet>33</a>        <span class="kw">let </span>[header, body, bottom] = Layout::vertical([
-<a href=#34 id=34 data-nosnippet>34</a>            Constraint::Length(<span class="number">1</span>),
-<a href=#35 id=35 data-nosnippet>35</a>            Constraint::Fill(<span class="number">1</span>),
-<a href=#36 id=36 data-nosnippet>36</a>            Constraint::Length(u16::from(footer.is_some())),
-<a href=#37 id=37 data-nosnippet>37</a>        ])
-<a href=#38 id=38 data-nosnippet>38</a>        .areas(area);
-<a href=#39 id=39 data-nosnippet>39</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(footer) = footer {
-<a href=#40 id=40 data-nosnippet>40</a>            frame.render_widget(
-<a href=#41 id=41 data-nosnippet>41</a>                Paragraph::new(footer)
-<a href=#42 id=42 data-nosnippet>42</a>                    .style(Style::new().fg(MUTED))
-<a href=#43 id=43 data-nosnippet>43</a>                    .centered(),
-<a href=#44 id=44 data-nosnippet>44</a>                bottom,
-<a href=#45 id=45 data-nosnippet>45</a>            );
-<a href=#46 id=46 data-nosnippet>46</a>        }
-<a href=#47 id=47 data-nosnippet>47</a>        <span class="self">self</span>.draw_header(frame, column(header));
-<a href=#48 id=48 data-nosnippet>48</a>        <span class="self">self</span>.draw_page(frame, column(body));
-<a href=#49 id=49 data-nosnippet>49</a>    }
-<a href=#50 id=50 data-nosnippet>50</a>
-<a href=#51 id=51 data-nosnippet>51</a>    <span class="doccomment">/// The line at the bottom. Messages and notices always show. The key
-<a href=#52 id=52 data-nosnippet>52</a>    /// hints only show when they fit whole, and the page takes their line
-<a href=#53 id=53 data-nosnippet>53</a>    /// when they don't.
-<a href=#54 id=54 data-nosnippet>54</a>    </span><span class="kw">fn </span>footer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, width: u16) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
-<a href=#55 id=55 data-nosnippet>55</a>        <span class="kw">if </span><span class="self">self
-<a href=#56 id=56 data-nosnippet>56</a>            </span>.notice
-<a href=#57 id=57 data-nosnippet>57</a>            .as_ref()
-<a href=#58 id=58 data-nosnippet>58</a>            .is_some_and(|(<span class="kw">_</span>, at)| at.elapsed() &gt; NOTICE_TIME)
-<a href=#59 id=59 data-nosnippet>59</a>        {
-<a href=#60 id=60 data-nosnippet>60</a>            <span class="self">self</span>.notice = <span class="prelude-val">None</span>;
-<a href=#61 id=61 data-nosnippet>61</a>        }
-<a href=#62 id=62 data-nosnippet>62</a>        <span class="kw">match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.message, <span class="kw-2">&amp;</span><span class="self">self</span>.notice) {
-<a href=#63 id=63 data-nosnippet>63</a>            (<span class="prelude-val">Some</span>(message), <span class="kw">_</span>) | (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((message, <span class="kw">_</span>))) =&gt; <span class="prelude-val">Some</span>(message.clone()),
-<a href=#64 id=64 data-nosnippet>64</a>            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {
-<a href=#65 id=65 data-nosnippet>65</a>                <span class="prelude-val">Some</span>(<span class="self">self</span>.hint()).filter(|h| Span::raw(h.as_str()).width() &lt;= usize::from(width))
-<a href=#66 id=66 data-nosnippet>66</a>            }
+<a href=#32 id=32 data-nosnippet>32</a>        <span class="kw">if </span><span class="self">self</span>.starting() {
+<a href=#33 id=33 data-nosnippet>33</a>            <span class="kw">return</span>;
+<a href=#34 id=34 data-nosnippet>34</a>        }
+<a href=#35 id=35 data-nosnippet>35</a>        <span class="kw">let </span>footer = <span class="self">self</span>.footer(area.width);
+<a href=#36 id=36 data-nosnippet>36</a>        <span class="kw">let </span>[header, body, bottom] = Layout::vertical([
+<a href=#37 id=37 data-nosnippet>37</a>            Constraint::Length(<span class="number">1</span>),
+<a href=#38 id=38 data-nosnippet>38</a>            Constraint::Fill(<span class="number">1</span>),
+<a href=#39 id=39 data-nosnippet>39</a>            Constraint::Length(u16::from(footer.is_some())),
+<a href=#40 id=40 data-nosnippet>40</a>        ])
+<a href=#41 id=41 data-nosnippet>41</a>        .areas(area);
+<a href=#42 id=42 data-nosnippet>42</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(footer) = footer {
+<a href=#43 id=43 data-nosnippet>43</a>            frame.render_widget(
+<a href=#44 id=44 data-nosnippet>44</a>                Paragraph::new(footer)
+<a href=#45 id=45 data-nosnippet>45</a>                    .style(Style::new().fg(MUTED))
+<a href=#46 id=46 data-nosnippet>46</a>                    .centered(),
+<a href=#47 id=47 data-nosnippet>47</a>                bottom,
+<a href=#48 id=48 data-nosnippet>48</a>            );
+<a href=#49 id=49 data-nosnippet>49</a>        }
+<a href=#50 id=50 data-nosnippet>50</a>        <span class="self">self</span>.draw_header(frame, column(header));
+<a href=#51 id=51 data-nosnippet>51</a>        <span class="self">self</span>.draw_page(frame, column(body));
+<a href=#52 id=52 data-nosnippet>52</a>    }
+<a href=#53 id=53 data-nosnippet>53</a>
+<a href=#54 id=54 data-nosnippet>54</a>    <span class="doccomment">/// The line at the bottom. The page loading, messages and notices always
+<a href=#55 id=55 data-nosnippet>55</a>    /// show. The key hints only show when they fit whole, and the page takes
+<a href=#56 id=56 data-nosnippet>56</a>    /// their line when they don't.
+<a href=#57 id=57 data-nosnippet>57</a>    </span><span class="kw">fn </span>footer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, width: u16) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+<a href=#58 id=58 data-nosnippet>58</a>        <span class="kw">if </span><span class="self">self
+<a href=#59 id=59 data-nosnippet>59</a>            </span>.notice
+<a href=#60 id=60 data-nosnippet>60</a>            .as_ref()
+<a href=#61 id=61 data-nosnippet>61</a>            .is_some_and(|(<span class="kw">_</span>, at)| at.elapsed() &gt; NOTICE_TIME)
+<a href=#62 id=62 data-nosnippet>62</a>        {
+<a href=#63 id=63 data-nosnippet>63</a>            <span class="self">self</span>.notice = <span class="prelude-val">None</span>;
+<a href=#64 id=64 data-nosnippet>64</a>        }
+<a href=#65 id=65 data-nosnippet>65</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(loading) = <span class="kw-2">&amp;</span><span class="self">self</span>.loading {
+<a href=#66 id=66 data-nosnippet>66</a>            <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="macro">format!</span>(<span class="string">"Loading {}…"</span>, loading.path));
 <a href=#67 id=67 data-nosnippet>67</a>        }
-<a href=#68 id=68 data-nosnippet>68</a>    }
-<a href=#69 id=69 data-nosnippet>69</a>
-<a href=#70 id=70 data-nosnippet>70</a>    <span class="doccomment">/// The key hints, with as many number keys as there are pages in the
-<a href=#71 id=71 data-nosnippet>71</a>    /// nav.
-<a href=#72 id=72 data-nosnippet>72</a>    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
-<a href=#73 id=73 data-nosnippet>73</a>        <span class="kw">let </span>pages = <span class="kw">match </span><span class="self">self</span>.nav().len().min(<span class="number">9</span>) {
-<a href=#74 id=74 data-nosnippet>74</a>            <span class="number">0 </span>| <span class="number">1 </span>=&gt; String::new(),
-<a href=#75 id=75 data-nosnippet>75</a>            n =&gt; <span class="macro">format!</span>(<span class="string">" · 1-{n} pages"</span>),
-<a href=#76 id=76 data-nosnippet>76</a>        };
-<a href=#77 id=77 data-nosnippet>77</a>        <span class="kw">let </span>quit = <span class="kw">match </span><span class="self">self</span>.host {
-<a href=#78 id=78 data-nosnippet>78</a>            Host::Terminal =&gt; <span class="string">"quit"</span>,
-<a href=#79 id=79 data-nosnippet>79</a>            Host::Browser =&gt; <span class="string">"leave"</span>,
-<a href=#80 id=80 data-nosnippet>80</a>        };
-<a href=#81 id=81 data-nosnippet>81</a>        <span class="macro">format!</span>(<span class="string">"j/k scroll · tab links · enter open · h back{pages} · q {quit}"</span>)
-<a href=#82 id=82 data-nosnippet>82</a>    }
-<a href=#83 id=83 data-nosnippet>83</a>
-<a href=#84 id=84 data-nosnippet>84</a>    <span class="kw">fn </span>draw_header(<span class="kw-2">&amp;mut </span><span class="self">self</span>, frame: <span class="kw-2">&amp;mut </span>Frame, area: Rect) {
-<a href=#85 id=85 data-nosnippet>85</a>        <span class="kw">let </span>current = <span class="self">self</span>.page.as_ref().map_or(<span class="string">""</span>, |p| p.path.as_str());
-<a href=#86 id=86 data-nosnippet>86</a>        <span class="kw">let </span><span class="kw-2">mut </span>spans = <span class="macro">vec!</span>[Span::raw(<span class="string">" "</span>)];
-<a href=#87 id=87 data-nosnippet>87</a>        <span class="kw">let </span><span class="kw-2">mut </span>x = area.x + <span class="number">1</span>;
-<a href=#88 id=88 data-nosnippet>88</a>        <span class="self">self</span>.drawn.nav.clear();
-<a href=#89 id=89 data-nosnippet>89</a>        <span class="kw">for </span>(i, item) <span class="kw">in </span><span class="self">self</span>.nav().into_iter().enumerate() {
-<a href=#90 id=90 data-nosnippet>90</a>            <span class="kw">let </span>width = Span::raw(<span class="kw-2">&amp;</span>item.label).width() <span class="kw">as </span>u16;
-<a href=#91 id=91 data-nosnippet>91</a>            <span class="kw">let </span>style = <span class="kw">if </span>i == <span class="number">0 </span>{
-<a href=#92 id=92 data-nosnippet>92</a>                Style::new().fg(TEXT).bold()
-<a href=#93 id=93 data-nosnippet>93</a>            } <span class="kw">else if </span>same_page(current, <span class="kw-2">&amp;</span>item.path) {
-<a href=#94 id=94 data-nosnippet>94</a>                Style::new().fg(YELLOW).add_modifier(Modifier::UNDERLINED)
-<a href=#95 id=95 data-nosnippet>95</a>            } <span class="kw">else </span>{
-<a href=#96 id=96 data-nosnippet>96</a>                Style::new().fg(MUTED)
-<a href=#97 id=97 data-nosnippet>97</a>            };
-<a href=#98 id=98 data-nosnippet>98</a>            spans.push(Span::styled(item.label, style));
-<a href=#99 id=99 data-nosnippet>99</a>            spans.push(Span::raw(<span class="string">"  "</span>));
-<a href=#100 id=100 data-nosnippet>100</a>            <span class="self">self</span>.drawn
-<a href=#101 id=101 data-nosnippet>101</a>                .nav
-<a href=#102 id=102 data-nosnippet>102</a>                .push((Rect::new(x, area.y, width, <span class="number">1</span>), item.path));
-<a href=#103 id=103 data-nosnippet>103</a>            x += width + <span class="number">2</span>;
-<a href=#104 id=104 data-nosnippet>104</a>        }
-<a href=#105 id=105 data-nosnippet>105</a>        frame.render_widget(Line::from(spans), area);
-<a href=#106 id=106 data-nosnippet>106</a>
-<a href=#107 id=107 data-nosnippet>107</a>        <span class="comment">// A way out for touch screens, with no keyboard for `q`.
-<a href=#108 id=108 data-nosnippet>108</a>        </span><span class="self">self</span>.drawn.close = Rect::new(area.right().saturating_sub(<span class="number">3</span>), area.y, <span class="number">3</span>, <span class="number">1</span>);
-<a href=#109 id=109 data-nosnippet>109</a>        frame.render_widget(
-<a href=#110 id=110 data-nosnippet>110</a>            Line::from(<span class="string">" × "</span>).style(Style::new().fg(MUTED)),
-<a href=#111 id=111 data-nosnippet>111</a>            <span class="self">self</span>.drawn.close,
-<a href=#112 id=112 data-nosnippet>112</a>        );
-<a href=#113 id=113 data-nosnippet>113</a>
-<a href=#114 id=114 data-nosnippet>114</a>        <span class="attr">#[cfg(feature = <span class="string">"native-links"</span>)]
-<a href=#115 id=115 data-nosnippet>115</a>        </span>{
-<a href=#116 id=116 data-nosnippet>116</a>            <span class="kw">let </span>buffer = frame.buffer_mut();
-<a href=#117 id=117 data-nosnippet>117</a>            <span class="kw">for </span>(rect, path) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.drawn.nav {
-<a href=#118 id=118 data-nosnippet>118</a>                buffer.set_hyperlink(
-<a href=#119 id=119 data-nosnippet>119</a>                    <span class="kw-2">*</span>rect,
-<a href=#120 id=120 data-nosnippet>120</a>                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ratatui::buffer::Hyperlink::new(<span class="self">self</span>.url(path))),
-<a href=#121 id=121 data-nosnippet>121</a>                );
-<a href=#122 id=122 data-nosnippet>122</a>            }
-<a href=#123 id=123 data-nosnippet>123</a>            <span class="comment">// A link, so it looks clickable, to this page as plain HTML. A
-<a href=#124 id=124 data-nosnippet>124</a>            // plain click leaves, like `q`.
-<a href=#125 id=125 data-nosnippet>125</a>            </span><span class="kw">let </span>link = ratatui::buffer::Hyperlink::new(<span class="self">self</span>.url(current));
-<a href=#126 id=126 data-nosnippet>126</a>            buffer.set_hyperlink(<span class="self">self</span>.drawn.close, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>link));
-<a href=#127 id=127 data-nosnippet>127</a>        }
-<a href=#128 id=128 data-nosnippet>128</a>    }
-<a href=#129 id=129 data-nosnippet>129</a>
-<a href=#130 id=130 data-nosnippet>130</a>    <span class="kw">fn </span>draw_page(<span class="kw-2">&amp;mut </span><span class="self">self</span>, frame: <span class="kw-2">&amp;mut </span>Frame, column: Rect) {
-<a href=#131 id=131 data-nosnippet>131</a>        <span class="kw">let </span>block = <span class="self">self</span>.page_box(column.width);
-<a href=#132 id=132 data-nosnippet>132</a>        <span class="kw">let </span>inner = block.inner(column);
-<a href=#133 id=133 data-nosnippet>133</a>        <span class="self">self</span>.drawn.text = inner;
-<a href=#134 id=134 data-nosnippet>134</a>        frame.render_widget(block, column);
+<a href=#68 id=68 data-nosnippet>68</a>        <span class="kw">match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.message, <span class="kw-2">&amp;</span><span class="self">self</span>.notice) {
+<a href=#69 id=69 data-nosnippet>69</a>            (<span class="prelude-val">Some</span>(message), <span class="kw">_</span>) | (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((message, <span class="kw">_</span>))) =&gt; <span class="prelude-val">Some</span>(message.clone()),
+<a href=#70 id=70 data-nosnippet>70</a>            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {
+<a href=#71 id=71 data-nosnippet>71</a>                <span class="prelude-val">Some</span>(<span class="self">self</span>.hint()).filter(|h| Span::raw(h.as_str()).width() &lt;= usize::from(width))
+<a href=#72 id=72 data-nosnippet>72</a>            }
+<a href=#73 id=73 data-nosnippet>73</a>        }
+<a href=#74 id=74 data-nosnippet>74</a>    }
+<a href=#75 id=75 data-nosnippet>75</a>
+<a href=#76 id=76 data-nosnippet>76</a>    <span class="doccomment">/// The key hints, with as many number keys as there are pages in the
+<a href=#77 id=77 data-nosnippet>77</a>    /// nav.
+<a href=#78 id=78 data-nosnippet>78</a>    </span><span class="kw">fn </span>hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+<a href=#79 id=79 data-nosnippet>79</a>        <span class="kw">let </span>pages = <span class="kw">match </span><span class="self">self</span>.nav().len().min(<span class="number">9</span>) {
+<a href=#80 id=80 data-nosnippet>80</a>            <span class="number">0 </span>| <span class="number">1 </span>=&gt; String::new(),
+<a href=#81 id=81 data-nosnippet>81</a>            n =&gt; <span class="macro">format!</span>(<span class="string">" · 1-{n} pages"</span>),
+<a href=#82 id=82 data-nosnippet>82</a>        };
+<a href=#83 id=83 data-nosnippet>83</a>        <span class="kw">let </span>quit = <span class="kw">match </span><span class="self">self</span>.host {
+<a href=#84 id=84 data-nosnippet>84</a>            Host::Terminal =&gt; <span class="string">"quit"</span>,
+<a href=#85 id=85 data-nosnippet>85</a>            Host::Browser =&gt; <span class="string">"leave"</span>,
+<a href=#86 id=86 data-nosnippet>86</a>        };
+<a href=#87 id=87 data-nosnippet>87</a>        <span class="macro">format!</span>(<span class="string">"j/k scroll · tab links · enter open · h back{pages} · q {quit}"</span>)
+<a href=#88 id=88 data-nosnippet>88</a>    }
+<a href=#89 id=89 data-nosnippet>89</a>
+<a href=#90 id=90 data-nosnippet>90</a>    <span class="kw">fn </span>draw_header(<span class="kw-2">&amp;mut </span><span class="self">self</span>, frame: <span class="kw-2">&amp;mut </span>Frame, area: Rect) {
+<a href=#91 id=91 data-nosnippet>91</a>        <span class="kw">let </span>current = <span class="self">self</span>.page.as_ref().map_or(<span class="string">""</span>, |p| p.path.as_str());
+<a href=#92 id=92 data-nosnippet>92</a>        <span class="kw">let </span><span class="kw-2">mut </span>spans = <span class="macro">vec!</span>[Span::raw(<span class="string">" "</span>)];
+<a href=#93 id=93 data-nosnippet>93</a>        <span class="kw">let </span><span class="kw-2">mut </span>x = area.x + <span class="number">1</span>;
+<a href=#94 id=94 data-nosnippet>94</a>        <span class="self">self</span>.drawn.nav.clear();
+<a href=#95 id=95 data-nosnippet>95</a>        <span class="kw">for </span>(i, item) <span class="kw">in </span><span class="self">self</span>.nav().into_iter().enumerate() {
+<a href=#96 id=96 data-nosnippet>96</a>            <span class="kw">let </span>width = Span::raw(<span class="kw-2">&amp;</span>item.label).width() <span class="kw">as </span>u16;
+<a href=#97 id=97 data-nosnippet>97</a>            <span class="kw">let </span>style = <span class="kw">if </span>i == <span class="number">0 </span>{
+<a href=#98 id=98 data-nosnippet>98</a>                Style::new().fg(TEXT).bold()
+<a href=#99 id=99 data-nosnippet>99</a>            } <span class="kw">else if </span>same_page(current, <span class="kw-2">&amp;</span>item.path) {
+<a href=#100 id=100 data-nosnippet>100</a>                Style::new().fg(YELLOW).add_modifier(Modifier::UNDERLINED)
+<a href=#101 id=101 data-nosnippet>101</a>            } <span class="kw">else </span>{
+<a href=#102 id=102 data-nosnippet>102</a>                Style::new().fg(MUTED)
+<a href=#103 id=103 data-nosnippet>103</a>            };
+<a href=#104 id=104 data-nosnippet>104</a>            spans.push(Span::styled(item.label, style));
+<a href=#105 id=105 data-nosnippet>105</a>            spans.push(Span::raw(<span class="string">"  "</span>));
+<a href=#106 id=106 data-nosnippet>106</a>            <span class="self">self</span>.drawn
+<a href=#107 id=107 data-nosnippet>107</a>                .nav
+<a href=#108 id=108 data-nosnippet>108</a>                .push((Rect::new(x, area.y, width, <span class="number">1</span>), item.path));
+<a href=#109 id=109 data-nosnippet>109</a>            x += width + <span class="number">2</span>;
+<a href=#110 id=110 data-nosnippet>110</a>        }
+<a href=#111 id=111 data-nosnippet>111</a>        frame.render_widget(Line::from(spans), area);
+<a href=#112 id=112 data-nosnippet>112</a>
+<a href=#113 id=113 data-nosnippet>113</a>        <span class="comment">// A way out for touch screens, with no keyboard for `q`.
+<a href=#114 id=114 data-nosnippet>114</a>        </span><span class="self">self</span>.drawn.close = Rect::new(area.right().saturating_sub(<span class="number">3</span>), area.y, <span class="number">3</span>, <span class="number">1</span>);
+<a href=#115 id=115 data-nosnippet>115</a>        frame.render_widget(
+<a href=#116 id=116 data-nosnippet>116</a>            Line::from(<span class="string">" × "</span>).style(Style::new().fg(MUTED)),
+<a href=#117 id=117 data-nosnippet>117</a>            <span class="self">self</span>.drawn.close,
+<a href=#118 id=118 data-nosnippet>118</a>        );
+<a href=#119 id=119 data-nosnippet>119</a>
+<a href=#120 id=120 data-nosnippet>120</a>        <span class="attr">#[cfg(feature = <span class="string">"native-links"</span>)]
+<a href=#121 id=121 data-nosnippet>121</a>        </span>{
+<a href=#122 id=122 data-nosnippet>122</a>            <span class="kw">let </span>buffer = frame.buffer_mut();
+<a href=#123 id=123 data-nosnippet>123</a>            <span class="kw">for </span>(rect, path) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.drawn.nav {
+<a href=#124 id=124 data-nosnippet>124</a>                buffer.set_hyperlink(
+<a href=#125 id=125 data-nosnippet>125</a>                    <span class="kw-2">*</span>rect,
+<a href=#126 id=126 data-nosnippet>126</a>                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ratatui::buffer::Hyperlink::new(<span class="self">self</span>.url(path))),
+<a href=#127 id=127 data-nosnippet>127</a>                );
+<a href=#128 id=128 data-nosnippet>128</a>            }
+<a href=#129 id=129 data-nosnippet>129</a>            <span class="comment">// A link, so it looks clickable, to this page as plain HTML. A
+<a href=#130 id=130 data-nosnippet>130</a>            // plain click leaves, like `q`.
+<a href=#131 id=131 data-nosnippet>131</a>            </span><span class="kw">let </span>link = ratatui::buffer::Hyperlink::new(<span class="self">self</span>.url(current));
+<a href=#132 id=132 data-nosnippet>132</a>            buffer.set_hyperlink(<span class="self">self</span>.drawn.close, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>link));
+<a href=#133 id=133 data-nosnippet>133</a>        }
+<a href=#134 id=134 data-nosnippet>134</a>    }
 <a href=#135 id=135 data-nosnippet>135</a>
-<a href=#136 id=136 data-nosnippet>136</a>        <span class="kw">let </span><span class="prelude-val">Some</span>(page) = <span class="kw-2">&amp;mut </span><span class="self">self</span>.page <span class="kw">else </span>{
-<a href=#137 id=137 data-nosnippet>137</a>            frame.render_widget(Paragraph::new(<span class="string">"Loading…"</span>).centered(), inner);
-<a href=#138 id=138 data-nosnippet>138</a>            <span class="kw">return</span>;
-<a href=#139 id=139 data-nosnippet>139</a>        };
-<a href=#140 id=140 data-nosnippet>140</a>        frame.render_stateful_widget(MarkdownView::new(<span class="kw-2">&amp;</span><span class="self">self</span>.theme), inner, <span class="kw-2">&amp;mut </span>page.view);
-<a href=#141 id=141 data-nosnippet>141</a>        <span class="self">self</span>.fade_draft_links(frame, inner);
-<a href=#142 id=142 data-nosnippet>142</a>        <span class="self">self</span>.draw_scrollbar(frame, column.inner(Margin::new(<span class="number">0</span>, <span class="number">1</span>)), inner.height);
-<a href=#143 id=143 data-nosnippet>143</a>    }
-<a href=#144 id=144 data-nosnippet>144</a>
-<a href=#145 id=145 data-nosnippet>145</a>    <span class="doccomment">/// The box around the page, with its title on top and the line under a
-<a href=#146 id=146 data-nosnippet>146</a>    /// post at the bottom, for a box `width` wide.
-<a href=#147 id=147 data-nosnippet>147</a>    </span><span class="kw">fn </span>page_box(<span class="kw-2">&amp;</span><span class="self">self</span>, width: u16) -&gt; Block&lt;<span class="lifetime">'static</span>&gt; {
-<a href=#148 id=148 data-nosnippet>148</a>        <span class="kw">let </span>block = Block::new()
-<a href=#149 id=149 data-nosnippet>149</a>            .borders(Borders::ALL)
-<a href=#150 id=150 data-nosnippet>150</a>            .padding(Padding::horizontal(<span class="number">1</span>))
-<a href=#151 id=151 data-nosnippet>151</a>            .border_style(Style::new().fg(BORDER));
-<a href=#152 id=152 data-nosnippet>152</a>        <span class="kw">let </span><span class="prelude-val">Some</span>(page) = <span class="kw-2">&amp;</span><span class="self">self</span>.page <span class="kw">else </span>{
-<a href=#153 id=153 data-nosnippet>153</a>            <span class="kw">return </span>block;
-<a href=#154 id=154 data-nosnippet>154</a>        };
-<a href=#155 id=155 data-nosnippet>155</a>        <span class="comment">// A page the nav names in words is already underlined there.
-<a href=#156 id=156 data-nosnippet>156</a>        </span><span class="kw">let </span>named = <span class="self">self
-<a href=#157 id=157 data-nosnippet>157</a>            </span>.nav()
-<a href=#158 id=158 data-nosnippet>158</a>            .iter()
-<a href=#159 id=159 data-nosnippet>159</a>            .any(|item| item.names_page &amp;&amp; same_page(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>item.path));
-<a href=#160 id=160 data-nosnippet>160</a>        <span class="kw">let </span>block = <span class="kw">if </span>named {
-<a href=#161 id=161 data-nosnippet>161</a>            block
-<a href=#162 id=162 data-nosnippet>162</a>        } <span class="kw">else </span>{
-<a href=#163 id=163 data-nosnippet>163</a>            block.title(page_title(page).centered())
-<a href=#164 id=164 data-nosnippet>164</a>        };
-<a href=#165 id=165 data-nosnippet>165</a>        <span class="comment">// Inside the corners, with a space either side.
-<a href=#166 id=166 data-nosnippet>166</a>        </span><span class="kw">match </span>page.meta(usize::from(width).saturating_sub(<span class="number">4</span>)) {
-<a href=#167 id=167 data-nosnippet>167</a>            <span class="prelude-val">Some</span>(meta) =&gt; block.title_bottom(
-<a href=#168 id=168 data-nosnippet>168</a>                Line::from(<span class="macro">format!</span>(<span class="string">" {meta} "</span>))
-<a href=#169 id=169 data-nosnippet>169</a>                    .style(Style::new().fg(MUTED))
-<a href=#170 id=170 data-nosnippet>170</a>                    .centered(),
-<a href=#171 id=171 data-nosnippet>171</a>            ),
-<a href=#172 id=172 data-nosnippet>172</a>            <span class="prelude-val">None </span>=&gt; block,
-<a href=#173 id=173 data-nosnippet>173</a>        }
-<a href=#174 id=174 data-nosnippet>174</a>    }
-<a href=#175 id=175 data-nosnippet>175</a>
-<a href=#176 id=176 data-nosnippet>176</a>    <span class="doccomment">/// Fades the links to drafts, like drafts in the site's lists, on the
-<a href=#177 id=177 data-nosnippet>177</a>    /// page drawn in `inner`.
-<a href=#178 id=178 data-nosnippet>178</a>    </span><span class="kw">fn </span>fade_draft_links(<span class="kw-2">&amp;</span><span class="self">self</span>, frame: <span class="kw-2">&amp;mut </span>Frame, inner: Rect) {
-<a href=#179 id=179 data-nosnippet>179</a>        <span class="kw">let </span>(<span class="prelude-val">Some</span>(site), <span class="prelude-val">Some</span>(page)) = (<span class="kw-2">&amp;</span><span class="self">self</span>.site, <span class="kw-2">&amp;</span><span class="self">self</span>.page) <span class="kw">else </span>{
-<a href=#180 id=180 data-nosnippet>180</a>            <span class="kw">return</span>;
-<a href=#181 id=181 data-nosnippet>181</a>        };
-<a href=#182 id=182 data-nosnippet>182</a>        <span class="kw">let </span><span class="prelude-val">Some</span>(rendered) = page.view.rendered() <span class="kw">else </span>{
-<a href=#183 id=183 data-nosnippet>183</a>            <span class="kw">return</span>;
-<a href=#184 id=184 data-nosnippet>184</a>        };
-<a href=#185 id=185 data-nosnippet>185</a>        <span class="kw">let </span>scroll = page.view.scroll();
-<a href=#186 id=186 data-nosnippet>186</a>        <span class="kw">for </span>link <span class="kw">in </span><span class="kw-2">&amp;</span>rendered.links {
-<a href=#187 id=187 data-nosnippet>187</a>            <span class="kw">let </span>Target::Page { path, .. } = Target::resolve(<span class="kw-2">&amp;</span>link.url, <span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span><span class="self">self</span>.origin)
-<a href=#188 id=188 data-nosnippet>188</a>            <span class="kw">else </span>{
-<a href=#189 id=189 data-nosnippet>189</a>                <span class="kw">continue</span>;
-<a href=#190 id=190 data-nosnippet>190</a>            };
-<a href=#191 id=191 data-nosnippet>191</a>            <span class="kw">if </span>!site.is_draft(path.strip_prefix(<span class="kw-2">&amp;</span><span class="self">self</span>.base).unwrap_or(<span class="kw-2">&amp;</span>path)) {
-<a href=#192 id=192 data-nosnippet>192</a>                <span class="kw">continue</span>;
-<a href=#193 id=193 data-nosnippet>193</a>            }
-<a href=#194 id=194 data-nosnippet>194</a>            <span class="kw">for </span>region <span class="kw">in </span><span class="kw-2">&amp;</span>link.regions {
-<a href=#195 id=195 data-nosnippet>195</a>                <span class="kw">let </span><span class="prelude-val">Some</span>(row) = region
-<a href=#196 id=196 data-nosnippet>196</a>                    .line
-<a href=#197 id=197 data-nosnippet>197</a>                    .checked_sub(scroll)
-<a href=#198 id=198 data-nosnippet>198</a>                    .filter(|row| <span class="kw-2">*</span>row &lt; usize::from(inner.height))
-<a href=#199 id=199 data-nosnippet>199</a>                <span class="kw">else </span>{
-<a href=#200 id=200 data-nosnippet>200</a>                    <span class="kw">continue</span>;
-<a href=#201 id=201 data-nosnippet>201</a>                };
-<a href=#202 id=202 data-nosnippet>202</a>                <span class="kw">let </span>end = region.end.min(inner.width);
-<a href=#203 id=203 data-nosnippet>203</a>                <span class="kw">let </span>start = region.start.min(end);
-<a href=#204 id=204 data-nosnippet>204</a>                <span class="kw">let </span>rect = Rect::new(inner.x + start, inner.y + row <span class="kw">as </span>u16, end - start, <span class="number">1</span>);
-<a href=#205 id=205 data-nosnippet>205</a>                frame.buffer_mut().set_style(rect, Style::new().fg(FAINT));
-<a href=#206 id=206 data-nosnippet>206</a>            }
-<a href=#207 id=207 data-nosnippet>207</a>        }
-<a href=#208 id=208 data-nosnippet>208</a>    }
-<a href=#209 id=209 data-nosnippet>209</a>
-<a href=#210 id=210 data-nosnippet>210</a>    <span class="doccomment">/// Just a heavier stretch of the box's right border in `area`, with no
-<a href=#211 id=211 data-nosnippet>211</a>    /// track, so the border shows through. Only there when the page is
-<a href=#212 id=212 data-nosnippet>212</a>    /// longer than its `height`.
-<a href=#213 id=213 data-nosnippet>213</a>    </span><span class="kw">fn </span>draw_scrollbar(<span class="kw-2">&amp;</span><span class="self">self</span>, frame: <span class="kw-2">&amp;mut </span>Frame, area: Rect, height: u16) {
-<a href=#214 id=214 data-nosnippet>214</a>        <span class="kw">let </span><span class="prelude-val">Some</span>(page) = <span class="kw-2">&amp;</span><span class="self">self</span>.page <span class="kw">else </span>{
-<a href=#215 id=215 data-nosnippet>215</a>            <span class="kw">return</span>;
-<a href=#216 id=216 data-nosnippet>216</a>        };
-<a href=#217 id=217 data-nosnippet>217</a>        <span class="kw">let </span>lines = page.view.rendered().map_or(<span class="number">0</span>, |r| r.lines.len());
-<a href=#218 id=218 data-nosnippet>218</a>        <span class="kw">let </span>max = lines.saturating_sub(usize::from(height));
-<a href=#219 id=219 data-nosnippet>219</a>        <span class="kw">if </span>max == <span class="number">0 </span>{
-<a href=#220 id=220 data-nosnippet>220</a>            <span class="kw">return</span>;
-<a href=#221 id=221 data-nosnippet>221</a>        }
-<a href=#222 id=222 data-nosnippet>222</a>        <span class="kw">let </span><span class="kw-2">mut </span>state = ScrollbarState::new(max).position(page.view.scroll());
-<a href=#223 id=223 data-nosnippet>223</a>        frame.render_stateful_widget(
-<a href=#224 id=224 data-nosnippet>224</a>            Scrollbar::new(ScrollbarOrientation::VerticalRight)
-<a href=#225 id=225 data-nosnippet>225</a>                .begin_symbol(<span class="prelude-val">None</span>)
-<a href=#226 id=226 data-nosnippet>226</a>                .end_symbol(<span class="prelude-val">None</span>)
-<a href=#227 id=227 data-nosnippet>227</a>                .track_symbol(<span class="prelude-val">None</span>)
-<a href=#228 id=228 data-nosnippet>228</a>                .thumb_symbol(<span class="string">"┃"</span>)
-<a href=#229 id=229 data-nosnippet>229</a>                .thumb_style(Style::new().fg(MUTED)),
-<a href=#230 id=230 data-nosnippet>230</a>            area,
-<a href=#231 id=231 data-nosnippet>231</a>            <span class="kw-2">&amp;mut </span>state,
-<a href=#232 id=232 data-nosnippet>232</a>        );
-<a href=#233 id=233 data-nosnippet>233</a>    }
-<a href=#234 id=234 data-nosnippet>234</a>}
-<a href=#235 id=235 data-nosnippet>235</a>
-<a href=#236 id=236 data-nosnippet>236</a><span class="doccomment">/// A page's title for the top of its box, with a project's status after
-<a href=#237 id=237 data-nosnippet>237</a>/// it. Drafts are dimmed, like they are on the site.
-<a href=#238 id=238 data-nosnippet>238</a></span><span class="kw">fn </span>page_title(page: <span class="kw-2">&amp;</span>Page) -&gt; Line&lt;<span class="lifetime">'static</span>&gt; {
-<a href=#239 id=239 data-nosnippet>239</a>    <span class="kw">let </span>(title, style) = <span class="kw">if </span>page.draft {
-<a href=#240 id=240 data-nosnippet>240</a>        (<span class="macro">format!</span>(<span class="string">" Draft: {} "</span>, page.title), Style::new().fg(FAINT))
-<a href=#241 id=241 data-nosnippet>241</a>    } <span class="kw">else </span>{
-<a href=#242 id=242 data-nosnippet>242</a>        (<span class="macro">format!</span>(<span class="string">" {} "</span>, page.title), Style::new().fg(TEXT))
-<a href=#243 id=243 data-nosnippet>243</a>    };
-<a href=#244 id=244 data-nosnippet>244</a>    <span class="kw">let </span>status = page
-<a href=#245 id=245 data-nosnippet>245</a>        .status
-<a href=#246 id=246 data-nosnippet>246</a>        .as_ref()
-<a href=#247 id=247 data-nosnippet>247</a>        .map(|s| Span::styled(<span class="macro">format!</span>(<span class="string">"{s} "</span>), Style::new().fg(MUTED)));
-<a href=#248 id=248 data-nosnippet>248</a>    Line::from_iter(std::iter::once(Span::styled(title, style.bold())).chain(status))
-<a href=#249 id=249 data-nosnippet>249</a>}
-<a href=#250 id=250 data-nosnippet>250</a>
-<a href=#251 id=251 data-nosnippet>251</a><span class="doccomment">/// The middle of `area`, as wide as a page's box, so the nav lines up with it.
-<a href=#252 id=252 data-nosnippet>252</a></span><span class="kw">fn </span>column(area: Rect) -&gt; Rect {
-<a href=#253 id=253 data-nosnippet>253</a>    <span class="kw">let </span>width = area.width.min(MAX_WIDTH + <span class="number">4</span>);
-<a href=#254 id=254 data-nosnippet>254</a>    Rect::new(
-<a href=#255 id=255 data-nosnippet>255</a>        area.x + (area.width - width) / <span class="number">2</span>,
-<a href=#256 id=256 data-nosnippet>256</a>        area.y,
-<a href=#257 id=257 data-nosnippet>257</a>        width,
-<a href=#258 id=258 data-nosnippet>258</a>        area.height,
-<a href=#259 id=259 data-nosnippet>259</a>    )
-<a href=#260 id=260 data-nosnippet>260</a>}
+<a href=#136 id=136 data-nosnippet>136</a>    <span class="kw">fn </span>draw_page(<span class="kw-2">&amp;mut </span><span class="self">self</span>, frame: <span class="kw-2">&amp;mut </span>Frame, column: Rect) {
+<a href=#137 id=137 data-nosnippet>137</a>        <span class="kw">let </span>block = <span class="self">self</span>.page_box(column.width);
+<a href=#138 id=138 data-nosnippet>138</a>        <span class="kw">let </span>inner = block.inner(column);
+<a href=#139 id=139 data-nosnippet>139</a>        <span class="self">self</span>.drawn.text = inner;
+<a href=#140 id=140 data-nosnippet>140</a>        frame.render_widget(block, column);
+<a href=#141 id=141 data-nosnippet>141</a>
+<a href=#142 id=142 data-nosnippet>142</a>        <span class="comment">// Only when the first page failed to load, which the footer says.
+<a href=#143 id=143 data-nosnippet>143</a>        </span><span class="kw">let </span><span class="prelude-val">Some</span>(page) = <span class="kw-2">&amp;mut </span><span class="self">self</span>.page <span class="kw">else </span>{
+<a href=#144 id=144 data-nosnippet>144</a>            <span class="kw">return</span>;
+<a href=#145 id=145 data-nosnippet>145</a>        };
+<a href=#146 id=146 data-nosnippet>146</a>        frame.render_stateful_widget(MarkdownView::new(<span class="kw-2">&amp;</span><span class="self">self</span>.theme), inner, <span class="kw-2">&amp;mut </span>page.view);
+<a href=#147 id=147 data-nosnippet>147</a>        <span class="self">self</span>.fade_draft_links(frame, inner);
+<a href=#148 id=148 data-nosnippet>148</a>        <span class="self">self</span>.draw_scrollbar(frame, column.inner(Margin::new(<span class="number">0</span>, <span class="number">1</span>)), inner.height);
+<a href=#149 id=149 data-nosnippet>149</a>    }
+<a href=#150 id=150 data-nosnippet>150</a>
+<a href=#151 id=151 data-nosnippet>151</a>    <span class="doccomment">/// The box around the page, with its title on top and the line under a
+<a href=#152 id=152 data-nosnippet>152</a>    /// post at the bottom, for a box `width` wide.
+<a href=#153 id=153 data-nosnippet>153</a>    </span><span class="kw">fn </span>page_box(<span class="kw-2">&amp;</span><span class="self">self</span>, width: u16) -&gt; Block&lt;<span class="lifetime">'static</span>&gt; {
+<a href=#154 id=154 data-nosnippet>154</a>        <span class="kw">let </span>block = Block::new()
+<a href=#155 id=155 data-nosnippet>155</a>            .borders(Borders::ALL)
+<a href=#156 id=156 data-nosnippet>156</a>            .padding(Padding::horizontal(<span class="number">1</span>))
+<a href=#157 id=157 data-nosnippet>157</a>            .border_style(Style::new().fg(BORDER));
+<a href=#158 id=158 data-nosnippet>158</a>        <span class="kw">let </span><span class="prelude-val">Some</span>(page) = <span class="kw-2">&amp;</span><span class="self">self</span>.page <span class="kw">else </span>{
+<a href=#159 id=159 data-nosnippet>159</a>            <span class="kw">return </span>block;
+<a href=#160 id=160 data-nosnippet>160</a>        };
+<a href=#161 id=161 data-nosnippet>161</a>        <span class="comment">// A page the nav names in words is already underlined there.
+<a href=#162 id=162 data-nosnippet>162</a>        </span><span class="kw">let </span>named = <span class="self">self
+<a href=#163 id=163 data-nosnippet>163</a>            </span>.nav()
+<a href=#164 id=164 data-nosnippet>164</a>            .iter()
+<a href=#165 id=165 data-nosnippet>165</a>            .any(|item| item.names_page &amp;&amp; same_page(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>item.path));
+<a href=#166 id=166 data-nosnippet>166</a>        <span class="kw">let </span>block = <span class="kw">if </span>named {
+<a href=#167 id=167 data-nosnippet>167</a>            block
+<a href=#168 id=168 data-nosnippet>168</a>        } <span class="kw">else </span>{
+<a href=#169 id=169 data-nosnippet>169</a>            block.title(page_title(page).centered())
+<a href=#170 id=170 data-nosnippet>170</a>        };
+<a href=#171 id=171 data-nosnippet>171</a>        <span class="comment">// Inside the corners, with a space either side.
+<a href=#172 id=172 data-nosnippet>172</a>        </span><span class="kw">match </span>page.meta(usize::from(width).saturating_sub(<span class="number">4</span>)) {
+<a href=#173 id=173 data-nosnippet>173</a>            <span class="prelude-val">Some</span>(meta) =&gt; block.title_bottom(
+<a href=#174 id=174 data-nosnippet>174</a>                Line::from(<span class="macro">format!</span>(<span class="string">" {meta} "</span>))
+<a href=#175 id=175 data-nosnippet>175</a>                    .style(Style::new().fg(MUTED))
+<a href=#176 id=176 data-nosnippet>176</a>                    .centered(),
+<a href=#177 id=177 data-nosnippet>177</a>            ),
+<a href=#178 id=178 data-nosnippet>178</a>            <span class="prelude-val">None </span>=&gt; block,
+<a href=#179 id=179 data-nosnippet>179</a>        }
+<a href=#180 id=180 data-nosnippet>180</a>    }
+<a href=#181 id=181 data-nosnippet>181</a>
+<a href=#182 id=182 data-nosnippet>182</a>    <span class="doccomment">/// Fades the links to drafts, like drafts in the site's lists, on the
+<a href=#183 id=183 data-nosnippet>183</a>    /// page drawn in `inner`.
+<a href=#184 id=184 data-nosnippet>184</a>    </span><span class="kw">fn </span>fade_draft_links(<span class="kw-2">&amp;</span><span class="self">self</span>, frame: <span class="kw-2">&amp;mut </span>Frame, inner: Rect) {
+<a href=#185 id=185 data-nosnippet>185</a>        <span class="kw">let </span>(<span class="prelude-val">Some</span>(site), <span class="prelude-val">Some</span>(page)) = (<span class="kw-2">&amp;</span><span class="self">self</span>.site, <span class="kw-2">&amp;</span><span class="self">self</span>.page) <span class="kw">else </span>{
+<a href=#186 id=186 data-nosnippet>186</a>            <span class="kw">return</span>;
+<a href=#187 id=187 data-nosnippet>187</a>        };
+<a href=#188 id=188 data-nosnippet>188</a>        <span class="kw">let </span><span class="prelude-val">Some</span>(rendered) = page.view.rendered() <span class="kw">else </span>{
+<a href=#189 id=189 data-nosnippet>189</a>            <span class="kw">return</span>;
+<a href=#190 id=190 data-nosnippet>190</a>        };
+<a href=#191 id=191 data-nosnippet>191</a>        <span class="kw">let </span>scroll = page.view.scroll();
+<a href=#192 id=192 data-nosnippet>192</a>        <span class="kw">for </span>link <span class="kw">in </span><span class="kw-2">&amp;</span>rendered.links {
+<a href=#193 id=193 data-nosnippet>193</a>            <span class="kw">let </span>Target::Page { path, .. } = Target::resolve(<span class="kw-2">&amp;</span>link.url, <span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span><span class="self">self</span>.origin)
+<a href=#194 id=194 data-nosnippet>194</a>            <span class="kw">else </span>{
+<a href=#195 id=195 data-nosnippet>195</a>                <span class="kw">continue</span>;
+<a href=#196 id=196 data-nosnippet>196</a>            };
+<a href=#197 id=197 data-nosnippet>197</a>            <span class="kw">if </span>!site.is_draft(path.strip_prefix(<span class="kw-2">&amp;</span><span class="self">self</span>.base).unwrap_or(<span class="kw-2">&amp;</span>path)) {
+<a href=#198 id=198 data-nosnippet>198</a>                <span class="kw">continue</span>;
+<a href=#199 id=199 data-nosnippet>199</a>            }
+<a href=#200 id=200 data-nosnippet>200</a>            <span class="kw">for </span>region <span class="kw">in </span><span class="kw-2">&amp;</span>link.regions {
+<a href=#201 id=201 data-nosnippet>201</a>                <span class="kw">let </span><span class="prelude-val">Some</span>(row) = region
+<a href=#202 id=202 data-nosnippet>202</a>                    .line
+<a href=#203 id=203 data-nosnippet>203</a>                    .checked_sub(scroll)
+<a href=#204 id=204 data-nosnippet>204</a>                    .filter(|row| <span class="kw-2">*</span>row &lt; usize::from(inner.height))
+<a href=#205 id=205 data-nosnippet>205</a>                <span class="kw">else </span>{
+<a href=#206 id=206 data-nosnippet>206</a>                    <span class="kw">continue</span>;
+<a href=#207 id=207 data-nosnippet>207</a>                };
+<a href=#208 id=208 data-nosnippet>208</a>                <span class="kw">let </span>end = region.end.min(inner.width);
+<a href=#209 id=209 data-nosnippet>209</a>                <span class="kw">let </span>start = region.start.min(end);
+<a href=#210 id=210 data-nosnippet>210</a>                <span class="kw">let </span>rect = Rect::new(inner.x + start, inner.y + row <span class="kw">as </span>u16, end - start, <span class="number">1</span>);
+<a href=#211 id=211 data-nosnippet>211</a>                frame.buffer_mut().set_style(rect, Style::new().fg(FAINT));
+<a href=#212 id=212 data-nosnippet>212</a>            }
+<a href=#213 id=213 data-nosnippet>213</a>        }
+<a href=#214 id=214 data-nosnippet>214</a>    }
+<a href=#215 id=215 data-nosnippet>215</a>
+<a href=#216 id=216 data-nosnippet>216</a>    <span class="doccomment">/// Just a heavier stretch of the box's right border in `area`, with no
+<a href=#217 id=217 data-nosnippet>217</a>    /// track, so the border shows through. Only there when the page is
+<a href=#218 id=218 data-nosnippet>218</a>    /// longer than its `height`.
+<a href=#219 id=219 data-nosnippet>219</a>    </span><span class="kw">fn </span>draw_scrollbar(<span class="kw-2">&amp;</span><span class="self">self</span>, frame: <span class="kw-2">&amp;mut </span>Frame, area: Rect, height: u16) {
+<a href=#220 id=220 data-nosnippet>220</a>        <span class="kw">let </span><span class="prelude-val">Some</span>(page) = <span class="kw-2">&amp;</span><span class="self">self</span>.page <span class="kw">else </span>{
+<a href=#221 id=221 data-nosnippet>221</a>            <span class="kw">return</span>;
+<a href=#222 id=222 data-nosnippet>222</a>        };
+<a href=#223 id=223 data-nosnippet>223</a>        <span class="kw">let </span>lines = page.view.rendered().map_or(<span class="number">0</span>, |r| r.lines.len());
+<a href=#224 id=224 data-nosnippet>224</a>        <span class="kw">let </span>max = lines.saturating_sub(usize::from(height));
+<a href=#225 id=225 data-nosnippet>225</a>        <span class="kw">if </span>max == <span class="number">0 </span>{
+<a href=#226 id=226 data-nosnippet>226</a>            <span class="kw">return</span>;
+<a href=#227 id=227 data-nosnippet>227</a>        }
+<a href=#228 id=228 data-nosnippet>228</a>        <span class="kw">let </span><span class="kw-2">mut </span>state = ScrollbarState::new(max).position(page.view.scroll());
+<a href=#229 id=229 data-nosnippet>229</a>        frame.render_stateful_widget(
+<a href=#230 id=230 data-nosnippet>230</a>            Scrollbar::new(ScrollbarOrientation::VerticalRight)
+<a href=#231 id=231 data-nosnippet>231</a>                .begin_symbol(<span class="prelude-val">None</span>)
+<a href=#232 id=232 data-nosnippet>232</a>                .end_symbol(<span class="prelude-val">None</span>)
+<a href=#233 id=233 data-nosnippet>233</a>                .track_symbol(<span class="prelude-val">None</span>)
+<a href=#234 id=234 data-nosnippet>234</a>                .thumb_symbol(<span class="string">"┃"</span>)
+<a href=#235 id=235 data-nosnippet>235</a>                .thumb_style(Style::new().fg(MUTED)),
+<a href=#236 id=236 data-nosnippet>236</a>            area,
+<a href=#237 id=237 data-nosnippet>237</a>            <span class="kw-2">&amp;mut </span>state,
+<a href=#238 id=238 data-nosnippet>238</a>        );
+<a href=#239 id=239 data-nosnippet>239</a>    }
+<a href=#240 id=240 data-nosnippet>240</a>}
+<a href=#241 id=241 data-nosnippet>241</a>
+<a href=#242 id=242 data-nosnippet>242</a><span class="doccomment">/// A page's title for the top of its box, with a project's status after
+<a href=#243 id=243 data-nosnippet>243</a>/// it. Drafts are dimmed, like they are on the site.
+<a href=#244 id=244 data-nosnippet>244</a></span><span class="kw">fn </span>page_title(page: <span class="kw-2">&amp;</span>Page) -&gt; Line&lt;<span class="lifetime">'static</span>&gt; {
+<a href=#245 id=245 data-nosnippet>245</a>    <span class="kw">let </span>(title, style) = <span class="kw">if </span>page.draft {
+<a href=#246 id=246 data-nosnippet>246</a>        (<span class="macro">format!</span>(<span class="string">" Draft: {} "</span>, page.title), Style::new().fg(FAINT))
+<a href=#247 id=247 data-nosnippet>247</a>    } <span class="kw">else </span>{
+<a href=#248 id=248 data-nosnippet>248</a>        (<span class="macro">format!</span>(<span class="string">" {} "</span>, page.title), Style::new().fg(TEXT))
+<a href=#249 id=249 data-nosnippet>249</a>    };
+<a href=#250 id=250 data-nosnippet>250</a>    <span class="kw">let </span>status = page
+<a href=#251 id=251 data-nosnippet>251</a>        .status
+<a href=#252 id=252 data-nosnippet>252</a>        .as_ref()
+<a href=#253 id=253 data-nosnippet>253</a>        .map(|s| Span::styled(<span class="macro">format!</span>(<span class="string">"{s} "</span>), Style::new().fg(MUTED)));
+<a href=#254 id=254 data-nosnippet>254</a>    Line::from_iter(std::iter::once(Span::styled(title, style.bold())).chain(status))
+<a href=#255 id=255 data-nosnippet>255</a>}
+<a href=#256 id=256 data-nosnippet>256</a>
+<a href=#257 id=257 data-nosnippet>257</a><span class="doccomment">/// The middle of `area`, as wide as a page's box, so the nav lines up with it.
+<a href=#258 id=258 data-nosnippet>258</a></span><span class="kw">fn </span>column(area: Rect) -&gt; Rect {
+<a href=#259 id=259 data-nosnippet>259</a>    <span class="kw">let </span>width = area.width.min(MAX_WIDTH + <span class="number">4</span>);
+<a href=#260 id=260 data-nosnippet>260</a>    Rect::new(
+<a href=#261 id=261 data-nosnippet>261</a>        area.x + (area.width - width) / <span class="number">2</span>,
+<a href=#262 id=262 data-nosnippet>262</a>        area.y,
+<a href=#263 id=263 data-nosnippet>263</a>        width,
+<a href=#264 id=264 data-nosnippet>264</a>        area.height,
+<a href=#265 id=265 data-nosnippet>265</a>    )
+<a href=#266 id=266 data-nosnippet>266</a>}
 </code></pre></div></section></main></body></html>

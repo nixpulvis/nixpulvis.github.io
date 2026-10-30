@@ -2,6 +2,9 @@
 :root {
   --black: black;
   --white: white;
+  /* The dark scheme's background, and the terminal view's in either scheme,
+     as in tui/app/src/colors.rs. */
+  --dark: #161616;
   --background: var(--white);
   --border: var(--black);
   --text: #282c34;
@@ -27,7 +30,7 @@
   /* On screens only, so a printed page stays black on white. */
   @media screen and (prefers-color-scheme: dark) {
     color-scheme: dark;
-    --background: #161616;
+    --background: var(--dark);
     --border: #777;
     --text: #cacaca;
     --muted: #999;
@@ -706,6 +709,13 @@ html.tui {
      show a scrollbar, or bounce and pull to refresh on phones. */
   overflow: hidden;
   overscroll-behavior: none;
+  /* The view's color from the first paint, so a page opening in the view
+     doesn't flash the page's own background before the view draws. */
+  background: var(--dark);
+
+  & body {
+    background: none;
+  }
 
   & body > :not(#tui) {
     display: none;
@@ -719,7 +729,7 @@ html.tui {
   overflow: hidden;
   /* Touches are the view's to scroll with, not the browser's. */
   touch-action: none;
-  background: #161616;
+  background: var(--dark);
   font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
   font-size: 15px;
   line-height: normal;
