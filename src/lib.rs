@@ -1,12 +1,12 @@
 //! [nixpulvis.com](https://nixpulvis.com), as a Rust crate.
 //!
-//! The site's pages are Markdown files, and every one of them is also a
-//! module of this crate, documented with the page itself. So these docs are
-//! another way to read the site. [`ramblings`] holds the ramblings,
-//! [`projects`] the projects, and so on, laid out like the site's URLs. Each
-//! page module's `PAGE` is the [`Source`] it was made from.
+//! [`pages`] is the site itself. Every page is a Markdown file, and also a
+//! module, documented with the page, so those docs are another way to read
+//! the site. [`pages::ramblings`] holds the ramblings, [`pages::projects`]
+//! the projects, and so on, laid out like the site's URLs. Each page
+//! module's `PAGE` is the [`Source`] it was made from.
 //!
-//! The same crate builds the site and browses it:
+//! The rest of the crate builds the site and browses it:
 //!
 //! - [`site`] builds the site with [cratesite], behind the `site` feature.
 //!   It reads the pages compiled into this crate and writes `_site`, the
@@ -19,9 +19,6 @@
 //!   installed copy stays current.
 //! - [`index`] is `site.json`, which the generator writes and the terminal
 //!   app reads.
-//!
-//! What follows is the site's home page.
-#![doc = include_str!(concat!(env!("OUT_DIR"), "/doc/crate.md"))]
 
 mod config;
 pub mod index;
@@ -33,5 +30,16 @@ pub mod tui;
 pub use config::CONFIG;
 pub use cratesite::Source;
 
-// One module for every page, made by `build.rs` from the Markdown files.
-include!(concat!(env!("OUT_DIR"), "/pages.rs"));
+/// The site's home page, and every other page under it, made modules by
+/// `build.rs` from the Markdown files.
+///
+#[doc = include_str!(concat!(env!("OUT_DIR"), "/doc/index.md"))]
+#[allow(
+    clippy::doc_overindented_list_items,
+    clippy::doc_lazy_continuation,
+    clippy::doc_markdown,
+    rustdoc::all
+)]
+pub mod pages {
+    include!(concat!(env!("OUT_DIR"), "/pages.rs"));
+}
