@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en" data-baseurl="/pr-preview/pr-89" data-build="1793401048">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      // A link ending in `?tui` turns the terminal view on, like the `>_` key
+      // after the name does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Reading this Site in a Terminal</title>
+    
+    
+    <meta name="description" content="This site can be read in a terminal now. Click the little &gt;_ key next to my name up top (or just follow this link) and the page you’re reading gets redraw..." />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Reading this Site in a Terminal" />
+    <meta property="og:description" content="This site can be read in a terminal now. Click the little &gt;_ key next to my name up top (or just follow this link) and the page you’re reading gets redraw..." />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-89/ramblings/2026-10-30-reading-this-site-in-a-terminal" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-89/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-89/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-89/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/pr-preview/pr-89/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/pr-preview/pr-89/apple-touch-icon.png" sizes="180x180" />
+    
+      <link rel="alternate" type="text/markdown" href="/pr-preview/pr-89/ramblings/2026-10-30-reading-this-site-in-a-terminal.md" />
+    
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-89/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-89/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-89/css/style.css?v=1793401048">
+    <link rel="stylesheet" href="/pr-preview/pr-89/css/syntax.css">
+    
+    <script defer src="/pr-preview/pr-89/js/mousetrap.min.js"></script>
+    
+    <script defer src="/pr-preview/pr-89/js/main.js"></script>
+    <!-- If the view's script can't load, show the page the head script hid. -->
+    <script type="module" src="/pr-preview/pr-89/js/tui.js?v=1793401048" onerror="document.documentElement.classList.remove('tui')"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-89/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-89/img/me.jpg" class="hidden" />
+      <div class="title">
+        <a href="/pr-preview/pr-89/" class="identity">nixpulvis</a>
+      </div>
+      <nav>
+        <ul>
+          
+            
+              <li><a href="/pr-preview/pr-89/projects">Projects</a></li>
+            
+          
+            
+              <li><a href="/pr-preview/pr-89/ramblings">Ramblings</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-89/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-89/references" title="References" aria-label="References">&</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-89/musings" title="Music" aria-label="Music">♪</a></li>
+            
+          
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">Reading this Site in a Terminal</h2>
+<p class="meta">
+    1240 words
+    drafted
+    on October 30, 2026
+</p>
+
+<p>This site can be read in a terminal now. Click the little <code class="language-plaintext highlighter-rouge">&gt;_</code> key next to my
+name up top (or just <a href="?tui">follow this link</a>) and the page you’re reading gets
+redrawn as a terminal app, right there in the browser. If you’d rather use a
+real terminal, there’s a client for that too:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cargo <span class="nb">install</span> <span class="nt">--locked</span> <span class="nt">--git</span> https://github.com/nixpulvis/nixpulvis.github.io nixpulvis-tui
+nixpulvis-tui /ramblings
+</code></pre></div></div>
+
+<p>Both are the same <a href="https://ratatui.rs">Ratatui</a> app. The browser one is compiled to WebAssembly
+and drawn with <a href="https://github.com/ratatui/ratzilla">Ratzilla</a>, the terminal one fetches pages over HTTP and draws
+with crossterm. It’s <code class="language-plaintext highlighter-rouge">j</code>/<code class="language-plaintext highlighter-rouge">k</code> to scroll, <code class="language-plaintext highlighter-rouge">tab</code> to move between links, <code class="language-plaintext highlighter-rouge">enter</code>
+to follow one, <code class="language-plaintext highlighter-rouge">h</code> to go back, and <code class="language-plaintext highlighter-rouge">1</code>-<code class="language-plaintext highlighter-rouge">9</code> for the nav. The mouse works too.</p>
+
+<p>The idea comes from Tyler Bloom’s <a href="https://github.com/TylerBloom/avid-rustacean">avid-rustacean</a>, which does this for his
+blog. I liked it enough to want it here, but I didn’t want to copy it piece by
+piece, so I built it fresh. This post is mostly about the parts that turned
+out to be more interesting than I expected.</p>
+
+<p>NOTE: screenshot of this post in the terminal view.</p>
+
+<h2 id="markdown-is-the-api">Markdown is the API</h2>
+
+<p>The first question was what the app should actually read. Jekyll already turns
+Markdown into HTML, and parsing that HTML back into something a terminal can
+draw felt backwards. I thought about dumping kramdown’s AST as JSON, but that
+ties every client to kramdown’s idea of a document.</p>
+
+<p>So the site just publishes its Markdown. A small Jekyll plugin writes each
+page’s source next to its HTML, after Liquid has run but before kramdown, so
+includes and loops are already filled in. Each page goes through its layouts
+too (everything but the outer HTML shell), so the title, date and tags you see
+in the terminal come from the same templates as the web page. Then there’s a
+<code class="language-plaintext highlighter-rouge">/site.json</code> with the nav and an index of pages, titles, dates and word counts.</p>
+
+<p>That’s the whole API. Static files, cacheable, and you could read them with
+<code class="language-plaintext highlighter-rouge">curl</code> if you wanted.</p>
+
+<h2 id="ratmark">ratmark</h2>
+
+<p>Something has to turn that Markdown into Ratatui text, and that’s <a href="https://github.com/nixpulvis/ratmark">ratmark</a>.
+It parses with <a href="https://github.com/pulldown-cmark/pulldown-cmark">pulldown-cmark</a> and handles the usual CommonMark plus tables,
+footnotes, task lists and math. It keeps the document laid out to the current
+width, tracks scrolling, and remembers where every link landed so keyboard
+focus and clicks work on links in the middle of wrapped text.</p>
+
+<p>Everything beyond the basics is an opt-in feature. <code class="language-plaintext highlighter-rouge">syntax</code> highlights code
+blocks with syntect (in pure Rust, so it still builds for wasm). <code class="language-plaintext highlighter-rouge">html</code> reads
+text and links out of inline HTML instead of printing tags. <code class="language-plaintext highlighter-rouge">front-matter</code> and
+<code class="language-plaintext highlighter-rouge">kramdown</code> deal with the habits of Markdown written for Jekyll, like <code class="language-plaintext highlighter-rouge">{:.no_toc}</code>
+attribute lists and <code class="language-plaintext highlighter-rouge">markdown="1"</code> blocks.</p>
+
+<p>I’ve tried hard to keep it a general crate. Whenever something on this site
+rendered badly, the fix went into the site’s markup or the site’s app, not
+into ratmark. A few times I had to revert something that was really just me
+teaching the library about my own CSS.</p>
+
+<p>One fun bit is wide code blocks. A terminal can’t really scroll a single block
+sideways, so ratmark cuts wide lines off with a <code class="language-plaintext highlighter-rouge">‹</code> or <code class="language-plaintext highlighter-rouge">›</code> marker and each
+block keeps its own horizontal offset. Swipe or scroll sideways over a block to
+move just that one, or use <code class="language-plaintext highlighter-rouge">&lt;</code> and <code class="language-plaintext highlighter-rouge">&gt;</code> to move the topmost wide block on screen.</p>
+
+<h2 id="real-links">Real links</h2>
+
+<p>I wanted links to be real links. Clickable in the terminal, and actual <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>
+elements in the browser so middle click and “copy link” work like you’d
+expect. The problem is that a Ratatui cell is just a symbol and a style, with
+nowhere to put a URL.</p>
+
+<p>There’s an open proposal for this, <a href="https://github.com/ratatui/ratatui/issues/2854">ratatui#2854</a>, with a branch from
+WeirdBrains that adds extensions to cells. I’m building against that branch
+for now. ratmark puts the URL on each linked cell, the terminal client writes
+it out as an OSC 8 hyperlink, and the browser side wraps those cells in <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>
+tags.</p>
+
+<p>That last part needed changes to Ratzilla, so I <a href="https://github.com/nixpulvis/ratzilla">forked it</a>.
+Every change sits on its own branch off upstream, so each one can go back as
+its own PR, and they’re all merged together into a <code class="language-plaintext highlighter-rouge">site</code> branch that this
+site builds from.</p>
+
+<h2 id="the-scroll-hitch">The scroll hitch</h2>
+
+<p>The browser view worked, but scrolling on my Mac was choppy. Not terrible, just
+enough to notice. Ratzilla’s DOM backend redrew changed cells through
+<code class="language-plaintext highlighter-rouge">innerHTML</code>, so the first fix was setting text in place instead. That helped a
+lot, and I figured that was the end of it.</p>
+
+<p>It wasn’t. There was still a little hitch every so often, and I spent a while
+looking at my own code before trying it with my extensions turned off. It
+was smooth. The hitching was my ad blocker. Its content script runs a
+<code class="language-plaintext highlighter-rouge">querySelector</code> on a timer, and the screen was around sixteen thousand
+<code class="language-plaintext highlighter-rouge">&lt;span&gt;</code> elements, one per cell. Every pass walked all of them.</p>
+
+<p>None of that was a bug in my code, but it was still my problem, since plenty
+of people run the same blocker. So two more changes went into the fork. Each
+line is now drawn as runs of cells with the same style, which cuts the number
+of elements by about 25x. And the backend can now draw inside any element, so
+the site draws inside a shadow root where the rest of the page, ad blockers
+included, doesn’t see it change at all.</p>
+
+<h2 id="being-a-web-page">Being a web page</h2>
+
+<p>A terminal app inside a web page has to give some things back to the browser.
+Text selection was the first. Dragging across the screen used to grab the
+borders and padding along with the words, so the page text is now the only
+selectable area, and copying keeps the blank lines between paragraphs.</p>
+
+<p>History was the second, and I had strong opinions here. Every link to another
+page on the site is a real page load. The browser owns history, the back
+button is the browser’s back button, and <code class="language-plaintext highlighter-rouge">h</code> just calls <code class="language-plaintext highlighter-rouge">history.back()</code>. I
+don’t like sites that fake navigation with <code class="language-plaintext highlighter-rouge">pushState</code> and then try to keep
+their own idea of history in sync with the browser’s. A page load here is
+cheap anyway, the app is cached and the Markdown is small.</p>
+
+<p>And finally there’s the toggle. I went through a few ideas, like a fake
+<code class="language-plaintext highlighter-rouge">$ less foo.md</code> prompt, a bare glyph in the nav, or making the lambda clickable.
+They were cluttered, looked like they were floating, or were impossible to
+find. The framed <code class="language-plaintext highlighter-rouge">&gt;_</code> key after my name is small but looks like something you
+can press, which is all it needs to do. The choice sticks between pages, and a
+link ending in <code class="language-plaintext highlighter-rouge">?tui</code> turns it on for whoever follows it.</p>
+
+<h2 id="whats-next">What’s next</h2>
+
+<p>The terminal client is built for Linux and macOS on every change and attached
+to the <a href="https://github.com/nixpulvis/nixpulvis.github.io/releases/tag/tui"><code class="language-plaintext highlighter-rouge">tui</code> release</a>, so you don’t need Rust to try it. I’d like
+to get it onto crates.io, but that’s blocked until cell extensions land in a
+Ratatui release, or I move the link code somewhere the published crates don’t
+need it.</p>
+
+<p>The Ratzilla branches should go upstream, and I want to clean up the ratmark
+API before giving it a real release.</p>
+
+<p>Longer term I’ve been thinking about replacing Jekyll with a static site
+generator written in Rust, documented with rustdoc, where the pages themselves
+are modules of the crate. But that’s a different post.</p>
+
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-89/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2026-10-30-reading-this-site-in-a-terminal.md">source</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/commits/master/_ramblings/2026-10-30-reading-this-site-in-a-terminal.md">history</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/issues/new?body=https%3A%2F%2Fnixpulvis.com%2Fpr-preview%2Fpr-89%2Framblings%2F2026-10-30-reading-this-site-in-a-terminal">report an issue</a>
+        <span class="issues"><a href="https://github.com/nixpulvis/nixpulvis.github.io/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>
