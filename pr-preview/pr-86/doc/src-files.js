@@ -1,2 +1,2 @@
-createSrcSidebar('[["nixpulvis",["",[["site",[],["data.rs","fortunes.rs","highlight.rs","layout.rs","markdown.rs","mod.rs","page.rs","publish.rs","serve.rs","text.rs","tikz.rs"]],["tui",[],["colors.rs","links.rs","mod.rs"]]],["collection.rs","index.rs","lib.rs"]]]]');
-//{"start":19,"fragment_lengths":[245]}
+createSrcSidebar('[["nixpulvis",["",[["site",[],["data.rs","fortunes.rs","highlight.rs","layout.rs","markdown.rs","mod.rs","page.rs","publish.rs","serve.rs","text.rs","tikz.rs"]],["tui",[["app",[],["draw.rs"]]],["app.rs","colors.rs","link.rs","markup.rs","mod.rs","page.rs","site.rs"]]],["collection.rs","index.rs","lib.rs"]]]]');
+//{"start":19,"fragment_lengths":[307]}

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Target"],"fn":["anchor_matches","resolve","source"]};
