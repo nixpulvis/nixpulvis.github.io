@@ -102,7 +102,8 @@ published Markdown and `/site.json` described above. The code is in `tui/`:
 
 - `tui/app` is the app itself, shared by both clients
 - `tui/term` runs it in a real terminal, fetching pages over HTTP
-- `tui/web` builds it to WebAssembly for the browser
+- `tui/web` builds it to WebAssembly for the browser, where the `>_` key
+  after the name, or any link ending in `?tui`, switches it on
 
 #### Running from source
 
@@ -113,6 +114,23 @@ instead, start `jekyll serve` as above and, in another shell:
 cargo run                                     # nixpulvis.com
 cargo run -- --url http://localhost:4000      # a local build
 cargo run -- /ramblings                       # start on a page
+```
+
+Jekyll doesn't build the browser view. It's Rust compiled to WebAssembly,
+built into `_site/tui` by `make tui`, and Jekyll leaves that folder alone when
+it rebuilds (`keep_files` in `_config.yml`). So build it once and serve as
+usual. Edits to pages show up in the view on reload, since it reads their
+Markdown at runtime. Only changes under `tui/` need another `make tui`.
+
+It needs the `wasm32-unknown-unknown` target and the `wasm-bindgen` CLI at the
+version in `Cargo.lock`. If they drift apart, `make tui` stops and says which
+version to install:
+
+```sh
+rustup target add wasm32-unknown-unknown
+cargo install wasm-bindgen-cli --version 0.2.129
+make tui
+bundle exec jekyll serve
 ```
 
 [Ratatui]: https://ratatui.rs
