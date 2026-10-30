@@ -51,11 +51,48 @@ footnotes, task lists and math. It keeps the document laid out to the current
 width, tracks scrolling, and remembers where every link landed so keyboard
 focus and clicks work on links in the middle of wrapped text.
 
-Everything beyond the basics is an opt-in feature. `syntax` highlights code
-blocks with syntect (in pure Rust, so it still builds for wasm). `html` reads
-text and links out of inline HTML instead of printing tags. `front-matter` and
-`kramdown` deal with the habits of Markdown written for Jekyll, like `{:.no_toc}`
-attribute lists and `markdown="1"` blocks.
+Everything beyond that is an opt-in feature, and none of them are on by
+default. It would have been easy to lump them together as "Jekyll support",
+but they're really different things, and plenty of Markdown wants one without
+the others.
+
+`front-matter`
+: Splits the YAML (`---`) or TOML (`+++`) block off the top of a document,
+  and has a small helper for reading a value like the title. This isn't a
+  Markdown thing at all, it's a static site generator thing. Jekyll, Hugo and
+  Zola all do it, with nothing else in common. It doesn't pull in a YAML
+  parser either, it just hands you the text and lets you parse it however you
+  want.
+
+`html`
+: Raw HTML is part of CommonMark itself, so any Markdown might have some.
+  A GitHub README is full of it, with no front matter in sight. Without this
+  feature the HTML is just left out. With it, ratmark runs [html5gum]'s
+  tokenizer over the tags and keeps what makes sense in a terminal: text,
+  links, emphasis, lists, tables, `<kbd>` and so on. There's no DOM, just a
+  stream of tags, and anything like `<script>` or `<svg>` is skipped.
+
+`kramdown`
+: kramdown is the Markdown dialect Jekyll uses, and it reads a few things
+  differently than CommonMark. `* TOC` with `{:toc}` turns into a list of
+  links to the headings, Markdown inside a `markdown="1"` element gets read
+  as Markdown, heading ids match the ones kramdown gives the HTML (so `#foo`
+  links land in the same place), and attribute lists like `{:.no_toc}` are
+  dropped instead of showing up as text. A class after inline code, like the
+  `{:.new-syntax}` in my [anonymous struct post][anon-struct], can even pick
+  a style from the theme.
+
+`syntax`
+: Highlights fenced code blocks with [syntect]. It uses syntect's pure Rust
+  regex engine, so it still builds for wasm.
+
+`native-links`
+: Puts each link's URL on the cells it covers, which is what makes the real
+  links below work. It's the only feature that needs an unreleased Ratatui.
+
+So the site turns on all five, but something reading Hugo content would want
+`front-matter` and `html` and nothing to do with kramdown, and a README viewer
+might only want `html`.
 
 I've tried hard to keep it a general crate. Whenever something on this site
 rendered badly, the fix went into the site's markup or the site's app, not
@@ -146,6 +183,9 @@ are modules of the crate. But that's a different post.
 [avid-rustacean]: https://github.com/TylerBloom/avid-rustacean
 [ratmark]: https://github.com/nixpulvis/ratmark
 [pulldown-cmark]: https://github.com/pulldown-cmark/pulldown-cmark
+[html5gum]: https://github.com/untitaker/html5gum
+[syntect]: https://github.com/trishume/syntect
+[anon-struct]: {% link _ramblings/2026-10-19-anonymous-struct-parameters.md %}
 [ratatui#2854]: https://github.com/ratatui/ratatui/issues/2854
 [ratzilla-fork]: https://github.com/nixpulvis/ratzilla
 [tui-release]: https://github.com/nixpulvis/nixpulvis.github.io/releases/tag/tui
