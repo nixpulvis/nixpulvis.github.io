@@ -4,6 +4,11 @@ This is my personal, and semi-professional website. Built by its own Rust
 crate, which is also documented with every page as a module, and hosted on
 GitHub Pages (a service which I love).
 
+The generator itself is [`cratesite/`](cratesite), a static site generator
+for any site that's a crate like this one. This crate is just the site: its
+pages, templates and data, `src/config.rs` saying how it's laid out, and
+`src/site` for what only this site does.
+
 ## Setup
 
 With Rust installed:
@@ -82,8 +87,9 @@ fortune _site/fortunes
 Every page is also published as Markdown next to its HTML, after its template
 tags run, so `/ramblings/foo` is readable at `/ramblings/foo.md` with a short
 front matter (title, date and so on). `/site.json` lists the nav and every post
-with its URL, title, date, collection and draft flag. Both come from
-`src/site/publish.rs`, for clients that read the site without scraping HTML.
+with its URL, title, date, collection and draft flag. cratesite publishes the
+Markdown and `src/site` the index, for clients that read the site without
+scraping HTML.
 
 #### Templates
 

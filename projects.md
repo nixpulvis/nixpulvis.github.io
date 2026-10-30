@@ -19,7 +19,7 @@ the projects themselves.
 
 <ul class="projects finished">
 {%- for project in site.collection("projects") -%}
-    {%- if !project.front.hidden && !project.front.draft -%}
+    {%- if !project.front.extra.hidden && !project.front.draft -%}
         {%- call items::project_item(project) -%}{%- endcall -%}
     {%- endif -%}
 {%- endfor -%}
@@ -27,7 +27,7 @@ the projects themselves.
 
 <ul class="projects drafted">
 {%- for project in site.collection("projects") -%}
-    {%- if !project.front.hidden && project.front.draft -%}
+    {%- if !project.front.extra.hidden && project.front.draft -%}
         {%- call items::project_item(project) -%}{%- endcall -%}
     {%- endif -%}
 {%- endfor -%}

@@ -1,19 +1,25 @@
-//! Markdown to HTML, with pulldown-cmark, reading the site's Markdown the
-//! way kramdown did.
+//! Markdown to HTML, with pulldown-cmark.
 //!
-//! ratmark's [`Kramdown`] does the rewriting kramdown needs first, and
-//! hands out heading ids by kramdown's rule, so links to `#sections` keep
-//! working. Attribute lists like `{:.no_toc}` give classes to the heading or
-//! inline code before them. `$$` math is written for MathJax, as `\[ \]` on
-//! its own and `\( \)` in a sentence. Code is highlighted, and `tikz` code
-//! is drawn.
+//! Math is written for MathJax or KaTeX, as `\[ \]` on its own and `\( \)`
+//! in a sentence. Code is highlighted, and `tikz` code is drawn.
+//!
+//! With the `kramdown` feature, Markdown is read the way kramdown reads it.
+//! ratmark's `Kramdown` does the rewriting kramdown needs first, and hands
+//! out heading ids by kramdown's rule, so links to `#sections` keep working.
+//! Attribute lists like `{:.no_toc}` give classes to the heading or inline
+//! code before them, and only `$$` is math.
 
-use pulldown_cmark::{CodeBlockKind, CowStr, Event, LinkType, Options, Parser, Tag, TagEnd};
+#[cfg(feature = "kramdown")]
+use pulldown_cmark::CowStr;
+#[cfg(feature = "kramdown")]
+use pulldown_cmark::LinkType;
+use pulldown_cmark::{CodeBlockKind, Event, Options, Parser, Tag, TagEnd};
+#[cfg(feature = "kramdown")]
 use ratmark::kramdown::{AttributeList, HeaderIds, Kramdown};
 
-use super::highlight::Highlighter;
-use super::text::Text;
-use super::tikz::Tikz;
+use crate::highlight::Highlighter;
+use crate::text::Text;
+use crate::tikz::Tikz;
 
 /// Renders Markdown to HTML.
 pub struct Markdown<'a> {
@@ -24,7 +30,10 @@ pub struct Markdown<'a> {
 impl Markdown<'_> {
     /// The HTML for `markdown`.
     pub fn render(&self, markdown: &str) -> Result<String, String> {
-        let markdown = Kramdown::to_commonmark(markdown);
+        #[cfg(feature = "kramdown")]
+        let commonmark = Kramdown::to_commonmark(markdown);
+        #[cfg(feature = "kramdown")]
+        let markdown = commonmark.as_ref();
         let options = Options::ENABLE_TABLES
             | Options::ENABLE_FOOTNOTES
             | Options::ENABLE_STRIKETHROUGH
@@ -32,7 +41,7 @@ impl Markdown<'_> {
             | Options::ENABLE_SMART_PUNCTUATION
             | Options::ENABLE_HEADING_ATTRIBUTES
             | Options::ENABLE_MATH;
-        let events: Vec<Event> = Parser::new_ext(&markdown, options).collect();
+        let events: Vec<Event> = Parser::new_ext(markdown, options).collect();
         let events = self.transform(events)?;
         let mut html = String::with_capacity(markdown.len() * 3 / 2);
         pulldown_cmark::html::push_html(&mut html, events.into_iter());
@@ -41,10 +50,12 @@ impl Markdown<'_> {
 
     fn transform<'e>(&self, events: Vec<Event<'e>>) -> Result<Vec<Event<'e>>, String> {
         let mut out: Vec<Event> = Vec::with_capacity(events.len());
+        #[cfg(feature = "kramdown")]
         let mut ids = HeaderIds::default();
         let mut i = 0;
         while i < events.len() {
             match &events[i] {
+                #[cfg(feature = "kramdown")]
                 Event::Start(Tag::Heading { .. }) => {
                     let end = Self::end_of(&events, i);
                     let Event::Start(Tag::Heading {
@@ -79,11 +90,12 @@ impl Markdown<'_> {
                 }
                 Event::Start(Tag::Paragraph) => {
                     // A paragraph of only an attribute list is dropped.
+                    #[cfg(feature = "kramdown")]
                     if Self::lone_attribute_list(&events, i).is_some() {
                         i += 3;
                         continue;
                     }
-                    // So is one of only `$$` math, which becomes a block.
+                    // So is one of only display math, which becomes a block.
                     if let Some(math) = Self::lone_math(&events, i) {
                         out.push(Event::Html(
                             format!("\\[{}\\]\n", Text::escape(math.trim())).into(),
@@ -115,6 +127,7 @@ impl Markdown<'_> {
                     i = end + 1;
                     continue;
                 }
+                #[cfg(feature = "kramdown")]
                 Event::Code(code) => {
                     // An attribute list right after inline code gives it
                     // classes.
@@ -135,6 +148,7 @@ impl Markdown<'_> {
                     }
                 }
                 // kramdown shows an email address without its `mailto:`.
+                #[cfg(feature = "kramdown")]
                 Event::Start(Tag::Link {
                     link_type: LinkType::Email | LinkType::Autolink,
                     ..
@@ -149,6 +163,7 @@ impl Markdown<'_> {
                     i += 1;
                     continue;
                 }
+                #[cfg(feature = "kramdown")]
                 Event::Text(text) if text.starts_with("{:") => {
                     let rest = AttributeList::split(text).1;
                     if !rest.is_empty() {
@@ -157,10 +172,19 @@ impl Markdown<'_> {
                     i += 1;
                     continue;
                 }
+                // kramdown only reads `$$` as math, so a lone `$` is a
+                // dollar sign, and `$$` in a sentence is inline math.
+                #[cfg(feature = "kramdown")]
                 Event::InlineMath(math) => {
-                    // kramdown only reads `$$` as math, so a lone `$` is a
-                    // dollar sign.
                     out.push(Event::Text(format!("${math}$").into()));
+                    i += 1;
+                    continue;
+                }
+                #[cfg(not(feature = "kramdown"))]
+                Event::InlineMath(math) => {
+                    out.push(Event::InlineHtml(
+                        format!("\\({}\\)", Text::escape(math.trim())).into(),
+                    ));
                     i += 1;
                     continue;
                 }
@@ -171,6 +195,7 @@ impl Markdown<'_> {
                     i += 1;
                     continue;
                 }
+                #[cfg(feature = "kramdown")]
                 Event::Html(html) | Event::InlineHtml(html) => {
                     let html: CowStr = Self::tidy_html(html).into();
                     out.push(match &events[i] {
@@ -199,6 +224,7 @@ impl Markdown<'_> {
         Ok(out)
     }
 
+    #[cfg(feature = "kramdown")]
     /// Raw HTML as kramdown writes it back out: without `markdown="1"`,
     /// and with a `<` that doesn't start a tag escaped, like in code.
     fn tidy_html(html: &str) -> String {
@@ -236,6 +262,7 @@ impl Markdown<'_> {
         events.len() - 1
     }
 
+    #[cfg(feature = "kramdown")]
     /// The text of inline events, without formatting.
     fn plain_text(events: &[Event]) -> String {
         events
@@ -249,6 +276,7 @@ impl Markdown<'_> {
             .collect()
     }
 
+    #[cfg(feature = "kramdown")]
     /// The attribute list making up the whole paragraph starting at `i`.
     fn lone_attribute_list(events: &[Event], i: usize) -> Option<String> {
         match events.get(i..i + 3)? {
@@ -285,7 +313,7 @@ mod tests {
 
     fn render(markdown: &str) -> String {
         let highlighter = Highlighter::default();
-        let tikz = Tikz::new(std::env::temp_dir());
+        let tikz = Tikz::new(std::env::temp_dir(), "");
         Markdown {
             highlighter: &highlighter,
             tikz: &tikz,
@@ -294,6 +322,7 @@ mod tests {
         .unwrap()
     }
 
+    #[cfg(feature = "kramdown")]
     #[test]
     fn headings() {
         assert_eq!(
@@ -302,6 +331,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "kramdown")]
     #[test]
     fn code_classes() {
         assert_eq!(
@@ -310,9 +340,17 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "kramdown")]
     #[test]
     fn math() {
         assert_eq!(render("$$\na < b\n$$\n"), "\\[a &lt; b\\]\n");
         assert_eq!(render("so $$x$$, $5\n"), "<p>so \\(x\\), $5</p>\n");
+    }
+
+    #[cfg(not(feature = "kramdown"))]
+    #[test]
+    fn commonmark_math() {
+        assert_eq!(render("$$\na < b\n$$\n"), "\\[a &lt; b\\]\n");
+        assert_eq!(render("so $x$\n"), "<p>so \\(x\\)</p>\n");
     }
 }

@@ -1,8 +1,9 @@
 //! Serving the site while writing it.
 //!
-//! The pages are compiled into the crate, so a change to one means building
-//! the generator again. [`Server::run`] serves `_site`, watches the
-//! repository, and on a change runs `cargo site build`, which does both.
+//! The pages are compiled into the site's crate, so a change to one means
+//! building the crate again. [`Server::run`] serves the site, watches the
+//! crate, and on a change runs the site's build command with cargo, which
+//! does both.
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -12,25 +13,32 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::{Duration, SystemTime};
 
-use super::{Options, Site};
+use crate::Options;
 
 /// Serves the site on localhost, building it again whenever a file changes.
 pub struct Server {
     options: Options,
     port: u16,
+    /// The arguments to `cargo` that run the site's binary, up to its
+    /// `build` command, like `run --bin site --`.
+    rebuild: Vec<String>,
 }
 
 impl Server {
     /// How often to look for changes.
     const POLL: Duration = Duration::from_millis(500);
 
-    pub fn new(options: Options, port: u16) -> Self {
-        Self { options, port }
+    pub fn new(options: Options, port: u16, rebuild: &[&str]) -> Self {
+        Self {
+            options,
+            port,
+            rebuild: rebuild.iter().map(|&a| a.to_owned()).collect(),
+        }
     }
 
-    /// Builds the site and serves it until stopped.
-    pub fn run(self) -> Result<(), String> {
-        Site::load(self.options.clone())?.build()?;
+    /// Builds the site with `build` and serves it until stopped.
+    pub fn run(self, build: impl FnOnce(Options) -> Result<(), String>) -> Result<(), String> {
+        build(self.options.clone())?;
         let listener = TcpListener::bind(("127.0.0.1", self.port)).map_err(|e| e.to_string())?;
         eprintln!(
             "Serving at http://127.0.0.1:{}{}/",
@@ -61,15 +69,8 @@ impl Server {
         let mut command = Command::new(std::env::var("CARGO").unwrap_or_else(|_| "cargo".into()));
         command
             .current_dir(&self.options.source)
-            .args([
-                "run",
-                "--quiet",
-                "--package",
-                "nixpulvis",
-                "--features",
-                "site",
-            ])
-            .args(["--bin", "site", "--", "build", "--destination"])
+            .args(&self.rebuild)
+            .args(["build", "--destination"])
             .arg(&self.options.destination);
         if !self.options.baseurl.is_empty() {
             command.args(["--baseurl", &self.options.baseurl]);
@@ -84,7 +85,7 @@ impl Server {
         }
     }
 
-    /// When every file in the repository, outside of builds, last changed.
+    /// When every file in the crate, outside of builds, last changed.
     fn snapshot(&self) -> BTreeMap<PathBuf, SystemTime> {
         let mut files = BTreeMap::new();
         let skip = [

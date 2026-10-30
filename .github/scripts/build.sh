@@ -6,9 +6,11 @@ cd "$(dirname "$0")/../.."
 
 cargo site build "$@"
 
-# The crate's own docs, with every page as a module, under /doc.
+# The crate's own docs, with every page as a module, and cratesite's, under
+# /doc.
 RUSTDOCFLAGS="--html-in-header $PWD/src/doc-header.html" \
-  cargo doc --locked --no-deps --lib -p nixpulvis --features site,syntax,native-links
+  cargo doc --locked --no-deps --lib -p nixpulvis -p cratesite \
+  --features nixpulvis/site,nixpulvis/syntax,nixpulvis/native-links,cratesite/build
 rm -rf _site/doc
 cp -r target/doc _site/doc
 echo '<meta http-equiv="refresh" content="0; url=nixpulvis/">' > _site/doc/index.html

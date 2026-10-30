@@ -15,7 +15,8 @@
 //!
 //! The code is placed verbatim in a LaTeX document, so `tikzcd` works as
 //! well as `tikzpicture`, compiled with `latex`, and converted with
-//! `dvisvgm`. Extra packages and libraries go in [`Tikz::PREAMBLE`].
+//! `dvisvgm`. Extra packages and libraries go in the
+//! site's [`Config::tikz_preamble`](crate::Config::tikz_preamble).
 //!
 //! Figures are cached in `.site-cache/tikz`, by a hash of their document,
 //! so a figure is only compiled again when it changes.
@@ -26,20 +27,17 @@ use std::process::Command;
 
 use sha2::{Digest, Sha256};
 
-use super::text::Text;
+use crate::text::Text;
 
 /// Draws TikZ figures, keeping a cache of them.
 pub struct Tikz {
     cache: PathBuf,
+    preamble: String,
 }
 
 impl Tikz {
     /// Bump to invalidate every cached figure after changing the output.
     const VERSION: u32 = 1;
-
-    /// Packages and libraries every figure can use.
-    pub const PREAMBLE: &str =
-        "\\usepackage{tikz-cd}\n\\usetikzlibrary{arrows.meta,graphs,positioning,automata}\n";
 
     const HEADER: &str = r"\def\pgfsysdriver{pgfsys-dvisvgm.def}
 \documentclass{article}
@@ -62,10 +60,12 @@ impl Tikz {
         "%\n\\end{lrbox}%\n\\sbox{\\tikzfigure}{%\n  \\kern\\tikzborder\n  \\vbox{\\kern\\tikzborder\\copy\\tikzfigure\\kern\\tikzborder}%\n  \\kern\\tikzborder}%\n\\special{papersize=\\the\\wd\\tikzfigure,\\the\\ht\\tikzfigure}%\n\\noindent\\usebox{\\tikzfigure}\n\\end{document}\n",
     ];
 
-    /// Draws figures, caching them in `cache`.
-    pub fn new(cache: impl Into<PathBuf>) -> Self {
+    /// Draws figures, caching them in `cache`, with `preamble` in every
+    /// figure's document for the packages and libraries they use.
+    pub fn new(cache: impl Into<PathBuf>, preamble: &str) -> Self {
         Self {
             cache: cache.into(),
+            preamble: preamble.to_owned(),
         }
     }
 
@@ -75,7 +75,7 @@ impl Tikz {
         let tex = format!(
             "{}{}\n{}{}{}",
             Self::HEADER,
-            Self::PREAMBLE,
+            self.preamble,
             Self::DOCUMENT[0],
             code.trim(),
             Self::DOCUMENT[1]

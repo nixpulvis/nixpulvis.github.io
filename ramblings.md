@@ -11,7 +11,7 @@ you.
 
 <ul class="posts">
 {%- for rambling in site.ramblings() -%}
-    {%- if !rambling.front.hidden && !rambling.front.archived -%}
+    {%- if !rambling.front.extra.hidden && !rambling.front.extra.archived -%}
         {%- call items::post_item(rambling) -%}{%- endcall -%}
     {%- endif -%}
 {%- endfor -%}

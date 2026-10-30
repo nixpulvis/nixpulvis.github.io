@@ -5,7 +5,7 @@ use syntect::html::{ClassStyle, ClassedHTMLGenerator};
 use syntect::parsing::{SyntaxReference, SyntaxSet};
 use syntect::util::LinesWithEndings;
 
-use super::text::Text;
+use crate::text::Text;
 
 /// Highlights code blocks.
 pub struct Highlighter {

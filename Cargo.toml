@@ -12,18 +12,13 @@ publish = false
 
 [features]
 default = []
-# The static site generator, which writes `_site`. See `cargo site --help`.
+# Builds the site with cratesite, which writes `_site`. See `cargo site help`.
 site = [
   "dep:askama",
-  "dep:chrono",
-  "dep:pulldown-cmark",
-  "dep:ratmark",
   "dep:serde_json",
   "dep:serde_yaml",
-  "dep:sha2",
-  "dep:syntect",
-  "ratmark/kramdown",
-  "ratmark/front-matter",
+  "cratesite/generate",
+  "cratesite/kramdown",
 ]
 # Browse the site in a terminal, shared by the native and web views.
 tui = ["dep:ratatui", "dep:ratmark", "dep:serde_json", "dep:web-time"]
@@ -39,27 +34,23 @@ path = "src/bin/site.rs"
 required-features = ["site"]
 
 [dependencies]
+cratesite = { path = "cratesite" }
 serde.workspace = true
 askama = { version = "0.16", optional = true }
-chrono = { version = "0.4", optional = true, default-features = false, features = ["clock", "std"] }
-pulldown-cmark = { version = "0.13", optional = true, default-features = false, features = ["html"] }
 ratatui = { workspace = true, optional = true, features = ["std"] }
 ratmark = { workspace = true, optional = true }
 serde_json = { workspace = true, optional = true }
 serde_yaml = { version = "0.9", optional = true }
-sha2 = { version = "0.10", optional = true }
-syntect = { version = "5.3", optional = true, default-features = false, features = ["default-syntaxes", "html", "regex-fancy"] }
 web-time = { version = "1", optional = true }
 
 [build-dependencies]
-pulldown-cmark = { version = "0.13", default-features = false }
-ratmark = { workspace = true, features = ["front-matter", "kramdown"] }
+cratesite = { path = "cratesite", features = ["build", "kramdown"] }
 
 [package.metadata.docs.rs]
 all-features = true
 
 [workspace]
-members = ["tui/term", "tui/web"]
+members = ["cratesite", "tui/term", "tui/web"]
 default-members = [".", "tui/term"]
 resolver = "3"
 

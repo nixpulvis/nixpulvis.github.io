@@ -8,8 +8,8 @@
 
 use askama::Template;
 
-use super::text::Text;
-use super::{Page, Site};
+use super::{Page, Post as _, Site};
+use cratesite::Text;
 
 /// A page's layout.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

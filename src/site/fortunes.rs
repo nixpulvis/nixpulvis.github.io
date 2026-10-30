@@ -4,7 +4,7 @@
 use std::fs;
 use std::path::Path;
 
-use super::text::Text;
+use cratesite::Text;
 
 /// A year of fortunes, from `fortunes/<year>.txt`. Entries are separated by
 /// a line holding only `%`.
