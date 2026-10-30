@@ -24,8 +24,8 @@ TikZ figures (`_plugins/tikz.rb`) also need `latex` and `dvisvgm` from TeX Live,
 and `make fortunes` needs `strfile` from fortune-mod:
 
 ```sh
-.github/scripts/setup.sh              # Debian/Ubuntu
-brew install texlive dvisvgm fortune  # macOS
+sudo apt-get install texlive-latex-base texlive-pictures dvisvgm fortune-mod  # Debian/Ubuntu
+brew install texlive dvisvgm fortune                                         # macOS
 ```
 
 ## Usage
