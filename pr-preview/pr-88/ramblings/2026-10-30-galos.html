@@ -6,10 +6,10 @@
     <title>nixpulvis - Galos</title>
     
     
-    <meta name="description" content="TODO: Opening. How you got into Elite: Dangerous, and what about it kept you around. Something about the scale of the galaxy, 400 billion systems and most of..." />
+    <meta name="description" content="The first README for Galos said it was “somewhere between reality and the flight sim E:D,” and then warned that most of what it described wasn’t implemented ..." />
     <meta property="og:site_name" content="nixpulvis" />
     <meta property="og:title" content="Galos" />
-    <meta property="og:description" content="TODO: Opening. How you got into Elite: Dangerous, and what about it kept you around. Something about the scale of the galaxy, 400 billion systems and most of..." />
+    <meta property="og:description" content="The first README for Galos said it was “somewhere between reality and the flight sim E:D,” and then warned that most of what it described wasn’t implemented ..." />
     <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-88/ramblings/2026-10-30-galos" />
     <meta property="og:type" content="article" />
     <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-88/img/link-preview.png" />
@@ -20,7 +20,7 @@
     <link rel="apple-touch-icon" href="/pr-preview/pr-88/apple-touch-icon.png" sizes="180x180" />
     <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-88/feed.xml" />
     <link rel="stylesheet" type="text/css" href="/pr-preview/pr-88/css/fonts.css" />
-    <link rel="stylesheet" href="/pr-preview/pr-88/css/style.css?v=1793400855">
+    <link rel="stylesheet" href="/pr-preview/pr-88/css/style.css?v=1793402765">
     <link rel="stylesheet" href="/pr-preview/pr-88/css/syntax.css">
     
     <script defer src="/pr-preview/pr-88/js/mousetrap.min.js"></script>
@@ -48,7 +48,7 @@
     <div class="content"><h2 class="title">
     Galos
     <small>
-        390 words
+        820 words
         
             drafted
         
@@ -56,63 +56,96 @@
     </small>
 </h2>
 
-<p>TODO: Opening. How you got into Elite: Dangerous, and what about it kept you
-around. Something about the scale of the galaxy, 400 billion systems and most
-of them never visited.</p>
+<p>The first README for <a href="/pr-preview/pr-88/projects/galos">Galos</a> said it
+was “somewhere between reality and the flight sim E:D,” and then warned that
+most of what it described wasn’t implemented yet. Both of those stayed true for
+a long time. This is the story of how a little program for watching factions
+in Elite: Dangerous slowly turned into a map of the whole galaxy, over almost
+six years and a lot of time not working on it.</p>
 
-<p>I’ve been working on <a href="/pr-preview/pr-88/projects/galos">Galos</a>, on and
-off, for almost six years now. This is the story of how a script for tracking
-a faction turned into a map of the galaxy.</p>
+<p>NOTE: A paragraph here on how you got into Elite, and what about it kept you
+around.</p>
 
-<h3 id="2021-the-faction">2021: The Faction</h3>
+<h3 id="2021-listening-to-the-galaxy">2021: Listening to the Galaxy</h3>
 
-<p>The first commit is from February 23rd, 2021. It just printed the EDDN feed to
-the terminal. Within a few days it was saving systems and factions to Postgres,
-and by the end of the month it was tracking influence.</p>
+<p>Elite has a surprisingly open ecosystem. Players run little tools alongside the
+game that forward what they see to a shared relay called <a href="https://github.com/EDCD/EDDN">EDDN</a>, and
+anyone can subscribe. On February 23rd, 2021 I started Galos by doing exactly
+that and printing the feed to my terminal. The next day it was saving systems
+to Postgres, then factions and their states, and by the end of the month it was
+tracking influence, the numbers that decide who controls a system in the
+game’s background simulation.</p>
 
-<p>TODO: Who were ED-NEWP? The early pull requests were merged from that GitHub
-org. What were you all trying to do with the background simulation, and why did
-influence tracking matter?</p>
+<p>This wasn’t just me. Galos lived under a small GitHub organization, ED-NEWP,
+and <a href="https://github.com/yevk">Yev Krupetsky</a> pitched in with the CI and a Discord bot. March was the busiest month of the whole first year.
+Galos learned to read a commander’s own journal files, search for systems by
+name, print pretty tables, and estimate fuel costs (until I decided I didn’t
+trust them and hid them again). There’s a commit from that month titled “Can’t
+use github secrets w/ free plan,” which says a lot about the budget.</p>
 
-<p>March was the busiest month of that first year. Search, syncing from a local
-journal directory, basic fuel costs, and <a href="https://github.com/yevk">Yev</a> added a Discord bot.</p>
+<p>NOTE: Who was ED-NEWP, and what were you trying to do with the influence data?</p>
 
-<p>TODO: What happened to the group and the bot? The bot was removed in May 2021.</p>
+<p>Then it slowed down. The bot was removed in May. In October I got the code
+compiling to WASM and put together a small GUI, and in January 2022 Galos
+learned about planets and moons. After that it mostly sat.</p>
 
-<p>In October I got it compiling to WASM with a small GUI, and in January 2022 it
-learned about planets and moons. Then it mostly sat.</p>
+<h3 id="keeping-the-lights-on">Keeping the Lights On</h3>
 
-<p>TODO: What pulled you away? Did you stop playing?</p>
-
-<h3 id="2023-keeping-the-lights-on">2023: Keeping the Lights On</h3>
-
-<p>A handful of commits in 2023, all of them “update deps and keep the build
-working.” TODO: Or skip this section, if there isn’t more to say.</p>
+<p>In 2023 there are a handful of commits, all of them some version of “update deps and
+keep the build working.” I wasn’t building anything new, but I wasn’t ready to
+let it rot either.</p>
 
 <h3 id="2024-a-map">2024: A Map</h3>
 
-<p>In August 2024 it came back with a burst of work. Importing from the EDSM API,
-stations with their services and economies, and then the start of a 3D map in
-Bevy. By the end of September I could fly a camera around, search for a
-system, and see a route drawn through the stars.</p>
+<p>In August 2024 it came back all at once. Galos could import from the EDSM API,
+stations showed up with their services and economies, and markets after that.
+There’s also a sad little commit noting that EDDB, one of the sites we had
+pulled data from, had shut down.</p>
 
-<p>TODO: What brought you back? Was there a moment you wanted a map the game
-doesn’t give you?</p>
+<p>Then, in the middle of August, I started on a map. It was written in Rust with
+<a href="https://bevyengine.org">Bevy</a>, it loaded systems from the database as the camera moved, and
+within a couple of weeks you could search for a system, click on it, and see a
+route drawn through the stars. September added a “spyglass” for controlling
+how much of the galaxy got fetched at once, along with a lot of refactoring and
+at least one commit titled “Throwing shit against a wall here.” By October it
+was quiet again. In December I added a license, and in April 2025 I made one
+small fix so markets would create their stations. That was all of 2025.</p>
 
 <h3 id="2026-the-whole-galaxy">2026: The Whole Galaxy</h3>
 
-<p>Then this August, about nine hundred commits in three months.</p>
+<p>This August, Galos woke up harder than it ever had. It started with updating
+the map to the latest Bevy, and then kept going for about nine hundred commits
+over the next three months.</p>
 
-<p>TODO: What changed? The map stopped needing a database, the index became its
-own on-disk octree, and the real sky (star catalogs, photometry, a CPU
-renderer) showed up. How did that come about, and how did it feel to finally
-see the whole galaxy drawn at once?</p>
+<p>The biggest change is that the map no longer needs a database. Galos still
+subscribes to EDDN and still keeps everything in Postgres, but now it also
+builds a spatial index, an octree with its own on-disk format, and the map
+draws from that alone. That means it can draw every known system at once, as a
+glowing field from far away that resolves into individual stars, names, and
+then a system’s own planets as you fly in. The planets are drawn where the
+game’s clock has carried them by now, not where somebody last happened to scan
+them.</p>
 
 <p><img src="/pr-preview/pr-88/img/galos/galaxy.jpg" alt="The galaxy from above, the core at the top" /></p>
 
+<p>Then the project grew a second question. Elite’s galaxy is a model of the
+Milky Way with real catalog stars placed near Sol, so how close is it to the
+real thing? Galos now reads the HYG star catalog, works out magnitudes,
+temperatures and colors, and renders a patch of sky the way it would actually
+look. The Big Dipper became a golden test image. While checking the catalog I
+found that throwing away the rows with no measured distance quietly removes
+about one naked-eye star in twenty five, and they’re almost all distant
+supergiants like Mu Cephei. The only reason I know that is because the point
+was to compare against reality and not just assume.</p>
+
+<p><img src="/pr-preview/pr-88/img/galos/local.jpg" alt="The stars around Sol, named" /></p>
+
+<p>NOTE: What brought you back this August, and what changed in how you were
+working that made this much happen?</p>
+
 <h3 id="whats-next">What’s Next</h3>
 
-<p>TODO: Where it goes from here.</p>
+<p>NOTE: Where it goes from here, and whether it’s ready for anyone else to try.</p>
 
 
 </div>
