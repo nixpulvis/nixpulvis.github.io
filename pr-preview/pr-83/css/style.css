@@ -2,6 +2,9 @@
 :root {
   --black: black;
   --white: white;
+  /* The dark scheme's background, and the terminal view's in either scheme,
+     as in tui/app/src/colors.rs. */
+  --dark: #161616;
   --background: var(--white);
   --border: var(--black);
   --text: #282c34;
@@ -21,15 +24,13 @@
   --highlight-green: #e3f6e3;
   --highlight-green-edge: #4caf50;
   --dashed: 1px dashed var(--border);
-  /* The terminal view's, dark in either scheme, as in tui/app/src/colors.rs. */
-  --tui-background: #161616;
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
 
   /* On screens only, so a printed page stays black on white. */
   @media screen and (prefers-color-scheme: dark) {
     color-scheme: dark;
-    --background: #161616;
+    --background: var(--dark);
     --border: #777;
     --text: #cacaca;
     --muted: #999;
@@ -643,8 +644,9 @@ li.draft {
         border-color: var(--text);
       }
 
-      /* The picked tag is filled with its edge color. */
-      &:target {
+      /* The picked tag is filled with its edge color, and so is "all" when
+         no tag is picked. */
+      &:target, &#all:not(:has(~ :target)) {
         background: var(--edge);
         color: var(--background);
 
@@ -657,12 +659,6 @@ li.draft {
     & small {
       color: var(--muted);
     }
-  }
-
-  & nav.tags:not(:has(:target)) #all {
-    background: var(--text);
-    border-color: var(--text);
-    color: var(--background);
   }
 
   & ul {
@@ -710,7 +706,7 @@ html.tui {
   overscroll-behavior: none;
   /* The view's color from the first paint, so a page opening in the view
      doesn't flash the page's own background before the view draws. */
-  background: var(--tui-background);
+  background: var(--dark);
 
   & body {
     background: none;
@@ -728,7 +724,7 @@ html.tui {
   overflow: hidden;
   /* Touches are the view's to scroll with, not the browser's. */
   touch-action: none;
-  background: var(--tui-background);
+  background: var(--dark);
   font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
   font-size: 15px;
   line-height: normal;
