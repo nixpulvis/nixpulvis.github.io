@@ -1,0 +1,979 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Anonymous Struct Parameters: The Idea"><title>nixpulvis::ramblings::anonymous_struct_parameters - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nixpulvis" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.1 (58cf8f9c3 2026-10-13)" data-channel="1.99.1" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"><!-- KaTeX, for the math in the pages' docs, written as \( \) and \[ \]. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, { delimiters: [
+    { left: '\\[', right: '\\]', display: true },
+    { left: '\\(', right: '\\)', display: false },
+  ] })"></script>
+
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module anonymous_struct_parameters</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../nixpulvis/index.html">nixpulvis</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module anonymous_<wbr>struct_<wbr>parameters</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#1-struct-args" title="1. Struct Args">1. Struct Args</a><ul><li><a href="#anonymous-structs-in-params" title="Anonymous structs in params">Anonymous structs in params</a></li><li><a href="#struct-pattern-inference" title="Struct pattern inference">Struct pattern inference</a></li><li><a href="#elided-struct-patterns" title="Elided struct patterns">Elided struct patterns</a></li><li><a href="#elided-parameter-types" title="Elided parameter types">Elided parameter types</a></li><li><a href="#api-evolution-and-semver" title="API evolution and SemVer">API evolution and SemVer</a></li></ul></li><li><a href="#2-examples" title="2. Examples">2. Examples</a><ul><li><a href="#unambiguous-calls" title="Unambiguous calls">Unambiguous calls</a></li><li><a href="#existing-structs" title="Existing structs">Existing structs</a></li><li><a href="#options-structs" title="Options structs">Options structs</a></li><li><a href="#generics-and-lifetimes" title="Generics and lifetimes">Generics and lifetimes</a></li><li><a href="#traits" title="Traits">Traits</a></li></ul></li><li><a href="#3-named-argument-sugar" title="3. Named Argument Sugar">3. Named Argument Sugar</a><ul><li><a href="#signature-syntax-fn-fa-i32-x-i32" title="Signature syntax: `fn f(a: i32; x: i32)`">Signature syntax: <code>fn f(a: i32; x: i32)</code></a></li><li><a href="#call-syntax-fa-x-1" title="Call syntax: `f(a, x: 1)`">Call syntax: <code>f(a, x: 1)</code></a></li><li><a href="#-vs-" title="`;` vs `*`"><code>;</code> vs <code>*</code></a></li><li><a href="#defaults-fa-x-1-" title="Defaults: `f(a, x: 1, ..)`">Defaults: <code>f(a, x: 1, ..)</code></a></li></ul></li><li><a href="#4-relating-to-recent-posts" title="4. Relating to Recent Posts">4. Relating to Recent Posts</a><ul><li><a href="#botahamec-names-defaults-and-pub-parameters" title="Botahamec: names, defaults, and `pub` parameters">Botahamec: names, defaults, and <code>pub</code> parameters</a></li><li><a href="#klabnik-open-minded-concerns" title="Klabnik: open-minded concerns">Klabnik: open-minded concerns</a></li><li><a href="#endler-structs-already-do-this" title="Endler: structs already do this">Endler: structs already do this</a></li><li><a href="#where-they-agree" title="Where they agree">Where they agree</a></li></ul></li><li><a href="#5-limitations-and-open-questions" title="5. Limitations and Open Questions">5. Limitations and Open Questions</a><ul><li><a href="#non-const-defaults" title="Non-const defaults">Non-const defaults</a></li><li><a href="#function-types" title="Function types">Function types</a></li><li><a href="#macros" title="Macros">Macros</a></li><li><a href="#tooling" title="Tooling">Tooling</a></li></ul></li><li><a href="#6-whats-next" title="6. What’s Next">6. What’s Next</a></li></ul><h3><a href="#statics">Module Items</a></h3><ul class="block"><li><a href="#statics" title="Statics">Statics</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In nixpulvis::<wbr>ramblings</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">nixpulvis</a>::<wbr><a href="../index.html">ramblings</a></div><h1>Module <span>anonymous_<wbr>struct_<wbr>parameters</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/nixpulvis/home/runner/work/nixpulvis.github.io/nixpulvis.github.io/target/debug/build/nixpulvis-896b5441140f1b8e/out/pages.rs.html#650">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Anonymous Struct Parameters: The Idea</p>
+<p><small>2026-10-19 · <a href="https://nixpulvis.com/ramblings/2026-10-19-anonymous-struct-parameters">on the site</a> · <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2026-10-19-anonymous-struct-parameters.md">source</a></small></p>
+<p>There have been a few <a href="#4-relating-to-recent-posts">recent posts</a> on how Rust
+should adopt <em>named arguments</em>, and I even had some thoughts on the matter back
+in <a href="https://github.com/rust-lang/rfcs/issues/323#issuecomment-213065086">a comment I left on the issue in 2016</a>. My original idea was
+never really something I expected to be adopted, but my point was always that
+named arguments are just structs, which is even more true now than back then
+given <a href="https://github.com/rust-lang/rfcs/pull/3681">default field values (RFC 3681)</a>. It tried to show a direct
+correspondence between positional arguments with tuples and named arguments with
+structs, which was cute, but ultimately not good syntax.</p>
+<p>But the point stands, Rust already has a named, reorderable, defaultable
+construct… the <code>struct</code>. I’m not the only one who thinks so. In the 2020
+<a href="https://internals.rust-lang.org/t/pre-rfc-named-arguments/12730">named arguments pre-RFC</a>, CAD97 <a href="https://internals.rust-lang.org/t/pre-rfc-named-arguments/12730/47">argued</a> that making
+options structs more ergonomic was a better short-term goal than full named
+arguments, and the <a href="https://github.com/rust-lang/rfcs/pull/2964">RFC</a> it became was <a href="https://github.com/rust-lang/rfcs/pull/2964#issuecomment-671545486">closed</a>, with
+the lang team asking for a roadmap first. scottmcm has since <a href="https://internals.rust-lang.org/t/record-types/18258/11">pointed
+out</a> that named arguments only need an inferred struct
+literal and a way to declare an anonymous struct in a function signature. This
+follows that direction, directly. <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a> already proposes an
+inferred literal, but goes further than we need and also doesn’t cover anonymous
+structs in function signatures.</p>
+<p>First we’ll show <a href="#1-struct-args"><code>#![feature(anonymous_struct_parameters)]</code></a>:</p>
+<ul>
+<li><code>fn foo(a: struct { x: i32, y: i32 = 0 })</code>: the type of an
+anonymous struct, usable in a parameter’s type position</li>
+</ul>
+<p>Which requires <a href="#struct-pattern-inference"><code>#![feature(struct_pattern_inference)]</code></a> to then call:</p>
+<ul>
+<li><code>_ { x: 1, .. }</code>: a struct literal or pattern whose type is inferred</li>
+</ul>
+<p>These two features form the core of the struct argument proposal.</p>
+<p>Then <a href="#elided-struct-patterns"><code>#![feature(anonymous_struct_pattern_elision)]</code></a> gives:</p>
+<ul>
+<li><code>fn foo(struct { ref x: i32, y: i32 = 0 })</code>: where the anonymous
+struct both defines the type and the pattern</li>
+</ul>
+<p>And optionally, <a href="#elided-parameter-types"><code>#![feature(parameter_type_elision)]</code></a>
+adds corresponding elision of types that are described by their pattern:</p>
+<ul>
+<li><code>fn bar(Point { x, y })</code>: binds <code>x</code> and <code>y</code> without writing <code>: Point</code></li>
+</ul>
+<p>Later we’ll show <a href="#3-named-argument-sugar"><code>#![feature(named_arguments)]</code></a> for a
+proposed syntax of what a full named argument sugar might look like:</p>
+<ul>
+<li><code>fn baz(x: i32; named: &amp;str)</code></li>
+<li><code>baz(1, named: "hi");</code></li>
+</ul>
+<hr />
+<ul>
+<li><a href="#1-struct-args">1. Struct Args</a>
+<ul>
+<li><a href="#anonymous-structs-in-params">Anonymous structs in params</a></li>
+<li><a href="#struct-pattern-inference">Struct pattern inference</a></li>
+<li><a href="#elided-struct-patterns">Elided struct patterns</a></li>
+<li><a href="#elided-parameter-types">Elided parameter types</a></li>
+<li><a href="#api-evolution-and-semver">API evolution and SemVer</a></li>
+</ul>
+</li>
+<li><a href="#2-examples">2. Examples</a>
+<ul>
+<li><a href="#unambiguous-calls">Unambiguous calls</a></li>
+<li><a href="#existing-structs">Existing structs</a></li>
+<li><a href="#options-structs">Options structs</a></li>
+<li><a href="#generics-and-lifetimes">Generics and lifetimes</a></li>
+<li><a href="#traits">Traits</a></li>
+</ul>
+</li>
+<li><a href="#3-named-argument-sugar">3. Named Argument Sugar</a>
+<ul>
+<li><a href="#signature-syntax-fn-fa-i32-x-i32">Signature syntax: <code>fn f(a: i32; x: i32)</code></a></li>
+<li><a href="#call-syntax-fa-x-1">Call syntax: <code>f(a, x: 1)</code></a></li>
+<li><a href="#-vs-"><code>;</code> vs <code>*</code></a></li>
+<li><a href="#defaults-fa-x-1-">Defaults: <code>f(a, x: 1, ..)</code></a></li>
+</ul>
+</li>
+<li><a href="#4-relating-to-recent-posts">4. Relating to Recent Posts</a>
+<ul>
+<li><a href="#botahamec-names-defaults-and-pub-parameters">Botahamec: names, defaults, and <code>pub</code> parameters</a></li>
+<li><a href="#klabnik-open-minded-concerns">Klabnik: open-minded concerns</a></li>
+<li><a href="#endler-structs-already-do-this">Endler: structs already do this</a></li>
+<li><a href="#where-they-agree">Where they agree</a></li>
+</ul>
+</li>
+<li><a href="#5-limitations-and-open-questions">5. Limitations and Open Questions</a>
+<ul>
+<li><a href="#non-const-defaults">Non-const defaults</a></li>
+<li><a href="#function-types">Function types</a></li>
+<li><a href="#macros">Macros</a></li>
+<li><a href="#tooling">Tooling</a></li>
+</ul>
+</li>
+<li><a href="#6-whats-next">6. What’s Next</a></li>
+</ul>
+<hr />
+<h3 id="1-struct-args"><a class="doc-anchor" href="#1-struct-args">§</a>1. Struct Args</h3>
+<p>Today in Rust you can pass struct arguments in a number of ways. Given the
+following struct:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Point {
+    x: i32,
+    y: i32,
+}</code></pre></div>
+<p>You can use it in a function definition:</p>
+<ol>
+<li>As any other parameter: <code>fn f(p: Point) {}</code></li>
+<li>With a pattern: <code>fn f(Point { x, y }: Point) {}</code></li>
+</ol>
+<p>The first form is just standard argument passing, which doesn’t destructure the
+named fields at all, while the second form destructures the named fields but
+names the struct type twice.</p>
+<p>I’ll be introducing new syntax in stages, and noting all new syntax inside
+highlighted code blocks.</p>
+<h4 id="anonymous-structs-in-params"><a class="doc-anchor" href="#anonymous-structs-in-params">§</a>Anonymous structs in params</h4>
+<p>For a function argument without a named struct type to use, an anonymous struct
+type can be declared inline with <code>struct { .. }</code>. This is the base feature,
+<code>#![feature(anonymous_struct_parameters)]</code>, and it’s an ordinary type in the
+<code>pat: ty</code> parameter position:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>g(p: <span class="kw">struct </span>{ x: i32, y: i32 }) {}</code></pre></div></div>
+<p>This only binds <code>p</code>, exactly as <code>p: Point</code> would. These new structs are
+anonymous, just like anonymous closure types, e.g. <code>{closure@foo.rs:2:13: 2:21}</code>.</p>
+<p>Other than lacking a name though, an anonymous struct parameter <strong>is just a
+<code>struct</code></strong>. The rules for their evaluation order, borrowing, patterns, and
+defaults (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>) are the ones Rust already has for structs, not
+new ones.</p>
+<p>Anonymous struct types have come up on internals <a href="https://internals.rust-lang.org/t/pre-rfc-unnamed-struct-types/3872">since
+2016</a>, usually as <em>structural</em> types, with <code>{ red: 25i8, .. }</code> as both a type and an expression, and named arguments as one of the
+motivations. When it came up <a href="https://internals.rust-lang.org/t/record-types/18258">again in 2023</a>, scottmcm
+<a href="https://internals.rust-lang.org/t/record-types/18258/11">replied</a> with the point that named arguments don’t need
+structural types at all, just an inferred struct literal and “sugar to create an
+anonymous type in a function definition”, which is what’s proposed here. <a href="https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592">As
+recently as 2025</a>, Josh Triplett <a href="https://internals.rust-lang.org/t/is-the-anonymous-struct-unnamed-struct-still-in-progress/23592/3">separated</a>
+three ideas that usually get conflated. The first is structural anonymous types,
+which seem unlikely to make progress soon, though we’ll explore some of their
+motivations in <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">record types (in the upcoming follow-up
+post)</a>. The second is <a href="https://rust-lang.github.io/rfcs/2102-unnamed-fields.html">RFC 2102</a>’s unnamed fields
+(<a href="https://github.com/rust-lang/rust/issues/49804">tracking issue</a>), which are about <code>#[repr(C)]</code> layout and not
+directly related to this. Their syntax does line up though, RFC 2102 also
+spells an anonymous struct type <code>struct { .. }</code>.</p>
+<h4 id="struct-pattern-inference"><a class="doc-anchor" href="#struct-pattern-inference">§</a>Struct pattern inference</h4>
+<p>Since the struct has no name, <code>#![feature(struct_pattern_inference)]</code> lets you
+bind its fields with <code>_ { .. }</code>, which is a struct pattern that infers its type.
+It works anywhere a pattern does, so the fields can also be renamed, borrowed,
+or skipped:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>g(<span class="kw">_ </span>{ x, y }: <span class="kw">struct </span>{ x: i32, y: i32 }) {}
+<span class="kw">fn </span>g(<span class="kw">_ </span>{ x: horizontal, .. }: <span class="kw">struct </span>{ x: i32, y: i32 = <span class="number">0 </span>}) {}
+<span class="kw">let _ </span>{ x, y } = point;</code></pre></div></div>
+<p>Calling a function with an anonymous struct argument is just like calling it
+with a named struct argument, except you can only use an <code>_</code> to refer to it, the
+literal form of the same <code>_ { .. }</code>:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>g(<span class="kw">_ </span>{ x: <span class="number">1</span>, y: <span class="number">2 </span>});</code></pre></div></div>
+<p>But nothing is stopping you from inferring the type of a named struct argument either.</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// recall: fn f(p: Point) {}
+</span>f(<span class="kw">_ </span>{ x: <span class="number">1</span>, y: <span class="number">2 </span>});</code></pre></div></div>
+<p>Note that <code>_</code> never fills in the type of a parameter. <code>fn g(_ { x })</code> is an
+error for the same reason <code>fn g(x: _)</code> is. This is because function signatures
+don’t infer their types.</p>
+<p>Josh’s third idea is passing a struct to a function without naming it. The <code>f(_ { x: 1 })</code> form is the call half of what’s proposed here. This idea is
+materialized in the open <a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a>, which proposes inferring a struct
+literal’s path (spelled <code>.{ .. }</code>). <code>binrw</code>’s maintainers <a href="https://github.com/rust-lang/rfcs/pull/3444#issuecomment-5626022100">point
+out</a> that this plus field defaults (RFC 3681) would replace
+<a href="https://github.com/jam1garner/binrw/blob/585d48134e7b71be74d8b81b54cdbd07f6f1a1c4/binrw/src/named_args.rs">their <code>args!</code> macro</a> and its inference hacks. However, RFC
+3444 proposes a more general “path inference” and focuses on inferring the path
+of an <code>enum</code>, which we aren’t concerned with to satisfy ergonomic struct
+arguments.</p>
+<div class="aside" markdown="1">
+<p>I personally don’t accept that <code>.{ }</code> is better, since <code>_</code> is already the
+convention for inferring types, and I have no issue with <code>_::Variant</code> naming an
+enum’s variant. Maybe this point will prove to be contentious, but I don’t see
+how <code>.{ .. }</code> really fixes it smoothly. This is something to consider now, since
+it might impact the broader design, but nothing we introduce here touches <code>enum</code>
+today. I’m not convinced inferred <code>enum</code> variants couldn’t be solved in a way
+that works naturally with <code>_ { }</code>.</p>
+</div>
+<p>With inferred literals, default field values (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>) carry over
+directly:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>h(a: i32, <span class="kw">_ </span>{ i, log }: <span class="kw">struct </span>{ i: i32 = <span class="number">1</span>, log: bool = <span class="bool-val">false </span>}) {}</code></pre></div></div>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>h(<span class="number">1</span>, <span class="kw">_ </span>{ .. });
+h(<span class="number">2</span>, <span class="kw">_ </span>{ i: <span class="number">2</span>, .. });
+h(<span class="number">3</span>, <span class="kw">_ </span>{ i: set_log(), log: get_log() });</code></pre></div></div>
+<p>So while this doesn’t give us default positional arguments, it does give us a way to define default fields for anonymous struct arguments.</p>
+<h4 id="elided-struct-patterns"><a class="doc-anchor" href="#elided-struct-patterns">§</a>Elided struct patterns</h4>
+<p>So far <code>h</code> has had to name <code>i</code> and <code>log</code> twice, once to bind them in the
+pattern and again to declare them in the type. Since we almost always want the
+fields themselves, we can leave the pattern off.</p>
+<p><code>#![feature(anonymous_struct_pattern_elision)]</code> lets an anonymous struct type
+act as its own pattern, binding each of its fields by name:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>h(a: i32, <span class="kw">struct </span>{ i: i32 = <span class="number">1</span>, log: bool = <span class="bool-val">false </span>}) {}</code></pre></div></div>
+<p>This is the form we’ll use for most of the rest of this post.</p>
+<p>Fields are written just like parameters here, so they can use the same binding
+modes, <code>mut</code>, <code>ref</code>, and <code>ref mut</code>:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>g(<span class="kw">struct </span>{ <span class="kw-2">mut </span>x: i32, <span class="kw-2">ref </span>name: String }) {}</code></pre></div></div>
+<p>These only make sense when the type is also the pattern, so
+<code>p: struct { mut x: i32 }</code> is an error.</p>
+<p>A field can also be an anonymous struct itself, though how an elided pattern
+should bind the nested fields is still an open question, which the upcoming
+<a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">follow-up post</a> will go into.</p>
+<h4 id="elided-parameter-types"><a class="doc-anchor" href="#elided-parameter-types">§</a>Elided parameter types</h4>
+<p>Anonymous struct arguments don’t actually need elided parameter types, and
+neither does the named argument sugar later on, so this could just as well be
+its own proposal. But once a type can imply its pattern, it’s a natural time to
+let a pattern imply its type too.</p>
+<p>This also removes the duplication of <code>Point</code> from the start of this section.
+With <code>#![feature(parameter_type_elision)]</code>, a parameter’s type can be left out
+when the pattern already names it.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>f(Point { x, y }: Point) {}</code></pre></div>
+<p>With an elided struct type, it could be written as:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>f(Point { x, y }) {}</code></pre></div></div>
+<p>The rule is that a pattern which spells out a type can stand for both the
+pattern and that type. Struct and tuple struct patterns contain the type in
+their path names, a reference pattern has its referenced type, and tuples and
+arrays work if their members spell out their types.</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>f(p @ Point { x, .. })   <span class="comment">// p @ Point { x, .. }: Point
+</span><span class="kw">fn </span>f(Meters(m))             <span class="comment">// Meters(m): Meters
+</span><span class="kw">fn </span>f(<span class="kw-2">&amp;</span>Point { x, y })       <span class="comment">// &amp;Point { x, y }: &amp;Point
+</span><span class="kw">fn </span>f((Point { x, y }, Meters(m)))  <span class="comment">// (Point, Meters)
+</span><span class="kw">fn </span>f([Meters(a), m])        <span class="comment">// [Meters(a), m]: [Meters; 2]</span></code></pre></div></div>
+<p>This elision is purely syntactic since the type is basically just the pattern’s
+path copied over. Lifetimes can still be elided, e.g. <code>&amp;Point { .. }</code> still
+works just like <code>&amp;Point</code> does, and generic arguments are written in the pattern
+the way they would be in the type, e.g. <code>fn f&lt;T&gt;(Pair&lt;T&gt; { a, b })</code> (or with a
+turbofish, <code>Pair::&lt;T&gt;</code>). A variant pattern like <code>Shape::Square(s)</code> names a
+variant, not a type, so it can’t elide anything.</p>
+<h4 id="api-evolution-and-semver"><a class="doc-anchor" href="#api-evolution-and-semver">§</a>API evolution and SemVer</h4>
+<p>Since an anonymous struct’s fields are named at every call, its field names are
+part of the function’s API, just like a public struct’s. That changes which
+edits to a function are breaking:</p>
+<ul>
+<li><strong>Adding a parameter</strong> is always breaking for positional parameters, however
+adding a field <em>with a default</em> to an anonymous struct isn’t breaking for
+callers that wrote <code>..</code>, with or without the named argument
+<a href="#defaults-fa-x-1-">sugar</a></li>
+<li><strong>Reordering</strong> positional parameters is breaking, however reordering fields
+isn’t since they’re passed by name</li>
+<li><strong>Renaming</strong> a positional parameter is free, since its name isn’t part of its
+API, however renaming a field is breaking</li>
+<li><strong>Removing</strong> either, or adding a field <em>without</em> a default, is breaking</li>
+</ul>
+<p>For named structs, <code>#[non_exhaustive]</code> makes adding fields non-breaking, but
+rather bluntly, since it forbids struct literals outside the defining crate
+entirely, and <a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a> doesn’t allow it on structs with default
+field values. So a library has to choose between defaults that callers can use
+with <code>..</code>, and adding fields without a breaking change. Anonymous structs have
+no struct item to put <code>#[non_exhaustive]</code> on, so they don’t even get that
+choice. If the two are ever allowed together, anonymous structs could opt in, or
+be non-exhaustive by default, meaning every literal from outside the crate has
+to write <code>..</code>, even one that lists every field. Then adding a field with a
+default would never be a breaking change.</p>
+<h3 id="2-examples"><a class="doc-anchor" href="#2-examples">§</a>2. Examples</h3>
+<p>Now let’s look at some realistic examples of this new syntax. Later we’ll see
+how to make it look even more like named arguments with some <a href="#3-named-argument-sugar">syntactic
+sugar</a>. I have a hacked-together prototype
+implementation for every feature in this post, which the upcoming <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">follow-up
+post</a> will cover, but for now we’ll stick to the ones from Section 1
+and leave <code>named_arguments</code> for later.</p>
+<h4 id="unambiguous-calls"><a class="doc-anchor" href="#unambiguous-calls">§</a>Unambiguous calls</h4>
+<p>Consider the <a href="https://doc.rust-lang.org/std/fs/fn.copy.html"><code>std::fs::copy</code></a> function, which has the following
+signature:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">pub fn </span>copy&lt;P: AsRef&lt;Path&gt;, Q: AsRef&lt;Path&gt;&gt;(
+    from: P,
+    to: Q,
+) -&gt; io::Result&lt;u64&gt;</code></pre></div>
+<p>Calling it can be ambiguous, since both arguments are just paths:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">let </span>a = Path::new(<span class="string">"notes.txt"</span>);
+<span class="kw">let </span>b = Path::new(<span class="string">"notes.bak"</span>);
+copy(a, b)<span class="question-mark">?</span>;
+copy(b, a)<span class="question-mark">?</span>;  <span class="comment">// oops, overwrites notes.txt</span></code></pre></div>
+<p>With an anonymous struct instead:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">pub fn </span>copy&lt;P: AsRef&lt;Path&gt;, Q: AsRef&lt;Path&gt;&gt;(<span class="kw">struct </span>{
+    from: P,
+    to: Q,
+}) -&gt; io::Result&lt;u64&gt;</code></pre></div></div>
+<p>Each call names its fields, so it’s clear which path is <code>from</code> and which is
+<code>to</code>:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">let </span>a = Path::new(<span class="string">"notes.txt"</span>);
+<span class="kw">let </span>b = Path::new(<span class="string">"notes.bak"</span>);
+copy(<span class="kw">_ </span>{ from: a, to: b })<span class="question-mark">?</span>;
+copy(<span class="kw">_ </span>{ from: b, to: a })<span class="question-mark">?</span>;  <span class="comment">// clearly wrong</span></code></pre></div></div>
+<h4 id="existing-structs"><a class="doc-anchor" href="#existing-structs">§</a>Existing structs</h4>
+<p><code>_ { .. }</code> isn’t tied to anonymous structs. It works wherever the expected type
+is a struct, so it works for every existing struct without changing anything:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Rgb { red: u8, green: u8, blue: u8 }
+
+<span class="kw">fn </span>fill(shape: <span class="kw-2">&amp;mut </span>Shape, color: Rgb) {
+    <span class="macro">unimplemented!</span>()
+}
+
+fill(<span class="kw-2">&amp;mut </span>shape, <span class="kw">_ </span>{ red: <span class="number">0xA8</span>, green: <span class="number">0x3C</span>, blue: <span class="number">0x09 </span>});
+
+<span class="kw">let </span>accent = Rgb { red: <span class="number">0x1E</span>, green: <span class="number">0x90</span>, blue: <span class="number">0xFF </span>};
+fill(<span class="kw-2">&amp;mut </span>shape, <span class="kw">_ </span>{ red: <span class="number">0xFF</span>, ..accent });
+
+<span class="comment">// wgpu's `InstanceDescriptor`
+</span>Instance::new(<span class="kw">_ </span>{
+    backends: Backends::VULKAN,
+    ..InstanceDescriptor::new_without_display_handle()
+});</code></pre></div></div>
+<p>Keep in mind that <code>..</code> and <code>..Default::default()</code> are different things. A plain
+<code>..</code> takes each omitted field’s declared default (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>), which
+must be const, see <a href="#non-const-defaults">non-const defaults</a>, while
+<code>..Default::default()</code> builds the struct’s whole <code>Default</code> value and takes the
+omitted fields from it. Neither is new here, they are just how structs already
+work.</p>
+<h4 id="options-structs"><a class="doc-anchor" href="#options-structs">§</a>Options structs</h4>
+<p>With default field values (<a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>), an options struct no longer
+needs the builder pattern, since <code>..</code> fills in every field the caller leaves
+out:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">pub struct </span>CropOptions {
+    <span class="kw">pub </span>width: u32,
+    <span class="kw">pub </span>height: <span class="prelude-ty">Option</span>&lt;u32&gt; = <span class="prelude-val">None</span>,
+    <span class="kw">pub </span>x: u32 = <span class="number">0</span>,
+    <span class="kw">pub </span>y: u32 = <span class="number">0</span>,
+}
+
+<span class="kw">pub fn </span>crop(img: <span class="kw-2">&amp;</span>Image, options: CropOptions) -&gt; Image {
+    <span class="macro">unimplemented!</span>()
+}
+
+<span class="kw">let </span>img = Image::from_png(<span class="string">"cat.png"</span>);
+crop(<span class="kw-2">&amp;</span>img, CropOptions { width: <span class="number">200</span>, .. });
+crop(<span class="kw-2">&amp;</span>img, CropOptions { width: <span class="number">200</span>, height: <span class="prelude-val">Some</span>(<span class="number">200</span>), .. });
+crop(<span class="kw-2">&amp;</span>img, CropOptions { y: <span class="number">25</span>, x: <span class="number">15</span>, width: <span class="number">200</span>, .. });</code></pre></div>
+<p>Today’s calls name <code>CropOptions</code> every time, and with <code>_ { .. }</code> they wouldn’t
+have to. But it’s still a whole separate type, with its own name and <code>pub</code> on
+every field, just to pass a few arguments to one function. An anonymous struct
+keeps the same fields and defaults, but puts them right in the signature:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">pub fn </span>crop(img: <span class="kw-2">&amp;</span>Image, <span class="kw">struct </span>{
+    width: u32,
+    height: <span class="prelude-ty">Option</span>&lt;u32&gt; = <span class="prelude-val">None</span>,
+    x: u32 = <span class="number">0</span>,
+    y: u32 = <span class="number">0</span>,
+}) -&gt; Image {
+    <span class="macro">unimplemented!</span>()
+}
+
+<span class="kw">let </span>img = Image::from_png(<span class="string">"cat.png"</span>);
+crop(<span class="kw-2">&amp;</span>img, <span class="kw">_ </span>{ width: <span class="number">200</span>, .. });
+crop(<span class="kw-2">&amp;</span>img, <span class="kw">_ </span>{ width: <span class="number">200</span>, height: <span class="prelude-val">Some</span>(<span class="number">200</span>), .. });
+crop(<span class="kw-2">&amp;</span>img, <span class="kw">_ </span>{ y: <span class="number">25</span>, x: <span class="number">15</span>, width: <span class="number">200</span>, .. });</code></pre></div></div>
+<p>If the options do end up needing a name, switching back to <code>CropOptions</code> doesn’t
+change the calls, since <code>_ { .. }</code> still works to build a named struct.</p>
+<h4 id="generics-and-lifetimes"><a class="doc-anchor" href="#generics-and-lifetimes">§</a>Generics and lifetimes</h4>
+<p>Fields can use anything a parameter’s type can, including generic parameters,
+elided lifetimes, <code>impl Trait</code>, <code>Self</code>, and associated types:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>map&lt;T, U&gt;(v: Vec&lt;T&gt;, <span class="kw">struct </span>{
+    f: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>T) -&gt; U,
+    limit: usize = <span class="number">10</span>,
+}) -&gt; Vec&lt;U&gt; {
+    <span class="macro">unimplemented!</span>()
+}
+
+map(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="kw">_ </span>{ f: |n| n * <span class="number">2</span>, .. });
+map(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="kw">_ </span>{ f: |n| n.to_string(), limit: <span class="number">2 </span>});</code></pre></div></div>
+<p>This works the way closures do. A closure written inside <code>map</code> gets a type
+that’s generic over <code>map</code>’s generic parameters, and so does the anonymous
+struct. Each instantiation of <code>map</code>, including the hidden type parameter that
+<code>impl Fn</code> introduces, gets its own instantiation of the struct. Nothing about
+the struct needs declaring, it just uses what the signature already has.</p>
+<p>A lifetime in a field is the same as it would be in a positional parameter,
+whether it’s named like <code>'a</code> here, or elided like <code>&amp;str</code> would be in <code>x: &amp;str</code>.
+Unlike a named struct, which would need <code>struct PickArgs&lt;'a&gt;</code>, the anonymous
+struct parameter never declares lifetimes itself:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>pick&lt;<span class="lifetime">'a</span>&gt;(x: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str, <span class="kw">struct </span>{
+    fallback: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str = <span class="string">"none"</span>,
+}) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str {
+    <span class="macro">unimplemented!</span>()
+}
+
+pick(<span class="string">""</span>, <span class="kw">_ </span>{ .. });
+pick(<span class="string">""</span>, <span class="kw">_ </span>{ fallback: <span class="string">"empty" </span>});</code></pre></div></div>
+<h4 id="traits"><a class="doc-anchor" href="#traits">§</a>Traits</h4>
+<p>Trait methods can take anonymous struct parameters just like any other method.
+The trait owns the struct and its defaults, and each <code>impl</code> repeats the fields
+with the same types, just like positional parameters. Calls through generics and
+<code>dyn</code> work like any other method call:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>Writer {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">struct </span>{
+        data: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
+        times: usize = <span class="number">1</span>,
+    });
+}
+
+<span class="kw">impl </span>Writer <span class="kw">for </span>Buffer {
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">struct </span>{
+        times: usize,
+        data: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
+    }) {
+        <span class="macro">unimplemented!</span>()
+    }
+}
+
+buffer.write(<span class="kw">_ </span>{ data: <span class="string">"hi"</span>, .. });
+<span class="kw">let </span>w: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Writer = <span class="kw-2">&amp;mut </span>buffer;
+w.write(<span class="kw">_ </span>{ data: <span class="string">"hi"</span>, times: <span class="number">2 </span>});</code></pre></div></div>
+<h3 id="3-named-argument-sugar"><a class="doc-anchor" href="#3-named-argument-sugar">§</a>3. Named Argument Sugar</h3>
+<p>Everything so far is struct syntax in new places. The proposed syntax sugar here
+is what looks like named arguments.</p>
+<p>This is also the part I expect the most bikeshedding about. However, none of
+this is required since everything in Sections 1 and 2 works without it. Most of
+it is borrowed from other languages. The <code>name: value</code> arguments look like
+<a href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/functions/#Function-Argument-Labels-and-Parameter-Names">Swift</a>’s argument labels, and like Swift,
+<a href="https://docs.python.org/3/tutorial/controlflow.html#keyword-arguments">Python</a>, and <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">Julia</a>, named arguments can have
+defaults. <a href="#signature-syntax-fn-fa-i32-x-i32">Separating positional and keyword parameters with a
+<code>;</code></a> comes from Julia.</p>
+<p>It does have costs though. Every call can be written two ways, and a <code>;</code>
+signature obscures that the last parameter is a struct. Only the last argument
+can be written with names, and <code>:</code> in argument lists is taken for good. I think
+it’s worth it, but these are fair concerns.</p>
+<h4 id="signature-syntax-fn-fa-i32-x-i32"><a class="doc-anchor" href="#signature-syntax-fn-fa-i32-x-i32">§</a>Signature syntax: <code>fn f(a: i32; x: i32)</code></h4>
+<p>A <code>struct { .. }</code> as the last parameter is noisy, especially in the common case
+where it holds the function’s options. Borrowing from <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">Julia</a>’s
+keyword parameters, a <code>;</code> can end the positional parameters instead, and every
+parameter after it becomes a field of one anonymous struct, which is passed as
+the last argument. The <code>;</code> has its drawbacks though, which <a href="#-vs-"><code>;</code> vs <code>*</code></a>
+gets into, and there may be a better syntax here I just can’t think of.</p>
+<p>With named argument sugar, <code>crop</code> and <code>copy</code> become:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>crop(
+    img: <span class="kw-2">&amp;</span>Image;
+    width: u32,
+    height: <span class="prelude-ty">Option</span>&lt;u32&gt; = <span class="prelude-val">None</span>,
+    x: u32 = <span class="number">0</span>,
+    y: u32 = <span class="number">0</span>,
+) -&gt; Image
+
+<span class="kw">fn </span>copy&lt;P: AsRef&lt;Path&gt;, Q: AsRef&lt;Path&gt;&gt;(; from: P, to: Q) -&gt; io::Result&lt;u64&gt;</code></pre></div></div>
+<ul>
+<li>The parameters after the <code>;</code> are fields, exactly as in a bare <code>struct { .. }</code>
+parameter. They’re written <code>name: Type</code> with an optional <code>= default</code>, and can
+take the same binding modes, <code>mut</code>, <code>ref</code>, and <code>ref mut</code>. They’re just names
+and not patterns, since a field’s name is its API.</li>
+<li>There’s at most one <code>;</code> and it declares the last struct parameter. Anonymous
+struct parameters anywhere else can still use <code>struct { .. }</code>.</li>
+<li>It works in traits and impls too, as in <code>fn write(&amp;mut self; data: &amp;'static str, times: usize = 1);</code>.</li>
+<li>It’s purely syntax, so switching between <code>;</code> and <code>struct { .. }</code> changes
+nothing for callers.</li>
+</ul>
+<h4 id="call-syntax-fa-x-1"><a class="doc-anchor" href="#call-syntax-fa-x-1">§</a>Call syntax: <code>f(a, x: 1)</code></h4>
+<p>Named arguments are the other half of the <code>;</code>, though they fill a final struct
+argument regardless of how it’s declared. They are just sugar for a <code>_ { .. }</code>
+literal as the last argument. Once an argument is written <code>name: value</code>, it and
+every argument after it form the struct. The calls from <a href="#2-examples">Section 2</a>
+become:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>copy(from: a, to: b)<span class="question-mark">?</span>;
+
+crop(<span class="kw-2">&amp;</span>img, width: <span class="number">200</span>, ..);
+crop(<span class="kw-2">&amp;</span>img, width: <span class="number">200</span>, x: <span class="number">15</span>, y: <span class="number">25</span>, ..);
+
+fill(<span class="kw-2">&amp;mut </span>shape, red: <span class="number">0xA8</span>, green: <span class="number">0x3C</span>, blue: <span class="number">0x09</span>);</code></pre></div></div>
+<p>The <code>..</code> at the end of <code>crop</code>’s calls fills in the defaults. There are some more
+details and questions about <a href="#defaults-fa-x-1-">Defaults</a> below.</p>
+<ul>
+<li>Positional arguments come first, then named ones.</li>
+<li>There’s no field shorthand. In a struct literal <code>Point { x, y }</code> means <code>Point { x: x, y: y }</code>, but <code>f(x, y)</code> is already two positional arguments, so it’s
+<code>f(x: x, y: y)</code>, or <code>f(_ { x, y })</code>. That is, unless we make the <code>;</code> required
+before the struct argument at the call site as well, which would allow
+<code>f(; x, y)</code>.</li>
+<li>Named arguments are always the last argument, so they fill the last
+parameter. An anonymous struct anywhere else is passed with <code>_ { .. }</code>.</li>
+</ul>
+<p>Positional parameters never become labels in this proposal. A parameter is a
+pattern that may not have a name, like <code>(x, y): (i32, i32)</code> or <code>_: u8</code>, and
+turning its name into API would make every rename a breaking change. So <code>foo(a: 1)</code> with <code>fn foo(a: i32)</code> is intentionally an error. The argument is either
+passed by position, or the parameter moves into a struct.</p>
+<p>The syntax happens to be free, since <code>expr: Type</code> in expressions (type
+ascription) was removed, and <code>macro_rules!</code> can’t write <code>$e:expr :</code>. It does
+claim <code>:</code> in argument lists. <code>f(x: 1)</code> always means “the field <code>x</code> of the final
+parameter struct of <code>f</code>”.</p>
+<h4 id="-vs-"><a class="doc-anchor" href="#-vs-">§</a><code>;</code> vs <code>*</code></h4>
+<p>Python’s bare <code>*</code> for <a href="https://peps.python.org/pep-3102/">keyword-only parameters</a>, as in
+<code>def f(a, *, b=1)</code>, is similar. Unlike Julia’s and Python’s though, the <code>;</code>
+doesn’t make a second kind of parameter, it’s just another way to write a
+struct.</p>
+<p>Python’s <code>*</code> does have one real advantage though… It’s its own item in the
+list, so in a long signature it’s hard to miss, and adding or removing a
+parameter on either side of it in a multi-line parameter list only touches that
+parameter’s line. The <code>;</code> takes the place of a comma instead, so in a signature
+that doesn’t fit on one line, like <code>crop</code> above, it ends the last positional
+parameter’s line. A short one stays on one line, <code>fn f(a: i32; x: i32)</code>.</p>
+<p>I personally like <code>;</code> when used in a single line, but named arguments are likely
+to be numerous, and split across lines. <code>*</code> works in languages like Python and
+Ruby, which don’t have the strong association of <code>*</code> with deref, but in Rust I
+don’t like it. I’m not sure what’s better however.</p>
+<h4 id="defaults-fa-x-1-"><a class="doc-anchor" href="#defaults-fa-x-1-">§</a>Defaults: <code>f(a, x: 1, ..)</code></h4>
+<p>Named arguments end with <code>..</code> to fill in the defaults of any fields left out,
+the same as a struct literal, or with <code>..base</code> to take them from another value.
+Without the <code>..</code>, every field has to be given:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>crop(<span class="kw-2">&amp;</span>img, width: <span class="number">200</span>, ..);
+crop(<span class="kw-2">&amp;</span>img, width: <span class="number">200</span>, height: <span class="prelude-val">None</span>, x: <span class="number">0</span>, y: <span class="number">0</span>);
+
+fill(<span class="kw-2">&amp;mut </span>shape, red: <span class="number">0xFF</span>, ..accent);</code></pre></div></div>
+<p>The <code>..</code> is required, since it’s what shows which fields were defaulted. Leaving
+it off, so that named arguments imply it, would be closer to how other languages
+do it, at the cost of visibility, which Rust tends to prefer.</p>
+<p>A <code>..</code> on its own isn’t a named argument though. <code>f(..)</code> and <code>f(..base)</code> are
+already a <code>RangeFull</code> and a <code>RangeTo</code>, as in <code>v.drain(..)</code>. We could pick the
+meaning by the type of the parameter it fills, so <code>f(..)</code> would mean
+<code>f(_ { .. })</code> when that parameter is a struct, and stay a range otherwise.
+Passing a range where a struct is expected is an error today, so no existing
+call would change meaning, but <code>..</code> could no longer be read without knowing the
+signature. This is a somewhat unfortunate existing conflation in Rust’s syntax.</p>
+<p>My upcoming <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">follow-up post</a> will go further into
+implying <code>..</code> instead, whether named structs should get it too, and leaving out
+a last struct whose fields all have defaults.</p>
+<h3 id="4-relating-to-recent-posts"><a class="doc-anchor" href="#4-relating-to-recent-posts">§</a>4. Relating to Recent Posts</h3>
+<p>The recent posts from the intro each take a different position on named
+arguments in Rust. Endler argues structs already do the job, Botahamec wants
+<code>pub</code> parameters with defaults, and Klabnik is open to labels but not defaults.
+Each is worth answering on its own terms, so here’s an overview of how this
+design compares to them, with more details on each below.</p>
+<div><table><thead><tr><th></th><th>This design</th><th>Structs today (<a href="https://corrode.dev/blog/named-arguments-at-home/">Endler</a>)</th><th><code>pub</code> parameters (<a href="https://botahamec.dev/named-optional-args">Botahamec</a>)</th><th>Names only (<a href="https://steveklabnik.com/writing/arguing-about-arguments/">Klabnik</a>)</th></tr></thead><tbody>
+<tr><td>Named parameters</td><td>Fields of a <code>struct { .. }</code> parameter, or parameters after a <a href="#signature-syntax-fn-fa-i32-x-i32"><code>;</code></a></td><td>Fields of a named struct</td><td>Parameters marked <code>pub</code></td><td>Labels on existing parameters</td></tr>
+<tr><td>Reordering</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Not settled</td></tr>
+<tr><td>Defaults</td><td><code>..</code> with RFC 3681 field defaults, or <code>..Default::default()</code> for named structs. Still undecided: <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">implying the <code>..</code></a>, and <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">optional fields</a>, which I’m skeptical of</td><td><code>..Default::default()</code></td><td>May be non-const, omission implicit</td><td>No</td></tr>
+<tr><td>Evaluation order</td><td>As written</td><td>As written</td><td>—</td><td>Raised as a problem</td></tr>
+<tr><td>Patterns as parameters</td><td>Struct pattern</td><td>—</td><td><code>pub name @ pat</code></td><td>Raised as a problem</td></tr>
+<tr><td><code>fn</code> pointers</td><td>Names and defaults kept, distinct per function (<a href="#function-types">sharing</a> when the fields match is an open question)</td><td>Names kept in the struct type</td><td>Names erased</td><td>Raised as a problem</td></tr>
+<tr><td>Adding a parameter</td><td>Non-breaking if defaulted, for callers that wrote <code>..</code></td><td>Non-breaking if defaulted, for callers that wrote <code>..Default::default()</code></td><td>Non-breaking if defaulted</td><td>—</td></tr>
+<tr><td>Per-function boilerplate</td><td>None</td><td>A named struct per argument bundle</td><td>None</td><td>None</td></tr>
+<tr><td>New syntax</td><td><code>struct { .. }</code> as a parameter type, <code>_ { .. }</code> as an expression and a pattern, elided struct patterns and parameter types, and the optional <a href="#3-named-argument-sugar">sugar</a> for <code>name: value</code> arguments and <code>;</code> parameters</td><td>None</td><td><code>pub</code> parameters, <code>name: value</code> arguments, defaults</td><td><code>name: value</code> arguments</td></tr>
+</tbody></table>
+</div>
+<p>Klabnik’s post is a position post and not a proposal, so its column records the
+problems it raises rather than answers. Macro crates like <a href="https://docs.rs/bon">bon</a> and <a href="https://docs.rs/structx">structx</a>
+fill the same gap today, with a builder or a macro at each call.</p>
+<details id="botahamec-names-defaults-and-pub-apis">
+  <summary markdown="1">
+<h4 id="botahamec-names-defaults-and-pub-parameters"><a class="doc-anchor" href="#botahamec-names-defaults-and-pub-parameters">§</a>Botahamec: names, defaults, and <code>pub</code> parameters</h4>  </summary>
+  <div markdown="1">
+<p>In <a href="https://botahamec.dev/named-optional-args">“Named and Optional Arguments are Awesome”</a>, Botahamec tours
+Dart, C#, and TypeScript, then looks at what Rust does without them. <code>HashMap</code>
+has eight constructors to cover three optional parameters.
+<code>print(text, bold, italics, underline)</code> is easy to call with the flags swapped.
+The options-struct workaround needs a type, a <code>Default</code> impl, and
+<code>..Default::default()</code> at every call, and it falls apart when only some fields
+have defaults.</p>
+<p>Their proposal resembles <a href="https://internals.rust-lang.org/t/pre-rfc-named-arguments/3831">a 2016 pre-RFC</a>. A parameter marked
+<code>pub</code> can be passed by name, and parameters may have defaults, which callers
+can omit. A <code>pub</code> parameter can still be passed by position too.</p>
+<p><code>pub</code> is a poor fit for this, since it has nothing to do with visibility (a
+private <code>fn</code> can have <code>pub</code> parameters, and <code>pub(crate) x: u32</code> has no sensible
+meaning), and the post itself flags the keyword as an open question. But that’s
+a small point about a single keyword.</p>
+<div class="highlight-block red" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// Botahamec's proposal
+</span><span class="kw">fn </span>print_labeled_measurement(<span class="kw">pub </span>value: i32, <span class="kw">pub </span>unit_label: char = <span class="string">'m'</span>) { .. }
+
+print_labeled_measurement(<span class="number">5</span>);
+print_labeled_measurement(<span class="number">5</span>, <span class="string">'h'</span>);
+print_labeled_measurement(value: <span class="number">5</span>, unit_label: <span class="string">'h'</span>);
+print_labeled_measurement(unit_label: <span class="string">'h'</span>, value: <span class="number">5</span>);</code></pre></div></div>
+<p>With an anonymous struct, the same function’s named parameters become fields,
+which are only ever passed by name.</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// anonymous struct
+</span><span class="kw">fn </span>print_labeled_measurement(<span class="kw">struct </span>{ value: i32, unit_label: char = <span class="string">'m' </span>}) { .. }
+
+print_labeled_measurement(<span class="kw">_ </span>{ value: <span class="number">5</span>, .. });
+print_labeled_measurement(<span class="kw">_ </span>{ value: <span class="number">5</span>, unit_label: <span class="string">'h' </span>});
+print_labeled_measurement(<span class="kw">_ </span>{ unit_label: <span class="string">'h'</span>, value: <span class="number">5 </span>});
+
+<span class="comment">// with the named argument sugar
+</span>print_labeled_measurement(value: <span class="number">5</span>, ..);
+print_labeled_measurement(unit_label: <span class="string">'h'</span>, value: <span class="number">5</span>);</code></pre></div></div>
+<p>There’s no equivalent of <code>print_labeled_measurement(5, 'h')</code>, which is
+intentional. Like C#, Botahamec’s proposal lets a named parameter still be
+passed by position. With anonymous structs, a parameter is either positional or
+a field, and a field can only be passed by name, whether that’s in a <code>_ { .. }</code>
+literal or with the named argument sugar.</p>
+<p>That’s why existing functions can’t be backported, which Botahamec counts
+against struct name inference. A function’s positional parameters stay
+positional, and taking names means moving them into a struct, which is a
+breaking change like adding any other parameter.</p>
+<p>Botahamec also forbids defaults on trait methods, since it’s unclear whether
+the trait or the impl should own them, and only the trait’s would work through
+<code>dyn</code>. Here the trait owns them, and calls through generics and <code>dyn</code> use them
+like any other (<a href="#traits">Section 2</a>).</p>
+<p>Their <code>HashMap</code> example replaces the eight constructors with one function,
+quoted here as written. It doesn’t address generic parameters yet. <code>S</code> and <code>A</code>
+are never declared, and a default like <code>A = Global</code> only typechecks when <code>A</code> is
+<code>Global</code>, so the post sets the problem aside for its “Future possibilities”
+section.</p>
+<div class="highlight-block red" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// Botahamec's proposal, generic parameters ignored
+</span><span class="kw">pub fn </span>new(
+    <span class="kw">pub </span>capacity: usize = <span class="number">0</span>,
+    <span class="kw">pub </span>alloc: A = Global,
+    <span class="kw">pub </span>hasher: S = RandomState,
+);</code></pre></div></div>
+<p>An anonymous struct has to address that problem now. It can still replace the
+eight constructors with one function, though the hasher and the allocator
+become <code>Option</code>s that the body fills in:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// anonymous struct
+</span><span class="kw">fn </span>new_map&lt;K, V, S: BuildHasher + Default, A: Allocator + Default&gt;(<span class="kw">struct </span>{
+    capacity: usize = <span class="number">0</span>,
+    hasher: <span class="prelude-ty">Option</span>&lt;S&gt; = <span class="prelude-val">None</span>,
+    alloc: <span class="prelude-ty">Option</span>&lt;A&gt; = <span class="prelude-val">None</span>,
+}) -&gt; HashMap&lt;K, V, S, A&gt; {
+    HashMap::with_capacity_and_hasher_in(
+        capacity,
+        hasher.unwrap_or_default(),
+        alloc.unwrap_or_default(),
+    )
+}
+
+<span class="kw">let </span>m: HashMap&lt;u8, u8&gt; = new_map(<span class="kw">_ </span>{ capacity: <span class="number">16</span>, .. });</code></pre></div></div>
+<p>The bigger difference is how a parameter opts in. Botahamec’s proposal needs a
+keyword for it and anonymous structs don’t. A parameter opts in by being a
+field, and visibility isn’t overloaded to mean a parameter is a named argument.</p>
+</div>
+</details>
+<details>
+  <summary markdown="1">
+<h4 id="klabnik-open-minded-concerns"><a class="doc-anchor" href="#klabnik-open-minded-concerns">§</a>Klabnik: open-minded concerns</h4>  </summary>
+  <div markdown="1">
+<p>In <a href="https://steveklabnik.com/writing/arguing-about-arguments/">“Arguing about arguments”</a>, Steve Klabnik is open to labels on
+existing parameters, <code>foo(x: 5, y: 6)</code> for <code>fn foo(x: i32, y: i32)</code>, but not to
+optional or default arguments, because they hide what a call passes. They also
+list what makes named arguments hard in Rust specifically. Parameters are
+patterns and may not have a name, <code>fn</code> pointers erase names, trait impls can
+rename parameters, reordering arguments raises the question of evaluation order,
+and every parameter name quietly becomes part of the API.</p>
+<p>Klabnik’s objection to defaults is fair, and the answer is that making names
+explicit is what lets defaults be safe. Fields are named only because the
+function put them in a struct, and they can only be passed by name, so there’s
+no positional form to swap and no argument left out of the middle of a list,
+<code>f(a, c)</code> for <code>f(a, b = 0, c)</code>. Defaults are owned by the function
+(by the trait, for a trait method), and a call that relies on them says so
+with <code>..</code>, with or without the <a href="#defaults-fa-x-1-">sugar</a>. Adding a parameter
+is also safe, since a new field with a default doesn’t break callers that wrote
+<code>..</code>.</p>
+<p>Where Botahamec opts parameters in with <code>pub</code>, Klabnik doesn’t opt them in at
+all, and that’s the bigger difference. If every parameter can be labeled, the
+function’s author can no longer decide how an argument is passed. Labels would
+have to be optional for existing calls to keep compiling, so <code>copy(a, b)</code> still
+compiles, and there’s no way to require names for arguments that are confusing
+by position, like <code>from</code> and <code>to</code>. That’s the whole point of naming them. With
+anonymous structs the author decides. Positional parameters are passed by
+position, fields are passed by name, and the signature shows where one ends and
+the other begins, so <code>copy(_ { from: a, to: b })</code>, or <code>copy(from: a, to: b)</code>
+with the sugar, is the only way to call <code>copy</code>.</p>
+<p>The other problems are secondary. Every parameter name in every published crate
+would become API after the fact, including names chosen only for the function
+body, like <code>buf</code>, <code>_x</code>, hygienic macro names, and bindgen’s <code>arg1</code>, so renaming
+any of them would break someone. Each parameter would also get two APIs, since
+reordering breaks positional callers and renaming breaks labeled ones, and
+mixed calls would need new rules for which slot a positional argument fills
+after a label.</p>
+<p>The rest of Klabnik’s list already has answers, because each has an existing
+struct rule. None of these are new to Rust. Here’s how anonymous structs handle
+each one.</p>
+<h5 id="evaluation-order"><a class="doc-anchor" href="#evaluation-order">§</a>Evaluation order</h5>
+<p>Fields are evaluated in the order written at the call site, as in any struct
+literal. So this compiles:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>consume(<span class="kw">struct </span>{ data: Vec&lt;u8&gt;, length: usize }) { .. }
+
+consume(<span class="kw">_ </span>{ length: data.len(), data: data });</code></pre></div></div>
+<p>and swapping the two is a use-after-move error, exactly as it would be for a
+named struct:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>consume(<span class="kw">_ </span>{ data: data, length: data.len() });
+<span class="comment">// error[E0382]: borrow of moved value: `data`</span></code></pre></div></div>
+<h5 id="patterns-as-parameters"><a class="doc-anchor" href="#patterns-as-parameters">§</a>Patterns as parameters</h5>
+<p>Klabnik points out that a Rust parameter is a pattern, not a name.
+<code>fn foo((x, y): (i32, i32))</code> introduces two bindings, so there’s no single name
+to label the argument with, short of inventing separate external and internal
+names.</p>
+<p>Anonymous structs don’t need either. Only fields are passed by name, and a
+field always has one, which is its label at the call. With an <a href="#elided-struct-patterns">elided
+pattern</a> it’s also the binding in the body, and when
+the body wants a different name, an explicit <code>_ { .. }</code> pattern renames it like
+any struct pattern. Positional parameters keep their patterns, since they’re
+never passed by name.</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>foo((x, y): (i32, i32), <span class="kw">struct </span>{ scale: i32 = <span class="number">1 </span>}) -&gt; i32 { .. }
+<span class="kw">fn </span>bar((x, y): (i32, i32), <span class="kw">_ </span>{ scale: s }: <span class="kw">struct </span>{ scale: i32 = <span class="number">1 </span>}) -&gt; i32 { .. }
+
+foo((<span class="number">1</span>, <span class="number">2</span>), <span class="kw">_ </span>{ scale: <span class="number">2 </span>});
+foo((<span class="number">1</span>, <span class="number">2</span>), <span class="kw">_ </span>{ .. });</code></pre></div></div>
+<h5 id="defaults"><a class="doc-anchor" href="#defaults">§</a>Defaults</h5>
+<p>Defaults are RFC 3681 defaults. They’re declared on the field, and used when
+the caller writes <code>..</code>. They can use the function’s type and const parameters
+(<code>fn foo&lt;const A: usize&gt;(struct { bar: usize = A })</code>), and associated consts
+through their bounds (<code>fn foo&lt;T: HasN&gt;(struct { n: usize = T::N })</code>).</p>
+<h5 id="renaming-hazards"><a class="doc-anchor" href="#renaming-hazards">§</a>Renaming hazards</h5>
+<p>A field’s name is part of the function’s API, the same as a public struct field
+(<a href="#api-evolution-and-semver">Section 1</a>). Positional parameters are unaffected,
+so a function opts in, one parameter at a time, by moving it into the struct.
+Nothing becomes API by accident, and a typo like <code>widht</code> gets the same error,
+with the same suggestion of <code>width</code>, as it would in any struct literal.</p>
+<h5 id="trait-impls"><a class="doc-anchor" href="#trait-impls">§</a>Trait impls</h5>
+<p>An impl can’t rename fields. It repeats the trait’s fields by name, in any
+order, and a renamed field is an error (<a href="#traits">Section 2</a>). It has to be
+that way, since callers through generics and <code>dyn</code> only see the trait, so the
+trait’s field names are the ones they write.</p>
+<h5 id="fn-pointers"><a class="doc-anchor" href="#fn-pointers">§</a><code>fn</code> pointers</h5>
+<p>A function used as a value keeps its anonymous structs as parameter types, so
+names survive through the pointer, and so do defaults:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>foo(<span class="kw">struct </span>{ a: i32, b: i32 = <span class="number">10 </span>}) -&gt; i32 { .. }
+
+<span class="kw">let </span>g: <span class="kw">fn</span>(<span class="kw">_</span>) -&gt; i32 = foo;
+g(<span class="kw">_ </span>{ b: <span class="number">2</span>, a: <span class="number">4 </span>});
+g(<span class="kw">_ </span>{ a: <span class="number">5</span>, .. });</code></pre></div></div>
+<p>Two functions with the same fields don’t share a pointer type (<a href="#function-types">Section
+5</a>), though the upcoming <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">follow-up
+post</a> will sketch one way they might.</p>
+  </div>
+</details>
+<details>
+  <summary markdown="1">
+<h4 id="endler-structs-already-do-this"><a class="doc-anchor" href="#endler-structs-already-do-this">§</a>Endler: structs already do this</h4>  </summary>
+  <div markdown="1">
+<p>In <a href="https://corrode.dev/blog/named-arguments-at-home/">“We Have Named Arguments at Home”</a>, Matthias Endler argues the job
+is already done. A struct gives you names, any order, typo checking, per-field
+docs, and defaults, and it’s a real type you can store, validate, and pass
+along. Names belong to a type, not to the calling convention.</p>
+<p>That’s the same premise anonymous structs start from, that named arguments are
+just structs. Anonymous structs are convenience on top of Endler’s model, not a
+replacement for it. The function still takes a struct, with all of those
+properties, and the anonymous struct and the inferred literal only remove the
+ceremony of declaring it and naming it at every call. It’s the
+have-your-cake-and-eat-it-too approach, with the semantics of structs and
+without the boilerplate.</p>
+<p>Endler’s <code>crop_imm</code> example, borrowed from Klabnik, declares a struct just for
+this one function:</p>
+<div class="highlight-block other" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// Endler
+</span><span class="kw">struct </span>Crop {
+    x: u32,
+    y: u32,
+    width: u32,
+    height: u32,
+}
+
+<span class="kw">fn </span>crop_imm&lt;I: GenericImageView&gt;(
+    image: <span class="kw-2">&amp;</span>I,
+    crop: Crop,
+) -&gt; SubImage&lt;<span class="kw-2">&amp;</span>I&gt; { .. }
+
+crop_imm(<span class="kw-2">&amp;</span>img, Crop { x: <span class="number">10</span>, y: <span class="number">20</span>, width: <span class="number">200</span>, height: <span class="number">100 </span>});</code></pre></div></div>
+<p>That’s the case anonymous structs were made for:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// anonymous struct
+</span><span class="kw">fn </span>crop_imm&lt;I: GenericImageView&gt;(image: <span class="kw-2">&amp;</span>I, <span class="kw">struct </span>{
+    x: u32,
+    y: u32,
+    width: u32,
+    height: u32,
+}) -&gt; SubImage&lt;<span class="kw-2">&amp;</span>I&gt; { .. }
+
+crop_imm(<span class="kw-2">&amp;</span>img, <span class="kw">_ </span>{ x: <span class="number">10</span>, y: <span class="number">20</span>, width: <span class="number">200</span>, height: <span class="number">100 </span>});</code></pre></div></div>
+<p>When the arguments need to be a real type, for invariants, for storing, or for
+passing along, declare one and use the elided type from <a href="#elided-parameter-types">Section
+1</a>, as in
+<code>fn crop_imm&lt;I: GenericImageView&gt;(image: &amp;I, Crop { x, y, width, height })</code>.
+Callers don’t change, since <code>_ { .. }</code> builds either one. The call Endler’s
+post <a href="https://corrode.dev/blog/named-arguments-at-home/#composition-is-a-superpower">imagines</a> a pile of language features for gets close
+without any sugar. It basically just needs <code>_ { .. }</code> around the options and
+real syntax for the duration and headers:</p>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>request(url: <span class="kw">impl </span>Into&lt;Url&gt;, <span class="kw">struct </span>{
+    timeout: <span class="prelude-ty">Option</span>&lt;Duration&gt; = <span class="prelude-val">None</span>,
+    redirects: bool = <span class="bool-val">true</span>,
+    headers: Vec&lt;Header&gt; = Vec::new(),
+}) -&gt; <span class="prelude-ty">Result</span>&lt;Response, Error&gt; { .. }
+
+request(<span class="string">"/hello"</span>, <span class="kw">_ </span>{
+    timeout: <span class="prelude-val">Some</span>(Duration::from_secs(<span class="number">5</span>)),
+    redirects: <span class="bool-val">false</span>,
+    headers: <span class="macro">vec!</span>[
+        Header(<span class="string">"Accept"</span>, <span class="string">"application/json"</span>),
+        Header(<span class="string">"X-Foo"</span>, <span class="string">"bar"</span>),
+    ],
+})<span class="question-mark">?</span>;
+request(<span class="string">"/hello"</span>, <span class="kw">_ </span>{ .. })<span class="question-mark">?</span>;</code></pre></div></div>
+<p>With the named argument <a href="#call-syntax-fa-x-1">sugar</a> from Section 3, the
+<code>_ { .. }</code> goes away too, and the call has the shape Endler imagines.</p>
+<p>Endler also credits field-init shorthand for removing the <code>foo=foo</code> repetition
+Klabnik points out. <code>_ { timeout, redirects }</code> keeps it, though the named
+argument sugar has no shorthand of its own.</p>
+  </div>
+</details>
+<h4 id="where-they-agree"><a class="doc-anchor" href="#where-they-agree">§</a>Where they agree</h4>
+<p>Side by side, the posts agree on more than it might seem at first. Everyone is
+trying to make names at the call site work. Botahamec’s objection to the options
+struct isn’t its meaning but its ceremony. In their words, “I don’t see much
+reason to name a new struct if it’s only going to be used for the one function.”
+Endler’s structs already answer most of Klabnik’s hard problems, because struct
+literals already have rules for names, order, and evaluation.</p>
+<p>That leaves one cost, declaring and naming a struct for every function. It’s why
+the pattern shows up in public APIs and almost never in private code. Anonymous
+structs take Endler’s model and remove that cost, which is mostly what Botahamec
+is asking for. Klabnik’s objection to defaults is the one real potential
+disagreement, and making the named parameters explicit helps, I think.</p>
+<p>That’s why I think structs are the right direction, rather than a separate named
+argument feature. Everything here is built from parts Rust already has, struct
+literals, struct patterns, and RFC 3681 defaults, with the struct’s name
+inferred and its declaration moved into the signature. Each post gets what it
+asks for without giving up what the others care about. Endler’s structs stay
+real types, Botahamec loses the boilerplate, and Klabnik can see the defaults at
+the call, since struct literals and named arguments mark them with <code>..</code>. Names,
+order, evaluation, and API stability all follow rules Rust users already know
+from struct literals, instead of a second set of rules for arguments. And it
+doesn’t close any doors, since the sugar from Section 3 is optional and can wait
+until the base feature is accepted and tested. I also think it will gracefully
+continue into structural records, if/when we ever want to tackle that.</p>
+<h3 id="5-limitations-and-open-questions"><a class="doc-anchor" href="#5-limitations-and-open-questions">§</a>5. Limitations and Open Questions</h3>
+<p>These will be covered in more detail, along with the prototype’s own gaps, in
+the upcoming <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">follow-up post</a>.</p>
+<h4 id="non-const-defaults"><a class="doc-anchor" href="#non-const-defaults">§</a>Non-const defaults</h4>
+<p>Field defaults are RFC 3681 defaults and must be const. A default can’t call
+<code>RandomState::new()</code>, or <code>S::default()</code> through a bound, so a field like that
+becomes an <code>Option</code> the body fills in. This is a limit of RFC 3681, not of
+anonymous structs, and its <a href="https://github.com/rust-lang/rust/issues/132162">tracking issue</a> already lists non-const
+values as an open question.</p>
+<h4 id="function-types"><a class="doc-anchor" href="#function-types">§</a>Function types</h4>
+<p>A function used as a value keeps its anonymous struct as a parameter type, so
+two functions whose structs have the same fields still have different types, and
+<code>if c { returns_anon_a } else { returns_anon_b }</code> doesn’t compile.</p>
+<h4 id="macros"><a class="doc-anchor" href="#macros">§</a>Macros</h4>
+<p>Most procedural macros parse with <a href="https://docs.rs/syn"><code>syn</code></a>, which expects every parameter to
+be <code>pat: ty</code>. The core features keep that shape, so <code>syn</code> just needs the new
+syntax, as it got <code>= default</code> fields in <a href="https://github.com/dtolnay/syn/releases/tag/3.0.0">3.0</a>. The elision features and
+<code>named_arguments</code> change the shape, which means macros that read each parameter,
+like <code>#[tracing::instrument]</code>, need updating too.</p>
+<p><code>macro_rules!</code> is subtler. <code>_ { .. }</code> changes what <code>pat</code>, <code>expr</code>, and <code>stmt</code>
+fragments match, so existing macros can pick a different arm, even in crates
+that don’t enable <code>struct_pattern_inference</code>. That makes it the only part of
+the proposal that needs an edition. The upcoming <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">follow-up</a>
+will have the details.</p>
+<h4 id="tooling"><a class="doc-anchor" href="#tooling">§</a>Tooling</h4>
+<p>rust-analyzer and tree-sitter-rust have their own parsers and need updating
+separately. rustfmt uses rustc’s parser, so it mostly works already.</p>
+<h3 id="6-whats-next"><a class="doc-anchor" href="#6-whats-next">§</a>6. What’s Next</h3>
+<ul>
+<li><strong>An MCP or RFC.</strong> The 2020 named arguments RFC was <a href="https://github.com/rust-lang/rfcs/pull/2964#issuecomment-671545486">closed</a>
+because the lang team wanted to see “what the roadmap looks like towards the
+eventual full solution” before an incremental step. This is meant to be that
+roadmap, with struct literals and inferred struct names. We can add named
+argument sugar on top too.</li>
+<li><strong>The prototype.</strong> Every feature here is implemented in a rustc prototype,
+which the upcoming <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">follow-up post</a> will walk through, along with
+the open questions and the more speculative ideas, optional fields and record
+types, that this post intentionally leaves out.</li>
+<li><strong>Follow-ups to <a href="https://github.com/rust-lang/rfcs/pull/3681">RFC 3681</a>.</strong> These are limits of default field
+values (<a href="https://github.com/rust-lang/rust/issues/132162">tracking issue</a>), not of anonymous structs, so they
+belong in follow-ups to that RFC, and anonymous and named structs keep the
+same rules.
+<ul>
+<li><strong>Non-const defaults.</strong> <code>hasher: S = S::default()</code> needs a non-const
+default. The tracking issue already has it as an open question (<a href="#non-const-defaults">Section
+5</a>).</li>
+<li><strong>API evolution.</strong> RFC 3681 doesn’t allow <code>#[non_exhaustive]</code> on structs
+with default field values. If the two are ever allowed together, anonymous
+structs could opt into <code>#[non_exhaustive]</code>, or be non-exhaustive by default,
+with every literal from outside the crate required to write <code>..</code>. Adding a
+field with a default would then never be breaking (<a href="#api-evolution-and-semver">Section
+1</a>).</li>
+</ul>
+</li>
+<li><strong>Follow-up posts.</strong> Several of the threads cited here are subsumed by this
+proposal or depend on how it goes, and each should get a comment pointing to
+it.
+<ul>
+<li><strong><a href="https://github.com/rust-lang/rfcs/issues/323">rfcs#323</a>, named arguments.</strong> The wishlist issue is still
+open. Anonymous struct parameters with the <a href="#3-named-argument-sugar">named argument
+sugar</a> would subsume it.</li>
+<li><strong><a href="https://github.com/rust-lang/rfcs/pull/3444">RFC 3444</a>, inferred types.</strong> <code>_ { .. }</code> is the struct half of
+its path inference, spelled <code>_</code> instead of <code>.</code>. The two need one syntax, and
+this post’s struct half doesn’t need to wait for enums to be implemented.</li>
+<li><strong><a href="https://github.com/rust-lang/rfcs/pull/2584">RFC 2584</a>, structural records.</strong> It’s closed, but a revival
+would inherit the <code>let</code> record conversion rule from <a href="https://nixpulvis.com/ramblings/2026-09-29-anonymous-struct-parameters-prototype">record
+types</a> in the upcoming follow-up, and anonymous struct
+parameters could become structural records without changing any caller (I
+think).</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-block" markdown="1">
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>send_feedback(<span class="kw">struct </span>{
+    from: <span class="kw">impl </span>TryInto&lt;User, Error = InvalidEmail&gt;,
+    to: <span class="kw">impl </span>TryInto&lt;User, Error = InvalidEmail&gt;,
+    message: <span class="kw-2">&amp;</span>str,
+    mood: Mood,
+}) -&gt; <span class="prelude-ty">Result</span>&lt;(), InvalidEmail&gt;;
+
+send_feedback(<span class="kw">_ </span>{
+    from: <span class="string">"you@example.com"</span>,
+    to: <span class="string">"nathan@nixpulvis.com"</span>,
+    message: <span class="string">"
+      Named arguments are dumb, Rust shouldn't even allow
+      multiple arguments. Everything should be curried:
+      
+      λ(x, y).e := λx.λy.e
+    "</span>,
+    mood: Mood::Angry,
+})<span class="question-mark">?</span>;</code></pre></div></div>
+<p>Seriously though, I’d like to hear what you think, where this breaks, what APIs
+it doesn’t fit, or rules that surprise you, over on the <a href="https://internals.rust-lang.org/t/named-arguments-are-just-structs-anonymous-struct-parameters/24683">internals.rust-lang.org
+thread</a>.</p>
+<!-- References -->
+<!-- Discussion -->
+<!-- Blog posts -->
+<!-- RFC pull requests -->
+<!-- RFC texts -->
+<!-- Follow-up post -->
+<!-- Comments on RFC issues and pull requests -->
+<!-- Issues and tracking issues -->
+<!-- Internals forum threads -->
+<!-- Crates and crate source -->
+<!-- Standard library -->
+<!-- Other languages -->
+</div></details><h2 id="statics" class="section-header">Statics<a href="#statics" class="anchor">§</a></h2><dl class="item-table"><dt><a class="static" href="static.PAGE.html" title="static nixpulvis::ramblings::anonymous_struct_parameters::PAGE">PAGE</a></dt><dd>This page’s source, which the site is built from.</dd></dl></section></div></main></body></html>

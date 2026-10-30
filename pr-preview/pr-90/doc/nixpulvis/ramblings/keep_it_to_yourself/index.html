@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Keep It To Yourself"><title>nixpulvis::ramblings::keep_it_to_yourself - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nixpulvis" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.1 (58cf8f9c3 2026-10-13)" data-channel="1.99.1" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"><!-- KaTeX, for the math in the pages' docs, written as \( \) and \[ \]. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, { delimiters: [
+    { left: '\\[', right: '\\]', display: true },
+    { left: '\\(', right: '\\)', display: false },
+  ] })"></script>
+
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module keep_it_to_yourself</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../nixpulvis/index.html">nixpulvis</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module keep_<wbr>it_<wbr>to_<wbr>yourself</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#table-of-contents" title="Table of Contents">Table of Contents</a></li><li><a href="#the-master-passwords" title="The Master Password(s)">The Master Password(s)</a></li><li><a href="#key-management" title="Key Management">Key Management</a><ul><li><a href="#gpg-keys" title="GPG Keys">GPG Keys</a></li><li><a href="#ssh-secure-shell-keys" title="SSH (Secure Shell) Keys">SSH (Secure Shell) Keys</a></li></ul></li><li><a href="#password-management" title="Password Management">Password Management</a><ul><li><a href="#storage" title="Storage">Storage</a></li></ul></li><li><a href="#backups" title="Backups">Backups</a></li><li><a href="#personal-private-information" title="Personal Private Information">Personal Private Information</a></li></ul><h3><a href="#statics">Module Items</a></h3><ul class="block"><li><a href="#statics" title="Statics">Statics</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In nixpulvis::<wbr>ramblings</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">nixpulvis</a>::<wbr><a href="../index.html">ramblings</a></div><h1>Module <span>keep_<wbr>it_<wbr>to_<wbr>yourself</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/nixpulvis/home/runner/work/nixpulvis.github.io/nixpulvis.github.io/target/debug/build/nixpulvis-896b5441140f1b8e/out/pages.rs.html#548">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Keep It To Yourself</p>
+<p><small>2020-04-02 · draft · <a href="https://nixpulvis.com/ramblings/2020-04-02-keep-it-to-yourself">on the site</a> · <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2020-04-02-keep-it-to-yourself.md">source</a></small></p>
+<p>Keeping yourself secure in the modern age of digital computers and the internet
+is a daunting task. While I like to think I’m somewhat sophisticated in this
+regard, surely there are flaws in my approach, begging to be exploited and
+abused. This is somewhat unavoidable, so as a general rule of thumb, <strong>don’t be
+malicious</strong>. The following is my current best practices for things that involve
+information security.</p>
+<hr />
+<h4 id="table-of-contents"><a class="doc-anchor" href="#table-of-contents">§</a>Table of Contents</h4>
+<p><strong>Section 1</strong><br />
+First we define our master password(s), then we build up a GPG key structure,
+finally we use the GPG keys to secure a secret database of other passwords,
+keys, and anything else.</p>
+<ol>
+<li><a href="#the-master-password">The Master Password(s)</a></li>
+<li><a href="#key-management">Key Management</a>
+<ul>
+<li><a href="#gpg-keys">GPG Keys</a>
+<ul>
+<li><a href="#smart-cards--security-tokens">Smart Cards / Security Tokens</a></li>
+<li><a href="#gpg-keys">Subkeys</a></li>
+</ul>
+</li>
+<li><a href="#ssh-keys">SSH Keys</a></li>
+</ul>
+</li>
+<li><a href="#slave-password-management">Password Management</a>
+<ul>
+<li><a href="#pass"><code>pass</code></a></li>
+<li><a href="#one-time-passwords">One-time Passwords</a></li>
+</ul>
+</li>
+</ol>
+<p><strong>Section 2</strong><br />
+Next, we look at best practices for common kinds of personal information.</p>
+<ol>
+<li><a href="#backups">General Backups</a></li>
+<li><a href="#personal-private-information">Personal Private Information</a></li>
+<li><a href="#secure-online-communication">Secure Online Communication</a></li>
+</ol>
+<hr />
+<h4 id="the-master-passwords"><a class="doc-anchor" href="#the-master-passwords">§</a>The Master Password(s)</h4>
+<ul>
+<li>Master Password</li>
+<li>PINs</li>
+</ul>
+<h4 id="key-management"><a class="doc-anchor" href="#key-management">§</a>Key Management</h4>
+<p>Key management through PGP is the main security concern, from which we can
+build the rest somewhat easily. Luckily SmartCards can be purchased easily
+these days, and make some of this much more trustworthy than it may have been
+in the past.</p>
+<h5 id="gpg-keys"><a class="doc-anchor" href="#gpg-keys">§</a>GPG Keys</h5>
+<p>At the heart of my setup lies PGP (Pretty Good Privacy), a suite of encryption
+technology with well supported CLI and hardware applications. PGP allows
+creating key-pairs with sub-keys (more on this later). GPG (the GNU
+implementation of PGP) is used to encrypt data and manage authentication. We’ll
+create a new key-pair with 4096 bits. Entropy will be generated by doing the
+most unusual of things to my computer in the process, you know, for security.</p>
+<p>The primary private GPG key itself must be stored safely somewhere, like on a
+keychain, and <a href="https://sungo.wtf/2016/11/23/gpg-strong-keys-rotation-and-keybase.html">rotated from time to
+time</a>.</p>
+<p>NOTE: Rotating keys requires syncing gpg data, which requires all machines to
+receive a copy of the local data. This is cumbersome, but seemingly needed.</p>
+<h6 id="smart-cards--security-tokens"><a class="doc-anchor" href="#smart-cards--security-tokens">§</a>Smart Cards / Security Tokens</h6>
+<p>I own both a YubiKey 5C and 5C Nano, each with a distinct physical use case.
+The traditional 5C fits onto my keychain (like with my house keys), and I can
+use it to plug in and out of computers to authenticate. Meanwhile, the 5C Nano
+is small enough to stay in a device, making it good for removable secure
+enclave for your private keys. If you host a personal server, or simply don’t
+want to think about plugging in your keys then this may be your primary key. I
+personally feel like the primary key shouldn’t be left in the device, but
+rather carried on your person. So, I keep the YubiKey 5C around as my primary
+key, and leave my 5C Nano in a safe place, as a backup. They are each distinct
+keys, so care must be taken to ensure data allows either key as needed.</p>
+<ul>
+<li>TODO: YubiKey setup process</li>
+</ul>
+<h6 id="subkeys"><a class="doc-anchor" href="#subkeys">§</a>Subkeys</h6>
+<p>In addition to SmartCard keys, conventional GPG keys can be generated and used.</p>
+<ul>
+<li>TODO: How to create these, and when to use them?</li>
+<li>TODO: Sub-key structure.</li>
+</ul>
+<h5 id="ssh-secure-shell-keys"><a class="doc-anchor" href="#ssh-secure-shell-keys">§</a>SSH (<u>S</u>ecure <u>Sh</u>ell) Keys</h5>
+<p>SSH keys should named, with the following format: <code>nixpulvis@&lt;hostname&gt;</code>. Each
+key will be saved by name in a <code>pass</code> directory called <code>SSH</code>. This way we can
+control access to individual hosts.</p>
+<ul>
+<li>TODO: Implement this.</li>
+<li>TODO: Note it’s stored in <code>pass</code>, more on below.</li>
+</ul>
+<h4 id="password-management"><a class="doc-anchor" href="#password-management">§</a>Password Management</h4>
+<p>Once we have our key management taken care of and our master password(s) /
+PIN(s) are memorized, we can rely on <code>pass</code> for managing various other
+passwords and other secret data. Both our primary GPG key, and a backup will be
+used for this password store. These passwords are generally generated, and
+therefor not memorized.  <strong>Some kinds of accounts may be best to memorize
+still</strong>, just make sure they aren’t the same password as the master passwords
+from our key management.</p>
+<ul>
+<li>TODO: Backup (stored in clear in a safe?) GPG key</li>
+</ul>
+<p><code>pass</code> stores it’s data in a plain ol’ folder, making it work perfectly with
+<code>git</code>. In fact <code>pass git ...</code> can be used to perform arbitrary commands from
+anywhere on the system. We currently store user ids in the folder name, so the
+repo <strong>must</strong> be private. I’m currently only storing this repo on devices and
+syncing with either SSH, or a USB drive.</p>
+<ul>
+<li>TODO: How to use SSH to <code>git fetch</code> from another device.</li>
+<li>TODO: How to use a USB drive as a git remote.</li>
+</ul>
+<p><code>pass</code> shows each record like a file within the directory tree
+(<code>~/.password-store</code> by default).</p>
+<div class="example-wrap"><pre class="language-text"><code>accounts/&lt;url&gt;/&lt;username&gt; -&gt; &lt;password&gt;
+
+├── accounts
+│   ├── accounts.adafruit.com
+│   │   └── nixpulvis
+│   ├── aur.archlinux.org
+│   │   └── nathan@nixpulvis.com
+│   ├── bbs.archlinux.org
+│   │   └── nixpulvis
+│   ├── cloud.digitalocean.com
+│   │   ├── sever1
+│   │   │   ├── nixpulvis
+│   │   │   └── root
+│   │   └── nathan@nixpulvis.com
+</code></pre></div><div class="example-wrap"><pre class="language-sh"><code># Copy Adafruit password into your clipboard.
+pass -c accounts/accounts.adafruit.com/nixpulvis</code></pre></div><h5 id="storage"><a class="doc-anchor" href="#storage">§</a>Storage</h5>
+<p>The <code>.password-store</code> data will live on each machine, an encrypted USB drive
+and a private repo hosted somewhere good and encrypted.</p>
+<p><strong>Remember that the contents of <code>pass</code> are in an unprotected <code>git</code>
+repository</strong>.  So, while the data under each entry is protected with our keys,
+someone with access to the repo can, for example, run <code>git log</code> on the changes
+made to the password store. Bee careful to avoid manual commit messages that
+leak information, or other non-standard <code>pass</code> practices. It’s best to simply
+avoid storing the password store anywhere in the clear.</p>
+<ul>
+<li>TODO: Master (in the head) passwords, re: smartcard backup</li>
+</ul>
+<hr />
+<h4 id="backups"><a class="doc-anchor" href="#backups">§</a>Backups</h4>
+<p>I’ll be using <a href="https://www.borgbackup.org/"><code>borg</code></a> to backup my machines, this
+data is encrypted using a key and password that should live in <code>pass</code>. There
+are a few types of Borg backups to support:</p>
+<div class="example-wrap"><pre class="language-text"><code>backup/&lt;device&gt; -&gt; &lt;password&gt;
+backup/&lt;device&gt;/key -&gt; &lt;borg_key&gt;
+
+├── backup
+│   ├── wd2T
+│   │   └── key
+│   └── wd2T</code></pre></div>
+<p><strong>Blue-ray Disk Drive Backup</strong></p>
+<ul>
+<li><code>borg</code> key and <code>pass</code> password stored on disk</li>
+<li><code>keyfile*</code></li>
+<li>Long term</li>
+<li>Long write time</li>
+<li>Manual disk drive interaction</li>
+</ul>
+<p><strong>Local HDD/SSD Backup</strong></p>
+<ul>
+<li><code>borg</code> key and <code>pass</code> password stored on device, if trusted and stored safely</li>
+<li>either <code>repokey*</code> or <code>keyfile*</code></li>
+<li>Short term</li>
+<li>Fast</li>
+<li>Manual HDD/SSD interaction</li>
+</ul>
+<p><strong>Remote Backup (Digital Ocean?)</strong></p>
+<ul>
+<li><code>borg</code> password stored in <code>pass</code>, no key stored at all</li>
+<li><code>repokey*</code> stored in <code>pass</code></li>
+<li>Long term but less trustworthy</li>
+<li>Network write time fluctuates</li>
+<li>Automatic</li>
+</ul>
+<h4 id="personal-private-information"><a class="doc-anchor" href="#personal-private-information">§</a>Personal Private Information</h4>
+<p>PII (Personally Identifiable Information) like my SSN, healthcare IDs and other
+various sensitive information should be included in <code>pass</code> and nowhere else…
+well, at least digitally, of course the original documents should be stored in
+a safe/wallet or something.</p>
+<p>In a system of cryptographically ensured ownership semantics (QM?), it’d be
+very cool to ensure these values “lived”, for lack of a better word, in my
+<code>pass</code> repo. I have no idea what an implementation of this would look like
+though.</p>
+<p>Other things can be saved in <code>pass</code> too, like tax, healthcare, finance, or any
+other sensitive information.</p>
+<div class="example-wrap"><pre class="language-text"><code>&lt;note&gt;/* -&gt; &lt;note&gt;
+
+├── health
+│   └── ...
+└── taxes
+    ├── 2017
+    └── 2018</code></pre></div>
+<p>Other people’s contact information is private. We can store both public names
+with their fingerprints (or other potentially private information):</p>
+<div class="example-wrap"><pre class="language-text"><code>contacts/&lt;name&gt; -&gt; &lt;gpg_fingerprint&gt;
+
+├── contacts
+│   ├── Nathan Lilienthal
+│   ├── Bob Smith
+│   │   ├── Personal
+│   │   └── Work
+│   ├── Jane Doe</code></pre></div>
+<ul>
+<li>TODO: Private set of contact names</li>
+</ul>
+</div></details><h2 id="statics" class="section-header">Statics<a href="#statics" class="anchor">§</a></h2><dl class="item-table"><dt><a class="static" href="static.PAGE.html" title="static nixpulvis::ramblings::keep_it_to_yourself::PAGE">PAGE</a></dt><dd>This page’s source, which the site is built from.</dd></dl></section></div></main></body></html>

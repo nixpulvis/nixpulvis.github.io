@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en" data-baseurl="/pr-preview/pr-90" data-build="1793404162">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      // A link ending in `?tui` turns the terminal view on, like the `>_` key
+      // after the name does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Achilles' Tent Notes &#35;10</title>
+    <meta name="description" content="Achilles’ Tent Notes #8 Achilles’ Tent Notes #9 Achilles’ Tent Notes #10 Achilles’ Tent Notes #11 Achilles’ Tent Notes #12 Achilles’ Tent Notes #13" />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Achilles&#39; Tent Notes &amp;#35;10" />
+    <meta property="og:description" content="Achilles’ Tent Notes #8 Achilles’ Tent Notes #9 Achilles’ Tent Notes #10 Achilles’ Tent Notes #11 Achilles’ Tent Notes #12 Achilles’ Tent Notes #13" />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-90/research/2019-10-28-achilles-10" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-90/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-90/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-90/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/pr-preview/pr-90/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/pr-preview/pr-90/apple-touch-icon.png" sizes="180x180" />
+    
+      <link rel="alternate" type="text/markdown" href="/pr-preview/pr-90/research/2019-10-28-achilles-10.md" />
+    
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-90/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-90/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-90/css/style.css?v=1793404162">
+    <link rel="stylesheet" href="/pr-preview/pr-90/css/syntax.css">
+    
+    <script defer src="/pr-preview/pr-90/js/mousetrap.min.js"></script>
+    
+      <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-chtml.js"></script>
+    
+    <script defer src="/pr-preview/pr-90/js/main.js"></script>
+    <!-- If the view's script can't load, show the page the head script hid. -->
+    <script type="module" src="/pr-preview/pr-90/js/tui.js?v=1793404162" onerror="document.documentElement.classList.remove('tui')"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-90/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-90/img/me.jpg" class="hidden" />
+      <div class="title">
+        <a href="/pr-preview/pr-90/" class="identity">nixpulvis</a>
+      </div>
+      <nav>
+        <ul>
+          
+            
+              <li><a href="/pr-preview/pr-90/projects">Projects</a></li>
+            
+          
+            
+              <li><a href="/pr-preview/pr-90/ramblings">Ramblings</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/references" title="References" aria-label="References">&</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/musings" title="Music" aria-label="Music">♪</a></li>
+            
+          
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">Achilles' Tent Notes &#35;10</h2>
+<p class="meta">
+    written by Nathan Lilienthal
+    on October 28, 2019
+</p>
+
+<ul>
+<li><a href="/pr-preview/pr-90/research/2019-10-13-achilles-8">Achilles’ Tent Notes #8</a></li>
+<li><a href="/pr-preview/pr-90/research/2019-10-15-achilles-9">Achilles’ Tent Notes #9</a></li>
+<li><a href="/pr-preview/pr-90/research/2019-10-28-achilles-10"><strong>Achilles’ Tent Notes #10</strong></a></li>
+<li><a href="/pr-preview/pr-90/research/2019-11-11-achilles-11">Achilles’ Tent Notes #11</a></li>
+<li><a href="/pr-preview/pr-90/research/2019-12-02-achilles-12">Achilles’ Tent Notes #12</a></li>
+<li><a href="/pr-preview/pr-90/research/2019-12-13-achilles-13">Achilles’ Tent Notes #13</a></li>
+</ul>
+<hr />
+<h3 id="typing-notes">Typing Notes</h3>
+<ul>
+<li>
+<p>Oxide doesn’t have traits, or associated types</p>
+<ul>
+<li>Proper syntax for oblivious array types: <code>obliv [τ; N]</code>, cases enumerated
+below:
+<blockquote>
+<p><strong>Details:</strong></p>
+<ul>
+<li><code>obliv [obliv τ; N]⋮Index&lt;obliv usize&gt;</code>
+An oblivious array with oblivious data and oblivious access is an ORAM</li>
+<li><code>obliv [obliv τ; N]⋮Index&lt;usize&gt;</code>
+An oblivious array with oblivious data and plain access</li>
+<li><code>obliv [τ; N]⋮Index&lt;obliv usize&gt;</code>
+An oblivious array with plain data and oblivious access is comparable
+to a PIR, as it <em>could</em> simply reveal the whole array</li>
+<li><code>obliv [τ; N]⋮Index&lt;usize&gt;</code>
+An oblivious array with plain data and plain access only adds a secure
+mapping of indices to logical memory addresses. Logical to physical
+mappings are still present in the face of compiled Rust</li>
+<li><code>[obliv τ; N]⋮Index&lt;usize&gt;</code> is just a normal ol’ array of <code>obliv τ</code>
+types</li>
+<li><code>[τ; N] ⋮Index&lt;obliv usize&gt;</code> is not implemented, and should be a type
+error</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p><code>obliv ()</code>, <code>obliv (T)</code>, <code>obliv (T, U)</code>, and so on…</p>
+<ul>
+<li><code>obliv (T)</code> should not be equivalent to <code>obliv T</code></li>
+<li><code>obliv (T, U) = (obliv T, obliv U)</code>, simply structural</li>
+<li>Rust’s <code>struct</code> (\(S::\langle\barρ,\barτ\rangle\)) are like tuples, so
+they should be consistent</li>
+</ul>
+</li>
+<li>
+<p><code>obliv obliv τ</code></p>
+<ul>
+<li>Supports “MPC in the head” nested protocols</li>
+<li>Might require careful consideration when writing typing rules with
+promotions</li>
+</ul>
+</li>
+<li>
+<p><code>conceal(τ)</code> and <code>reveal(τ)</code> where <code>τ: σ → ρ</code></p>
+<ul>
+<li>Initial thought is that it doesn’t make sense to allow this, because
+function bodies must be public information in general, more on this below</li>
+</ul>
+</li>
+<li>
+<p>Oxide doesn’t currently have <code>enum</code> or <code>match</code></p>
+<ul>
+<li><code>match</code> should be able to be represented as if, with an understanding of
+some patterns</li>
+<li>Enums are “tagged”, sum types</li>
+<li>We could start small and only allow matching for enums, avoiding the
+broader class of “patterns”</li>
+</ul>
+</li>
+</ul>
+<h3 id="redex-model">Redex Model</h3>
+<ul>
+<li>Started a redex model <code>(define-language obliv)</code>
+<ul>
+<li>Thinking it should be <code>(define-union-language ...)</code></li>
+</ul>
+</li>
+<li>Example typing judgment:<div class="language-racket"><div class="highlight"><pre class="highlight"><code><span class="source lisp">[<span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>types Γ e_1 <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>obliv bool<span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>types Γ e_2 <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>obliv <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>types Γ e_3 <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>obliv <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+ -------------------------------------------- obliv-if
+ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>types Γ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>obliv<span class="keyword operator arithmetic lisp">-</span><span class="keyword control lisp">if</span> e_1 e_2 e_3<span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>obliv <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>]<span class="invalid illegal stray-bracket-end lisp">)</span>
+</span></code></pre></div></div>
+</li>
+<li>Example reduction rule:<div class="language-racket"><div class="highlight"><pre class="highlight"><code><span class="source lisp"><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator arithmetic lisp">-</span><span class="keyword operator arithmetic lisp">-</span><span class="keyword operator comparison lisp">&gt;</span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>in<span class="keyword operator arithmetic lisp">-</span>hole E <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>obliv<span class="keyword operator arithmetic lisp">-</span><span class="keyword control lisp">if</span> v_1 <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>λ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>x : <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span> e_2<span class="punctuation definition group end lisp">)</span></span>
+                                <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>λ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>x : <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span> e_3<span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+       <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>in<span class="keyword operator arithmetic lisp">-</span>hole E <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>λ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>x : <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>obliv<span class="keyword operator arithmetic lisp">-</span><span class="keyword control lisp">if</span> v_1 e_2 e_3<span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+       <span class="string quoted double lisp"><span class="punctuation definition string begin lisp">&quot;</span>obliv-if-λ<span class="punctuation definition string end lisp">&quot;</span></span><span class="punctuation definition group end lisp">)</span></span>
+</span></code></pre></div></div>
+</li>
+</ul>
+<h4 id="public-promotion--wire-types">Public Promotion &amp; Wire Types</h4>
+<ul>
+<li>How can I write promotion rules like the following:<div class="language-racket"><div class="highlight"><pre class="highlight"><code><span class="source lisp">[<span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>types Γ e <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span>
+ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>side<span class="keyword operator arithmetic lisp">-</span>condition <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>public? <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+ ---------------------------- promotion?
+ <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>types Γ e <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>obliv <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>]
+</span></code></pre></div></div>
+</li>
+<li>New typing forms for <code>public</code> and <code>obliv</code> wire types<div class="language-racket"><div class="highlight"><pre class="highlight"><code><span class="source lisp">[t ::=
+     num
+     bool
+     <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>→ <span class="constant language lisp">t</span> <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span>
+     <span class="comment line semicolon lisp"><span class="punctuation definition comment lisp">;</span> ----------
+</span>     <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span>
+     <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>obliv<span class="keyword operator comparison lisp">&gt;</span> <span class="constant language lisp">t</span><span class="punctuation definition group end lisp">)</span></span>]
+</span></code></pre></div></div>
+<ul>
+<li><code>(conceal (+ 1 2))</code> gets you <code>(&lt;obliv&gt; 3)</code></li>
+<li><code>1</code> used in place of a wire can be public promoted to <code>(&lt;public&gt; 1)</code>
+<blockquote>
+<p><strong>Details:</strong></p>
+<ul>
+<li>Public predicate and public values</li>
+</ul>
+<div class="language-racket"><div class="highlight"><pre class="highlight"><code><span class="source lisp"><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>mux <span class="constant character lisp"><span class="punctuation definition constant lisp">#</span>t</span> <span class="constant numeric lisp">2</span> <span class="constant numeric lisp">3</span><span class="punctuation definition group end lisp">)</span></span>
+<span class="comment line semicolon lisp"><span class="punctuation definition comment lisp">;</span> -promotion&gt;
+</span><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>mux <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant character lisp"><span class="punctuation definition constant lisp">#</span>t</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant numeric lisp">2</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant numeric lisp">3</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+<span class="comment line semicolon lisp"><span class="punctuation definition comment lisp">;</span> -public-mux&gt;
+</span><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant numeric lisp">2</span><span class="punctuation definition group end lisp">)</span></span>
+:
+<span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> num<span class="punctuation definition group end lisp">)</span></span>
+</span></code></pre></div></div>
+<ul>
+<li>Public predicate and <code>obliv</code> values</li>
+</ul>
+<div class="language-racket"><div class="highlight"><pre class="highlight"><code><span class="source lisp"><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>mux <span class="constant character lisp"><span class="punctuation definition constant lisp">#</span>f</span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>conceal <span class="constant numeric lisp">2</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>conceal <span class="constant numeric lisp">3</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+<span class="comment line semicolon lisp"><span class="punctuation definition comment lisp">;</span> -promotion&gt;
+</span><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>mux <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant character lisp"><span class="punctuation definition constant lisp">#</span>f</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>conceal <span class="constant numeric lisp">2</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>conceal <span class="constant numeric lisp">3</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+<span class="comment line semicolon lisp"><span class="punctuation definition comment lisp">;</span> -conceals&gt;
+</span><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>mux <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant character lisp"><span class="punctuation definition constant lisp">#</span>f</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>obliv<span class="keyword operator comparison lisp">&gt;</span> <span class="constant numeric lisp">2</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>obliv<span class="keyword operator comparison lisp">&gt;</span> <span class="constant numeric lisp">3</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+<span class="comment line semicolon lisp"><span class="punctuation definition comment lisp">;</span> -public-mux&gt;
+</span><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>obliv<span class="keyword operator comparison lisp">&gt;</span> <span class="constant numeric lisp">3</span><span class="punctuation definition group end lisp">)</span></span>
+:
+<span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>obliv<span class="keyword operator comparison lisp">&gt;</span> num<span class="punctuation definition group end lisp">)</span></span>
+</span></code></pre></div></div>
+<ul>
+<li><code>obliv</code> conditional predicate</li>
+</ul>
+<div class="language-racket"><div class="highlight"><pre class="highlight"><code><span class="source lisp"><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>mux <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>conceal x<span class="punctuation definition group end lisp">)</span></span> <span class="constant numeric lisp">1</span> <span class="constant numeric lisp">2</span><span class="punctuation definition group end lisp">)</span></span>
+<span class="comment line semicolon lisp"><span class="punctuation definition comment lisp">;</span> -promotion&gt;
+</span><span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span>mux <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>obliv<span class="keyword operator comparison lisp">&gt;</span> x<span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant numeric lisp">1</span><span class="punctuation definition group end lisp">)</span></span> <span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>public<span class="keyword operator comparison lisp">&gt;</span> <span class="constant numeric lisp">2</span><span class="punctuation definition group end lisp">)</span></span><span class="punctuation definition group end lisp">)</span></span>
+:
+<span class="meta group lisp"><span class="punctuation definition group begin lisp">(</span><span class="keyword operator comparison lisp">&lt;</span>obliv<span class="keyword operator comparison lisp">&gt;</span> num<span class="punctuation definition group end lisp">)</span></span>
+</span></code></pre></div></div>
+</blockquote>
+</li>
+<li><code>(&lt;public&gt; (→ t t))</code> is the promotion of any function</li>
+<li><code>(&lt;obliv&gt; (→ t t))</code> could be the result type of something like
+<code>(mux p (λ (x : num) x) (λ (x : num) 0))</code> since which function’s value is
+used will be unknown to an observer</li>
+<li>We may want the ability to send/recv <code>(&lt;public&gt; v)</code> at run-time</li>
+</ul>
+</li>
+</ul>
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-90/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_research/notes/achilles/2019-10-28-achilles-10.md">source</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/commits/master/_research/notes/achilles/2019-10-28-achilles-10.md">history</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/issues/new?body=https%3A%2F%2Fnixpulvis.com%2Fpr-preview%2Fpr-90%2Fresearch%2F2019-10-28-achilles-10">report an issue</a>
+        <span class="issues"><a href="https://github.com/nixpulvis/nixpulvis.github.io/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>

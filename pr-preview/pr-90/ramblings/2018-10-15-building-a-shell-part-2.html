@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en" data-baseurl="/pr-preview/pr-90" data-build="1793404162">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      // A link ending in `?tui` turns the terminal view on, like the `>_` key
+      // after the name does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Building a Shell - Part 2</title>
+    <meta name="description" content="This is part 2 of a series I’ll be writing on the creation of oursh, a modern POSIX compatible shell written in Rust. If you haven’t read Part 1, and want a ..." />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Building a Shell - Part 2" />
+    <meta property="og:description" content="This is part 2 of a series I’ll be writing on the creation of oursh, a modern POSIX compatible shell written in Rust. If you haven’t read Part 1, and want a ..." />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-90/ramblings/2018-10-15-building-a-shell-part-2" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-90/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-90/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-90/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/pr-preview/pr-90/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/pr-preview/pr-90/apple-touch-icon.png" sizes="180x180" />
+    
+      <link rel="alternate" type="text/markdown" href="/pr-preview/pr-90/ramblings/2018-10-15-building-a-shell-part-2.md" />
+    
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-90/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-90/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-90/css/style.css?v=1793404162">
+    <link rel="stylesheet" href="/pr-preview/pr-90/css/syntax.css">
+    
+    <script defer src="/pr-preview/pr-90/js/mousetrap.min.js"></script>
+    
+    <script defer src="/pr-preview/pr-90/js/main.js"></script>
+    <!-- If the view's script can't load, show the page the head script hid. -->
+    <script type="module" src="/pr-preview/pr-90/js/tui.js?v=1793404162" onerror="document.documentElement.classList.remove('tui')"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-90/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-90/img/me.jpg" class="hidden" />
+      <div class="title">
+        <a href="/pr-preview/pr-90/" class="identity">nixpulvis</a>
+      </div>
+      <nav>
+        <ul>
+          
+            
+              <li><a href="/pr-preview/pr-90/projects">Projects</a></li>
+            
+          
+            
+              <li><a href="/pr-preview/pr-90/ramblings">Ramblings</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/references" title="References" aria-label="References">&</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/musings" title="Music" aria-label="Music">♪</a></li>
+            
+          
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">Building a Shell - Part 2</h2>
+<p class="meta">
+    1645 words
+    published
+    on October 15, 2018
+</p>
+
+<p>This is part 2 of a series I’ll be writing on the creation of <a href="https://nixpulvis.com/oursh/oursh"><code>oursh</code></a>,
+a modern POSIX compatible shell written in Rust. If you haven’t read <a href="2018-07-11-building-a-shell-part-1">Part
+1</a>, and want a brief overview of shell terminology and functionality I
+recommend reading it, otherwise this will be the first post on the Rust project.</p>
+<p>In this post I want to dive into the skeleton of the project so far.  Last time
+we made a shell in 58 lines of Ruby. I then started the <code>oursh</code> project in
+(amazingly) the <a href="https://github.com/nixpulvis/oursh/commit/a7142d8">same number of lines</a>. Now the project has grown.
+I’ve added <a href="https://docs.rs/lalrpop/0.16.0/lalrpop">LALRPOP</a> for parsing the POSIX grammar, it has a separate
+parser known as <a href="http://docopt.org/">docopt</a> for handling arguments, and it has something
+starting to resemble a <code>readline(3)</code> like library using <a href="https://gitlab.redox-os.org/redox-os/termion">termion</a>. With
+everything, and the growing test suite this is the output of <code>cloc</code>.</p>
+<div class="language-plaintext"><div class="highlight"><pre class="highlight"><code><span class="text plain">-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+Rust                            15            268            677           1747
+Bourne Shell                     2              0              0              3
+-------------------------------------------------------------------------------
+SUM:                            17            268            677           1750
+-------------------------------------------------------------------------------
+</span></code></pre></div></div>
+<p>Ok, not 50… but again just like last time I think you’ll be surprised what
+2,000 lines of Rust can get you. For example, these shell programs all
+currently work.</p>
+<div class="language-sh"><div class="highlight"><pre class="highlight"><code><span class="source shell bash"><span class="meta function-call shell"><span class="variable function shell">ls</span></span><span class="meta function-call arguments shell"><span class="variable parameter option shell"><span class="punctuation definition parameter shell"> -</span>la</span></span>
+<span class="meta function-call shell"><span class="variable function shell">cat</span></span><span class="meta function-call arguments shell"> README.md</span> <span class="keyword operator logical pipe shell">|</span> <span class="meta function-call shell"><span class="variable function shell">wc</span></span>
+<span class="meta function-call shell"><span class="variable function shell">git</span></span><span class="meta function-call arguments shell"> add<span class="variable parameter option shell"><span class="punctuation definition parameter shell"> -</span>u</span></span>
+<span class="meta function-call shell"><span class="variable function shell">true</span></span> <span class="keyword operator logical or shell">||</span> <span class="meta function-call shell"><span class="variable function shell">false</span></span> <span class="keyword operator logical and shell">&amp;&amp;</span> <span class="meta function-call shell"><span class="variable function shell">true</span></span> <span class="keyword operator logical and shell">&amp;&amp;</span> <span class="meta function-call shell"><span class="support function echo shell">echo</span></span><span class="meta function-call arguments shell"> reached</span>
+<span class="meta function-call shell"><span class="variable function shell">!</span></span><span class="meta function-call arguments shell"> true</span> <span class="keyword operator logical and shell">&amp;&amp;</span> <span class="meta function-call shell"><span class="support function echo shell">echo</span></span><span class="meta function-call arguments shell"> not reached</span>
+<span class="punctuation definition compound braces begin shell">{</span> <span class="meta function-call shell"><span class="variable function shell">sleep</span></span><span class="meta function-call arguments shell"> 1</span><span class="keyword operator logical continue shell">;</span> <span class="meta function-call shell"><span class="variable function shell">date</span></span><span class="keyword operator logical continue shell">;</span> <span class="punctuation definition compound braces end shell">}</span><span class="keyword operator logical job shell">&amp;</span>
+</span></code></pre></div></div>
+<h3 id="build-it-to-believe">Build it to Believe</h3>
+<p>Before we begin, in order to really get what’s going on, I <strong>strongly</strong> urge
+you to download Rust and compile <code>oursh</code> yourself. You can run examples from
+this post as we go through them. Otherwise, just use <code>bash</code> and skip this
+section.</p>
+<p>First clone the repository from GitHub into your local directory.</p>
+<div class="language-sh"><div class="highlight"><pre class="highlight"><code><span class="source shell bash"><span class="meta function-call shell"><span class="variable function shell">git</span></span><span class="meta function-call arguments shell"> clone https://github.com/nixpulvis/oursh</span>
+</span></code></pre></div></div>
+<p>Then install Rust by either, visiting their <a href="https://www.rust-lang.org/en-US">official website</a> or simply
+running <code>brew install rustup</code>, <code>pacman -S rustup</code>, etc. Once you have
+<code>rustup</code> installed, from inside the oursh project directory <code>cargo</code> has many
+commands at your disposal.</p>
+<pre><code class="language-unix">cargo build  # Just compile
+cargo run    # Compile and run oursh
+cargo test   # Compile and run the test suite
+</code></pre>
+<p>If you’re lazy (like me), here’s a script to copy-paste. This, in a way is the
+power of UNIX.</p>
+<div class="language-sh"><div class="highlight"><pre class="highlight"><code><span class="source shell bash"><span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell"> macOS</span><span class="comment line number-sign shell">
+</span><span class="meta function-call shell"><span class="variable function shell">brew</span></span><span class="meta function-call arguments shell"> install rustup</span>
+<span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell"> Arch Linux</span><span class="comment line number-sign shell">
+</span><span class="meta function-call shell"><span class="variable function shell">pacman</span></span><span class="meta function-call arguments shell"><span class="variable parameter option shell"><span class="punctuation definition parameter shell"> -</span>S</span> rustup</span>
+
+<span class="meta function-call shell"><span class="variable function shell">git</span></span><span class="meta function-call arguments shell"> clone https://github.com/nixpulvis/oursh</span>
+<span class="meta function-call shell"><span class="support function cd shell">cd</span></span><span class="meta function-call arguments shell"> oursh</span>
+<span class="meta function-call shell"><span class="variable function shell">cargo</span></span><span class="meta function-call arguments shell"> run</span>
+</span></code></pre></div></div>
+<p>Depending on what version of <code>oursh</code> you have checked out the shell’s prompt
+may look different, and there are a few compilation features, but generally
+speaking you’ll get a shell that looks like this:</p>
+<div class="language-plaintext"><div class="highlight"><pre class="highlight"><code><span class="text plain">oursh-0.3$
+</span></code></pre></div></div>
+<p>Play around with it, it’s a real shell. If you want even more Rust between you
+and your OS I recommend <a href="https://github.com/jwilm/alacritty">Alacritty</a>, a GPU-accelerated terminal
+also written in Rust.</p>
+<h3 id="something-new-before-a-lot-of-old">Something New, Before a lot of Old</h3>
+<p>Before we dive into the dense topic of language, let me give you a taste of
+something I’m really excited about, which is only possible with some knowledge
+of the following material. I’m calling them <em><a href="https://en.wikipedia.org/wiki/Shebang_(Unix)">shebang</a> blocks</em> after
+the <code>#!</code> symbol you can use to specify an interpreter at the start of a script
+file. These do the same thing but are embedded in the shell’s recursive
+grammar, just see for yourself.</p>
+<p>Print my cat’s name (π) from Ruby.</p>
+<div class="language-plaintext"><div class="highlight"><pre class="highlight"><code><span class="text plain">{#!/usr/bin/env ruby; puts Math::PI}
+</span></code></pre></div></div>
+<p>Same thing, just syntactic sugar.</p>
+<div class="language-plaintext"><div class="highlight"><pre class="highlight"><code><span class="text plain">{#!ruby; puts Math::PI}
+{#!node; console.log(Math.PI)}
+{#!racket; #lang racket (println pi)}
+</span></code></pre></div></div>
+<p>This feature is currently experimental, but working. You can try it for
+yourself by compiling with <code>cargo run --features=shebang-block</code>. These more
+advanced commands will also Just Work once I get to implementing background
+programs (<a href="https://github.com/nixpulvis/oursh/issues/6">#6</a>) and environments/variables (<a href="https://github.com/nixpulvis/oursh/issues/27">#27</a>).</p>
+<div class="language-plaintext"><div class="highlight"><pre class="highlight"><code><span class="text plain"># Save π to the ENV var $PI.
+PI={#!node; console.log(Math.PI)}; echo $PI
+
+# Start a Ruby server in the background.
+{#!ruby; require &#39;server&#39;; Server.start}&amp;
+</span></code></pre></div></div>
+<p>OK, now back to your regularly scheduled series on programming languages,
+grammar, POSIX shell scripts and Rust.</p>
+<h3 id="shell-language">Shell Language</h3>
+<p>A <em>script</em> is, in general, some text which is <em>interpreted</em> by a program on a
+computer. A <em>shell</em>, like the one we’re building (or <code>bash</code>, <code>sh</code>, …), is one
+such interpreter. You can pass a shell script to it and it will correctly
+execute the program. A POSIX shell program is typically just known as “shell
+script”, though other types of shell scripts exist; like <a href="https://fishshell.com">fish</a> scripts.
+For convenience, we’ll simply refer to a POSIX compatible shell as <code>sh</code>.</p>
+<p>The first implementation of <code>sh</code> was by Ken Thompson around 1971, which is why
+you may also hear this referred to as a Thompson shell. The next major
+development was in 1979 with the Bourne shell, also known as <code>sh</code>, which was a
+rewrite by Stephen Bourne at Bell Labs. The most common shell these days is
+<code>bash</code>, which stands for Bourne-Again shell.</p>
+<p>Now finally, for some Rust code…</p>
+<h5 id="use-ourshprogrambasicprogram"><a href="https://nixpulvis.com/oursh/oursh/program/basic/struct.Program"><code>use oursh::program::basic::Program;</code></a></h5>
+<p>This is the most basic implementation of a <code>Program</code> within oursh. The only
+thing <code>BasicProgram</code> is able to do is run commands like <code>ls</code> or <code>git status</code>,
+but nothing more complex like <code>cat $1 | wc -c</code>, or new like <code>{#!ruby; p 1}</code>.</p>
+<p>This implementation doesn’t use an fancy parsers, and simply reads a full line
+and splits it by spaces, passing the result directly through to <code>exec</code> on
+<code>run</code>.</p>
+<div class="language-sh"><div class="highlight"><pre class="highlight"><code><span class="source shell bash"><span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell"> Run oursh using alternate (basic currently) program parsing.</span><span class="comment line number-sign shell">
+</span><span class="meta function-call shell"><span class="variable function shell">cargo</span></span><span class="meta function-call arguments shell"> run<span class="keyword operator end-of-options shell"> --</span></span><span class="meta function-call arguments shell"> -#</span>
+</span></code></pre></div></div>
+<h5 id="formal-grammar-review">Formal Grammar Review</h5>
+<p>A formal <em>grammar</em> is a set of rules for creating <em>non-terminals</em> from
+<em>terminals</em>, where the terminals represent the set of characters (or tokens) in
+the <em>language</em>. A set of tokens in a language is known as an <em>alphabet</em>. A
+non-terminal represents some production based on underlying non-terminals and
+terminals, in this way allowing for recursive definitions.</p>
+<h5 id="extern-crate-lalrpop"><a href="https://docs.rs/lalrpop/0.16.0/lalrpop"><code>extern crate lalrpop;</code></a></h5>
+<p>LALRPOP is a <strong>parser generator</strong>, which is essentially a framework for
+creating parsers for some kinds of languages. In this case, LALRPOP runs in a
+build phase before the compiler and generates a valid Rust parser module. The
+parser is defined to correctly parse the grammar defined in a corresponding
+<code>*.lalrpop</code> file. To understand what this means we need to understand what we
+mean by <em>parser</em>.</p>
+<p>A parser’s job is to take in a stream of tokens (things like <code>#</code>,<code>"</code>, <code>}</code>,
+<code>WORD</code>, etc) and produce an AST. Tokens are the terminals, while the grammar
+description <code>*.lalrpop</code> file defines the non-terminal rules.</p>
+<p>Our AST is mainly one <code>struct</code> and one heavily recursive <code>enum</code>.  The main goal
+of the AST is to preserve the needed information from the text to easily map to
+the execution semantics. For example consider this example from grade school:
+<code>1 + 2 * 3</code>. We typically learn a rule called PEMDAS to remember the order of
+<em>precedence</em> so we correctly read the previous expression as <code>1 + (2 * 3)</code>.
+Similarly, we have <code>true &amp;&amp; false || true</code>, which could be parsed one of two
+ways:</p>
+<div class="language-sh"><div class="highlight"><pre class="highlight"><code><span class="source shell bash"><span class="punctuation definition compound begin shell">(</span><span class="meta function-call shell"><span class="variable function shell">false</span></span> <span class="keyword operator logical and shell">&amp;&amp;</span> <span class="meta function-call shell"><span class="variable function shell">true</span></span><span class="punctuation definition compound end shell">)</span> <span class="keyword operator logical or shell">||</span> <span class="meta function-call shell"><span class="variable function shell">true  <span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell">=&gt; true</span><span class="comment line number-sign shell">
+</span></span></span><span class="meta function-call shell"><span class="variable function shell">false</span></span> <span class="keyword operator logical and shell">&amp;&amp;</span> <span class="punctuation definition compound begin shell">(</span><span class="meta function-call shell"><span class="variable function shell">true</span></span> <span class="keyword operator logical or shell">||</span> <span class="meta function-call shell"><span class="variable function shell">true</span></span><span class="punctuation definition compound end shell">)</span>  <span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell">=&gt; false</span><span class="comment line number-sign shell">
+</span></span></code></pre></div></div>
+<p>Before we look at the grammar rules, let’s look at our AST definition.</p>
+<h5 id="use-ourshprogramposixastprogram"><a href="https://nixpulvis.com/oursh/oursh/program/posix/ast/struct.Program"><code>use oursh::program::posix::ast::Program;</code></a></h5>
+<p>Internally, <code>posix::ast::Program</code> uses the parser module generated
+automatically in it’s <code>parse</code> function.</p>
+<div class="language-rust"><div class="highlight"><pre class="highlight"><code><span class="source rust"><span class="storage type rust">let</span> program <span class="keyword operator rust">=</span> <span class="meta path rust">Program<span class="punctuation accessor rust">::</span></span>parse<span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="string quoted double rust"><span class="storage type string rust">b</span><span class="punctuation definition string begin rust">&quot;</span>false &amp;&amp; true || true<span class="punctuation definition string end rust">&quot;</span></span> <span class="keyword operator rust">as</span> <span class="keyword operator rust">&amp;</span><span class="meta group rust"><span class="punctuation section group begin rust">[</span><span class="storage type rust">u8</span><span class="punctuation section group end rust">]</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="keyword operator rust">?</span><span class="punctuation terminator rust">;</span>
+<span class="support macro rust">println!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span></span><span class="meta group rust"><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span><span class="constant other placeholder rust">{:#?}</span><span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation separator rust">,</span> program<span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+<span class="keyword operator rust">-</span><span class="keyword operator rust">-</span><span class="keyword operator rust">-</span><span class="keyword operator rust">-</span><span class="keyword operator rust">-</span>
+Program<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+    <span class="meta group rust"><span class="punctuation section group begin rust">[</span>
+        Or<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+            And<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+                Simple<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+                    <span class="meta group rust"><span class="punctuation section group begin rust">[</span>
+                        Word<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+                            <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>false<span class="punctuation definition string end rust">&quot;</span></span>
+                        </span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+                    <span class="punctuation section group end rust">]</span></span>
+                </span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation separator rust">,</span>
+                Simple<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+                    <span class="meta group rust"><span class="punctuation section group begin rust">[</span>
+                        Word<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+                            <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>true<span class="punctuation definition string end rust">&quot;</span></span>
+                        </span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+                    <span class="punctuation section group end rust">]</span></span>
+                </span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+            </span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation separator rust">,</span>
+            Simple<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+                <span class="meta group rust"><span class="punctuation section group begin rust">[</span>
+                    Word<span class="meta group rust"><span class="punctuation section group begin rust">(</span>
+                        <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>true<span class="punctuation definition string end rust">&quot;</span></span>
+                    </span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+                <span class="punctuation section group end rust">]</span></span>
+            </span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+        </span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+    <span class="punctuation section group end rust">]</span></span>
+</span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+</span></code></pre></div></div>
+<p>As you can see we correctly parse <code>false &amp;&amp; true || true</code> as <code>(false &amp;&amp; true) || true</code>, so this program will return true (or exit code 0).</p>
+<p>The only major piece left to explain is the <a href="https://github.com/nixpulvis/oursh/blob/master/src/program/posix.lalrpop">grammar
+description</a> file. There <a href="http://lalrpop.github.io/lalrpop/tutorial/005_full_expressions.html">are</a> a
+<a href="http://lalrpop.github.io/lalrpop/tutorial/004_controlling_lexer.html">lot</a> of <a href="http://lalrpop.github.io/lalrpop/tutorial/007_macros.html">details</a> to go over with
+the LALRPOP parser generator, but luckily it’s simple enough to understand the
+basics.</p>
+<p>These are the needed rules inside <code>posix.lalrpop</code> to parse the above AST.</p>
+<div class="language-rust"><div class="highlight"><pre class="highlight"><code><span class="source rust"><span class="comment line double-slash rust"><span class="punctuation definition comment rust">//</span> Programs are constructed in other grammar rules...
+</span>
+Command<span class="punctuation separator rust">:</span> <span class="meta path rust">ast<span class="punctuation accessor rust">::</span></span>Command <span class="keyword operator rust">=</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+    <span class="comment line double-slash rust"><span class="punctuation definition comment rust">//</span> ...
+</span>    <span class="keyword operator rust">&lt;</span>cs<span class="punctuation separator rust">:</span> Command<span class="keyword operator rust">&gt;</span> <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>&amp;&amp;<span class="punctuation definition string end rust">&quot;</span></span> <span class="keyword operator rust">&lt;</span>p<span class="punctuation separator rust">:</span> Pipeline<span class="keyword operator rust">&gt;</span> <span class="keyword operator rust">=&gt;</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+        <span class="meta path rust">ast<span class="punctuation accessor rust">::</span></span><span class="meta path rust">Command<span class="punctuation accessor rust">::</span></span>And<span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="keyword operator rust">box</span> cs<span class="punctuation separator rust">,</span> <span class="keyword operator rust">box</span> p</span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+    </span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span><span class="punctuation separator rust">,</span>
+    <span class="meta generic rust"><span class="punctuation definition generic begin rust">&lt;</span>cs<span class="punctuation separator rust">:</span> Command<span class="punctuation definition generic end rust">&gt;</span></span> <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>||<span class="punctuation definition string end rust">&quot;</span></span> <span class="keyword operator rust">&lt;</span>p<span class="punctuation separator rust">:</span> Pipeline<span class="keyword operator rust">&gt;</span> <span class="keyword operator rust">=&gt;</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+        <span class="meta path rust">ast<span class="punctuation accessor rust">::</span></span><span class="meta path rust">Command<span class="punctuation accessor rust">::</span></span>Or<span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="keyword operator rust">box</span> cs<span class="punctuation separator rust">,</span> <span class="keyword operator rust">box</span> p</span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+    </span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span><span class="punctuation separator rust">,</span>
+    <span class="comment line double-slash rust"><span class="punctuation definition comment rust">//</span> ...
+</span>    Pipeline <span class="keyword operator rust">=&gt;</span> <span class="meta generic rust"><span class="punctuation definition generic begin rust">&lt;</span><span class="punctuation definition generic end rust">&gt;</span></span><span class="punctuation separator rust">,</span>
+</span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span>
+
+<span class="comment line double-slash rust"><span class="punctuation definition comment rust">//</span> Other command rules are defined below.
+</span>
+Simple<span class="punctuation separator rust">:</span> <span class="meta path rust">ast<span class="punctuation accessor rust">::</span></span>Command <span class="keyword operator rust">=</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+    <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>WORD<span class="punctuation definition string end rust">&quot;</span></span><span class="keyword operator rust">+</span> <span class="keyword operator rust">=&gt;</span> <span class="meta path rust">ast<span class="punctuation accessor rust">::</span></span><span class="meta path rust">Command<span class="punctuation accessor rust">::</span></span>Simple<span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="keyword operator rust">&lt;</span><span class="keyword operator rust">&gt;</span>.<span class="support function rust">iter</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>.<span class="support function rust">map</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="meta function closure rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">|</span></span></span><span class="meta function closure rust"><span class="meta function parameters rust"><span class="variable parameter rust">w</span><span class="punctuation section parameters end rust">|</span></span> </span><span class="meta function closure rust"><span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+        <span class="meta path rust">ast<span class="punctuation accessor rust">::</span></span>Word<span class="meta group rust"><span class="punctuation section group begin rust">(</span>w.<span class="support function rust">to_string</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+    </span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>.<span class="support function rust">collect</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span>
+</span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span>
+</span></code></pre></div></div>
+<p><code>Command</code> and <code>Simple</code> are <em>non-terminal</em> productions that return (when parsed)
+<code>ast:Command</code> types. As you can see, <code>Command</code> is recursively referenced in the
+<code>&amp;&amp;</code> and <code>||</code> rules, allowing for <code>... &amp;&amp; ... || ...</code>.</p>
+<p>Words are created by the <em>lexer</em>, a tool designed to consume the input text,
+and iterate over chunks called <em>tokens</em>. Tokens, as already mentioned, are the
+terminals of the language. <code>WORD</code>, <code>&amp;&amp;</code> and <code>||</code> from the above grammar rules,
+are our terminal tokens. <code>WORD</code>s are generated after reading a character that
+is allowed to start a word, until the word is considered finished. This allows
+for words like <code>foo!</code>, despite <code>!</code> also being a token.</p>
+<details>
+  <summary>
+    Deep Dive: Parser Combinators
+  </summary>
+  <p>
+    If parsers are your thing, you may also be interested in a
+    parser-combinator I wrote for students in NEU's introduction computer
+    science class. It's writen in Racket, and comes with a fully baked JSON
+    parser.
+  </p>
+  <p>
+    <a href="https://github.com/nixpulvis/parser-combinator">
+      <code>(require parser-combinator/json)</code>
+    </a>
+  </p>
+</details>
+<h3 id="testing">Testing</h3>
+<p>Just a quick note on testing, because it’s an important part of this project.
+Rust’s macro system does a great job allowing developers to write clean and
+fast tests. Here are a few integration tests from this project’s suite.</p>
+<div class="language-rust"><div class="highlight"><pre class="highlight"><code><span class="source rust"><span class="support macro rust">assert_oursh!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>head README.md -n 1<span class="punctuation definition string end rust">&quot;</span></span><span class="punctuation separator rust">,</span> <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span># oursh<span class="constant character escape rust">\n</span><span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+<span class="support macro rust">assert_oursh!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>false &amp;&amp; echo 1<span class="punctuation definition string end rust">&quot;</span></span><span class="punctuation separator rust">,</span> <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span><span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+<span class="support macro rust">assert_oursh!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>false || echo 1<span class="punctuation definition string end rust">&quot;</span></span><span class="punctuation separator rust">,</span> <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>1<span class="constant character escape rust">\n</span><span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+<span class="support macro rust">assert_oursh!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>{ echo pi; echo e; }<span class="punctuation definition string end rust">&quot;</span></span><span class="punctuation separator rust">,</span> <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>pi<span class="constant character escape rust">\n</span>e<span class="constant character escape rust">\n</span><span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+<span class="support macro rust">assert_oursh!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>{#!ruby; puts 1}<span class="punctuation definition string end rust">&quot;</span></span><span class="punctuation separator rust">,</span> <span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>1<span class="constant character escape rust">\n</span><span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+</span></code></pre></div></div>
+<h3 id="next-steps">Next Steps</h3>
+<ul>
+<li>Add a proper job runtime, with status, backgrounding. I’m still not 100%
+sure how to best implement this (<a href="https://github.com/nixpulvis/oursh/issues/6">#6</a>).</li>
+<li>More complete builtin support (<a href="https://github.com/nixpulvis/oursh/issues/26">#24</a>).</li>
+<li>The runtime can’t handle nested pipelines (<a href="https://github.com/nixpulvis/oursh/issues/26">#12</a>).</li>
+<li>The parser needs to support IO redirection syntax (<a href="https://github.com/nixpulvis/oursh/issues/26">#26</a>).</li>
+<li>Programs need variables, environments, and functions (<a href="https://github.com/nixpulvis/oursh/issues/27">#27</a>,
+<a href="https://github.com/nixpulvis/oursh/issues/43">#43</a>).</li>
+<li>The lexer needs to handle qoutes correctly (<a href="https://github.com/nixpulvis/oursh/issues/28">#28</a>).</li>
+<li>Plenty of <code>repl</code> issues.</li>
+</ul>
+<p>In the next post in this series we’ll look at some of the other features of
+this Rust project, including the CLI argument parser <code>docopt</code>, the terminal
+control library <code>termion</code>, <code>nix</code> and more.</p>
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-90/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2018-10-15-building-a-shell-part-2.md">source</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/commits/master/_ramblings/2018-10-15-building-a-shell-part-2.md">history</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/issues/new?body=https%3A%2F%2Fnixpulvis.com%2Fpr-preview%2Fpr-90%2Framblings%2F2018-10-15-building-a-shell-part-2">report an issue</a>
+        <span class="issues"><a href="https://github.com/nixpulvis/nixpulvis.github.io/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>

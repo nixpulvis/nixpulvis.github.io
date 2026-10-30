@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en" data-baseurl="/pr-preview/pr-90" data-build="1793404162">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      // A link ending in `?tui` turns the terminal view on, like the `>_` key
+      // after the name does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Achilles' Tent Notes &#35;8</title>
+    <meta name="description" content="Achilles’ Tent Notes #8 Achilles’ Tent Notes #9 Achilles’ Tent Notes #10 Achilles’ Tent Notes #11 Achilles’ Tent Notes #12 Achilles’ Tent Notes #13" />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Achilles&#39; Tent Notes &amp;#35;8" />
+    <meta property="og:description" content="Achilles’ Tent Notes #8 Achilles’ Tent Notes #9 Achilles’ Tent Notes #10 Achilles’ Tent Notes #11 Achilles’ Tent Notes #12 Achilles’ Tent Notes #13" />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-90/research/2019-10-13-achilles-8" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-90/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-90/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-90/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/pr-preview/pr-90/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/pr-preview/pr-90/apple-touch-icon.png" sizes="180x180" />
+    
+      <link rel="alternate" type="text/markdown" href="/pr-preview/pr-90/research/2019-10-13-achilles-8.md" />
+    
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-90/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-90/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-90/css/style.css?v=1793404162">
+    <link rel="stylesheet" href="/pr-preview/pr-90/css/syntax.css">
+    
+    <script defer src="/pr-preview/pr-90/js/mousetrap.min.js"></script>
+    
+    <script defer src="/pr-preview/pr-90/js/main.js"></script>
+    <!-- If the view's script can't load, show the page the head script hid. -->
+    <script type="module" src="/pr-preview/pr-90/js/tui.js?v=1793404162" onerror="document.documentElement.classList.remove('tui')"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-90/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-90/img/me.jpg" class="hidden" />
+      <div class="title">
+        <a href="/pr-preview/pr-90/" class="identity">nixpulvis</a>
+      </div>
+      <nav>
+        <ul>
+          
+            
+              <li><a href="/pr-preview/pr-90/projects">Projects</a></li>
+            
+          
+            
+              <li><a href="/pr-preview/pr-90/ramblings">Ramblings</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/references" title="References" aria-label="References">&</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-90/musings" title="Music" aria-label="Music">♪</a></li>
+            
+          
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">Achilles' Tent Notes &#35;8</h2>
+<p class="meta">
+    written by Nathan Lilienthal
+    on October 13, 2019
+</p>
+
+<ul>
+<li><a href="/pr-preview/pr-90/research/2019-10-13-achilles-8"><strong>Achilles’ Tent Notes #8</strong></a></li>
+<li><a href="/pr-preview/pr-90/research/2019-10-15-achilles-9">Achilles’ Tent Notes #9</a></li>
+<li><a href="/pr-preview/pr-90/research/2019-10-28-achilles-10">Achilles’ Tent Notes #10</a></li>
+<li><a href="/pr-preview/pr-90/research/2019-11-11-achilles-11">Achilles’ Tent Notes #11</a></li>
+<li><a href="/pr-preview/pr-90/research/2019-12-02-achilles-12">Achilles’ Tent Notes #12</a></li>
+<li><a href="/pr-preview/pr-90/research/2019-12-13-achilles-13">Achilles’ Tent Notes #13</a></li>
+</ul>
+<hr />
+<ul>
+<li><code>fn</code> type returns from <code>obliv if</code>
+<ul>
+<li>Wrapped in new closure which calls an <code>obliv if</code> inside when called:<div class="language-rust"><div class="highlight"><pre class="highlight"><code><span class="source rust">obliv <span class="keyword control rust">if</span> p <span class="meta block rust"><span class="punctuation section block begin rust">{</span> <span class="meta function closure rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">|</span></span></span><span class="meta function closure rust"><span class="meta function parameters rust">a...<span class="punctuation section parameters end rust">|</span></span> </span><span class="meta function closure rust">e1 </span></span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span> <span class="keyword control rust">else</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span> <span class="meta function closure rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">|</span></span></span><span class="meta function closure rust"><span class="meta function parameters rust">a...<span class="punctuation section parameters end rust">|</span></span> </span><span class="meta function closure rust">e2 </span></span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span>
+<span class="keyword operator rust">|</span>a<span class="keyword operator rust">...</span><span class="keyword operator rust">|</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span> obliv <span class="keyword control rust">if</span> p <span class="meta block rust"><span class="punctuation section block begin rust">{</span> e1 </span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span> <span class="keyword control rust">else</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span> e2 </span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span>
+</span></span></code></pre></div></div>
+</li>
+</ul>
+</li>
+<li><code>panic!</code> within <code>obliv if</code>
+<ul>
+<li>Currently ruled out of Oxide (has <code>abort</code> instead, which cannot be rescued from)</li>
+<li>The <code>Output</code> for division of obliv types should handle division by zero explicitly:<div class="language-rust"><div class="highlight"><pre class="highlight"><code><span class="source rust"><span class="meta impl rust"><span class="storage type impl rust">impl</span></span><span class="meta impl rust"><span class="meta generic rust"><span class="punctuation definition generic begin rust">&lt;</span>T<span class="punctuation definition generic end rust">&gt;</span></span></span><span class="meta impl rust"> Div <span class="keyword other rust">for</span></span><span class="meta impl rust"> <span class="entity name impl rust">obliv</span> <span class="entity name impl rust">T</span> </span><span class="meta impl rust"><span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+         <span class="storage type type rust">type</span> <span class="entity name type rust">Output</span> <span class="keyword operator rust">=</span> <span class="meta generic rust">Option<span class="punctuation definition generic begin rust">&lt;</span>T<span class="punctuation definition generic end rust">&gt;</span></span><span class="punctuation terminator rust">;</span>
+         <span class="meta function rust"><span class="meta function rust"><span class="storage type function rust">fn</span> </span><span class="entity name function rust">div</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">(</span><span class="variable parameter rust">self</span>, <span class="variable parameter rust">rhs</span><span class="punctuation separator rust">:</span> <span class="storage type rust">Self</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters end rust">)</span></span></span></span><span class="meta function rust"> <span class="meta function return-type rust"><span class="punctuation separator rust">-&gt;</span> <span class="meta path rust"><span class="storage type rust"><span class="storage type rust">Self</span><span class="punctuation accessor rust">::</span></span></span>Output</span> </span><span class="meta function rust"><span class="meta block rust"><span class="punctuation section block begin rust">{</span> <span class="keyword operator rust">...</span> </span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span></span>
+</span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span></span>
+<span class="keyword control rust">if</span> <span class="storage type rust">let</span> <span class="support type rust">Some</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span>n</span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span> <span class="keyword operator rust">=</span> obliv <span class="constant numeric integer decimal rust">5</span> <span class="keyword operator rust">/</span> obliv <span class="constant numeric integer decimal rust">0</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+        <span class="comment line double-slash rust"><span class="punctuation definition comment rust">//</span> never hit
+</span></span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span> <span class="keyword control rust">else</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+        <span class="comment line double-slash rust"><span class="punctuation definition comment rust">//</span> handle division by zero
+</span></span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span>
+</span></code></pre></div></div>
+</li>
+<li>Otherwise we just state that <code>x/0 == 0</code>. This will cause user who care about the value <code>0/x</code> being distinct to do their own checking</li>
+<li>obliv-c for example, just crashes when you divide by 0</li>
+</ul>
+</li>
+<li>Obliv compound types (i.e. <code>obliv Option&lt;T&gt;</code> or <code>obliv (T, U)</code>), what about <code>Cell&lt;T&gt;</code>
+<ul>
+<li>The idea of an <code>obliv enum</code> in general is interesting (along with <code>obliv match</code>)</li>
+<li><code>obliv (T, U)</code> oblivious tuple, not to be confused with a plain tuple of oblivious types, <code>(obliv T, obliv U)</code> is tricky because tuples are heterogeneous</li>
+<li><code>obliv [T; n]</code></li>
+<li>Oxide doesn’t have a notion of <code>Cell</code>, or interior mutability in general</li>
+</ul>
+</li>
+<li><code>obliv fn</code> ideally shouldn’t be needed (need <code>frz</code> qualifier?)
+<ul>
+<li>In obliv-c it exists to limit mutation from the outside, whereas we should be reasoning about the mutability of arguments in a closure</li>
+<li><code>static mut</code> items (which are unsafe) allow security leaks if allowed in <code>obliv</code> contexts:<div class="language-rust"><div class="highlight"><pre class="highlight"><code><span class="source rust"><span class="storage type rust">static</span> <span class="storage modifier rust">mut</span> X<span class="punctuation separator rust">:</span> <span class="storage type rust">u32</span> <span class="keyword operator rust">=</span> <span class="constant numeric integer decimal rust">0</span><span class="punctuation terminator rust">;</span>
+<span class="comment line double-slash rust"><span class="punctuation definition comment rust">//</span> f is *not* obliv safe.
+</span><span class="meta function rust"><span class="meta function rust"><span class="storage type function rust">fn</span> </span><span class="entity name function rust">f</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">(</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters end rust">)</span></span></span></span><span class="meta function rust"> </span><span class="meta function rust"><span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+        <span class="storage modifier rust">unsafe</span> <span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+            X <span class="keyword operator rust">=</span> <span class="constant numeric integer decimal rust">2</span><span class="punctuation terminator rust">;</span>
+        </span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span>
+</span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span></span>
+</span></code></pre></div></div>
+</li>
+</ul>
+</li>
+<li>2 stage borrow’s <code>reserved</code> is similar to <code>freeze</code>
+<ul>
+<li><a href="http://smallcultfollowing.com/babysteps/blog/2017/03/01/nested-method-calls-via-two-phase-borrowing">Currently <code>&amp;'a mut T</code> could really be viewed as <code>RefMut&lt;'r, 'w, T&gt;</code> with
+explicit lifetimes for reading and writing.</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-90/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_research/notes/achilles/2019-10-13-achilles-8.md">source</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/commits/master/_research/notes/achilles/2019-10-13-achilles-8.md">history</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/issues/new?body=https%3A%2F%2Fnixpulvis.com%2Fpr-preview%2Fpr-90%2Fresearch%2F2019-10-13-achilles-8">report an issue</a>
+        <span class="issues"><a href="https://github.com/nixpulvis/nixpulvis.github.io/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>

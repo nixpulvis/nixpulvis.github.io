@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="iOS Contact Hell"><title>nixpulvis::ramblings::ios_contact_hell - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nixpulvis" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.1 (58cf8f9c3 2026-10-13)" data-channel="1.99.1" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"><!-- KaTeX, for the math in the pages' docs, written as \( \) and \[ \]. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, { delimiters: [
+    { left: '\\[', right: '\\]', display: true },
+    { left: '\\(', right: '\\)', display: false },
+  ] })"></script>
+
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module ios_contact_hell</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../nixpulvis/index.html">nixpulvis</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module ios_<wbr>contact_<wbr>hell</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#step-1-merge-contacts" title="Step 1. Merge Contacts">Step 1. Merge Contacts</a></li><li><a href="#step-2-move-contacts" title="Step 2. Move Contacts">Step 2. Move Contacts</a></li></ul><h3><a href="#statics">Module Items</a></h3><ul class="block"><li><a href="#statics" title="Statics">Statics</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In nixpulvis::<wbr>ramblings</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">nixpulvis</a>::<wbr><a href="../index.html">ramblings</a></div><h1>Module <span>ios_<wbr>contact_<wbr>hell</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/nixpulvis/home/runner/work/nixpulvis.github.io/nixpulvis.github.io/target/debug/build/nixpulvis-896b5441140f1b8e/out/pages.rs.html#572">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>iOS Contact Hell</p>
+<p><small>2021-01-14 · <a href="https://nixpulvis.com/ramblings/2021-01-14-ios-contact-hell">on the site</a> · <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2021-01-14-ios-contact-hell.md">source</a></small></p>
+<p>All I want to do is move my contacts to one location.</p>
+<p>Seeing as Apple makes things somewhat hard these days, and until I’m running my
+own CardDAV server (or equivalent), I’m trying to move all my contacts to
+Google.</p>
+<p>During this migration, I have somehow collected partially overlapping sets of
+duplicated and original contacts between my two accounts. This is hardly
+surprising, although what <strong>is</strong> surprising is how few tools built into iOS
+there are at dealing with this. It’s as if Apple truly believes you will never
+use anything other than their precious iCloud services (or wants to make it
+feel painful otherwise), yet they provide the ability to have multiple accounts
+within iOS!</p>
+<h5 id="step-1-merge-contacts"><a class="doc-anchor" href="#step-1-merge-contacts">§</a>Step 1. Merge Contacts</h5>
+<p>For this task, I needed to download some random third party app, grant them
+access to all of my contacts information (obviously), and tap though <strong>one at a
+time</strong> each of my ~200 duplicate contacts. I could have done all the contacts
+at once, if I was willing to pay for the premium version of the app.</p>
+<p>Unfortunately, in the process some fields of my contacts didn’t seem to be
+preserved, namely the notes field. So I’m going to need to revise a contact
+merging script I wrote a while back to fix this up later anyway.</p>
+<p>This is insane! Apple should consider this feature to be a “Must Have” for any
+contacts feature. But it gets worse.</p>
+<h5 id="step-2-move-contacts"><a class="doc-anchor" href="#step-2-move-contacts">§</a>Step 2. Move Contacts</h5>
+<p>Now that I’ve removed all the duplicate contacts using the sketchy contact
+merging app, I notice that my contacts are still split between two accounts.
+All I want is to move my Apple/iCloud contacts to Google.</p>
+<p>There doesn’t appear to be a way to resolve this issue in iOS either. So I’m
+back to downloading random third party apps. First app I find kindly warns me
+it will be unable to move more than 40 or so contacts without paying for the
+premium version of the app. Of course this isn’t an “In-App Purchase” but
+another standalone app, so I had downloaded the app foolishly thinking it was
+actually going to be free.</p>
+<p>It also warned me that things wouldn’t work well with Google unless I use their
+other app, which requires actually logging into my Google account to do it’s
+magic (aka. import a set of contacts).</p>
+<p>This too is insane! I honestly tried to use iOS. I honestly wanted to make
+this work, where I would normally take the shortest path to a real computer and
+do things by hand myself. It turns out I still have to do that anyway.  Apple
+should consider this feature to be a “Must Have” for a contacts feature which
+supports multiple accounts.</p>
+<p>In summary, it’s best to stick with exporting and managing your contacts on a
+computer. This way you can make use of proper tools, or scripts to fix your
+issues for free.</p>
+</div></details><h2 id="statics" class="section-header">Statics<a href="#statics" class="anchor">§</a></h2><dl class="item-table"><dt><a class="static" href="static.PAGE.html" title="static nixpulvis::ramblings::ios_contact_hell::PAGE">PAGE</a></dt><dd>This page’s source, which the site is built from.</dd></dl></section></div></main></body></html>

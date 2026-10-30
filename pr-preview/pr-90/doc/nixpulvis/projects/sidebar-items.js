@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["avrm","clock","epic_ui","freqk","game_of_life","lambda_calculus","led_cube","maze_gl","parser_combinator","quadcopter"],"static":["PAGE"]};
