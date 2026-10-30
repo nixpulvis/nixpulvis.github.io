@@ -1,5 +1,8 @@
-/* Rouge's `github` theme (`rougify style github`), without its background so
-   code sits on the page or a `.highlight-block`. */
+/* GitHub's colors for syntect's scopes, which the generator writes as
+   classes, like `<span class="storage type rust">`. Like rouge's `github`
+   theme, which colored the site before, without a background so code sits
+   on the page or a `.highlight-block`. Later rules win, so the more specific
+   scopes come last. */
 .highlight {
   --syntax-text: #24292f;
   --syntax-gray: #6e7781;
@@ -30,81 +33,70 @@
 
   color: var(--syntax-text);
 
-  /* Keywords. */
-  & :is(.k, .kd, .kn, .kp, .kr, .kt, .kv) {
+  /* Keywords and storage, like `fn`, `let` and `u32`. */
+  & :is(.keyword, .storage) {
     color: var(--syntax-red);
   }
 
-  /* Builtins, classes, constants and namespaces. */
-  & :is(.nb, .nc, .no, .nn) {
+  /* Types, classes, namespaces and builtins. */
+  & :is(.entity.name.type, .entity.name.class, .entity.name.namespace,
+        .entity.name.struct, .entity.name.enum, .entity.name.trait,
+        .support.type, .support.class, .support.constant) {
     color: var(--syntax-orange);
   }
 
-  /* Regexes, attributes and tags. */
-  & :is(.sr, .na, .nt) {
+  /* Tags, attributes and regexes. */
+  & :is(.entity.name.tag, .entity.other.attribute-name, .string.regexp) {
     color: var(--syntax-green);
   }
 
-  /* Literals, numbers, variables, operators and the like. */
-  & :is(.kc, .l, .ld, .m, .mb, .mf, .mh, .mi, .il, .mo, .mx, .sb, .bp, .ne,
-        .nl, .py, .nv, .vc, .vg, .vi, .vm, .o, .ow) {
+  /* Literals, variables, operators and the like. */
+  & :is(.constant, .variable.language, .variable.other.constant,
+        .keyword.operator, .support.variable) {
     color: var(--syntax-blue);
   }
 
   /* Strings. */
-  & :is(.s, .sa, .sc, .dl, .sd, .s2, .se, .sh, .sx, .s1, .ss) {
+  & .string {
     color: var(--syntax-navy);
   }
 
-  /* Decorators and functions. */
-  & :is(.nd, .nf, .fm) {
+  /* Functions, macros and decorators. */
+  & :is(.entity.name.function, .support.function, .meta.annotation,
+        .entity.name.macro, .support.macro) {
     color: var(--syntax-purple);
   }
 
   /* Comments. */
-  & :is(.c, .ch, .cd, .cm, .cp, .cpf, .c1, .cs, .gl, .gt) {
+  & :is(.comment, .comment .punctuation) {
     color: var(--syntax-gray);
   }
 
-  & :is(.w, .ni, .si) {
-    color: var(--syntax-text);
-  }
-
-  /* Rouge colors these like its background, which is dropped here. */
-  & .gr {
-    color: var(--syntax-dark-red);
-  }
-
-  & .err {
+  & .invalid {
     color: var(--white);
     background-color: var(--syntax-dark-red);
   }
 
-  & :is(.gh, .gu) {
+  & .markup.heading {
     color: var(--syntax-blue);
     font-weight: bold;
   }
 
-  & .gd {
+  & .markup.deleted {
     color: var(--syntax-dark-red);
     background-color: var(--syntax-deleted);
   }
 
-  & .gi {
+  & .markup.inserted {
     color: var(--syntax-green);
     background-color: var(--syntax-inserted);
   }
 
-  & .ge {
+  & .markup.italic {
     font-style: italic;
   }
 
-  & .gs {
+  & .markup.bold {
     font-weight: bold;
-  }
-
-  & .ges {
-    font-weight: bold;
-    font-style: italic;
   }
 }

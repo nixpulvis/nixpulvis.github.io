@@ -8,8 +8,8 @@ use ratatui::backend::TestBackend;
 use ratatui::style::Color;
 
 use super::App;
-use crate::colors::FAINT;
-use crate::{Effect, Host, Key};
+use crate::tui::colors::FAINT;
+use crate::tui::{Effect, Host, Key};
 
 /// The made-up site, by the paths its files are published at.
 fn site() -> Vec<(String, String)> {

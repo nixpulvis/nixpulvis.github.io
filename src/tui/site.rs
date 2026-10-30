@@ -1,4 +1,4 @@
-//! The site's index, `site.json`, which the Jekyll build writes.
+//! The site's index, `site.json`, which the generator writes as [`crate::index::Index`].
 
 use serde::Deserialize;
 
@@ -22,7 +22,7 @@ impl Site {
     pub(crate) fn is_draft(&self, path: &str) -> bool {
         self.pages
             .iter()
-            .any(|p| p.draft && crate::link::same_page(&p.url, path))
+            .any(|p| p.draft && crate::tui::link::same_page(&p.url, path))
     }
 }
 

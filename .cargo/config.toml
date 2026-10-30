@@ -1,0 +1,3 @@
+[alias]
+# Build the site into _site, or serve it while writing. See `cargo site help`.
+site = "run --quiet --package nixpulvis --features site --bin site --"

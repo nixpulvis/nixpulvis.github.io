@@ -4,7 +4,7 @@ use ratatui::text::Span;
 use ratmark::MarkdownState;
 use ratmark::front_matter::FrontMatter;
 
-use crate::markup;
+use crate::tui::markup;
 
 pub(crate) struct Page {
     pub path: String,

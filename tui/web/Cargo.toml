@@ -11,7 +11,7 @@ repository.workspace = true
 crate-type = ["cdylib"]
 
 [dependencies]
-nixpulvis = { path = "../app", features = ["syntax", "native-links"] }
+nixpulvis = { path = "../..", features = ["syntax", "native-links"] }
 ratzilla = { version = "0.3", features = ["hyperlinks"] }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"

@@ -6,7 +6,7 @@
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
-use nixpulvis::App;
+use nixpulvis::tui::App;
 use wasm_bindgen::prelude::*;
 use web_sys::{AddEventListenerOptions, Element, EventTarget, TouchEvent, WheelEvent, Window};
 
@@ -357,7 +357,7 @@ fn not_passive() -> AddEventListenerOptions {
 
 #[cfg(test)]
 mod tests {
-    use nixpulvis::Host;
+    use nixpulvis::tui::Host;
 
     use super::*;
 

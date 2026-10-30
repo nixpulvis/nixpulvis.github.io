@@ -11,10 +11,10 @@ use ratmark::MarkdownView;
 use web_time::Duration;
 
 use super::App;
-use crate::Host;
-use crate::colors::{BACKGROUND, BORDER, FAINT, MUTED, TEXT, YELLOW};
-use crate::link::{Target, same_page};
-use crate::page::Page;
+use crate::tui::Host;
+use crate::tui::colors::{BACKGROUND, BORDER, FAINT, MUTED, TEXT, YELLOW};
+use crate::tui::link::{Target, same_page};
+use crate::tui::page::Page;
 
 /// How long a notice shows before the key hints come back.
 const NOTICE_TIME: Duration = Duration::from_secs(3);

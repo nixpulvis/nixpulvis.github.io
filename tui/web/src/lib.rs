@@ -7,7 +7,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use nixpulvis::{App, Effect, Host, Key};
+use nixpulvis::tui::{App, Effect, Host, Key};
 use ratzilla::event::{KeyCode, KeyEvent, MouseButton, MouseEventKind};
 use ratzilla::ratatui::Terminal;
 use ratzilla::{CellSized, DomBackend, WebRenderer};
