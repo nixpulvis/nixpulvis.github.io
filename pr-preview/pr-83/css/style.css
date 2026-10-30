@@ -21,6 +21,8 @@
   --highlight-green: #e3f6e3;
   --highlight-green-edge: #4caf50;
   --dashed: 1px dashed var(--border);
+  /* The terminal view's, dark in either scheme, as in tui/app/src/colors.rs. */
+  --tui-background: #161616;
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
 
@@ -706,6 +708,13 @@ html.tui {
      show a scrollbar, or bounce and pull to refresh on phones. */
   overflow: hidden;
   overscroll-behavior: none;
+  /* The view's color from the first paint, so a page opening in the view
+     doesn't flash the page's own background before the view draws. */
+  background: var(--tui-background);
+
+  & body {
+    background: none;
+  }
 
   & body > :not(#tui) {
     display: none;
@@ -719,7 +728,7 @@ html.tui {
   overflow: hidden;
   /* Touches are the view's to scroll with, not the browser's. */
   touch-action: none;
-  background: #161616;
+  background: var(--tui-background);
   font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
   font-size: 15px;
   line-height: normal;
