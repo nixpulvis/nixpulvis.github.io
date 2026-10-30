@@ -26,7 +26,7 @@ you.
 <li class="draft">
     <a href="/pr-preview/pr-89/ramblings/2026-10-30-reading-this-site-in-a-terminal">Reading this Site in a Terminal</a>
     <small>
-        1240 words
+        1547 words
         drafted on October 30, 2026
     </small>
 </li>
