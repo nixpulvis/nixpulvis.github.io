@@ -2,6 +2,9 @@
 :root {
   --black: black;
   --white: white;
+  /* The dark scheme's background, and the terminal view's in either scheme,
+     as in tui/app/src/colors.rs. */
+  --dark: #161616;
   --background: var(--white);
   --border: var(--black);
   --text: #282c34;
@@ -27,7 +30,7 @@
   /* On screens only, so a printed page stays black on white. */
   @media screen and (prefers-color-scheme: dark) {
     color-scheme: dark;
-    --background: #161616;
+    --background: var(--dark);
     --border: #777;
     --text: #cacaca;
     --muted: #999;
@@ -117,10 +120,43 @@ header {
     pointer-events: none;
   }
 
+  /* The name, followed by the key that switches the terminal view on. Clear
+     of the lambda. */
+  & .title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: 100px;
+    white-space: nowrap;
+  }
+
   & .identity {
     font-size: 32px;
     text-decoration: none;
     color: inherit;
+  }
+
+  /* A small framed key showing a prompt, in the footer's return key's
+     style. */
+  & #tui-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 5px 0;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: none;
+    color: var(--muted);
+    font: 13px/1.2 "Computer Modern Typewriter", monospace;
+    cursor: pointer;
+    /* Down a touch, so it sits on the middle of the name's lowercase
+       letters rather than its full height. */
+    position: relative;
+    top: 2px;
+
+    &:hover, &:focus-visible {
+      color: var(--text);
+      border-color: var(--text);
+    }
   }
 
   & nav {
@@ -664,4 +700,37 @@ li.draft {
   @page {
     margin-top: 70px;
   }
+}
+
+/* The terminal view, from js/tui.js. It takes the page's place, which isn't
+   laid out at all while it's open. */
+html.tui {
+  /* The view does its own scrolling, so the page underneath shouldn't move,
+     show a scrollbar, or bounce and pull to refresh on phones. */
+  overflow: hidden;
+  overscroll-behavior: none;
+  /* The view's color from the first paint, so a page opening in the view
+     doesn't flash the page's own background before the view draws. */
+  background: var(--dark);
+
+  & body {
+    background: none;
+  }
+
+  & body > :not(#tui) {
+    display: none;
+  }
+}
+
+#tui {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  /* Touches are the view's to scroll with, not the browser's. */
+  touch-action: none;
+  background: var(--dark);
+  font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
+  font-size: 15px;
+  line-height: normal;
 }
