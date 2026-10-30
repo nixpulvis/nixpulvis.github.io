@@ -2,6 +2,7 @@
 title: Projects
 layout: page
 ---
+{% import "items.html" as items %}
 
 I work on projects from time to time, and try to post about them here. If you
 learn something, that's great. If you are inspired, that's even better. Half
@@ -12,28 +13,22 @@ think/build clearly.
 >
 > -- <cite>Ralph Waldo Emerson</cite>
 
-Please be aware, unlike my [Ramblings]({{ '/ramblings' | relative_url }}), these projects are living
+Please be aware, unlike my [Ramblings](/ramblings), these projects are living
 documents. I may update them without notice to add detail or track changes to
 the projects themselves.
 
 <ul class="projects finished">
-{%- for project in site.projects -%}
-    {%- if project.hidden -%}
-        {%- continue -%}
+{%- for project in site.collection("projects") -%}
+    {%- if !project.front.hidden && !project.front.draft -%}
+        {%- call items::project_item(project) -%}{%- endcall -%}
     {%- endif -%}
-    {%- unless project.draft -%}
-        {%- include project-item.html project=project -%}
-    {%- endunless -%}
 {%- endfor -%}
 </ul>
 
 <ul class="projects drafted">
-{%- for project in site.projects -%}
-    {%- if project.hidden -%}
-        {%- continue -%}
-    {%- endif -%}
-    {%- if project.draft -%}
-        {%- include project-item.html project=project -%}
+{%- for project in site.collection("projects") -%}
+    {%- if !project.front.hidden && project.front.draft -%}
+        {%- call items::project_item(project) -%}{%- endcall -%}
     {%- endif -%}
 {%- endfor -%}
 </ul>

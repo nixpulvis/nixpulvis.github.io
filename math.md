@@ -7,25 +7,19 @@ title: Mathematics
 > sets, using numbers and symbols.
 
 <ul>
-{%-
-assign mathematics = site.mathematics
-                 | sort: 'date'
-                 | reverse
--%}
-
-{%- for math in mathematics -%}
-    {%- if math.draft -%}
+{%- for math in site.newest_first("mathematics") -%}
+    {%- if math.front.draft -%}
         <li class="draft">
-            <a href="{{ math.url | relative_url }}">{{ math.title }}</a>
+            <a href="{{ math.url }}">{{ math.title() }}</a>
             <small>
-                drafted on {{ math.date | date: "%B %d, %Y" }}
+                drafted on {{ math.long_date() }}
             </small>
         </li>
     {%- else -%}
         <li>
-            <a href="{{ math.url | relative_url }}">{{ math.title }}</a>
+            <a href="{{ math.url }}">{{ math.title() }}</a>
             <small>
-                published on {{ math.date | date: "%B %d, %Y" }}
+                published on {{ math.long_date() }}
             </small>
         </li>
     {%- endif -%}

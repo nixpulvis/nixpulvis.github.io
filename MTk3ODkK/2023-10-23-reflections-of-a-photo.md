@@ -1,6 +1,5 @@
 ---
 title: Reflections of a Photo
-layout: rambling
 layout: default
 style: /css/MTk3ODkK.css
 ---
@@ -24,4 +23,4 @@ Time is more than money. House begets home.
 I want to join stinky socks. Start small, grow safely and quickly. Climb, run, skate, ultimate, am I forgetting anything? Swim, sail. The list goes on as ski season approaches far too quickly.
 
 
-I should really move forward with the [Ultimeter]({{ '/projects/ultimeter' | relative_url }}).
+I should really move forward with the [Ultimeter](/projects/ultimeter).

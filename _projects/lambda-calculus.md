@@ -33,7 +33,7 @@ to the λ-calculus, and some of the flexibility of Rust.
 
 The λ-calculus was originally proposed as a tool for use in the construction of
 mathematics, however it's be proven equivalent to all known programming
-languages [[1]][1]. The practical implications of this are called the
+languages [\[1\]][1]. The practical implications of this are called the
 "Church-Turing thesis" or simply the **computability thesis** (_complexity_ is
 another story).
 
@@ -173,5 +173,5 @@ TODO: Add this section after we have a type checker implemented.
 
 [1]: ...
 [documentation]: https://docs.rs/lalrpop-lambda
-[euler]: {{ '/math/00-euler' | relative_url }}
+[euler]: /math/00-euler
 [lalrpop]: https://github.com/lalrpop/lalrpop
