@@ -105,6 +105,23 @@ published Markdown and `/site.json` described above. The code is in `tui/`:
 - `tui/web` builds it to WebAssembly for the browser, where the `>_` key
   after the name, or any link ending in `?tui`, switches it on
 
+#### Installing
+
+The [`tui` release] has the terminal client built for Linux and macOS, on x86
+and ARM, rebuilt whenever it changes on `master`. Download the one for your
+machine and unpack it somewhere in your `PATH`.
+
+Or build it from source with Rust. `--locked` keeps the pinned git
+dependencies in `Cargo.lock`:
+
+```sh
+cargo install --locked --git https://github.com/nixpulvis/nixpulvis.github.io nixpulvis-tui
+```
+
+Either way, run it with `nixpulvis-tui`.
+
+[`tui` release]: https://github.com/nixpulvis/nixpulvis.github.io/releases/tag/tui
+
 #### Running from source
 
 The terminal client reads nixpulvis.com by default. To read a local build
@@ -148,3 +165,7 @@ Both workflows run `.github/scripts/setup.sh` to install system packages and
 Every pull request is built by `.github/workflows/preview.yml` and published to
 `https://nixpulvis.com/pr-preview/pr-<number>/`; a comment on the PR links to
 it. The preview is removed when the PR is closed.
+
+Changes to the terminal client run `.github/workflows/tui.yml`, which builds it
+for each target. On `master` it also replaces the `tui` release with the new
+builds.
