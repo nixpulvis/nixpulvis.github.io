@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Fortune</title>
+    
+    
+    <meta name="description" content="Nothing quite starts a terminal session like fortune. It gives you a nice little quip to ponder as you settle into your groove. The database is filled with a..." />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Fortune" />
+    <meta property="og:description" content="Nothing quite starts a terminal session like fortune. It gives you a nice little quip to ponder as you settle into your groove. The database is filled with a..." />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-87/ramblings/2018-06-26-fortune" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-87/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-87/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-87/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/pr-preview/pr-87/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/pr-preview/pr-87/apple-touch-icon.png" sizes="180x180" />
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-87/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-87/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-87/css/style.css?v=1793399541">
+    <link rel="stylesheet" href="/pr-preview/pr-87/css/syntax.css">
+    
+    <script defer src="/pr-preview/pr-87/js/mousetrap.min.js"></script>
+    
+    <script defer src="/pr-preview/pr-87/js/main.js"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-87/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-87/img/me.jpg" class="hidden" />
+      <a href="/pr-preview/pr-87/" class="identity">nixpulvis</a>
+      <nav>
+        <ul>
+          <li><a href="/pr-preview/pr-87/projects">Projects</a></li>
+          <li><a href="/pr-preview/pr-87/ramblings">Ramblings</a></li>
+          <li class="icon"><a href="/pr-preview/pr-87/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+          <li class="icon"><a href="/pr-preview/pr-87/references" title="References" aria-label="References">&</a></li>
+          <li class="icon"><a href="/pr-preview/pr-87/musings" title="Music" aria-label="Music">♪</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">
+    Fortune
+    <small>
+        253 words
+        
+            published
+        
+        on June 26, 2018.
+    </small>
+</h2>
+
+<p>Nothing quite starts a terminal session like <code class="language-plaintext highlighter-rouge">fortune</code>. It gives you a nice
+little quip to ponder as you settle into your groove. The database is filled
+with a bunch of jokes and philosophy that might just make you think
+– how novel. I’ve been using it in my <code class="language-plaintext highlighter-rouge">config.fish</code> (akin to <code class="language-plaintext highlighter-rouge">.bashrc</code>) for
+years now.</p>
+
+<blockquote>
+  <p>The shortest distance between two points is under construction.</p>
+
+  <p>– Noelie Alito</p>
+</blockquote>
+
+<p>But, <code class="language-plaintext highlighter-rouge">fortune</code> could be so much better. Mainly, it’s the perfect tool for
+collecting a personal database of quotes or random thoughts. It’s actually
+really easy to make your own fortunes. All you really need is a file
+structured according to the <code class="language-plaintext highlighter-rouge">strfile</code> format.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">touch </span>personal
+</code></pre></div></div>
+
+<p>The format of this file is simple. Each entry is followed by a <code class="language-plaintext highlighter-rouge">%</code> on it’s own
+line. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A bear is a lot to bear.
+%
+I've never met a bare bear.
+</code></pre></div></div>
+
+<p>Finally you need to turn your text file into a <code class="language-plaintext highlighter-rouge">.dat</code> with <code class="language-plaintext highlighter-rouge">strfile</code> itself.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>strfile personal
+</code></pre></div></div>
+
+<p>Now you’ve got yourself a personal database for use in <code class="language-plaintext highlighter-rouge">fortune</code>. You can use
+it by simply passing the file (or directory) as an argument. Larger databases
+may want to be divided across many files – this is possible.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fortune personal
+</code></pre></div></div>
+
+<p>If you’d like to see some of your own fortunes mixed in with others, the syntax
+also supports that.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fortune 50% personal 25% love 25% wisdom
+</code></pre></div></div>
+
+<p>Refer to your installation of <code class="language-plaintext highlighter-rouge">fortune</code> for what databases you have access to.
+These are most commonly found in places like <code class="language-plaintext highlighter-rouge">/usr/share/fortune</code>.</p>
+
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-87/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2018-06-26-fortune.md">source</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/commits/master/_ramblings/2018-06-26-fortune.md">history</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/issues/new?body=https%3A%2F%2Fnixpulvis.com%2Fpr-preview%2Fpr-87%2Framblings%2F2018-06-26-fortune">report an issue</a>
+        <span class="issues"><a href="https://github.com/nixpulvis/nixpulvis.github.io/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>
