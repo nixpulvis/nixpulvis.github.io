@@ -30,3 +30,7 @@ exclude:
   - README.md
   - TODO-espresso
   - bin/
+  - Cargo.lock
+  - Cargo.toml
+  - target/
+  - tui/
