@@ -59,7 +59,7 @@ the others.
 - `front-matter` splits the YAML (`---`) or TOML (`+++`) block off the top of a
   document, and has a small helper for reading a value like the title. This
   isn't a Markdown thing at all, it's a static site generator thing. Jekyll,
-  Hugo and Zola all do it, with nothing else in common. It doesn't pull in a
+  Hugo and Zola all do it, each with its own flavor of Markdown. It doesn't pull in a
   YAML parser either, it just hands you the text and lets you parse it however
   you want.
 
