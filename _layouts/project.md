@@ -8,9 +8,9 @@ layout: default
 </h2>
 
 <ul class="references">
-{% for reference in page.references %}
+{%- for reference in page.references %}
     <li><a href="{{reference}}">{{ reference }}</a></li>
-{% endfor %}
+{%- endfor %}
 </ul>
 
 {{ content }}

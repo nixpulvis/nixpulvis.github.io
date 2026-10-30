@@ -1,5 +1,7 @@
 # Publish every Markdown page's source next to its HTML, after Liquid runs but
 # before kramdown, so `/ramblings/foo` is also readable at `/ramblings/foo.md`.
+# The page's own layouts are applied too, all but the site-wide default, so
+# extras like a project's references come along.
 # Also write `/site.json`, listing the nav and every collection document, for
 # clients like the terminal view to browse the site without scraping HTML.
 
@@ -10,6 +12,9 @@ module Jekyll
 
     # The front matter each page in `site.json` carries.
     INDEX_KEYS = %w[title date collection draft].freeze
+
+    # The site-wide layout, with the header and nav, left off the source.
+    SITE_LAYOUT = 'default'.freeze
 
     # Layouts that show a word count under the title.
     WORD_COUNT_LAYOUTS = %w[rambling article].freeze
@@ -77,9 +82,28 @@ module Jekyll
       private
 
       def body
-        return @content if front_matter.empty?
+        content = in_layouts
+        return content if front_matter.empty?
 
-        "#{front_matter.to_yaml}---\n\n#{@content}"
+        "#{front_matter.to_yaml}---\n\n#{content}"
+      end
+
+      # The content wrapped in the page's layouts, up to the site-wide one.
+      def in_layouts
+        site = doc.site
+        payload = site.site_payload
+        payload['page'] = doc.to_liquid
+        info = { registers: { site: site, page: payload['page'] } }
+        content = @content
+        name = doc.data['layout']
+        while (layout = site.layouts[name]) && name != SITE_LAYOUT
+          payload['content'] = content
+          payload['layout'] = layout.data
+          template = site.liquid_renderer.file(layout.path).parse(layout.content)
+          content = template.render!(payload, info)
+          name = layout.data['layout']
+        end
+        content
       end
 
       # Counted the way the layouts count, from the rendered content.
