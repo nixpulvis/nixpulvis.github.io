@@ -22,15 +22,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: ruby/setup-ruby@v1
-        if: github.event.action != 'closed'
-        with:
-          bundler-cache: true
-
       - run: .github/scripts/setup.sh
         if: github.event.action != 'closed'
 
-      # Rust for the terminal view in tui/, built to WebAssembly.
+      # Rust for the generator, and the terminal view in tui/ built to
+      # WebAssembly.
       - uses: dtolnay/rust-toolchain@stable
         if: github.event.action != 'closed'
         with:
@@ -49,15 +45,15 @@ jobs:
         with:
           tool: wasm-bindgen@${{ steps.wasm-bindgen.outputs.version }}
 
-      # Keep Jekyll's cache, where compiled figures live, between runs.
+      # Keep compiled TikZ figures between runs.
       - uses: actions/cache@v4
         if: github.event.action != 'closed'
         with:
-          path: .jekyll-cache
-          key: jekyll-cache-${{ github.sha }}
-          restore-keys: jekyll-cache-
+          path: .site-cache
+          key: site-cache-${{ github.sha }}
+          restore-keys: site-cache-
 
-      - run: .github/scripts/build.sh --drafts --unpublished --baseurl "/pr-preview/pr-${{ github.event.number }}"
+      - run: .github/scripts/build.sh --unpublished --baseurl "/pr-preview/pr-${{ github.event.number }}"
         if: github.event.action != 'closed'
 
       - uses: rossjrw/pr-preview-action@v1
