@@ -5,10 +5,10 @@ use ratmark::Theme;
 // Like std's, but also works in the browser.
 use web_time::Instant;
 
-use crate::link::{self, Target};
-use crate::page::Page;
-use crate::site::Site;
-use crate::{Effect, Host, Key, colors};
+use crate::tui::link::{self, Target};
+use crate::tui::page::Page;
+use crate::tui::site::Site;
+use crate::tui::{Effect, Host, Key, colors};
 
 mod draw;
 #[cfg(test)]
