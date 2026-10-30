@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["about","collection","fortunes","index","iphone","math","musings","not_found","playground","projects","ramblings","references","research","site","tui"],"static":["PAGE"],"struct":["Source"]};

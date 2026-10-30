@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Analog Espresso"><title>nixpulvis::ramblings::analog_espresso - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nixpulvis" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.1 (58cf8f9c3 2026-10-13)" data-channel="1.99.1" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"><!-- KaTeX, for the math in the pages' docs, written as \( \) and \[ \]. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, { delimiters: [
+    { left: '\\[', right: '\\]', display: true },
+    { left: '\\(', right: '\\)', display: false },
+  ] })"></script>
+
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module analog_espresso</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../nixpulvis/index.html">nixpulvis</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module analog_<wbr>espresso</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#preparation" title="Preparation">Preparation</a></li><li><a href="#grinding-and-the-first-wave" title="Grinding and the First Wave">Grinding and the First Wave</a></li><li><a href="#brewing" title="Brewing">Brewing</a></li><li><a href="#with-company" title="With Company">With Company</a></li><li><a href="#how-do-you-take-it" title="“How do you take it?”">“How do you take it?”</a></li></ul><h3><a href="#statics">Module Items</a></h3><ul class="block"><li><a href="#statics" title="Statics">Statics</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In nixpulvis::<wbr>ramblings</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">nixpulvis</a>::<wbr><a href="../index.html">ramblings</a></div><h1>Module <span>analog_<wbr>espresso</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/nixpulvis/home/runner/work/nixpulvis.github.io/nixpulvis.github.io/target/debug/build/nixpulvis-e78c9a253da1d7c7/out/pages.rs.html#620">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Analog Espresso</p>
+<p><small>2023-02-11 · <a href="https://nixpulvis.com/ramblings/2023-02-11-analog-espresso">on the site</a> · <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2023-02-11-analog-espresso.md">source</a></small></p>
+<p>This is how I currently make my espresso.</p>
+<p><img src="https://nixpulvis.com/img/ramblings/2023-02-11-analog-espresso/0.jpeg" alt="Close up of freshly ground coffee" /></p>
+<p>Someday I’ll pull the perfect shot and be lucky enough to have <a href="https://nixpulvis.com/ramblings/404-record">recorded the
+moment</a>. Another day, I’ll have some <a href="https://nixpulvis.com/ramblings/404-sensors">new sensors and
+tools</a> to assist the process. Until then, this should suffice.</p>
+<p>It’s worth mentioning that these steps represent the <em>ideal</em> process for my
+equipment, however as variables and conditions change, so too must the barista.
+Some variables, like temperature, I feel I have something of a handle on, while
+others like bean quality and humidity, I’m still less sure of.</p>
+<p><img src="https://nixpulvis.com/img/ramblings/2023-02-11-analog-espresso/1-2.jpeg" alt="Rancilio espresso machine and grinder on the counter, with a temperature display wired on top" /></p>
+<p>I try to be consistent about things, but it’s important to remember the
+following maxim:</p>
+<blockquote>
+<p>Variety is the spice of life.</p>
+</blockquote>
+<p>Now admittedly, I have already started the process of digitizing some things.
+Mainly, at the moment, I have a digital thermometer connected to the grouphead,
+which I can use to gauge things a bit. For the purposes of this write up,
+digital readings with take the following form:</p>
+<div class="example-wrap"><pre class="language-text"><code>YYYY-MM-DD HH-MM-SS &lt;TEMP&gt; &lt;NOTE&gt;
+                           ...</code></pre></div>
+<p><img src="https://nixpulvis.com/img/ramblings/2023-02-11-analog-espresso/1-1.jpeg" alt="Red LED display reading 66.6F" /></p>
+<p>With that, let’s begin.</p>
+<h4 id="preparation"><a class="doc-anchor" href="#preparation">§</a>Preparation</h4>
+<p>First, turn on the machine. In this case, the machine was still a little bit
+warm from the morning.</p>
+<div class="example-wrap"><pre class="language-text"><code>2023-01-22 2:24:30 87.8˚F ELEMENT ON
+2023-01-22 2:27:04 94.5˚F ELEMENT OFF
+                          FLUSH</code></pre></div>
+<p>After this first flush the grouphead temperature should be raising quickly,
+which is nice, because we’ll use that temperature as well as how hot the
+portafilter itself feels to judge how close to ready we are for grinding and
+brewing. By my estimations, the temperature is now raising between 1˚F/5s
+and 1˚F/10s.</p>
+<p>Take a breath. Go have a nice long shower. Make breakfast, or lunch. Finish
+that code review you’ve been putting off. Play a round of your favorite game.
+Whatever. At this point the machine is trailing off calmly to a steady hot
+state.</p>
+<div class="example-wrap"><pre class="language-text"><code>2023-01-22 2:30:20 112˚F ELEMENT ON
+2023-01-22 2:32:00 130˚F ELEMENT OFF
+2023-01-22 2:37:00 144˚F</code></pre></div>
+<p>The machine’s boiler and group head as well as the portafilter are now at
+temperature. We’re almost ready to go.</p>
+<h4 id="grinding-and-the-first-wave"><a class="doc-anchor" href="#grinding-and-the-first-wave">§</a>Grinding and the First Wave</h4>
+<p>Now it’s game-time. First we take the portafilter out of the machine’s
+grouphead and flush the plumbing to start renormalizing the pipes temperatures.
+Without the portafilter you should be able to get a really good sense of the
+flow and temperature of the water coming out of the grouphead. If the machine
+has been maintained and cleaned well, it should be flushed briefly until a
+gentle shower is formed. Depending on timing and external temperatures, this
+may soon start another heating cycle, no worries.</p>
+<div class="example-wrap"><pre class="language-text"><code>2023-01-22 2:38:30 147˚F FLUSH
+          +    ~5s       ELEMENT ON</code></pre></div>
+<p>Dry off the basket completely and then put that dense hunk of metal onto the
+grinder’s mount and fill’r up. I typically use a flat edge after grinding to
+level off the mound, but as long as things are balanced and not over or
+under-filled, it doesn’t really matter. You can avoid wasting beans by simply
+grinding the correct amount into the basket cleanly, but I’m generally not too
+concerned about the wasted dust.</p>
+<p>Tamping is the fun part. Do it right, and don’t be shy. If you have your
+grinder dialed in correctly for the beans, you should be applying more force
+than you might originally think. Too much force can still lead to a slow and
+bitter brew however, so do be careful.</p>
+<div>
+<img alt="Portafilter heaped with loose coffee grounds" src="https://nixpulvis.com/img/ramblings/2023-02-11-analog-espresso/2-1.jpeg" width="48%"
+style="float: left; margin-right: 4%;" />
+<p><img alt="Portafilter with level, tamped coffee" src="https://nixpulvis.com/img/ramblings/2023-02-11-analog-espresso/2-2.jpeg" width="48%"
+style="align: left" /></p>
+</div>
+<p>While you’ve been grinding and tamping, hopefully the machine has found itself
+settled at a nice and comfortable temperature. If you hear or sense the boiler
+being upset with you in any way, don’t hesitate to let it run through another
+cycle while flushing the grouphead a bit. Remember, coffee grounds go stale
+quickly, but not <strong>that</strong> quickly. It’s not until we’ve actually started
+brewing the espresso that we need to hurry.</p>
+<h4 id="brewing"><a class="doc-anchor" href="#brewing">§</a>Brewing</h4>
+<p>Once it’s all raring to go, vice in the portafilter to the grouphead tightly.
+Feel free to flex, not securing the portafilter properly can result in an
+explosive mess!</p>
+<p>If the boiler element has turned on, wait a moment until it’s turned off, then
+switch on the pump; or don’t. This is an art which I haven’t had the patience
+to perform proper science on yet. People refer to the game of figuring out
+where in the thermostat cycles to start brewing and how to achieve the perfect
+curves as <strong>temperature surfing</strong>. So, maybe feel the waves, hang ten, then
+start a bit off cue. You’re the boss.</p>
+<div class="example-wrap"><pre class="language-text"><code>2023-01-22 2:40:00 150˚F BREW ON 
+          +     30 154˚F BREW OFF </code></pre></div>
+<p><img src="https://nixpulvis.com/img/ramblings/2023-02-11-analog-espresso/3.jpeg" alt="Espresso pouring from a double spout portafilter" /></p>
+<p>With a double spout like mine, you should start to see rich, dark, and creamy
+liquid streaming out of both sides within no more than 2 or 3 seconds. Watch
+closely. The streams should become less and less dark quickly, with veins of
+oily flavor running through them at first, then diluting to a softer blond
+color. If everything is coming out nicely, it’s around the 25-30 second mark
+that your shot is filled and the color is becoming awkwardly pale.</p>
+<p>Quickly slap out the used coffee puck, rinse the portafilter in hot water,
+then flush the grouphead and wipe it down. Simple, consistent cleaning makes
+for a happy machine and reduces the burden of a deeper clean later.</p>
+<h4 id="with-company"><a class="doc-anchor" href="#with-company">§</a>With Company</h4>
+<p>Repeat the grinding and brewing process as needed, remember things do tend to
+get a bit hotter while in use.</p>
+<p><img src="https://nixpulvis.com/img/ramblings/2023-02-11-analog-espresso/4.jpeg" alt="Two shot glasses of espresso held in hand" /></p>
+<h4 id="how-do-you-take-it"><a class="doc-anchor" href="#how-do-you-take-it">§</a>“How do you take it?”</h4>
+<p>Now that the coffee is ready, it must be served as fast as possible.</p>
+<div class="example-wrap"><pre class="language-text"><code>2023-01-22 2:40:32 155˚F SERVE
+                         OFF
+2023-01-22 2:46:00 157˚F CLEAR</code></pre></div>
+<p>The afternoon is for straight espresso, “No milk, thanks”.</p>
+<p><img src="https://nixpulvis.com/img/ramblings/2023-02-11-analog-espresso/5.jpeg" alt="Black and white cat stretched out next to an empty shot glass" /></p>
+<p>Enjoy.</p>
+</div></details><h2 id="statics" class="section-header">Statics<a href="#statics" class="anchor">§</a></h2><dl class="item-table"><dt><a class="static" href="static.PAGE.html" title="static nixpulvis::ramblings::analog_espresso::PAGE">PAGE</a></dt><dd>This page’s source, which the site is built from.</dd></dl></section></div></main></body></html>

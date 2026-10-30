@@ -1,0 +1,102 @@
+/* GitHub's colors for syntect's scopes, which the generator writes as
+   classes, like `<span class="storage type rust">`. Like rouge's `github`
+   theme, which colored the site before, without a background so code sits
+   on the page or a `.highlight-block`. Later rules win, so the more specific
+   scopes come last. */
+.highlight {
+  --syntax-text: #24292f;
+  --syntax-gray: #6e7781;
+  --syntax-red: #cf222e;
+  --syntax-dark-red: #82071e;
+  --syntax-orange: #953800;
+  --syntax-green: #116329;
+  --syntax-blue: #0550ae;
+  --syntax-navy: #0a3069;
+  --syntax-purple: #8250df;
+  --syntax-deleted: #ffebe9;
+  --syntax-inserted: #dafbe1;
+
+  /* GitHub's dark palette, for dark mode. */
+  @media screen and (prefers-color-scheme: dark) {
+    --syntax-text: #c9d1d9;
+    --syntax-gray: #8b949e;
+    --syntax-red: #ff7b72;
+    --syntax-dark-red: #ffa198;
+    --syntax-orange: #ffa657;
+    --syntax-green: #7ee787;
+    --syntax-blue: #79c0ff;
+    --syntax-navy: #a5d6ff;
+    --syntax-purple: #d2a8ff;
+    --syntax-deleted: #490202;
+    --syntax-inserted: #04260f;
+  }
+
+  color: var(--syntax-text);
+
+  /* Keywords and storage, like `fn`, `let` and `u32`. */
+  & :is(.keyword, .storage) {
+    color: var(--syntax-red);
+  }
+
+  /* Types, classes, namespaces and builtins. */
+  & :is(.entity.name.type, .entity.name.class, .entity.name.namespace,
+        .entity.name.struct, .entity.name.enum, .entity.name.trait,
+        .support.type, .support.class, .support.constant) {
+    color: var(--syntax-orange);
+  }
+
+  /* Tags, attributes and regexes. */
+  & :is(.entity.name.tag, .entity.other.attribute-name, .string.regexp) {
+    color: var(--syntax-green);
+  }
+
+  /* Literals, variables, operators and the like. */
+  & :is(.constant, .variable.language, .variable.other.constant,
+        .keyword.operator, .support.variable) {
+    color: var(--syntax-blue);
+  }
+
+  /* Strings. */
+  & .string {
+    color: var(--syntax-navy);
+  }
+
+  /* Functions, macros and decorators. */
+  & :is(.entity.name.function, .support.function, .meta.annotation,
+        .entity.name.macro, .support.macro) {
+    color: var(--syntax-purple);
+  }
+
+  /* Comments. */
+  & :is(.comment, .comment .punctuation) {
+    color: var(--syntax-gray);
+  }
+
+  & .invalid {
+    color: var(--white);
+    background-color: var(--syntax-dark-red);
+  }
+
+  & .markup.heading {
+    color: var(--syntax-blue);
+    font-weight: bold;
+  }
+
+  & .markup.deleted {
+    color: var(--syntax-dark-red);
+    background-color: var(--syntax-deleted);
+  }
+
+  & .markup.inserted {
+    color: var(--syntax-green);
+    background-color: var(--syntax-inserted);
+  }
+
+  & .markup.italic {
+    font-style: italic;
+  }
+
+  & .markup.bold {
+    font-weight: bold;
+  }
+}

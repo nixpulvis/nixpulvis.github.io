@@ -1,0 +1,118 @@
+---
+title: Projects
+---
+
+<h1 id="projects">Projects</h1>
+
+
+
+I work on projects from time to time, and try to post about them here. If you
+learn something, that's great. If you are inspired, that's even better. Half
+the motivation to write up information about my projects is to force myself to
+think/build clearly.
+
+> The reward of a thing well done is having done it.
+>
+> -- <cite>Ralph Waldo Emerson</cite>
+
+Please be aware, unlike my [Ramblings](/pr-preview/pr-86/ramblings), these projects are living
+documents. I may update them without notice to add detail or track changes to
+the projects themselves.
+
+<ul class="projects finished"><li class="project">
+    <span class="status complete">complete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/epic-ui">Epic UI</a>
+    <p>I used to be an avid World of Warcraft player, raiding bosses many times a
+week with my guild. In order to get the most out of my own performance I forked
+an advanced UI replacement addon named <a href="https://www.tukui.org/">Tukui</a> into my own project, I
+named Epic UI (after my gamertag, Epicgrim).</p>
+
+</li>
+<li class="project">
+    <span class="status partially-complete">partially complete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/freqk">Freqk Display</a>
+    <p>I own a Korg MS-20 Mini, and have been using it to learn a bit more about music
+and signal generation. It has configurable oscilators, envelopes, and filters.
+The primary way we interact with sound is with our ears, but electronic tools
+can also be made to “hear” and then display that information visually. I’ve
+built an LED display (on top of the synth) to visualize the intensity of 7
+frequency bands (4 LEDs) of our audible spectrum, log scale.</p>
+
+</li>
+<li class="project">
+    <span class="status incomplete">incomplete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/lambda-calculus">The λ-calculus</a>
+    <p>λ-calculus one of the most fundamental programing languages, being made up of
+only <strong>three primative types</strong> of objects. It’s the basis for functional
+programming, and is just as powerful as any other programming language. I’ve
+created a parser and reducer for this language which, for example, will reduce
+<code>(λx.x) 1</code> to <code>1</code>. In addition to a parser, which consumes arbitrary text, a
+set of Rust macros: <code>var!</code>, <code>abs!</code> (<code>λ!</code>), and <code>app!</code> (<code>γ!</code>) are provided.</p>
+
+</li>
+</ul>
+
+<ul class="projects drafted"><li class="project draft">
+    <span class="status partially-complete">partially complete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/avrm">Avrm</a>
+    <p>I write a decent bit of code for AVRs, those tiny little processors that power
+the Arduino platform. As I was learning I found I wanted less and less of the
+functionality of Arduino itself, and could trade the substancial overhead for
+a minimal library I’ve named AVRM. This library now powers a few other firmware
+libraries I’ve written over the years.</p>
+
+</li>
+<li class="project draft">
+    <span class="status incomplete">incomplete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/clock">Clock</a>
+    <p>Clocks have been a large motivator in the world of information technology. With
+better and better clocks becoming readily avalible. These days we take network
+syncroniced clocks for granted. This project is an attempt to build a fully
+functional clock.</p>
+
+</li>
+<li class="project draft">
+    <span class="status complete">complete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/game-of-life">Game Of Life</a>
+    <p>Conway’s Game of Life is a cult classic amungst programmers. It’s a beautiful
+algorithm to watch, yet is defined by very simple rules. There are a few
+interesting design decisions that must be made by any functioning display of
+the game. Here I’ve implemented life on a 32x32 LED grid, powered by a (ARM)
+Teensy 3.1.</p>
+
+</li>
+<li class="project draft">
+    <span class="status incomplete">incomplete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/led-cube">Led Cube</a>
+    <p>I’ve wanted to build an LED cube for a while now, and I finnally did. This
+project was my first experiance etching a PCB, as well as a great feat of
+soldering. The result is an 8x8x8 red LED cube of my own design.</p>
+
+</li>
+<li class="project draft">
+    <span class="status complete">complete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/maze-gl">Maze Gl</a>
+    <p>A friend of mine once asked if we could build something in OpenGL just to see
+how that all works. We began enthusiastically making a 3D maze which you could
+run around in.</p>
+
+</li>
+<li class="project draft">
+    <span class="status complete">complete</span>
+    <a class="name" href="/pr-preview/pr-86/projects/parser-combinator">Parser Combinator</a>
+    <p>Lexers and Parsers are at the core of every language. The main goal is to turn
+a stream of text into something structured and spesific to the language at
+hand. Here I show how the parser library I wrote works by combining small
+parsers into larger ones with only a few kinds of combinators.</p>
+
+</li>
+<li class="project draft">
+    <span class="status in-progress">in progress</span>
+    <a class="name" href="/pr-preview/pr-86/projects/quadcopter">Quadcopter</a>
+    <p>Quadcopters are amazing flying devices, able to move somewhat freely in our
+three spacial dimensions. Here I’m building a quadcopter from scratch, meaning
+all my own electronics and software. The end goal is to have a fully
+controlable, and semi-autonomus flying drone (yes with a camera).</p>
+
+</li>
+</ul>

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" data-baseurl="/pr-preview/pr-86" data-build="1793382531">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      // A link ending in `?tui` turns the terminal view on, like the `>_` key
+      // after the name does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nixpulvis - Building a Shell - Part 3</title>
+    <meta name="description" content="This is the long awaited part 3 of a series I’m writing on the creation of oursh. Oursh’s goals are to be POSIX compatible, while implementing many new conce..." />
+    <meta property="og:site_name" content="nixpulvis" />
+    <meta property="og:title" content="Building a Shell - Part 3" />
+    <meta property="og:description" content="This is the long awaited part 3 of a series I’m writing on the creation of oursh. Oursh’s goals are to be POSIX compatible, while implementing many new conce..." />
+    <meta property="og:url" content="https://nixpulvis.com/pr-preview/pr-86/ramblings/2023-09-13-building-a-shell-part-3" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://nixpulvis.com/pr-preview/pr-86/img/link-preview.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-86/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pr-preview/pr-86/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/pr-preview/pr-86/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/pr-preview/pr-86/apple-touch-icon.png" sizes="180x180" />
+    
+      <link rel="alternate" type="text/markdown" href="/pr-preview/pr-86/ramblings/2023-09-13-building-a-shell-part-3.md" />
+    
+    <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-86/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/pr-preview/pr-86/css/fonts.css" />
+    <link rel="stylesheet" href="/pr-preview/pr-86/css/style.css?v=1793382531">
+    <link rel="stylesheet" href="/pr-preview/pr-86/css/syntax.css">
+    
+    <script defer src="/pr-preview/pr-86/js/mousetrap.min.js"></script>
+    
+    <script defer src="/pr-preview/pr-86/js/main.js"></script>
+    <!-- If the view's script can't load, show the page the head script hid. -->
+    <script type="module" src="/pr-preview/pr-86/js/tui.js?v=1793382531" onerror="document.documentElement.classList.remove('tui')"></script>
+    
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-86/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-86/img/me.jpg" class="hidden" />
+      <div class="title">
+        <a href="/pr-preview/pr-86/" class="identity">nixpulvis</a>
+      </div>
+      <nav>
+        <ul>
+          
+            
+              <li><a href="/pr-preview/pr-86/projects">Projects</a></li>
+            
+          
+            
+              <li><a href="/pr-preview/pr-86/ramblings">Ramblings</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-86/fortunes/" title="Fortunes" aria-label="Fortunes">%</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-86/references" title="References" aria-label="References">&</a></li>
+            
+          
+            
+              <li class="icon"><a href="/pr-preview/pr-86/musings" title="Music" aria-label="Music">♪</a></li>
+            
+          
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content"><h2 class="title">Building a Shell - Part 3</h2>
+<p class="meta">
+    658 words
+    drafted
+    on September 13, 2023
+</p>
+
+<p>This is the long awaited part 3 of a series I’m writing on the creation of
+<a href="https://nixpulvis.com/oursh/oursh/"><code>oursh</code></a>. Oursh’s goals are to be POSIX compatible, while implementing
+many new concepts on top of a new shell language that will make using the shell
+clean, easy, and safe. In <a href="2018-10-15-building-a-shell-part-2">part 2</a> we looked at how the Rust project was
+shaping up, including the basis of the grammar and one of the new features I’m
+most excited about, which will serve as the basis for the multi-language shell.
+I also identified a number of issues and since then have organized things in
+the project’s <a href="gh-issues">issue tracker</a>.</p>
+<p>Last time I promised we’d look at the command line more closely, as well as
+dive into the guts of a few of the underlying libraries. In many ways this is a
+distraction from the more important work of implementing the job runtime, which
+is something I’ve been putting off.  Perhaps, with a bit of momentum again,
+part 4 can focus solely on a possible <code>async</code> refactor, or just simply fixing
+background jobs (<a href="https://github.com/nixpulvis/oursh/issues/6">#6</a>).</p>
+<p>For now, we’ll start with how <a href="https://nixpulvis.com/oursh/docopt"><code>docopt</code></a> is used to describe the command
+line arguments. We’ll answer questions around <a href="https://github.com/nixpulvis/oursh/pull/64">PR#64</a> and most notably,
+we’ll decide if <code>docopt</code> is still the best crate for our use case.</p>
+<p>Next we’ll look at how <a href="https://nixpulvis.com/oursh/termion"><code>termion</code></a> is used to manipulate the terminal
+and look at a few <code>features</code> and flags that depend on these capabilities. As
+part of this, we’ll aim to finish <a href="https://github.com/nixpulvis/oursh/pull/68">PR#68</a>, which will be a somewhat major
+refactor of the <a href="https://nixpulvis.com/oursh/oursh/repl"><code>repl</code></a> module. This should pave the way for completing
+the main REPL interface (<a href="https://github.com/nixpulvis/oursh/issues/5">#5</a>) moving forward.</p>
+<p>Finally, we’ll take a brief dive into <a href="https://nixpulvis.com/oursh/nix/"><code>nix</code></a>, which is mainly used under
+the hood of many of our dependencies and OS integrations.</p>
+<h3 id="command-line-arguments">Command Line Arguments</h3>
+<p>The goal of the <a href="https://nixpulvis.com/oursh/docopt"><code>docopt</code></a> project is to build a fully functional
+command line parser from the <code>USAGE</code> string itself. This is a noble and lofty
+goal, which ensures that the <code>--help</code> information is kept in sync with the
+project, because it defines the arguments themselves.</p>
+<p>I was originally going to write up a comparison of <code>docopt</code> and <code>clap</code> in the
+hopes that I would be able to choose between them more easily. However, after
+thinking through the requirements of the command line argument parser a bit
+more, I’m starting to think it might actually be easier to write my own, even
+possibly leveraging LALRPOP yet again! That would be really cool actually. So
+first, let’s look at what exactly we’re trying to parse. Starting with the
+<a href="https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Invoking-Bash"><code>bash</code> invocation</a> description online. Here’s the synopsis:</p>
+<div class="language-sh"><div class="highlight"><pre class="highlight"><code><span class="source shell bash"><span class="meta function-call shell"><span class="variable function shell">bash</span></span><span class="meta function-call arguments shell"> <span class="keyword control regexp set begin shell">[</span>long<span class="keyword operator word shell">-</span>opt<span class="keyword control regexp set end shell">]</span> <span class="keyword control regexp set begin shell">[</span>-ir<span class="keyword control regexp set end shell">]</span> <span class="keyword control regexp set begin shell">[</span>-abefhkmnptuvxdBCDHP<span class="keyword control regexp set end shell">]</span> <span class="keyword control regexp set begin shell">[</span>-o option<span class="keyword control regexp set end shell">]</span></span>
+    <span class="meta function-call shell"><span class="variable function shell">[-O</span></span><span class="meta function-call arguments shell"> shopt_option] <span class="keyword control regexp set begin shell">[</span>argument …<span class="keyword control regexp set end shell">]</span></span>
+
+<span class="meta function-call shell"><span class="variable function shell">bash</span></span><span class="meta function-call arguments shell"> <span class="keyword control regexp set begin shell">[</span>long<span class="keyword operator word shell">-</span>opt<span class="keyword control regexp set end shell">]</span> <span class="keyword control regexp set begin shell">[</span>-abefhkmnptuvxdBCDHP<span class="keyword control regexp set end shell">]</span> <span class="keyword control regexp set begin shell">[</span>-o option<span class="keyword control regexp set end shell">]</span></span>
+    <span class="meta function-call shell"><span class="variable function shell">[-O</span></span><span class="meta function-call arguments shell"> shopt_option]<span class="variable parameter option shell"><span class="punctuation definition parameter shell"> -</span>c</span> string <span class="keyword control regexp set begin shell">[</span>argument …<span class="keyword control regexp set end shell">]</span></span>
+
+<span class="meta function-call shell"><span class="variable function shell">bash</span></span><span class="meta function-call arguments shell"> <span class="keyword control regexp set begin shell">[</span>long<span class="keyword operator word shell">-</span>opt<span class="keyword control regexp set end shell">]</span><span class="variable parameter option shell"><span class="punctuation definition parameter shell"> -</span>s</span> <span class="keyword control regexp set begin shell">[</span>-abefhkmnptuvxdBCDHP<span class="keyword control regexp set end shell">]</span> <span class="keyword control regexp set begin shell">[</span>-o option<span class="keyword control regexp set end shell">]</span></span>
+    <span class="meta function-call shell"><span class="variable function shell">[-O</span></span><span class="meta function-call arguments shell"> shopt_option] <span class="keyword control regexp set begin shell">[</span>argument …<span class="keyword control regexp set end shell">]</span></span>
+</span></code></pre></div></div>
+<p>Let’s see… First we notice that <code>[long-opt]</code> is always parsed first, before
+anything else. That should be easy to make consistent across the three
+invocation forms. We can also see that the set of single letter flags are the
+same, followed by <code>[-o option] [-O shopt_option]</code> each time.</p>
+<p>So the general syntax is: first parse long options (e.g. <code>--init-file filename</code>) and the <code>-ir</code> and <code>-s</code> flags, then parse short <code>set</code> options (e.g.
+<code>-x</code>, an option I use a lot to debug/trace my shell programs) and then the
+complete <code>-+o</code> options for <code>set</code>. Next, we parse options for <code>shopt</code> itself
+with <code>-O</code>. Finally, we parse <code>-c string</code> and <code>argument ...</code> which are passed
+through to the running program in <code>$@</code>.</p>
+<p>Here are a few examples to help make the semantics more clear:</p>
+<div class="language-sh"><div class="highlight"><pre class="highlight"><code><span class="source shell bash"><span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell"> Run a shell script from file with an argument.</span><span class="comment line number-sign shell">
+</span><span class="meta function-call shell"><span class="variable function shell">oursh</span></span><span class="meta function-call arguments shell"> /path/to/script.sh 123</span>
+<span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell"> Equivalent to running `oursh` without arguments.</span><span class="comment line number-sign shell">
+</span><span class="meta function-call shell"><span class="variable function shell">oursh</span></span><span class="meta function-call arguments shell"><span class="variable parameter option shell"><span class="punctuation definition parameter shell"> -</span>s</span></span>
+<span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell"> Run the shell with a couple arguments.</span><span class="comment line number-sign shell">
+</span><span class="meta function-call shell"><span class="variable function shell">oursh</span></span><span class="meta function-call arguments shell"><span class="variable parameter option shell"><span class="punctuation definition parameter shell"> -</span>s</span> 123 456</span>
+<span class="comment line number-sign shell"><span class="punctuation definition comment begin shell">#</span></span><span class="comment line number-sign shell"> Run a command string with an argument.</span><span class="comment line number-sign shell">
+</span><span class="meta function-call shell"><span class="variable function shell">oursh</span></span><span class="meta function-call arguments shell"><span class="variable parameter option shell"><span class="punctuation definition parameter shell"> -</span>c</span> <span class="string quoted double shell"><span class="punctuation definition string begin shell">&quot;</span>echo <span class="meta group expansion parameter shell"><span class="punctuation definition variable shell">$</span><span class="variable language shell">@</span></span><span class="punctuation definition string end shell">&quot;</span></span> hello world</span>
+</span></code></pre></div></div>
+<p>This shouldn’t be hard to write a grammar for…</p>
+<h3 id="terminal-features">Terminal Features</h3>
+<h3 id="you-nix">You <code>nix</code>?</h3>
+<p>What about windows?</p>
+</div>
+
+    <footer>
+      <a href="/pr-preview/pr-86/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      2026
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2023-09-13-building-a-shell-part-3.md">source</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/commits/master/_ramblings/2023-09-13-building-a-shell-part-3.md">history</a>
+        &middot;
+        <a href="https://github.com/nixpulvis/nixpulvis.github.io/issues/new?body=https%3A%2F%2Fnixpulvis.com%2Fpr-preview%2Fpr-86%2Framblings%2F2023-09-13-building-a-shell-part-3">report an issue</a>
+        <span class="issues"><a href="https://github.com/nixpulvis/nixpulvis.github.io/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>

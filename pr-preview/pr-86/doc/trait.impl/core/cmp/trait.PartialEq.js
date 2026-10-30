@@ -1,0 +1,9 @@
+(function() {
+    const implementors = Object.fromEntries([["nixpulvis",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"struct\" href=\"nixpulvis/collection/struct.Collection.html\" title=\"struct nixpulvis::collection::Collection\">Collection</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"enum\" href=\"nixpulvis/tui/enum.Effect.html\" title=\"enum nixpulvis::tui::Effect\">Effect</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"enum\" href=\"nixpulvis/tui/enum.Key.html\" title=\"enum nixpulvis::tui::Key\">Key</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"enum\" href=\"nixpulvis/site/enum.Layout.html\" title=\"enum nixpulvis::site::Layout\">Layout</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"enum\" href=\"nixpulvis/tui/links/enum.Target.html\" title=\"enum nixpulvis::tui::links::Target\">Target</a>",0]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":59,"fragment_lengths":[1373]}
