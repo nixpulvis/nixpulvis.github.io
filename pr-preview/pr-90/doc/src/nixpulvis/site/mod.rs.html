@@ -13,7 +13,7 @@
 <a href=#4 id=4 data-nosnippet>4</a>//! cratesite reads the pages, renders their Markdown and writes the site.
 <a href=#5 id=5 data-nosnippet>5</a>//! What's left is this site's own:
 <a href=#6 id=6 data-nosnippet>6</a>//!
-<a href=#7 id=7 data-nosnippet>7</a>//! - Pages with template tags, like [`ramblings`](crate::ramblings), are
+<a href=#7 id=7 data-nosnippet>7</a>//! - Pages with template tags, like [`ramblings`](crate::pages::ramblings), are
 <a href=#8 id=8 data-nosnippet>8</a>//!   askama templates, which can use the [`Site`] and its [`Data`].
 <a href=#9 id=9 data-nosnippet>9</a>//! - Pages are wrapped in their [`Layout`], and then [`DefaultLayout`], with
 <a href=#10 id=10 data-nosnippet>10</a>//!   the header and nav.
@@ -77,7 +77,7 @@
 <a href=#68 id=68 data-nosnippet>68</a>        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
 <a href=#69 id=69 data-nosnippet>69</a>            data: Data::load()<span class="question-mark">?</span>,
 <a href=#70 id=70 data-nosnippet>70</a>            fortunes: Fortunes::read(<span class="kw-2">&amp;</span>options.source.join(<span class="string">"fortunes"</span>))<span class="question-mark">?</span>,
-<a href=#71 id=71 data-nosnippet>71</a>            site: cratesite::Site::load(<span class="kw-2">&amp;</span>CONFIG, <span class="kw">crate</span>::SOURCES, options)<span class="question-mark">?</span>,
+<a href=#71 id=71 data-nosnippet>71</a>            site: cratesite::Site::load(<span class="kw-2">&amp;</span>CONFIG, <span class="kw">crate</span>::pages::SOURCES, options)<span class="question-mark">?</span>,
 <a href=#72 id=72 data-nosnippet>72</a>        })
 <a href=#73 id=73 data-nosnippet>73</a>    }
 <a href=#74 id=74 data-nosnippet>74</a>

@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Epic UI"><title>nixpulvis::pages::projects::epic_ui - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="nixpulvis" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.1 (58cf8f9c3 2026-10-13)" data-channel="1.99.1" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"><!-- KaTeX, for the math in the pages' docs, written as \( \) and \[ \]. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, { delimiters: [
+    { left: '\\[', right: '\\]', display: true },
+    { left: '\\(', right: '\\)', display: false },
+  ] })"></script>
+
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module epic_ui</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../nixpulvis/index.html">nixpulvis</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module epic_ui</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#boxy-beginnings" title="Boxy Beginnings">Boxy Beginnings</a></li><li><a href="#let-there-be-code" title="Let There be Code!">Let There be Code!</a></li><li><a href="#a-style-emerges" title="A Style Emerges">A Style Emerges</a></li><li><a href="#bugs-and-hacks" title="Bugs and Hacks">Bugs and Hacks</a><ul><li><a href="#legendary-calculations" title="Legendary Calculations">Legendary Calculations</a></li><li><a href="#a-hack-to-progress" title="A Hack to Progress">A Hack to Progress</a></li></ul></li><li><a href="#what-a-long-strange-trip-its-been" title="What a Long, Strange Trip It’s Been">What a Long, Strange Trip It’s Been</a></li></ul><h3><a href="#statics">Module Items</a></h3><ul class="block"><li><a href="#statics" title="Statics">Statics</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In nixpulvis::<wbr>pages::<wbr>projects</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../../index.html">nixpulvis</a>::<wbr><a href="../../index.html">pages</a>::<wbr><a href="../index.html">projects</a></div><h1>Module <span>epic_ui</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../src/nixpulvis/home/runner/work/nixpulvis.github.io/nixpulvis.github.io/target/debug/build/nixpulvis-896b5441140f1b8e/out/pages.rs.html#422">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Epic UI</p>
+<p><small><a href="https://nixpulvis.com/projects/epic-ui">on the site</a> · <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_projects/epic-ui.md">source</a></small></p>
+<p>I used to be an avid World of Warcraft player, raiding bosses many times a
+week with my guild. In order to get the most out of my own performance I forked
+an advanced UI replacement addon named <a href="https://www.tukui.org/">Tukui</a> into my own project, I
+named Epic UI (after my gamertag, Epicgrim).</p>
+<h4 id="boxy-beginnings"><a class="doc-anchor" href="#boxy-beginnings">§</a>Boxy Beginnings</h4>
+<p>Before my days with Tukui and EpicUI I did what many WoW players did, and
+customized my UI with addons that let me drag around boxes, and put things
+inside them. All from within the game, and without a single line of code.
+<strong>At this point in my life I had never written any code.</strong></p>
+<p><img src="https://nixpulvis.com/img/epic-ui/pretukui.jpg" alt="World of Warcraft screenshot of my boxy UI before Tukui" /></p>
+<p>As you can see the result was a very “boxy” UI, and not one that I was very
+happy with. I was developing an opinion that the raider (PvE WoW player) is
+only as good as his UI lets him be. It was crucial that I find a way to show
+the needed information, without so much clutter.</p>
+<h4 id="let-there-be-code"><a class="doc-anchor" href="#let-there-be-code">§</a>Let There be Code!</h4>
+<p>After I discovered Tukui, it only took me a little while before I downloaded
+Notepad++ (the OG editor) and started making my own modifications. I didn’t
+know LUA, but for the basic things like moving a UI element somewhere else the
+code was simple.</p>
+<div class="example-wrap"><pre class="language-lua"><code>-- Position `element` just below `another_element`.
+element:SetPoint(&quot;TOP&quot;, another_element, &quot;BOTTOM&quot;, 0, -10)</code></pre></div>
+<p>Since so much of UI programming is just a matter of getting things into the
+correct place, this got me off the ground running. As I needed to make more and
+more changes I learned more and more about LUA, and the <a href="http://wowprogramming.com/docs">WoW APIs</a>
+(some of the best APIs I’ve worked with to date).</p>
+<p>An early version of Epic UI can be seen below. The unitframes (boxes with a
+claw next to them in the screenshot) have player info in the middle, a design
+I’m glad to have dropped.</p>
+<p><img src="https://nixpulvis.com/img/epic-ui/early.jpg" alt="Early version of Epic UI in World of Warcraft" /></p>
+<p>Many other features were added, most notably a “buff” tracker (under the
+minimap), to ensure I had every advantage possible before each boss fight.
+Many of these features were collaborations with people on the Tukui forums,
+which I had become a regular member of.</p>
+<h4 id="a-style-emerges"><a class="doc-anchor" href="#a-style-emerges">§</a>A Style Emerges</h4>
+<p>I ditched the middle info panel, and started to develop a real style. Some
+friends of mine started to use my UI, and I created a bit of a brand for the
+whole thing.</p>
+<p><img src="https://nixpulvis.com/img/epic-ui/epicui_banner_v1.jpg" alt="Epic UI banner logo" /></p>
+<p>As the style grew, I updated the banner logo, and even started to version
+things (sadly 2.1.1 was the last version).</p>
+<p><img src="https://nixpulvis.com/img/epic-ui/epicui_banner_v2.png" alt="Epic UI version 2.1.1 banner logo" /></p>
+<p>In EpicUI 2.0 I decided to move the power bar (mana/etc) to the border of the
+unitframes. This was in many ways what distinguished my UI from the rest. Even
+though much work had been done under the hood as well. The visual changes are
+the most obvious to people. World of Warcraft has so many mechanics, that
+building a UI that handles them all consistently is no small task.</p>
+<p>I would occasionally play a healer (resto shaman). I quickly discovered that my
+UI wasn’t optimal for this role, so I started further customizing it for each
+class/spec.</p>
+<p><img src="https://nixpulvis.com/img/epic-ui/healing_uf.png" alt="Shaman healer layout with labels for the class icon, timers, totem bars, mana bar and action bar" /></p>
+<p>I only ever made the base (caster DPS), and shaman healer layouts however.</p>
+<h4 id="bugs-and-hacks"><a class="doc-anchor" href="#bugs-and-hacks">§</a>Bugs and Hacks</h4>
+<p>Of course, programming is not without bugs, and when you are modifying your UI
+in the same time-frame as you are raiding at a relatively high level the bugs
+can have very dramatic effect. Below I managed to capture a bug that blocked a
+good part of my screen while fighting a new progression boss in Firelands,
+Majordomo Staghelm.</p>
+<p><img src="https://nixpulvis.com/img/epic-ui/bug.jpg" alt="UI bug blocking part of the screen during the Majordomo Staghelm fight" /></p>
+<p>Other bugs have caused me to be unable to perform actions, or see needed boss
+abilities. It was a delicate act balancing developing my UI, and maintaining
+a reputation of a reliable DPS player.</p>
+<h5 id="legendary-calculations"><a class="doc-anchor" href="#legendary-calculations">§</a>Legendary Calculations</h5>
+<p>An interesting story from my days in Firelands is the tale of Dragonwrath,
+Tarecgosa’s Rest, a legendary weapon that required a full raiding guild (25+
+members) to create over many weeks for a <em>single</em> player to obtain. I was lucky
+enough to be the second member of my guild to receive it. Once I did however it
+became clear to me that the inner workings of this item were not yet known to
+the public.</p>
+<p>Without going into too much detail, the staff had a chance to do
+a lot of damage, but it wasn’t exactly clear what caused it, and what the
+probabilities actually were. I know how to write code now I thought, this
+should be easy to figure out. Sure enough after only a few hours of programming
+I had a simple addon that would calculate the “proc-rate”, even if the addon
+looked like garbage.</p>
+<p><img src="https://nixpulvis.com/img/epic-ui/dragonwrath.png" alt="Dragonwrath Counter addon showing proc rates for Starsurge, Wrath and Starfire" /></p>
+<h5 id="a-hack-to-progress"><a class="doc-anchor" href="#a-hack-to-progress">§</a>A Hack to Progress</h5>
+<p>This story almost definitely falls under a category of things Blizzard loves to
+ban people for, however it’s been so long, and the gained achievement all but
+forgotten. Let me tell you the story of Heroic Maloriak 25 man, I raided with
+Vox Radix.</p>
+<p>We were Darkspear’s (Swifty’s server) number 1 raiding guild. I don’t just tell
+you this to pad my ego, but as an indication that we were good at the game. But
+for whatever reason, this one boss fight mechanic was proving insurmountable
+for us. In short there was a boss ability that has a <strong>very</strong> short cast time
+(&lt; 1s) which if left un-interrupted would wipe the raid. So we wiped, and we
+wiped, and we wiped. Countless hours wasted to a single issue.</p>
+<p>One night me and a friend stayed up late talking (as we normally do). I was
+expressing my frustration with the interrupts, and my powerlessness since I
+played a class without an interrupt. I remember thinking, “I’m learning to
+make WoW addons I should just hack the fight!”. This sent me down a research
+path where I learned about <code>hooksecurefunc</code> and the world of Taints! Without
+boring you too much with the details of all that, WoW has various mechanisms
+for preventing you from say, creating an addon that casts an interrupt as a
+reaction to a boss ability automatically. Well shit.</p>
+<p>“It’s impossible”, I first thought. Then it dawned on me… There is nothing
+stopping me from <strong>showing and hiding frames</strong> as a reaction to a combat event.
+Toggling frames is a pretty fundamental thing, and it’s nice that you can do
+that in combat. So all I needed to do is write an addon that has a frame sit
+directly over the user’s interrupt spell, and disappear hen the boss casts. The
+addon took about an hour to write, and maybe 3 hours to debug with my friend.</p>
+<p>The next raid night my friend (enhancement shaman) was equipped with the addon
+and would spend the whole fight clicking (with the mouse) on the area of his
+actionbars where the interrupt was. As soon as the boss started casting, the
+addon would disappear, and the interrupt would go off. Sure enough, not a single
+wipe to a missed cast.</p>
+<p>We didn’t kill it that night, because there was a new phase to learn at the
+end. But we got to that phase for the first time, and I felt like a hero.</p>
+<h4 id="what-a-long-strange-trip-its-been"><a class="doc-anchor" href="#what-a-long-strange-trip-its-been">§</a>What a Long, Strange Trip It’s Been</h4>
+<p>I still have my account, and log on from time to time, but the long nights and
+endless thought has mostly died down. I’m a casual player, and I don’t run my own UI
+anymore. ElvUI, another project from the same community is my go to, and I’m
+pretty happy with it overall.</p>
+<p>WoW to me will always hold a special place in my heart. Not only for the people
+I met playing the game, but also as the gateway drug to harder programming. I
+owe it all to a little LUA and a lot of help from the members of Tukui.</p>
+<p>– <cite>Epicgrim</cite></p>
+<p><img src="https://nixpulvis.com/img/epic-ui/invincible.jpg" alt="Riding Invincible past a castle wall at sunset" /></p>
+</div></details><h2 id="statics" class="section-header">Statics<a href="#statics" class="anchor">§</a></h2><dl class="item-table"><dt><a class="static" href="static.PAGE.html" title="static nixpulvis::pages::projects::epic_ui::PAGE">PAGE</a></dt><dd>This page’s source, which the site is built from.</dd></dl></section></div></main></body></html>

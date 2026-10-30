@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["CONFIG"],"mod":["about","fortunes","index","iphone","math","musings","not_found","playground","projects","ramblings","references","research","site","tui"],"static":["PAGE","SOURCES"],"struct":["Source"]};
+window.SIDEBAR_ITEMS = {"constant":["CONFIG"],"mod":["index","pages","site","tui"],"struct":["Source"]};
