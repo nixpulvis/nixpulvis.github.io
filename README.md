@@ -56,9 +56,10 @@ some point.
 
 #### Fortunes
 
-`fortunes/` holds a `fortune` database for each year, with entries separated by
-a line holding only `%`. The build lists them on `/fortunes/` and publishes the
-compiled `.dat` files next to the text. An empty entry fails the build.
+`fortunes/` holds a `fortune` database for each year, like `2026.txt`, with
+entries separated by a line holding only `%`. The build lists them on
+`/fortunes/` and publishes the compiled `.dat` files next to the text. An empty
+entry fails the build.
 
 Add a fortune to this year's file, creating it in a new year, with:
 

@@ -1,5 +1,5 @@
-# Each year's fortunes, i.e. fortunes/2017 fortunes/2018 ...
-FORTUNES = $(filter-out %.dat,$(wildcard fortunes/[0-9][0-9][0-9][0-9]))
+# Each year's fortunes, i.e. fortunes/2017.txt fortunes/2018.txt ...
+FORTUNES = $(wildcard fortunes/[0-9][0-9][0-9][0-9].txt)
 FORTUNE_DATS = $(addsuffix .dat,$(FORTUNES))
 
 # Define our non-file based targets.
