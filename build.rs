@@ -5,5 +5,7 @@ mod config;
 
 fn main() {
     println!("cargo:rerun-if-changed=src/config.rs");
-    cratesite::BuildScript::new(&config::CONFIG).run();
+    cratesite::BuildScript::new(&config::CONFIG)
+        .module("crate::pages")
+        .run();
 }

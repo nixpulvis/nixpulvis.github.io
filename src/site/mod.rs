@@ -4,7 +4,7 @@
 //! cratesite reads the pages, renders their Markdown and writes the site.
 //! What's left is this site's own:
 //!
-//! - Pages with template tags, like [`ramblings`](crate::ramblings), are
+//! - Pages with template tags, like [`ramblings`](crate::pages::ramblings), are
 //!   askama templates, which can use the [`Site`] and its [`Data`].
 //! - Pages are wrapped in their [`Layout`], and then [`DefaultLayout`], with
 //!   the header and nav.
@@ -68,7 +68,7 @@ impl Site {
         Ok(Self {
             data: Data::load()?,
             fortunes: Fortunes::read(&options.source.join("fortunes"))?,
-            site: cratesite::Site::load(&CONFIG, crate::SOURCES, options)?,
+            site: cratesite::Site::load(&CONFIG, crate::pages::SOURCES, options)?,
         })
     }
 

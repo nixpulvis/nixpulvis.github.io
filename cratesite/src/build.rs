@@ -43,18 +43,20 @@ use crate::{Config, Name};
 /// }
 /// ```
 ///
-/// The site's `lib.rs` then includes them:
+/// The site's `lib.rs` then includes them, at its root or in a module of
+/// their own, named with [`BuildScript::module`]:
 ///
 /// ```ignore
 /// include!(concat!(env!("OUT_DIR"), "/pages.rs"));
 /// ```
 ///
-/// The home page's docs are written to `$OUT_DIR/doc/crate.md`, for the
-/// crate's own docs to include with `#![doc = include_str!(...)]`.
+/// The home page's docs are written to `$OUT_DIR/doc/index.md`, for the
+/// module holding the pages to include with `#![doc = include_str!(...)]`.
 pub struct BuildScript {
     config: &'static Config,
     root: PathBuf,
     out: PathBuf,
+    module: String,
 }
 
 impl BuildScript {
@@ -64,7 +66,15 @@ impl BuildScript {
             config,
             root: PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()),
             out: PathBuf::from(env::var("OUT_DIR").unwrap()),
+            module: "crate".to_owned(),
         }
+    }
+
+    /// The path of the module the pages are included in, like
+    /// `crate::pages`, for links between them. The crate's root by default.
+    pub fn module(mut self, path: &str) -> Self {
+        self.module = path.to_owned();
+        self
     }
 
     /// Writes `pages.rs`, `templates.rs` and the docs, and tells cargo
@@ -77,7 +87,7 @@ impl BuildScript {
                 tree.insert(&segments, i);
             }
         }
-        let links = tree.links(&pages, "crate");
+        let links = tree.links(&pages, &self.module);
 
         let docs = self.out.join("doc");
         let _ = fs::remove_dir_all(&docs);
@@ -88,9 +98,14 @@ impl BuildScript {
             &links,
             &self.root,
             &docs,
-            "crate",
+            &self.module,
             &mut code,
         );
+        // The home page's docs, for the module holding the pages.
+        let home = docs.join(format!("{}.md", self.module.replace("::", "/")));
+        if home.exists() {
+            fs::copy(&home, docs.join("index.md")).unwrap();
+        }
         // Every source, for the generator, including the ones that aren't
         // Markdown and so aren't modules, like `feed.xml`.
         code.push_str("\n/// Every page's source.\n#[allow(dead_code)]\npub static SOURCES: &[&::cratesite::Source] = &[\n");
@@ -350,13 +365,7 @@ impl Module {
     ) {
         if let Some(i) = self.page {
             let page = &pages[i];
-            // The home page's docs follow the crate's own, in lib.rs.
-            let name = if path == "crate" {
-                "crate".to_owned()
-            } else {
-                path.replace("::", "/")
-            };
-            let file = docs.join(format!("{name}.md"));
+            let file = docs.join(format!("{}.md", path.replace("::", "/")));
             fs::create_dir_all(file.parent().unwrap()).unwrap();
             fs::write(&file, page.doc(config, links)).unwrap();
             writeln!(
