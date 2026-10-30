@@ -600,8 +600,9 @@ li.draft {
         border-color: var(--text);
       }
 
-      /* The picked tag is filled with its edge color. */
-      &:target {
+      /* The picked tag is filled with its edge color, and so is "all" when
+         no tag is picked. */
+      &:target, &#all:not(:has(~ :target)) {
         background: var(--edge);
         color: var(--background);
 
@@ -614,12 +615,6 @@ li.draft {
     & small {
       color: var(--muted);
     }
-  }
-
-  & nav.tags:not(:has(:target)) #all {
-    background: var(--text);
-    border-color: var(--text);
-    color: var(--background);
   }
 
   & ul {
