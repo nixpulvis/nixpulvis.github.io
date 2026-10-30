@@ -2,11 +2,7 @@
 ---
 // Every fortune, for `fortune()`. Gathered here once, so pages like 404.md
 // can share them rather than inlining their own copy.
-{%- assign fortunes = "" | split: "" %}
-{%- for database in site.data.fortunes %}
-{%- assign fortunes = fortunes | concat: database.entries %}
-{%- endfor %}
-const fortunes = {{ fortunes | jsonify }};
+const fortunes = {{ site.fortunes_json() }};
 
 // A random fortune, like `fortune` itself.
 function fortune() {
@@ -25,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add a "cheat" code.
   Mousetrap.bind('up up down down left right left right b a enter', function() {
-    window.location.href = "{{ '/MTk3ODkK' | relative_url }}";
+    window.location.href = "{{ site.relative_url("/MTk3ODkK") }}";
   });
 
   // Link each heading to itself, shown on hover by `.anchor` in style.css. A

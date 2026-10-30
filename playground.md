@@ -16,7 +16,7 @@ layout: default
   }
 
   if (window.location.pathname.match("/MTk3ODkK")) {
-    addCss('{{ "/css/MTk3ODkK.css" | relative_url }}');
+    addCss('{{ site.relative_url("/css/MTk3ODkK.css") }}');
   }
 </script>
 

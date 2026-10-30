@@ -2,30 +2,24 @@
 layout: null
 ---
 <?xml version="1.0" encoding="utf-8"?>
-{%
-assign ramblings = site.ramblings
-                 | concat: site.mathematics
-                 | sort: 'date'
-                 | reverse
-%}
-<feed xmlns="http://www.w3.org/2005/Atom" xml:base="{{ '/' | absolute_url }}">
-  <id>{{ '/ramblings' | absolute_url }}</id>
-  <title>{{ site.title }} - Ramblings</title>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="{{ site.absolute_url("/") }}">
+  <id>{{ site.absolute_url("/ramblings") }}</id>
+  <title>{{ Site::TITLE }} - Ramblings</title>
   <author><name>Nathan Lilienthal</name></author>
-  <link rel="self" href="{{ page.url | absolute_url }}" />
-  <link rel="alternate" type="text/html" href="{{ '/ramblings' | absolute_url }}" />
-  <updated>{{ site.time | date_to_xmlschema }}</updated>
-  {% for rambling in ramblings %}
-    {% if rambling.hidden or rambling.draft or rambling.archived %}
+  <link rel="self" href="{{ site.absolute_url(page.url.as_str()) }}" />
+  <link rel="alternate" type="text/html" href="{{ site.absolute_url("/ramblings") }}" />
+  <updated>{{ site.xml_time() }}</updated>
+  {% for rambling in site.ramblings() %}
+    {% if rambling.front.hidden || rambling.front.draft || rambling.front.archived %}
       {% continue %}
     {% endif %}
     <entry>
-      <id>{{ rambling.url | absolute_url }}</id>
-      <title>{{ rambling.title | xml_escape }}</title>
-      <link rel="alternate" type="text/html" href="{{ rambling.url | absolute_url }}" />
-      <published>{{ rambling.date | date_to_xmlschema }}</published>
-      <updated>{{ rambling.last_modified_at | default: rambling.date | date_to_xmlschema }}</updated>
-      <content type="html">{{ rambling.content | xml_escape }}</content>
+      <id>{{ site.absolute_url(rambling.url.as_str()) }}</id>
+      <title>{{ site.escape(rambling.title().as_str()) }}</title>
+      <link rel="alternate" type="text/html" href="{{ site.absolute_url(rambling.url.as_str()) }}" />
+      <published>{{ site.xml_date(rambling) }}</published>
+      <updated>{{ site.xml_date(rambling) }}</updated>
+      <content type="html">{{ site.escape(rambling.content.as_str()) }}</content>
     </entry>
   {% endfor %}
 </feed>
