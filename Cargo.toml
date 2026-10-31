@@ -12,7 +12,7 @@ repository = "https://github.com/nixpulvis/nixpulvis.github.io"
 
 [workspace.dependencies]
 ratatui = { version = "0.30", default-features = false }
-ratmark = { git = "https://github.com/nixpulvis/ratmark", branch = "hyperlinks", default-features = false, features = ["front-matter", "html", "kramdown"] }
+ratmark = { git = "https://github.com/nixpulvis/ratmark", default-features = false, features = ["front-matter", "html", "kramdown"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 

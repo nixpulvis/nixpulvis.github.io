@@ -1433,7 +1433,7 @@ dependencies = [
 [[package]]
 name = "ratmark"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/ratmark?branch=hyperlinks#6a547bba8fb8907330e37c68245299c1cc3c7f03"
+source = "git+https://github.com/nixpulvis/ratmark#83b9e5ea56dfd6e81dd34994140863dbc72a2342"
 dependencies = [
  "html5gum",
  "pulldown-cmark",
