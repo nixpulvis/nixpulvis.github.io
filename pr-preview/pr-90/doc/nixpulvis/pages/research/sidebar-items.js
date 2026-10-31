@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["achilles_10","achilles_11","achilles_12","achilles_13","achilles_14","achilles_8","achilles_9","secure_multi_party_communication","uncertainty_calculus","wish"],"static":["PAGE"]};

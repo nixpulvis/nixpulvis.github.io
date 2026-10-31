@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["about","fortunes","iphone","math","musings","not_found","playground","projects","ramblings","references","research"],"static":["PAGE","SOURCES"]};

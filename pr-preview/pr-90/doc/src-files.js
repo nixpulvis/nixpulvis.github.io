@@ -1,2 +1,0 @@
-createSrcSidebar('[["cratesite",["",[],["build.rs","cli.rs","config.rs","front.rs","highlight.rs","lib.rs","markdown.rs","page.rs","publish.rs","serve.rs","site.rs","text.rs","tikz.rs"]]],["nixpulvis",["",[["site",[],["data.rs","fortunes.rs","layout.rs","mod.rs"]],["tui",[["app",[],["draw.rs"]]],["app.rs","colors.rs","link.rs","markup.rs","mod.rs","page.rs","site.rs"]]],["config.rs","index.rs","lib.rs"]]]]');
-//{"start":19,"fragment_lengths":[168,221]}

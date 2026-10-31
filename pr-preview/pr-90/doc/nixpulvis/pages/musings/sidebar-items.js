@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["beyer","conways_origination","my_sound","sample"],"static":["PAGE"]};

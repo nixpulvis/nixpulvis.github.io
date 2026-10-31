@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["CONFIG"],"mod":["index","pages","site","tui"],"struct":["Source"]};

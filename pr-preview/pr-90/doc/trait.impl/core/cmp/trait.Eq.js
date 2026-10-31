@@ -1,9 +1,0 @@
-(function() {
-    const implementors = Object.fromEntries([["cratesite",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.Eq.html\" title=\"trait core::cmp::Eq\">Eq</a> for <a class=\"struct\" href=\"cratesite/struct.Collection.html\" title=\"struct cratesite::Collection\">Collection</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.Eq.html\" title=\"trait core::cmp::Eq\">Eq</a> for <a class=\"enum\" href=\"cratesite/enum.Command.html\" title=\"enum cratesite::Command\">Command</a>",0]]],["nixpulvis",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.Eq.html\" title=\"trait core::cmp::Eq\">Eq</a> for <a class=\"enum\" href=\"nixpulvis/tui/enum.Effect.html\" title=\"enum nixpulvis::tui::Effect\">Effect</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.Eq.html\" title=\"trait core::cmp::Eq\">Eq</a> for <a class=\"enum\" href=\"nixpulvis/tui/enum.Host.html\" title=\"enum nixpulvis::tui::Host\">Host</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.Eq.html\" title=\"trait core::cmp::Eq\">Eq</a> for <a class=\"enum\" href=\"nixpulvis/tui/enum.Key.html\" title=\"enum nixpulvis::tui::Key\">Key</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.99.1/core/cmp/trait.Eq.html\" title=\"trait core::cmp::Eq\">Eq</a> for <a class=\"enum\" href=\"nixpulvis/site/enum.Layout.html\" title=\"enum nixpulvis::site::Layout\">Layout</a>",0]]]]);
-    if (window.register_implementors) {
-        window.register_implementors(implementors);
-    } else {
-        window.pending_implementors = implementors;
-    }
-})()
-//{"start":59,"fragment_lengths":[504,975]}
