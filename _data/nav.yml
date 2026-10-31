@@ -1,0 +1,15 @@
+# The site's navigation, shared by the header and site.json. Entries with an
+# icon show it in place of the title.
+- title: Projects
+  url: /projects
+- title: Ramblings
+  url: /ramblings
+- title: Fortunes
+  url: /fortunes/
+  icon: '%'
+- title: References
+  url: /references
+  icon: '&'
+- title: Music
+  url: /musings
+  icon: ♪

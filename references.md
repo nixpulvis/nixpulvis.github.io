@@ -30,26 +30,26 @@ layout: default
 <!-- Picking a tag targets its link, and these rules hide every reference
      without that tag. With no tag picked, everything shows. -->
 <style>
-{% for tag in tags %}
+{%- for tag in tags -%}
 .tagged:has(#{{ tag }}:target) li:not([data-tags~="{{ tag }}"]) { display: none; }
-{% endfor %}
+{%- endfor -%}
 </style>
 
 <div class="tagged">
 <nav class="tags">
     <a href="#all" id="all">all</a>
-{% for tag in ordered %}
-    {% assign count = references | where_exp: "reference", "reference.tags contains tag" | size %}
-    {% include reference-tag.html tag=tag count=count %}
-{% endfor %}
+{%- for tag in ordered -%}
+    {%- assign count = references | where_exp: "reference", "reference.tags contains tag" | size -%}
+    {%- include reference-tag.html tag=tag count=count -%}
+{%- endfor -%}
 </nav>
 
 <ul>
-{% for reference in references %}
+{%- for reference in references -%}
     <li data-tags="{{ reference.tags | join: ' ' }}">
         <a href="{{ reference.url }}">{{ reference.title }}</a>
         <span class="tags">{% for tag in reference.tags %}{% include reference-tag.html tag=tag %}{% endfor %}</span>
     </li>
-{% endfor %}
+{%- endfor -%}
 </ul>
 </div>

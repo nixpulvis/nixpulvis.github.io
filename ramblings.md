@@ -11,19 +11,19 @@ If you find something you like here, I've done my job. Otherwise, be gone with
 you.
 
 <ul class="posts">
-{%
+{%-
 assign ramblings = site.ramblings
                  | concat: site.mathematics
                  | sort: 'date'
                  | reverse
-%}
+-%}
 
-{% for rambling in ramblings %}
-    {% if rambling.hidden or rambling.archived %}
-        {% continue %}
-    {% endif %}
-    {% include post-item.html post=rambling %}
-{% endfor %}
+{%- for rambling in ramblings -%}
+    {%- if rambling.hidden or rambling.archived -%}
+        {%- continue -%}
+    {%- endif -%}
+    {%- include post-item.html post=rambling -%}
+{%- endfor -%}
 </ul>
 
 <small><a href="{{ '/ramblings/archive' | relative_url }}">Archive</a></small>

@@ -9,27 +9,27 @@ title: Mathematics
 > sets, using numbers and symbols.
 
 <ul>
-{%
+{%-
 assign mathematics = site.mathematics
                  | sort: 'date'
                  | reverse
-%}
+-%}
 
-{% for math in mathematics %}
-    {% if math.draft %}
+{%- for math in mathematics -%}
+    {%- if math.draft -%}
         <li class="draft">
             <a href="{{ math.url | relative_url }}">{{ math.title }}</a>
             <small>
                 drafted on {{ math.date | date: "%B %d, %Y" }}.
             </small>
         </li>
-    {% else %}
+    {%- else -%}
         <li>
             <a href="{{ math.url | relative_url }}">{{ math.title }}</a>
             <small>
                 published on {{ math.date | date: "%B %d, %Y" }}.
             </small>
         </li>
-    {% endif %}
-{% endfor %}
+    {%- endif -%}
+{%- endfor -%}
 </ul>
