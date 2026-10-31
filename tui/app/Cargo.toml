@@ -19,4 +19,4 @@ web-time = "1"
 # megabytes of syntax definitions to the web build.
 syntax = ["ratmark/syntax"]
 # Real links, like OSC 8 in a terminal, where the backend supports them.
-native-links = ["ratmark/native-links", "ratatui/cell-extensions"]
+native-links = ["ratmark/links", "ratatui/cell-extensions"]

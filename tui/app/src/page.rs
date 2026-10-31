@@ -2,7 +2,7 @@
 
 use ratatui::text::Span;
 use ratmark::MarkdownState;
-use ratmark::front_matter::FrontMatter;
+use serde::Deserialize;
 
 use crate::markup;
 
@@ -19,29 +19,39 @@ pub(crate) struct Page {
     date: Option<String>,
     pub draft: bool,
     /// The word count, on pages whose layout shows one.
-    words: Option<String>,
+    words: Option<u32>,
     /// A project's status, like `complete`.
     pub status: Option<String>,
     pub view: MarkdownState,
 }
 
 impl Page {
-    /// The page at `path`, with the full address `url`, from its Markdown.
-    pub fn new(path: &str, url: String, markdown: &str) -> Self {
-        let front = FrontMatter::split(markdown).0;
-        let get = |key| front.as_ref().and_then(|f| f.get(key));
+    /// The page at `path`, with the full address `url`, from its Markdown,
+    /// and what went wrong reading its front matter, if anything. Front
+    /// matter that doesn't fit leaves the page with its defaults.
+    pub fn new(path: &str, url: String, markdown: &str) -> (Self, Option<String>) {
+        let front_matter = ratmark::front_matter::FrontMatter::split(markdown).0;
+        let (front, error) = match front_matter.map(|f| f.deserialize::<FrontMatter>()) {
+            None => (FrontMatter::default(), None),
+            Some(Ok(front)) => (front, None),
+            Some(Err(e)) => (
+                FrontMatter::default(),
+                Some(format!("Couldn't read {path}'s front matter: {e}")),
+            ),
+        };
         let markdown = markup::adapt(markdown);
-        Self {
+        let page = Self {
             path: path.to_owned(),
             view: view(&url, markdown.clone()),
             url,
             markdown,
-            title: get("title").unwrap_or_else(|| path.to_owned()),
-            date: get("date").map(|d| long_date(&d).unwrap_or(d)),
-            draft: get("draft").is_some_and(|d| d == "true"),
-            words: get("words"),
-            status: get("status"),
-        }
+            title: front.title.unwrap_or_else(|| path.to_owned()),
+            date: front.date.map(|d| long_date(&d).unwrap_or(d)),
+            draft: front.draft,
+            words: front.words,
+            status: front.status,
+        };
+        (page, error)
     }
 
     /// Goes to the section `anchor` names. On a page of tagged items, like
@@ -86,13 +96,32 @@ impl Page {
     }
 }
 
+/// The front matter the Jekyll build publishes each page's Markdown with,
+/// as far as the app uses it.
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(default)]
+struct FrontMatter {
+    /// The page's title, shown in the header. Pages without one use their
+    /// path.
+    title: Option<String>,
+    /// When the page was published or drafted, as `YYYY-MM-DD`, on dated
+    /// pages.
+    date: Option<String>,
+    /// Whether the page is a draft, which is dimmed and labeled `Draft`.
+    draft: bool,
+    /// The word count, on pages whose layout shows one.
+    words: Option<u32>,
+    /// A project's status, like `complete`.
+    status: Option<String>,
+}
+
 /// `markdown` ready to draw, for the page at `url`.
 // Without native links, the page's address goes unused.
 #[cfg_attr(not(feature = "native-links"), allow(unused_variables))]
 fn view(url: &str, markdown: String) -> MarkdownState {
     let view = MarkdownState::new(markdown);
     #[cfg(feature = "native-links")]
-    let view = view.with_base(url);
+    let view = view.with_link_base(url);
     view
 }
 
@@ -127,7 +156,7 @@ mod tests {
     use super::*;
 
     fn load(markdown: &str) -> Page {
-        Page::new("/x", "https://nixpulvis.com/x".into(), markdown)
+        Page::new("/x", "https://nixpulvis.com/x".into(), markdown).0
     }
 
     #[test]
@@ -156,6 +185,22 @@ mod tests {
         assert_eq!(
             (page.title.as_str(), page.date, page.draft),
             ("/x", None, false)
+        );
+    }
+
+    #[test]
+    fn bad_front_matter_is_reported() {
+        let markdown = "---\ntitle: [a]\n---\n\nhi";
+        let (page, error) = Page::new("/x", "https://nixpulvis.com/x".into(), markdown);
+        assert_eq!(page.title, "/x");
+        let expected = ratmark::front_matter::FrontMatter::split(markdown)
+            .0
+            .unwrap()
+            .deserialize::<FrontMatter>()
+            .unwrap_err();
+        assert_eq!(
+            error,
+            Some(format!("Couldn't read /x's front matter: {expected}"))
         );
     }
 

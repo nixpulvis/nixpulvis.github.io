@@ -157,7 +157,10 @@ impl App {
         } else {
             markdown
         };
-        let mut page = Page::new(path, self.url(path), &markdown);
+        let (mut page, error) = Page::new(path, self.url(path), &markdown);
+        if error.is_some() {
+            self.message = error;
+        }
         page.view.scroll_to(loading.scroll.unwrap_or(0));
         if let Some(anchor) = &loading.anchor {
             page.view.scroll_to_anchor(anchor);
