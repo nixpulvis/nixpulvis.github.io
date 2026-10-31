@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" data-baseurl="{{ site.options.baseurl }}" data-build="{{ site.build_id() }}">
+  <head>
+    <meta charset="utf-8">
+    <script>
+      // A link ending in `?tui` turns the terminal view on, like the `>_` key
+      // after the name does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ Site::TITLE }} - {{ self.title() }}</title>
+    <meta name="description" content="{{ self.description() }}" />
+    <meta property="og:site_name" content="{{ Site::TITLE }}" />
+    <meta property="og:title" content="{% if !page.title().is_empty() %}{{ site.escape(page.title().as_str()) }}{% else %}{{ Site::TITLE }}{% endif %}" />
+    <meta property="og:description" content="{{ self.description() }}" />
+    <meta property="og:url" content="{{ site.absolute_url(page.url.as_str()) }}" />
+    <meta property="og:type" content="{% if page.collection.is_some() %}article{% else %}website{% endif %}" />
+    <meta property="og:image" content="{{ site.absolute_url(page.front.extra.image.as_deref().unwrap_or("/img/link-preview.png")) }}" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    {% if let Some(markdown) = page.markdown_url() %}
+      <link rel="alternate" type="text/markdown" href="{{ markdown }}" />
+    {% endif %}
+    <link rel="alternate" type="application/atom+xml" title="{{ Site::TITLE }} - Ramblings" href="/feed.xml" />
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/style.css?v={{ site.build_id() }}">
+    <link rel="stylesheet" href="/css/syntax.css">
+    {% if let Some(style) = page.front.extra.style %}
+      <link rel="stylesheet" href="{{ style }}" />
+    {% endif %}
+    <script defer src="/js/mousetrap.min.js"></script>
+    {% if self.math() %}
+      <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-chtml.js"></script>
+    {% endif %}
+    <script defer src="/js/main.js"></script>
+    <!-- If the view's script can't load, show the page the head script hid. -->
+    <script type="module" src="/js/tui.js?v={{ site.build_id() }}" onerror="document.documentElement.classList.remove('tui')"></script>
+    {% for script in page.front.extra.scripts %}
+      <script defer src="{{ script }}"></script>
+    {% endfor %}
+  </head>
+
+  <body class="container">
+    <header>
+      <img id="lambda" alt="Show photo of Nathan" src="/img/cat-lambda.png" />
+      <img id="me" alt="Photo of Nathan" src="/img/me.jpg" class="hidden" />
+      <div class="title">
+        <a href="/" class="identity">{{ Site::TITLE }}</a>
+      </div>
+      <nav>
+        <ul>
+          {% for item in site.data.nav %}
+            {% if let Some(icon) = item.icon %}
+              <li class="icon"><a href="{{ item.url }}" title="{{ item.title }}" aria-label="{{ item.title }}">{{ icon }}</a></li>
+            {% else %}
+              <li><a href="{{ item.url }}">{{ item.title }}</a></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content">{{ content }}</div>
+
+    <footer>
+      <a href="/about">Nathan Lilienthal</a>
+      &ndash;
+      <a href="https://en.wikipedia.org/wiki/Copyright_notice"
+         class="copyleft"
+         title="Not all publicity is good publicity, but all sharing of work is welcome.">©</a>
+      {{ site.time.format("%Y") }}
+      <span class="hint">
+        You <span class="nintendo">start</span> where you <kbd title="Return"><svg viewBox="0 0 10 8" aria-label="Return"><path d="M8.5 0.5v4.5h-7m2.5 -2.5l-2.5 2.5l2.5 2.5"/></svg></kbd>
+      </span>
+      <p class="source">
+        This page:
+        <a href="{{ Site::REPOSITORY }}/blob/master/{{ page.source.path }}">source</a>
+        &middot;
+        <a href="{{ Site::REPOSITORY }}/commits/master/{{ page.source.path }}">history</a>
+        &middot;
+        <a href="{{ self.issue_url() }}">report an issue</a>
+        <span class="issues"><a href="{{ Site::REPOSITORY }}/issues">open issues</a></span>
+      </p>
+    </footer>
+  </body>
+</html>

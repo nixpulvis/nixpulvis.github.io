@@ -3,7 +3,7 @@ layout: default
 title: About
 ---
 
-![Nathan taking a photo in a mirror, with caution tape behind him]({{ '/img/photographs/me-camera-caution.jpg' | relative_url }})
+![Nathan taking a photo in a mirror, with caution tape behind him](/img/photographs/me-camera-caution.jpg)
 
 -----
 
@@ -21,4 +21,4 @@ writing Rust, soldering something, or trying to play my keyboards.
 I’m originally from Colorado and moved to Boston to attend Northeastern University, graduating with a Bachelor's in Computer and Information Science. Afterwards, I moved to Silicon Valley to work for Apple's iPhone Hardware team;
 grew displeased with Apple and the Bay Area and moved back to Boston to return to school and find inspiration and purpose once more.
 
-View my [resume]({{ '/resume.pdf' | relative_url }}) for some more information.
+View my [resume](/resume.pdf) for some more information.

@@ -2,6 +2,7 @@
 title: Ramblings
 layout: page
 ---
+{% import "items.html" as items %}
 
 Here in lies a collection of words both technical and opinionated. I make no
 promise of complete clearity, nor do I wish to ramble to the point of insanity.
@@ -9,19 +10,11 @@ If you find something you like here, I've done my job. Otherwise, be gone with
 you.
 
 <ul class="posts">
-{%-
-assign ramblings = site.ramblings
-                 | concat: site.mathematics
-                 | sort: 'date'
-                 | reverse
--%}
-
-{%- for rambling in ramblings -%}
-    {%- if rambling.hidden or rambling.archived -%}
-        {%- continue -%}
+{%- for rambling in site.ramblings() -%}
+    {%- if !rambling.front.extra.hidden && !rambling.front.extra.archived -%}
+        {%- call items::post_item(rambling) -%}{%- endcall -%}
     {%- endif -%}
-    {%- include post-item.html post=rambling -%}
 {%- endfor -%}
 </ul>
 
-<small><a href="{{ '/ramblings/archive' | relative_url }}">Archive</a></small>
+<small><a href="/ramblings/archive">Archive</a></small>

@@ -10,12 +10,16 @@ on:
       - master
     paths:
       - tui/**
+      - src/**
+      - cratesite/**
       - Cargo.toml
       - Cargo.lock
       - .github/workflows/tui.yml
   pull_request:
     paths:
       - tui/**
+      - src/**
+      - cratesite/**
       - Cargo.toml
       - Cargo.lock
       - .github/workflows/tui.yml
@@ -42,6 +46,14 @@ jobs:
       - run: cargo fmt --all --check
       - run: cargo test --locked --workspace
       - run: cargo clippy --locked --all-targets -- -D warnings
+      # The site generator, and the app with every feature.
+      - run: cargo test --locked -p nixpulvis --features site,syntax,native-links
+      - run: cargo clippy --locked -p nixpulvis --all-targets --features site,syntax,native-links -- -D warnings
+      # cratesite with and without kramdown.
+      - run: cargo test --locked -p cratesite --all-features
+      - run: cargo clippy --locked -p cratesite --all-targets --all-features -- -D warnings
+      - run: cargo test --locked -p cratesite --features generate
+      - run: cargo clippy --locked -p cratesite --all-targets --features generate -- -D warnings
       # The browser view only builds for WebAssembly.
       - run: cargo clippy --locked -p nixpulvis-web --target wasm32-unknown-unknown -- -D warnings
 

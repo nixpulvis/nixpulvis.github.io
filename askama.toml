@@ -1,0 +1,4 @@
+# Templates are the layouts in templates/, and pages with template tags,
+# which are wherever the page is.
+[general]
+dirs = ["templates", "."]

@@ -1,37 +1,45 @@
 # https://nixpulvis.com
 
-This is my personal, and semi-professional website. Created using Jekyll, and
-hosted on GitHub Pages (a service which I love).
+This is my personal, and semi-professional website. Built by its own Rust
+crate, which is also documented with every page as a module, and hosted on
+GitHub Pages (a service which I love).
+
+The generator itself is [`cratesite/`](cratesite), a static site generator
+for any site that's a crate like this one. This crate is just the site: its
+pages, templates and data, `src/config.rs` saying how it's laid out, and
+`src/site` for what only this site does.
 
 ## Setup
 
-The Gemfile requires the exact Ruby version in `.ruby-version` (currently
-4.0.7), so `bundle install` fails on anything else. A version manager like
-`rbenv`, `chruby` or `asdf` will pick it up from that file.
+With Rust installed:
 
 ```sh
-# Only if you don't already have bundler.
-gem install bundler
+# Build the site into _site/.
+cargo site build
 
-# Install the dependencies.
-bundle install
+# Start up a local webserver on port 4000 (by default), building again
+# whenever a file changes.
+cargo site serve
 
-# Start up a local webserver on port 4000 (by default).
-bundle exec jekyll serve
+# The crate's docs, where every page is a module.
+cargo doc --no-deps -p nixpulvis --features site --open
 ```
 
-TikZ figures (`_plugins/tikz.rb`) also need `latex` and `dvisvgm` from TeX Live,
-and `make fortunes` needs `strfile` from fortune-mod:
+Pages are compiled into the generator, so a change to one builds it again.
+`cargo site help` lists the options.
+
+TikZ figures (```` ```tikz ```` code blocks) also need `latex` and `dvisvgm`
+from TeX Live. Compiled figures are kept in `.site-cache/`.
 
 ```sh
-sudo apt-get install texlive-latex-base texlive-pictures dvisvgm fortune-mod  # Debian/Ubuntu
-brew install texlive dvisvgm fortune                                         # macOS
+sudo apt-get install texlive-latex-base texlive-pictures dvisvgm  # Debian/Ubuntu
+brew install texlive dvisvgm                                     # macOS
 ```
 
 ## Usage
 
 The main additions to this site are projects, and ramblings. Creating and
-editing these is *very* easy thanks to Jekyll.
+editing these is *very* easy, a Markdown file in `_projects/` or `_ramblings/`.
 
 #### Layouts
 
@@ -70,37 +78,35 @@ bin/scribe
 It opens `$EDITOR`, checks the entry and appends it. To read them locally:
 
 ```sh
-make fortunes
-fortune fortunes
+cargo site build
+fortune _site/fortunes
 ```
 
 #### Markdown
 
-Every page is also published as Markdown next to its HTML, after Liquid runs,
-so `/ramblings/foo` is readable at `/ramblings/foo.md` with a short front
-matter (title, date and so on). `/site.json` lists the nav and every post with
-its URL, title, date, collection and draft flag. Both come from
-`_plugins/markdown_source.rb`, for clients that read the site without scraping
-HTML.
+Every page is also published as Markdown next to its HTML, after its template
+tags run, so `/ramblings/foo` is readable at `/ramblings/foo.md` with a short
+front matter (title, date and so on). `/site.json` lists the nav and every post
+with its URL, title, date, collection and draft flag. cratesite publishes the
+Markdown and `src/site` the index, for clients that read the site without
+scraping HTML.
 
-#### Links
+#### Templates
 
-Write site-internal links, images, and assets through `relative_url` so they
-keep working when the site is built under a sub-path (PR previews):
+Pages with template tags, like the index pages, are [askama] templates, as are
+the layouts in `templates/`. A page sees `site`, the whole `Site`, and `page`,
+itself. Links to the site's own pages are plain root paths, like
+`/img/photo.jpg`, and get the base URL added when the site is built under a
+sub-path (PR previews).
 
-```md
-![Photo]({{ '/img/photo.jpg' | relative_url }})
-[Ramblings]({{ '/ramblings' | relative_url }})
-```
-
-A bare `/img/photo.jpg` still works on nixpulvis.com but breaks in previews.
+[askama]: https://askama.rs
 
 ## Terminal view
 
 The site can also be read as a terminal app, drawn with [Ratatui] from the
-published Markdown and `/site.json` described above. The code is in `tui/`:
+published Markdown and `/site.json` described above. The code is in `src/tui` and `tui/`:
 
-- `tui/app` is the app itself, shared by both clients
+- `src/tui` is the app itself, `nixpulvis::tui`, shared by both clients
 - `tui/term` runs it in a real terminal, fetching pages over HTTP
 - `tui/web` builds it to WebAssembly for the browser, where the `>_` key
   after the name, or any link ending in `?tui`, switches it on
@@ -125,7 +131,7 @@ Either way, run it with `nixpulvis-tui`.
 #### Running from source
 
 The terminal client reads nixpulvis.com by default. To read a local build
-instead, start `jekyll serve` as above and, in another shell:
+instead, start `cargo site serve` as above and, in another shell:
 
 ```sh
 cargo run                                     # nixpulvis.com
@@ -133,11 +139,11 @@ cargo run -- --url http://localhost:4000      # a local build
 cargo run -- /ramblings                       # start on a page
 ```
 
-Jekyll doesn't build the browser view. It's Rust compiled to WebAssembly,
-built into `_site/tui` by `make tui`, and Jekyll leaves that folder alone when
-it rebuilds (`keep_files` in `_config.yml`). So build it once and serve as
-usual. Edits to pages show up in the view on reload, since it reads their
-Markdown at runtime. Only changes under `tui/` need another `make tui`.
+`cargo site build` doesn't build the browser view. It's Rust compiled to
+WebAssembly, built into `_site/tui` by `make tui`, and the generator leaves
+that folder alone when it rebuilds. So build it once and serve as usual. Edits
+to pages show up in the view on reload, since it reads their Markdown at
+runtime. Only changes under `src/tui/` or `tui/` need another `make tui`.
 
 It needs the `wasm32-unknown-unknown` target and the `wasm-bindgen` CLI at the
 version in `Cargo.lock`. If they drift apart, `make tui` stops and says which
@@ -147,7 +153,7 @@ version to install:
 rustup target add wasm32-unknown-unknown
 cargo install wasm-bindgen-cli --version 0.2.129
 make tui
-bundle exec jekyll serve
+cargo site serve
 ```
 
 [Ratatui]: https://ratatui.rs
@@ -155,12 +161,11 @@ bundle exec jekyll serve
 ## Publishing
 
 GitHub Pages serves the `gh-pages` branch. Pushing to `master` runs
-`.github/workflows/deploy.yml`, which builds the site (with our own plugins and
-TeX Live, which GitHub's built-in Jekyll wouldn't allow) and commits it to the
-root of `gh-pages`.
+`.github/workflows/deploy.yml`, which builds the site and its docs (under `/doc`)
+and commits them to the root of `gh-pages`.
 
 Both workflows run `.github/scripts/setup.sh` to install system packages and
-`.github/scripts/build.sh` to build, which takes extra `jekyll build` arguments.
+`.github/scripts/build.sh` to build, which takes extra `cargo site build` arguments.
 
 Every pull request is built by `.github/workflows/preview.yml` and published to
 `https://nixpulvis.com/pr-preview/pr-<number>/`; a comment on the PR links to

@@ -1,6 +1,57 @@
+[package]
+name = "nixpulvis"
+version = "0.1.0"
+description = "nixpulvis.com, its pages, and the generator and terminal app that read them"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+# The pages are compiled in, so drafts and everything else would ship with
+# the crate. Keep it off crates.io until that's sorted out.
+publish = false
+
+[features]
+default = []
+# Builds the site with cratesite, which writes `_site`. See `cargo site help`.
+site = [
+  "dep:askama",
+  "dep:serde_json",
+  "dep:serde_yaml",
+  "cratesite/generate",
+  "cratesite/kramdown",
+]
+# Browse the site in a terminal, shared by the native and web views.
+tui = ["dep:ratatui", "dep:ratmark", "dep:serde_json", "dep:web-time"]
+# Color code blocks in the terminal view. Worth it in a terminal, but it adds
+# a couple of megabytes of syntax definitions to the web build.
+syntax = ["tui", "ratmark/syntax"]
+# Real links, like OSC 8 in a terminal, where the backend supports them.
+native-links = ["tui", "ratmark/native-links", "ratatui/cell-extensions"]
+
+[[bin]]
+name = "site"
+path = "src/bin/site.rs"
+required-features = ["site"]
+
+[dependencies]
+cratesite = { path = "cratesite" }
+serde.workspace = true
+askama = { version = "0.16", optional = true }
+ratatui = { workspace = true, optional = true, features = ["std"] }
+ratmark = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+serde_yaml = { version = "0.9", optional = true }
+web-time = { version = "1", optional = true }
+
+[build-dependencies]
+cratesite = { path = "cratesite", features = ["build", "kramdown"] }
+
+[package.metadata.docs.rs]
+all-features = true
+
 [workspace]
-members = ["tui/app", "tui/term", "tui/web"]
-default-members = ["tui/app", "tui/term"]
+members = ["cratesite", "tui/term", "tui/web"]
+default-members = [".", "tui/term"]
 resolver = "3"
 
 [workspace.package]

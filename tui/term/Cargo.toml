@@ -8,7 +8,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-nixpulvis = { path = "../app", features = ["syntax", "native-links"] }
+nixpulvis = { path = "../..", features = ["syntax", "native-links"] }
 ratatui = { workspace = true, features = ["crossterm", "cell-extensions"] }
 ureq = "3"
 open = "5"

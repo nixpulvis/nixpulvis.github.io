@@ -2,29 +2,22 @@
 title: Research
 layout: page
 ---
+{% import "items.html" as items %}
 
 <ul class="posts">
-{%- for research in site.research -%}
-    {%- if research.hidden -%}
-        {%- continue -%}
+{%- for research in site.collection("research") -%}
+    {%- if !research.front.extra.hidden && research.source.path.contains("/articles/") -%}
+        {%- call items::post_item(research) -%}{%- endcall -%}
     {%- endif -%}
-    {%- unless research.path contains '/articles/' -%}
-        {%- continue -%}
-    {%- endunless -%}
-    {%- include post-item.html post=research -%}
 {%- endfor -%}
 </ul>
 
 ### Notes
 
 <ul class="posts">
-{%- for research in site.research -%}
-    {%- if research.hidden -%}
-        {%- continue -%}
+{%- for research in site.collection("research") -%}
+    {%- if !research.front.extra.hidden && research.source.path.contains("/notes/") -%}
+        {%- call items::post_item(research) -%}{%- endcall -%}
     {%- endif -%}
-    {%- unless research.path contains '/notes/' -%}
-        {%- continue -%}
-    {%- endunless -%}
-    {%- include post-item.html post=research -%}
 {%- endfor -%}
 </ul>

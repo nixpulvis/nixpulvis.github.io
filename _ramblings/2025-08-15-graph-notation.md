@@ -21,13 +21,13 @@ following shows a simple fully-connected graph of four nodes.
 G = {A, B, C, D}
 ```
 
-{% tikz A fully connected graph of four nodes, A, B, C and D %}
+```tikz A fully connected graph of four nodes, A, B, C and D
 \begin{tikzpicture}[scale=1.5, every node/.style={circle, draw, minimum size=2.5em}]
   \node (A) at (0,2) {A};  \node (B) at (2,2) {B};
   \node (C) at (0,0) {C};  \node (D) at (2,0) {D};
   \graph[use existing nodes] { {[clique] A, B, C, D} };
 \end{tikzpicture}
-{% endtikz %}
+```
 
 We can nest expressions within each other:
 
@@ -53,11 +53,11 @@ G = [A, B, C, D]
   = [[A, B], [C, D]]
 ```
 
-{% tikz Four disconnected nodes, A, B, C and D %}
+```tikz Four disconnected nodes, A, B, C and D
 \begin{tikzpicture}[scale=1.5, every node/.style={circle, draw, minimum size=2.5em}]
   \graph[branch right=3cm] { A, B, C, D };
 \end{tikzpicture}
-{% endtikz %}
+```
 
 #### Star Graphs
 
@@ -78,14 +78,14 @@ G = { S, [A, B, C, D] }
   = [{S, A}, {S, B}, {S, C}, {S, D}]
 ```
 
-{% tikz A star graph, with S in the center connected to A, B, C and D %}
+```tikz A star graph, with S in the center connected to A, B, C and D
 \begin{tikzpicture}[scale=1.5, every node/.style={circle, draw, minimum size=2.5em}]
                             \node (A) at (0,2)  {A};
   \node (D) at (-2,0) {D};  \node (S) at (0,0)  {S};  \node (B) at (2,0) {B};
                             \node (C) at (0,-2) {C};
   \graph[use existing nodes] { S -- {A, B, C, D} };
 \end{tikzpicture}
-{% endtikz %}
+```
 
 #### Example Reduction
 
@@ -114,8 +114,7 @@ we asked for.
 
 ---
 
-This was originally a thought experiment in [Achilles' Tent Note #12]({{
-'/research/2019-12-02-achilles-12' | relative_url }}), but I think it's a fun
+This was originally a thought experiment in [Achilles' Tent Note #12](/research/2019-12-02-achilles-12), but I think it's a fun
 way to express arbitrary graphs. I'm not sure how novel (or complete) it is
 however, but I thought I'd unbury it a bit in case someone else finds it
 interesting. I've also trimmed the contents of the original post a bit to remove

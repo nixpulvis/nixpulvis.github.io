@@ -1,7 +1,5 @@
 /target/
 _site/
-vendor/
-.bundle
+.site-cache/
 fortunes/*.dat
 **/.DS_Store
-.jekyll-cache/
