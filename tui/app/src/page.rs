@@ -11,8 +11,8 @@ pub(crate) struct Page {
     /// Its full address, like `https://nixpulvis.com/ramblings`, for links
     /// that work outside the app.
     pub url: String,
-    /// The whole page as the terminal shows it, before any tag filter.
-    pub markdown: String,
+    /// The page before any tag filter, once one has replaced `view`.
+    unfiltered: Option<MarkdownState>,
     pub title: String,
     /// When it was published or drafted, like `October 19, 2026`.
     date: Option<String>,
@@ -21,6 +21,7 @@ pub(crate) struct Page {
     words: Option<u32>,
     /// A project's status, like `complete`.
     pub status: Option<String>,
+    /// What's shown: the whole page, or its items with one tag.
     pub view: MarkdownState,
 }
 
@@ -29,7 +30,7 @@ impl Page {
     /// and what went wrong reading its front matter, if anything. Front
     /// matter that doesn't fit leaves the page with its defaults.
     pub fn new(path: &str, url: String, markdown: &str) -> (Self, Option<String>) {
-        let front_matter = ratmark::front_matter::FrontMatter::split(markdown).0;
+        let (front_matter, body) = ratmark::front_matter::FrontMatter::split(markdown);
         let (front, error) = match front_matter.map(|f| f.deserialize::<FrontMatter>()) {
             None => (FrontMatter::default(), None),
             Some(Ok(front)) => (front, None),
@@ -38,12 +39,13 @@ impl Page {
                 Some(format!("Couldn't read {path}'s front matter: {e}")),
             ),
         };
-        let markdown = markup::adapt(markdown);
         let page = Self {
             path: path.to_owned(),
-            view: view(&url, markdown.clone()),
+            // The view only gets the body, so a tag filter never meets the
+            // front matter again.
+            view: view(&url, markup::adapt(body)),
             url,
-            markdown,
+            unfiltered: None,
             title: front.title.unwrap_or_else(|| path.to_owned()),
             date: front.date.map(|d| long_date(&d).unwrap_or(d)),
             draft: front.draft,
@@ -57,11 +59,15 @@ impl Page {
     /// the references, a tag's link shows only the items with that tag
     /// instead, as the site does with CSS.
     pub fn jump(&mut self, anchor: &str) {
-        match markup::filter_tagged(&self.markdown, anchor) {
+        let source = self.unfiltered.as_ref().unwrap_or(&self.view).markdown();
+        match markup::filter_tagged(source, anchor) {
             Some(markdown) => {
-                let scroll = self.view.scroll();
-                self.view = view(&self.url, markdown);
-                self.view.scroll_to(scroll);
+                let mut filtered = view(&self.url, markdown);
+                filtered.scroll_to(self.view.scroll());
+                let shown = std::mem::replace(&mut self.view, filtered);
+                // Keep the view the first filter replaced, the whole page.
+                // Later ones replace a filtered view.
+                self.unfiltered.get_or_insert(shown);
             }
             None => self.view.scroll_to_anchor(anchor),
         }
@@ -196,6 +202,31 @@ mod tests {
             error,
             Some(format!("Couldn't read /x's front matter: {expected}"))
         );
+    }
+
+    #[test]
+    fn the_view_gets_only_the_body() {
+        let page = load("---\ntitle: Hi\n---\n\n<h2 class=\"title\">Hi</h2>\n\nText\n");
+        assert_eq!(page.title, "Hi");
+        assert_eq!(page.view.markdown(), "\n\nText\n");
+    }
+
+    #[test]
+    fn each_tag_filters_the_whole_page() {
+        let markdown = "<ul><li data-tags=\"rust\">a</li><li data-tags=\"unix\">c</li></ul>\n";
+        let mut page = load(markdown);
+        page.jump("rust");
+        assert_eq!(
+            page.view.markdown(),
+            "<ul><li data-tags=\"rust\">a</li></ul>\n"
+        );
+        page.jump("unix");
+        assert_eq!(
+            page.view.markdown(),
+            "<ul><li data-tags=\"unix\">c</li></ul>\n"
+        );
+        page.jump("all");
+        assert_eq!(page.view.markdown(), markdown);
     }
 
     #[test]
