@@ -1,9 +1,9 @@
-# Each year's fortunes, i.e. fortunes/2017 fortunes/2018 ...
-FORTUNES = $(filter-out %.dat,$(wildcard fortunes/[0-9][0-9][0-9][0-9]))
+# Each year's fortunes, i.e. fortunes/2017.txt fortunes/2018.txt ...
+FORTUNES = $(wildcard fortunes/[0-9][0-9][0-9][0-9].txt)
 FORTUNE_DATS = $(addsuffix .dat,$(FORTUNES))
 
 # Define our non-file based targets.
-.PHONY: all clean _site fortunes
+.PHONY: all clean _site fortunes tui
 
 # Build the site, and our fortunes.
 all: _site
@@ -31,3 +31,10 @@ fortunes/%.dat: fortunes/%
 	fi
 	strfile $<
 
+# The terminal view, Rust built to WebAssembly in _site/tui. Needs the
+# wasm32-unknown-unknown target and the wasm-bindgen CLI at the version in
+# Cargo.lock. Jekyll keeps the folder when it rebuilds (keep_files).
+tui:
+	cargo build --release --locked -p nixpulvis-web --target wasm32-unknown-unknown
+	wasm-bindgen --target web --no-typescript --out-dir _site/tui --out-name tui \
+		target/wasm32-unknown-unknown/release/nixpulvis_web.wasm

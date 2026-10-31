@@ -1,5 +1,6 @@
 # The site's navigation, shared by the header and site.json. Entries with an
-# icon show it in place of the title.
+# icon show it in place of the title. Entries with `tui: false` are left out
+# of the terminal view's nav.
 - title: Projects
   url: /projects
 - title: Ramblings
@@ -13,3 +14,4 @@
 - title: Music
   url: /musings
   icon: ♪
+  tui: false

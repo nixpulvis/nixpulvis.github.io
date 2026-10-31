@@ -24,8 +24,8 @@ TikZ figures (`_plugins/tikz.rb`) also need `latex` and `dvisvgm` from TeX Live,
 and `make fortunes` needs `strfile` from fortune-mod:
 
 ```sh
-.github/scripts/setup.sh              # Debian/Ubuntu
-brew install texlive dvisvgm fortune  # macOS
+sudo apt-get install texlive-latex-base texlive-pictures dvisvgm fortune-mod  # Debian/Ubuntu
+brew install texlive dvisvgm fortune                                         # macOS
 ```
 
 ## Usage
@@ -56,9 +56,10 @@ some point.
 
 #### Fortunes
 
-`fortunes/` holds a `fortune` database for each year, with entries separated by
-a line holding only `%`. The build lists them on `/fortunes/` and publishes the
-compiled `.dat` files next to the text. An empty entry fails the build.
+`fortunes/` holds a `fortune` database for each year, like `2026.txt`, with
+entries separated by a line holding only `%`. The build lists them on
+`/fortunes/` and publishes the compiled `.dat` files next to the text. An empty
+entry fails the build.
 
 Add a fortune to this year's file, creating it in a new year, with:
 
@@ -94,6 +95,63 @@ keep working when the site is built under a sub-path (PR previews):
 
 A bare `/img/photo.jpg` still works on nixpulvis.com but breaks in previews.
 
+## Terminal view
+
+The site can also be read as a terminal app, drawn with [Ratatui] from the
+published Markdown and `/site.json` described above. The code is in `tui/`:
+
+- `tui/app` is the app itself, shared by both clients
+- `tui/term` runs it in a real terminal, fetching pages over HTTP
+- `tui/web` builds it to WebAssembly for the browser, where the `>_` key
+  after the name, or any link ending in `?tui`, switches it on
+
+#### Installing
+
+The [`tui` release] has the terminal client built for Linux and macOS, on x86
+and ARM, rebuilt whenever it changes on `master`. Download the one for your
+machine and unpack it somewhere in your `PATH`.
+
+Or build it from source with Rust. `--locked` keeps the pinned git
+dependencies in `Cargo.lock`:
+
+```sh
+cargo install --locked --git https://github.com/nixpulvis/nixpulvis.github.io nixpulvis-tui
+```
+
+Either way, run it with `nixpulvis-tui`.
+
+[`tui` release]: https://github.com/nixpulvis/nixpulvis.github.io/releases/tag/tui
+
+#### Running from source
+
+The terminal client reads nixpulvis.com by default. To read a local build
+instead, start `jekyll serve` as above and, in another shell:
+
+```sh
+cargo run                                     # nixpulvis.com
+cargo run -- --url http://localhost:4000      # a local build
+cargo run -- /ramblings                       # start on a page
+```
+
+Jekyll doesn't build the browser view. It's Rust compiled to WebAssembly,
+built into `_site/tui` by `make tui`, and Jekyll leaves that folder alone when
+it rebuilds (`keep_files` in `_config.yml`). So build it once and serve as
+usual. Edits to pages show up in the view on reload, since it reads their
+Markdown at runtime. Only changes under `tui/` need another `make tui`.
+
+It needs the `wasm32-unknown-unknown` target and the `wasm-bindgen` CLI at the
+version in `Cargo.lock`. If they drift apart, `make tui` stops and says which
+version to install:
+
+```sh
+rustup target add wasm32-unknown-unknown
+cargo install wasm-bindgen-cli --version 0.2.129
+make tui
+bundle exec jekyll serve
+```
+
+[Ratatui]: https://ratatui.rs
+
 ## Publishing
 
 GitHub Pages serves the `gh-pages` branch. Pushing to `master` runs
@@ -107,3 +165,7 @@ Both workflows run `.github/scripts/setup.sh` to install system packages and
 Every pull request is built by `.github/workflows/preview.yml` and published to
 `https://nixpulvis.com/pr-preview/pr-<number>/`; a comment on the PR links to
 it. The preview is removed when the PR is closed.
+
+Changes to the terminal client run `.github/workflows/tui.yml`, which builds it
+for each target. On `master` it also replaces the `tui` release with the new
+builds.
