@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="“Borrowing” a Better WiFi Signal"><title>nixpulvis::pages::ramblings::borrowing_a_better_wifi_signal - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="nixpulvis" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.1 (58cf8f9c3 2026-10-13)" data-channel="1.99.1" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"><!-- KaTeX, for the math in the pages' docs, written as \( \) and \[ \]. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, { delimiters: [
+    { left: '\\[', right: '\\]', display: true },
+    { left: '\\(', right: '\\)', display: false },
+  ] })"></script>
+
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module borrowing_a_better_wifi_signal</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../nixpulvis/index.html">nixpulvis</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module borrowing_<wbr>a_<wbr>better_<wbr>wifi_<wbr>signal</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#attenuate-like-hell" title="Attenuate like Hell">Attenuate like Hell</a></li><li><a href="#share-the-world" title="Share the World">Share the World</a><ul><li><a href="#manually-configure" title="Manually Configure">Manually Configure</a></li><li><a href="#systemd-unit" title="Systemd Unit">Systemd Unit</a></li><li><a href="#setup-our-own-wireless-network" title="Setup our own Wireless Network">Setup our own Wireless Network</a></li></ul></li><li><a href="#going-futher-literally" title="Going Futher (literally…)">Going Futher (literally…)</a></li></ul><h3><a href="#statics">Module Items</a></h3><ul class="block"><li><a href="#statics" title="Statics">Statics</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In nixpulvis::<wbr>pages::<wbr>ramblings</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../../index.html">nixpulvis</a>::<wbr><a href="../../index.html">pages</a>::<wbr><a href="../index.html">ramblings</a></div><h1>Module <span>borrowing_<wbr>a_<wbr>better_<wbr>wifi_<wbr>signal</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../src/nixpulvis/home/runner/work/nixpulvis.github.io/nixpulvis.github.io/target/debug/build/nixpulvis-896b5441140f1b8e/out/pages.rs.html#482">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>“Borrowing” a Better WiFi Signal</p>
+<p><small>2018-02-15 · draft · <a href="https://nixpulvis.com/ramblings/2018-02-15-borrowing-a-better-wifi-signal">on the site</a> · <a href="https://github.com/nixpulvis/nixpulvis.github.io/blob/master/_ramblings/2018-02-15-borrowing-a-better-wifi-signal.md">source</a></small></p>
+<p>Let me start by saying that “stealing” WiFi (or anything for that matter) is
+wrong, and bad. Please don’t do it. But if you happen to find yourself
+“borrowing” someone elses WiFi with permission, i.e. they gave you the password,
+then the next step is clearly improving the link quality.</p>
+<h4 id="attenuate-like-hell"><a class="doc-anchor" href="#attenuate-like-hell">§</a>Attenuate like Hell</h4>
+<p>I’m currently living in the mountains of Colorado, in a place that doesn’t have
+it’s own ISP hookup. One of our neighbors is nice enough to let us borrow thier
+WiFi though, so all is not lost. If I had to guess I’d say that I’m about 100ft
+from the access point (AP), and about 6 or so walls stand in the way. It’s not
+an ideal RF setup by any means, but it works.</p>
+<p>The AP is broadcasting at 2412MHz (channel 1 of the 2.4GHz band), the bandwidth
+is 20MHz.
+TODO: Other link stats.
+TODO: wavemon screenshot.</p>
+<p>However, it’s nowhere near good enough. Enter the world of fancy antennas. In
+the RF antenna world there exists a device named “Yagi”, after one of it’s
+creators. A Yagi is a directional antenna which operates with a single driven
+element, a reflecting element, and many directing elements. These are the same
+design as many household TV antennas from the old days.</p>
+<p>I’m not going to get into the design of these things, because frankly that’s
+above my pay-grade at the moment, but there are a few key things to know about
+these antennas:</p>
+<ul>
+<li>They are directional, TODO: angles?</li>
+<li>The antenna should be arranged to match the polarization of the AP.</li>
+<li>The frequency range (bandwidth) is very narrow, so there’s no way a 2.4GHz
+antenna will work on the 5GHz band.</li>
+</ul>
+<p>So I bought <a href="https://nixpulvis.com/ramblings/amazon">one</a>, and a <a href="https://nixpulvis.com/ramblings/amazon">USB WiFi adapter</a> to go along with it. I
+chose the adapter to meet the following requirments:</p>
+<ul>
+<li>802.11n, 802.11ac isn’t needed because we’re only dealing with the 2.4GHz
+band.</li>
+<li>Drivers must be included with Linux by default.</li>
+<li>External antenna connection (typically SMA).</li>
+</ul>
+<p>I After ordering the wrong kind of SMA adapter I finnaly got the <a href="https://nixpulvis.com/ramblings/amazon">right</a>
+one, and we’re in business. Simply moving from my laptop’s built-in WiFi to this
+new setup improved signal level by TODO, and link quality by TODO.</p>
+<p>TODO: another wavemon screenshot.</p>
+<h4 id="share-the-world"><a class="doc-anchor" href="#share-the-world">§</a>Share the World</h4>
+<p>It’s one thing to have access to a nice, fast network on a single computer, but
+I want my roomates to be able to benifit from this high quality link as well.
+Enter the <a href="https://nixpulvis.com/ramblings/wiki">NAT</a>.</p>
+<p>Building a NAT device isn’t too hard. I’ve got an extra Rasperry Pi (v1) lying
+around running [ArchARM], so we’ll work with that, but these techiques should
+work for any modern Linux machine.</p>
+<p>TODO: more words, and links to GitHub sources.</p>
+<h5 id="manually-configure"><a class="doc-anchor" href="#manually-configure">§</a>Manually Configure</h5>
+<p>First let’s connect to the WiFi network, and make sure it’s working.</p>
+<div class="example-wrap"><pre class="language-sh"><code>netctl start &lt;profile&gt;
+…
+ping 8.8.8.8</code></pre></div>
+<p>We need to tell the kernal to route packets accross network interfaces. For
+more information about kernal ip forwarding start with
+<a href="https://unix.stackexchange.com/questions/14056/what-is-kernel-ip-forwarding">this Stack Overflow post</a>.</p>
+<div class="example-wrap"><pre class="language-sh"><code>sysctl net.ipv4.ip_forward=1</code></pre></div>
+<p>Once we’ve enabled packet forwarding, we need to setup the NAT between
+the wireless interface, and the Pi’s ethernet interface.</p>
+<div class="example-wrap"><pre class="language-sh"><code>iptables -t nat -A POSTROUTING -o $from -j MASQUERADE
+iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i $to -o $from -j ACCEPT</code></pre></div>
+<p>Finally, we enable <a href="https://nixpulvis.com/ramblings/wiki">DHCP</a> to allow clients to negociate for an IP address
+on the new local network.</p>
+<div class="example-wrap"><pre class="language-conf"><code># /etc/dhcpd.conf
+option domain-name-servers 8.8.8.8, 8.8.4.4;
+option subnet-mask 255.255.255.0;
+option routers 192.168.0.1;
+subnet 192.168.0.0 netmask 255.255.255.0 {
+  range 192.168.0.150 192.168.0.250;
+}</code></pre></div><div class="example-wrap"><pre class="language-sh"><code>systemctl start dhcpd4@$to.service</code></pre></div>
+<p>With that all said and done we should be able to connect a computer via ethernet
+and access the internet. Woot!</p>
+<h5 id="systemd-unit"><a class="doc-anchor" href="#systemd-unit">§</a>Systemd Unit</h5>
+<p>Ideally we should be able to simply power up the pi (or whatever machine) and
+have all the needed networking configuration happen automatically. This is the
+domain of systemd services and targets.</p>
+<p>TODO: Actually figure this all out…</p>
+<h5 id="setup-our-own-wireless-network"><a class="doc-anchor" href="#setup-our-own-wireless-network">§</a>Setup our own Wireless Network</h5>
+<p>All that’s left is to connect the ethernet cable from the pi to a functional
+wireless router, and we’ve got our own WiFi network with good connectivity.</p>
+<p>The observent reader will notice that we now have two NATs, the NAT between
+our WiFi borrower, and the NAT for our personal WiFi hotspot. It’s NATs all the
+way down!</p>
+<h4 id="going-futher-literally"><a class="doc-anchor" href="#going-futher-literally">§</a>Going Futher (literally…)</h4>
+<p>One thing that I’m now dying to test is how far a 2.4GHz signal can go, with
+modern, FCC complient hardware like I have. If I were to buy another one of
+these antennas and point them at each other, how many meters, or kilometers
+could it go.</p>
+<p>Another factor in all this is the TX (sending) power.
+TODO: a bit of info on this.</p>
+<p>With an optimal setup, I’ve heard of people beaming WiFi over a kilometer, so
+this could be fun indeed! Tune in next time…</p>
+</div></details><h2 id="statics" class="section-header">Statics<a href="#statics" class="anchor">§</a></h2><dl class="item-table"><dt><a class="static" href="static.PAGE.html" title="static nixpulvis::pages::ramblings::borrowing_a_better_wifi_signal::PAGE">PAGE</a></dt><dd>This page’s source, which the site is built from.</dd></dl></section></div></main></body></html>

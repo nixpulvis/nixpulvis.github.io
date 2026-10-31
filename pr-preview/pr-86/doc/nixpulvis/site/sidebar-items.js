@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Layout"],"struct":["Data","DefaultLayout","Fortunes","FrontMatter","Highlighter","Markdown","Options","Page","Reference","Server","Site","Tags","Text","Tikz"]};
+window.SIDEBAR_ITEMS = {"enum":["Layout"],"struct":["Data","DefaultLayout","Extra","Fortunes","Reference","Site","Tags"],"trait":["Post"],"type":["Page"]};
