@@ -1364,7 +1364,7 @@ dependencies = [
 [[package]]
 name = "pulldown-kram"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/pulldown-kram#97fc43320f00fb9e7d05aaaea01a29359097eeac"
+source = "git+https://github.com/nixpulvis/pulldown-kram#6d1606b775b990ce5d8e010d06c4c0241e1d12a1"
 dependencies = [
  "pulldown-cmark",
 ]
@@ -1509,7 +1509,7 @@ dependencies = [
 [[package]]
 name = "ratmark"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/ratmark#e54b6dc730c8df58cbeff4814291152fa649b22c"
+source = "git+https://github.com/nixpulvis/ratmark#6a5ecfaf2c14f44890d3d4ff28f3f87affa70412"
 dependencies = [
  "html5gum",
  "pulldown-cmark",

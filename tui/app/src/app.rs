@@ -188,8 +188,8 @@ impl App {
         match key {
             Key::Down | Key::Char('j') => _ = view.scroll_by(1),
             Key::Up | Key::Char('k') => _ = view.scroll_by(-1),
-            Key::PageDown | Key::Char(' ') | Key::Char('f') => view.page(true),
-            Key::PageUp | Key::Char('b') => view.page(false),
+            Key::PageDown | Key::Char(' ') | Key::Char('f') => _ = view.page_by(1),
+            Key::PageUp | Key::Char('b') => _ = view.page_by(-1),
             Key::Home | Key::Char('g') => view.scroll_to(0),
             Key::End | Key::Char('G') => view.scroll_to(usize::MAX),
             Key::Char('>') => _ = view.shift_by(SHIFT),
