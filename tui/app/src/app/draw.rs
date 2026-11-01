@@ -117,20 +117,17 @@ impl App {
             self.drawn.close,
         );
 
-        #[cfg(feature = "native-links")]
-        {
-            let buffer = frame.buffer_mut();
-            for (rect, path) in &self.drawn.nav {
-                buffer.set_hyperlink(
-                    *rect,
-                    Some(&ratatui::buffer::Hyperlink::new(self.url(path))),
-                );
-            }
-            // A link, so it looks clickable, to this page as plain HTML. A
-            // plain click leaves, like `q`.
-            let link = ratatui::buffer::Hyperlink::new(self.url(current));
-            buffer.set_hyperlink(self.drawn.close, Some(&link));
+        let buffer = frame.buffer_mut();
+        for (rect, path) in &self.drawn.nav {
+            buffer.set_hyperlink(
+                *rect,
+                Some(&ratatui::buffer::Hyperlink::new(self.url(path))),
+            );
         }
+        // A link, so it looks clickable, to this page as plain HTML. A plain
+        // click leaves, like `q`.
+        let link = ratatui::buffer::Hyperlink::new(self.url(current));
+        buffer.set_hyperlink(self.drawn.close, Some(&link));
     }
 
     fn draw_page(&mut self, frame: &mut Frame, column: Rect) {

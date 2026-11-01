@@ -8,8 +8,9 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-ratatui = { workspace = true, features = ["std"] }
-ratmark.workspace = true
+# Cell extensions, for real links, like OSC 8 in a terminal.
+ratatui = { workspace = true, features = ["std", "cell-extensions"] }
+ratmark = { workspace = true, features = ["links"] }
 serde.workspace = true
 serde_json.workspace = true
 web-time = "1"
@@ -18,5 +19,3 @@ web-time = "1"
 # Color code blocks. Worth it in a terminal, but it adds a couple of
 # megabytes of syntax definitions to the web build.
 syntax = ["ratmark/syntax"]
-# Real links, like OSC 8 in a terminal, where the backend supports them.
-native-links = ["ratmark/links", "ratatui/cell-extensions"]

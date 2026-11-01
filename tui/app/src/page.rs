@@ -10,7 +10,6 @@ pub(crate) struct Page {
     pub path: String,
     /// Its full address, like `https://nixpulvis.com/ramblings`, for links
     /// that work outside the app.
-    #[cfg_attr(not(feature = "native-links"), allow(dead_code))]
     pub url: String,
     /// The whole page as the terminal shows it, before any tag filter.
     pub markdown: String,
@@ -116,13 +115,8 @@ struct FrontMatter {
 }
 
 /// `markdown` ready to draw, for the page at `url`.
-// Without native links, the page's address goes unused.
-#[cfg_attr(not(feature = "native-links"), allow(unused_variables))]
 fn view(url: &str, markdown: String) -> MarkdownState {
-    let view = MarkdownState::new(markdown);
-    #[cfg(feature = "native-links")]
-    let view = view.with_link_base(url);
-    view
+    MarkdownState::new(markdown).with_link_base(url)
 }
 
 /// Writes a `YYYY-MM-DD` date out like the site does, as `October 19, 2026`.
