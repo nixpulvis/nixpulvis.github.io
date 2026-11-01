@@ -524,7 +524,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1364,8 +1364,9 @@ dependencies = [
 [[package]]
 name = "pulldown-kram"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/pulldown-kram#6d1606b775b990ce5d8e010d06c4c0241e1d12a1"
+source = "git+https://github.com/nixpulvis/pulldown-kram#07e032029a08b7ed7e31adaf5f5e6df7761a0534"
 dependencies = [
+ "bitflags 2.13.2",
  "pulldown-cmark",
 ]
 
@@ -1509,7 +1510,7 @@ dependencies = [
 [[package]]
 name = "ratmark"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/ratmark#6a5ecfaf2c14f44890d3d4ff28f3f87affa70412"
+source = "git+https://github.com/nixpulvis/ratmark#b163b15c890f5679976ab4728b25770a9d6437fb"
 dependencies = [
  "html5gum",
  "pulldown-cmark",
@@ -1620,7 +1621,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2446,7 +2447,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
