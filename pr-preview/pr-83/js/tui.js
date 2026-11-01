@@ -23,10 +23,7 @@ async function start() {
   const screen = document.createElement("div");
   screen.className = "screen";
   const style = document.createElement("style");
-  // The screen holds focus for its keys, and a ring around the whole
-  // window says nothing.
-  style.textContent =
-    ".screen { height: 100%; outline: none; } pre { margin: 0; }";
+  style.textContent = ".screen { height: 100%; } pre { margin: 0; }";
   shadow.replaceChildren(style, screen);
   try {
     const tui = await import(`${base}/tui/tui.js?v=${version}`);
