@@ -150,6 +150,19 @@ make tui
 bundle exec jekyll serve
 ```
 
+To try changes to [ratmark], [Ratzilla] or Ratatui that aren't pushed yet,
+point `make tui` at local checkouts. Any of them can be left out:
+
+```sh
+make tui RATMARK=../ratmark RATZILLA=../ratzilla RATATUI=../ratatui
+```
+
+Cargo can't build these `--locked`, and rewrites `Cargo.lock` to use them, so
+`make` puts it back after the build.
+
+[ratmark]: https://github.com/nixpulvis/ratmark
+[Ratzilla]: https://github.com/nixpulvis/ratzilla
+
 [Ratatui]: https://ratatui.rs
 
 ## Publishing
