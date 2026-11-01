@@ -50,6 +50,7 @@ pub fn theme() -> Theme {
         // No color of its own, so code in a link stays the link's color.
         code: Style::new().bg(SHADE),
         code_block: Style::new().fg(TEXT).bg(LIGHT),
+        code_block_padding: false,
         quote: Style::new().fg(MUTED),
         quote_marker: Style::new().fg(FAINT),
         list_marker: Style::new().fg(MUTED),
