@@ -13,16 +13,19 @@
   --faint: #aaa;
   --mid: #ccc;
   --light: #eee;
-  --highlight-yellow: #fff6db;
   --yellow: #f0c94a;
-  --highlight-red: #fde8e6;
   --red: #e0645a;
-  --highlight-blue: #e6effd;
   --blue: #5a8ee0;
-  --highlight-purple: #f1e8fb;
   --purple: #9a6ad6;
-  --highlight-green: #e3f6e3;
   --green: #4caf50;
+  /* Highlights fill with a little of their color over the background, so
+     they follow the scheme. */
+  --highlight-mix: 18%;
+  --highlight-yellow: color-mix(in oklch, var(--yellow) var(--highlight-mix), var(--background));
+  --highlight-red: color-mix(in oklch, var(--red) var(--highlight-mix), var(--background));
+  --highlight-blue: color-mix(in oklch, var(--blue) var(--highlight-mix), var(--background));
+  --highlight-purple: color-mix(in oklch, var(--purple) var(--highlight-mix), var(--background));
+  --highlight-green: color-mix(in oklch, var(--green) var(--highlight-mix), var(--background));
   --dashed: 1px dashed var(--border);
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
@@ -38,11 +41,6 @@
     --faint: #666;
     --mid: #3a3a3a;
     --light: #282828;
-    --highlight-yellow: #352d17;
-    --highlight-red: #3b1f1d;
-    --highlight-blue: #1c2840;
-    --highlight-purple: #2e2240;
-    --highlight-green: #1c331d;
   }
 }
 
