@@ -2,6 +2,9 @@
 :root {
   --black: black;
   --white: white;
+  /* The dark scheme's background, and the terminal view's in either scheme,
+     as in tui/app/src/colors.rs. */
+  --dark: #161616;
   --background: var(--white);
   --border: var(--black);
   --text: #282c34;
@@ -10,16 +13,19 @@
   --faint: #aaa;
   --mid: #ccc;
   --light: #eee;
-  --highlight: #fff6db;
-  --highlight-edge: #f0c94a;
-  --highlight-red: #fde8e6;
-  --highlight-red-edge: #e0645a;
-  --highlight-blue: #e6effd;
-  --highlight-blue-edge: #5a8ee0;
-  --highlight-purple: #f1e8fb;
-  --highlight-purple-edge: #9a6ad6;
-  --highlight-green: #e3f6e3;
-  --highlight-green-edge: #4caf50;
+  --yellow: #f0c94a;
+  --red: #e0645a;
+  --blue: #5a8ee0;
+  --purple: #9a6ad6;
+  --green: #4caf50;
+  /* Highlights fill with a little of their color over the background, so
+     they follow the scheme. */
+  --highlight-mix: 18%;
+  --highlight-yellow: color-mix(in oklch, var(--yellow) var(--highlight-mix), var(--background));
+  --highlight-red: color-mix(in oklch, var(--red) var(--highlight-mix), var(--background));
+  --highlight-blue: color-mix(in oklch, var(--blue) var(--highlight-mix), var(--background));
+  --highlight-purple: color-mix(in oklch, var(--purple) var(--highlight-mix), var(--background));
+  --highlight-green: color-mix(in oklch, var(--green) var(--highlight-mix), var(--background));
   --dashed: 1px dashed var(--border);
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
@@ -27,7 +33,7 @@
   /* On screens only, so a printed page stays black on white. */
   @media screen and (prefers-color-scheme: dark) {
     color-scheme: dark;
-    --background: #161616;
+    --background: var(--dark);
     --border: #777;
     --text: #cacaca;
     --muted: #999;
@@ -35,11 +41,6 @@
     --faint: #666;
     --mid: #3a3a3a;
     --light: #282828;
-    --highlight: #352d17;
-    --highlight-red: #3b1f1d;
-    --highlight-blue: #1c2840;
-    --highlight-purple: #2e2240;
-    --highlight-green: #1c331d;
   }
 }
 
@@ -75,9 +76,17 @@ hr {
   border-bottom: var(--dashed);
 }
 
-h2 small {
-  display: block;
+/* A line under a heading, like a post's word count and date. Set tight
+   under it, in the heading's weight, taking over its space below. */
+h2:has(+ .meta) {
+  margin-bottom: 0;
+}
+
+h2 + .meta {
+  margin-top: 0;
+  margin-bottom: 1.4em;
   font-size: 16px;
+  font-weight: bold;
 }
 
 /* Page layout: `<body class="container">`. */
@@ -109,10 +118,43 @@ header {
     pointer-events: none;
   }
 
+  /* The name, followed by the key that switches the terminal view on. Clear
+     of the lambda. */
+  & .title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: 100px;
+    white-space: nowrap;
+  }
+
   & .identity {
     font-size: 32px;
     text-decoration: none;
     color: inherit;
+  }
+
+  /* A small framed key showing a prompt, in the footer's return key's
+     style. */
+  & #tui-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 5px 0;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: none;
+    color: var(--muted);
+    font: 13px/1.2 "Computer Modern Typewriter", monospace;
+    cursor: pointer;
+    /* Down a touch, so it sits on the middle of the name's lowercase
+       letters rather than its full height. */
+    position: relative;
+    top: 2px;
+
+    &:hover, &:focus-visible {
+      color: var(--text);
+      border-color: var(--text);
+    }
   }
 
   & nav {
@@ -216,27 +258,27 @@ code {
 
   /* Inline new syntax: `` `code`{:.new-syntax} ``, matching `.highlight-block`. */
   &.new-syntax {
-    background: var(--highlight);
-    box-shadow: inset 0 -2px var(--highlight-edge);
+    background: var(--highlight-yellow);
+    box-shadow: inset 0 -2px var(--yellow);
     padding: 0 2px;
   }
 }
 
 /* Highlighted code blocks: `<div class="highlight-block" markdown="1">` around the fence. */
 .highlight-block {
-  background: var(--highlight);
-  border-left: 2px solid var(--highlight-edge);
+  background: var(--highlight-yellow);
+  border-left: 2px solid var(--yellow);
   margin: 1em 0;
   padding: 5px 10px;
 
   &.red {
     background: var(--highlight-red);
-    border-left-color: var(--highlight-red-edge);
+    border-left-color: var(--red);
   }
 
   &.other {
     background: var(--highlight-blue);
-    border-left-color: var(--highlight-blue-edge);
+    border-left-color: var(--blue);
   }
 
   & pre {
@@ -503,22 +545,22 @@ li.draft {
 
   &.complete {
     background: var(--highlight-green);
-    border-color: var(--highlight-green-edge);
+    border-color: var(--green);
   }
 
   &.partially-complete {
-    background: var(--highlight);
-    border-color: var(--highlight-edge);
+    background: var(--highlight-yellow);
+    border-color: var(--yellow);
   }
 
   &.in-progress {
     background: var(--highlight-blue);
-    border-color: var(--highlight-blue-edge);
+    border-color: var(--blue);
   }
 
   &.incomplete {
     background: var(--highlight-red);
-    border-color: var(--highlight-red-edge);
+    border-color: var(--red);
   }
 }
 
@@ -575,25 +617,25 @@ li.draft {
       /* Each tag's place on the scale in _data/reference_tags.yml, from red
          for the deepest computer science to green for the most general. */
       &[class^="scale-"] {
-        --fill: color-mix(in oklch, var(--highlight-red) var(--red), var(--highlight-green));
-        --edge: color-mix(in oklch, var(--highlight-red-edge) var(--red), var(--highlight-green-edge));
+        --fill: color-mix(in oklch, var(--highlight-red) var(--redness), var(--highlight-green));
+        --edge: color-mix(in oklch, var(--red) var(--redness), var(--green));
       }
 
-      &.scale-1 { --red: 100%; }
-      &.scale-2 { --red: 75%; }
-      &.scale-3 { --red: 50%; }
-      &.scale-4 { --red: 25%; }
-      &.scale-5 { --red: 0%; }
+      &.scale-1 { --redness: 100%; }
+      &.scale-2 { --redness: 75%; }
+      &.scale-3 { --redness: 50%; }
+      &.scale-4 { --redness: 25%; }
+      &.scale-5 { --redness: 0%; }
 
       /* The groups off the scale, each in its own color. */
       &.math {
         --fill: var(--highlight-purple);
-        --edge: var(--highlight-purple-edge);
+        --edge: var(--purple);
       }
 
       &.hardware {
         --fill: var(--highlight-blue);
-        --edge: var(--highlight-blue-edge);
+        --edge: var(--blue);
       }
 
       &:hover {
@@ -651,4 +693,37 @@ li.draft {
   @page {
     margin-top: 70px;
   }
+}
+
+/* The terminal view, from js/tui.js. It takes the page's place, which isn't
+   laid out at all while it's open. */
+html.tui {
+  /* The view does its own scrolling, so the page underneath shouldn't move,
+     show a scrollbar, or bounce and pull to refresh on phones. */
+  overflow: hidden;
+  overscroll-behavior: none;
+  /* The view's color from the first paint, so a page opening in the view
+     doesn't flash the page's own background before the view draws. */
+  background: var(--dark);
+
+  & body {
+    background: none;
+  }
+
+  & body > :not(#tui) {
+    display: none;
+  }
+}
+
+#tui {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  /* Touches are the view's to scroll with, not the browser's. */
+  touch-action: none;
+  background: var(--dark);
+  font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
+  font-size: 15px;
+  line-height: normal;
 }

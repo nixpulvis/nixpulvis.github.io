@@ -1,0 +1,86 @@
+//! Browse nixpulvis.com as a terminal app.
+//!
+//! The app reads the site's published Markdown and `site.json`, renders
+//! pages with ratmark, and draws them with Ratatui. It never does I/O itself.
+//! Methods return [`Effect`]s for the host to carry out, which keeps the
+//! same code working in a real terminal and in the browser.
+//!
+//! ```no_run
+//! # use nixpulvis::{App, Host};
+//! let mut app = App::new(Host::Terminal, "https://nixpulvis.com", "/");
+//! let effects = app.start("/ramblings");
+//! // Carry out the effects, pass what they fetch back to the app, and
+//! // draw it and pass it input until it sends `Effect::Quit`.
+//! ```
+
+mod app;
+mod colors;
+mod link;
+mod markup;
+mod page;
+mod site;
+
+pub use app::App;
+
+/// Where the app runs, which decides who keeps the history, and what `q`
+/// does.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Host {
+    /// A terminal, where the app is all there is. It keeps its own history,
+    /// and `q` quits.
+    Terminal,
+    /// A browser, with the app drawn over the site's own page. The browser
+    /// loads the site's other pages, like it would any link, and so it keeps
+    /// the history. `q` leaves the app for the page under it.
+    Browser,
+}
+
+/// Something for the host to do.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Effect {
+    /// Fetch `site.json` from this path and pass it to [`App::site_loaded`].
+    FetchSite(String),
+    /// Fetch a page's Markdown from `source` and pass it to
+    /// [`App::page_loaded`] along with `path`.
+    FetchPage { path: String, source: String },
+    /// Open a link that isn't part of the site.
+    Open(String),
+    /// Load the site's page at this path, with any `#` section, and start
+    /// the app on it again. Only sent in a [`Host::Browser`].
+    Navigate(String),
+    /// Go back to the page before this one. Only sent in a
+    /// [`Host::Browser`].
+    Back,
+    /// Stop, or in a [`Host::Browser`], leave the app for the page under it.
+    Quit,
+}
+
+/// A key press, already translated from the host's own key events. Hosts
+/// leave out presses with Ctrl or Alt held.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Key {
+    /// Scrolls up a line.
+    Up,
+    /// Scrolls down a line.
+    Down,
+    /// Scrolls up a screen.
+    PageUp,
+    /// Scrolls down a screen.
+    PageDown,
+    /// Goes to the top of the page.
+    Home,
+    /// Goes to the bottom of the page.
+    End,
+    /// Moves to the next link.
+    Tab,
+    /// Moves to the previous link, from Shift-Tab.
+    BackTab,
+    /// Follows the link that has focus.
+    Enter,
+    /// Goes back a page. Hosts send it for Backspace and the left arrow.
+    Back,
+    /// Quits, the same as `q`.
+    Esc,
+    /// Any other character, which [`App::key`] checks against its own keys.
+    Char(char),
+}
