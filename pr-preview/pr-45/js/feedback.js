@@ -16,7 +16,7 @@
 (() => {
   const EMAIL = "nathan@nixpulvis.com";
   // Public comments go to, and only show from, this Hypothesis group.
-  const GROUP = "7zXKrvvv";
+  const GROUP = "N4npPvJE";
   const STORAGE_KEY = "comments";
   const PHONE = window.matchMedia("(max-width: 700px)");
 
