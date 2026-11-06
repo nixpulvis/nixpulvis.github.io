@@ -21,6 +21,7 @@
   const GROUP = {{ site.feedback.group | jsonify }};
   const STORAGE_KEY = "comments";
   const PHONE = window.matchMedia("(max-width: 700px)");
+  const TOUCH = window.matchMedia("(pointer: coarse)");
 
   const menu = document.createElement("div");
   menu.className = "feedback";
@@ -139,17 +140,21 @@
     return location.origin + location.pathname + "#:~:text=" + text;
   }
 
-  // Centered above the selection, clear of the menu phones show below it.
+  // Centered on the selection, above it, or below it on touch screens, where
+  // the phone's own copy menu goes above (clear of the selection's handle).
   function place(range) {
     const bounds = range.getBoundingClientRect();
-    const first = range.getClientRects()[0] || bounds;
+    const rects = range.getClientRects();
     menu.hidden = false;
     const left = Math.min(
       Math.max(bounds.left + bounds.width / 2 - menu.offsetWidth / 2, 10),
       document.documentElement.clientWidth - menu.offsetWidth - 10
     );
+    const top = TOUCH.matches
+      ? (rects[rects.length - 1] || bounds).bottom + 24
+      : (rects[0] || bounds).top - menu.offsetHeight - 8;
     menu.style.left = left + window.scrollX + "px";
-    menu.style.top = first.top + window.scrollY - menu.offsetHeight - 8 + "px";
+    menu.style.top = top + window.scrollY + "px";
   }
 
   function hide() {
