@@ -225,6 +225,24 @@
     } catch {}
   }
 
+  // Hypothesis doesn't say when a comment is added or removed, so while
+  // comments show, recount soon after its highlights change, and every so
+  // often for changes that leave them alone, like saving a draft or someone
+  // else's comment.
+  let recount = null;
+  const isHighlight = (node) => node.nodeName === "HYPOTHESIS-HIGHLIGHT";
+  const highlights = new MutationObserver((records) => {
+    const changed = records.some((record) =>
+      [...record.addedNodes, ...record.removedNodes].some(isHighlight)
+    );
+    if (!changed) return;
+    clearTimeout(recount);
+    recount = setTimeout(countComments, 1000);
+  });
+  setInterval(() => {
+    if (loading && !document.hidden) countComments();
+  }, 10000);
+
   // Like Hypothesis, wait for a mouse selection to finish, and for other
   // selections (keyboard, touch handles) to settle.
   function update(delay) {
@@ -241,6 +259,8 @@
     if (remembered()) loadComments();
     updateToggle();
     countComments();
+    const content = document.querySelector(".content");
+    if (content) highlights.observe(content, { childList: true, subtree: true });
     document.querySelector(".comments-open")?.addEventListener("click", () => {
       panel.hidden = false;
     });
