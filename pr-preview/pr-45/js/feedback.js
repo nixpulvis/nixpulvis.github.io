@@ -18,6 +18,7 @@
   // Public comments go to, and only show from, this Hypothesis group.
   const GROUP = "N4npPvJE";
   const STORAGE_KEY = "comments";
+  const PAGE = location.origin + location.pathname;
   const PHONE = window.matchMedia("(max-width: 700px)");
   const TOUCH = window.matchMedia("(pointer: coarse)");
 
@@ -93,6 +94,7 @@
     });
     loading.catch(() => {});
     document.head.append(script);
+    watchComments();
     return loading;
   }
 
@@ -104,6 +106,7 @@
     script?.remove();
     script = null;
     loading = null;
+    unwatchComments();
     panel.hidden = true;
   }
 
@@ -135,7 +138,7 @@
     const text = words.length > 10
       ? encode(words.slice(0, 5).join(" ")) + "," + encode(words.slice(-5).join(" "))
       : encode(quote);
-    return location.origin + location.pathname + "#:~:text=" + text;
+    return PAGE + "#:~:text=" + text;
   }
 
   // Centered on the selection, above it, or below it on touch screens, where
@@ -220,7 +223,7 @@
   async function countComments() {
     try {
       // The search API, unlike the badge one, allows other sites to read it.
-      const uri = encodeURIComponent(location.origin + location.pathname);
+      const uri = encodeURIComponent(PAGE);
       const response = await fetch(
         "https://api.hypothes.is/api/search?limit=0&group=" + GROUP + "&uri=" + uri
       );
@@ -230,23 +233,33 @@
     } catch {}
   }
 
-  // Hypothesis doesn't say when a comment is added or removed, so while
-  // comments show, recount soon after its highlights change, and every so
-  // often for changes that leave them alone, like saving a draft or someone
-  // else's comment.
-  let recount = null;
-  const isHighlight = (node) => node.nodeName === "HYPOTHESIS-HIGHLIGHT";
-  const highlights = new MutationObserver((records) => {
-    const changed = records.some((record) =>
-      [...record.addedNodes, ...record.removedNodes].some(isHighlight)
-    );
-    if (!changed) return;
-    clearTimeout(recount);
-    recount = setTimeout(countComments, 1000);
-  });
-  setInterval(() => {
-    if (loading && !document.hidden) countComments();
-  }, 10000);
+  // Hypothesis's live updates, the ones its sidebar gets, which recount the
+  // comments when anyone adds or deletes one, while comments show.
+  let updates = null;
+
+  function watchComments() {
+    updates = new WebSocket("wss://h-websocket.hypothes.is/ws");
+    updates.addEventListener("open", () => {
+      updates.send(JSON.stringify({
+        filter: {
+          match_policy: "include_any",
+          clauses: [
+            { field: "/uri", operator: "one_of", value: [PAGE], case_sensitive: false },
+          ],
+          actions: { create: true, update: false, delete: true },
+        },
+      }));
+    });
+    updates.addEventListener("message", (e) => {
+      // Give the search a moment to catch up with the change.
+      if (JSON.parse(e.data).type === "annotation-notification") setTimeout(countComments, 1000);
+    });
+  }
+
+  function unwatchComments() {
+    updates?.close();
+    updates = null;
+  }
 
   // Like Hypothesis, wait for a mouse selection to finish, and for other
   // selections (keyboard, touch handles) to settle.
@@ -264,8 +277,6 @@
     if (remembered()) loadComments();
     updateToggle();
     countComments();
-    const content = document.querySelector(".content");
-    if (content) highlights.observe(content, { childList: true, subtree: true });
     document.querySelector(".comments-open")?.addEventListener("click", () => {
       panel.hidden = false;
     });
