@@ -48,6 +48,7 @@ specified in the YAML front-matter.
 
 - `draft: <bool>` - Indicate that this post is unfinished (grayed out)
 - `hidden: <bool>` - Hide/show the post from index page
+- `archived: <bool>` - Move the post from the index page to its archive
 - `published: <bool>` - Do/don't generate the page entirely
 
 Additional options may exist for some layouts, and should be documented at
@@ -71,6 +72,15 @@ It opens `$EDITOR`, checks the entry and appends it. To read them locally:
 make fortunes
 fortune fortunes
 ```
+
+#### Markdown
+
+Every page is also published as Markdown next to its HTML, after Liquid runs,
+so `/ramblings/foo` is readable at `/ramblings/foo.md` with a short front
+matter (title, date and so on). `/site.json` lists the nav and every post with
+its URL, title, date, collection and draft flag. Both come from
+`_plugins/markdown_source.rb`, for clients that read the site without scraping
+HTML.
 
 #### Links
 

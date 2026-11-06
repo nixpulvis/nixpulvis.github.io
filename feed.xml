@@ -10,13 +10,13 @@ assign ramblings = site.ramblings
 %}
 <feed xmlns="http://www.w3.org/2005/Atom" xml:base="{{ '/' | absolute_url }}">
   <id>{{ '/ramblings' | absolute_url }}</id>
-  <title>nixpulvis - Ramblings</title>
+  <title>{{ site.title }} - Ramblings</title>
   <author><name>Nathan Lilienthal</name></author>
   <link rel="self" href="{{ page.url | absolute_url }}" />
   <link rel="alternate" type="text/html" href="{{ '/ramblings' | absolute_url }}" />
   <updated>{{ site.time | date_to_xmlschema }}</updated>
   {% for rambling in ramblings %}
-    {% if rambling.hidden or rambling.draft %}
+    {% if rambling.hidden or rambling.draft or rambling.archived %}
       {% continue %}
     {% endif %}
     <entry>

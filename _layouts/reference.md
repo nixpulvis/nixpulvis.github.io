@@ -1,7 +1,0 @@
----
-layout: default
----
-
-<h2 class="title">{{ page.title }}</h2>
-
-{{ content }}
