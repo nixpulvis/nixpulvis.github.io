@@ -1,47 +1,85 @@
 /* Shared values, used throughout. */
 :root {
-  --black: black;
-  --white: white;
-  /* The dark scheme's background, and the terminal view's in either scheme,
-     as in tui/app/src/colors.rs. */
-  --dark: #161616;
-  --background: var(--white);
-  --border: var(--black);
-  --text: #282c34;
-  --muted: #555;
-  --shadow: #777;
-  --faint: #aaa;
-  --mid: #ccc;
-  --light: #eee;
-  --yellow: #f0c94a;
-  --red: #e0645a;
-  --blue: #5a8ee0;
-  --purple: #9a6ad6;
-  --green: #4caf50;
+  /* Dark on dark screens only, so a printed page stays light. */
+  color-scheme: light;
+  @media screen and (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+
+  /* The nixpulvis colors, as light-dark(light, dark): the text, the
+     background and the 16-color palette. Every other color is named after
+     or mixed from these, here and in the terminal view
+     (tui/app/src/colors/). */
+  --foreground: light-dark(#262626, #cacaca);
+  --background: light-dark(#fafafa, #161616);
+  --color-0: #000000;
+  --color-1: light-dark(#c82300, #fe340a);
+  --color-2: light-dark(#237a12, #2cc81b);
+  --color-3: light-dark(#b35a00, #ff8000);
+  --color-4: light-dark(#0068c2, #00a3fe);
+  --color-5: light-dark(#b0128f, #fe66df);
+  --color-6: light-dark(#007f86, #03f0fb);
+  --color-7: light-dark(#dadada, #ffffff);
+  --color-8: light-dark(#6e6e6e, #808080);
+  --color-9: light-dark(#e0350c, #fe562e);
+  --color-10: light-dark(#33a01f, #54e53e);
+  --color-11: light-dark(#a36200, #fd9805);
+  --color-12: light-dark(#2483d6, #64b3fe);
+  --color-13: light-dark(#cc2daa, #fe99e6);
+  --color-14: light-dark(#00999f, #a2f9fe);
+  --color-15: #ffffff;
+
+  /* The palette by its ANSI names, which the rest of the site uses. */
+  --black: var(--color-0);
+  --red: var(--color-1);
+  --green: var(--color-2);
+  --yellow: var(--color-3);
+  --blue: var(--color-4);
+  --magenta: var(--color-5);
+  --cyan: var(--color-6);
+  --white: var(--color-7);
+  --bright-black: var(--color-8);
+  --bright-red: var(--color-9);
+  --bright-green: var(--color-10);
+  --bright-yellow: var(--color-11);
+  --bright-blue: var(--color-12);
+  --bright-magenta: var(--color-13);
+  --bright-cyan: var(--color-14);
+  --bright-white: var(--color-15);
+
+  --text: var(--foreground);
+  /* Bright black, the terminal's muted gray. */
+  --muted: var(--bright-black);
+
+  /* Grays, a share of the text over the background in oklch, light and dark
+     each with their own. The terminal view reads its grays' shares from
+     these (`Gray::css` in tui/app/src/colors/mod.rs). */
+  --light: light-dark(
+    color-mix(in oklch, var(--text) 5%, var(--background)),
+    color-mix(in oklch, var(--text) 12%, var(--background))
+  );
+  --mid: light-dark(
+    color-mix(in oklch, var(--text) 19.5%, var(--background)),
+    color-mix(in oklch, var(--text) 23%, var(--background))
+  );
+  --faint: light-dark(
+    color-mix(in oklch, var(--text) 34.5%, var(--background)),
+    color-mix(in oklch, var(--text) 48.5%, var(--background))
+  );
+  --border: light-dark(var(--text), color-mix(in oklch, var(--text) 58%, var(--background)));
+  --shadow: light-dark(var(--muted), var(--black));
+
   /* Highlights fill with a little of their color over the background, so
      they follow the scheme. */
   --highlight-mix: 18%;
   --highlight-yellow: color-mix(in oklch, var(--yellow) var(--highlight-mix), var(--background));
   --highlight-red: color-mix(in oklch, var(--red) var(--highlight-mix), var(--background));
   --highlight-blue: color-mix(in oklch, var(--blue) var(--highlight-mix), var(--background));
-  --highlight-purple: color-mix(in oklch, var(--purple) var(--highlight-mix), var(--background));
+  --highlight-magenta: color-mix(in oklch, var(--magenta) var(--highlight-mix), var(--background));
   --highlight-green: color-mix(in oklch, var(--green) var(--highlight-mix), var(--background));
   --dashed: 1px dashed var(--border);
   /* An anchor's -1.25em, plus 10px padding and a 1px border of `details`. */
   --details-gutter: calc(-1.25em - 11px);
-
-  /* On screens only, so a printed page stays black on white. */
-  @media screen and (prefers-color-scheme: dark) {
-    color-scheme: dark;
-    --background: var(--dark);
-    --border: #777;
-    --text: #cacaca;
-    --muted: #999;
-    --shadow: black;
-    --faint: #666;
-    --mid: #3a3a3a;
-    --light: #282828;
-  }
 }
 
 html {
@@ -256,27 +294,31 @@ pre {
 code {
   font-family: "Computer Modern Typewriter", monospace;
 
-  /* Inline new syntax: `` `code`{:.new-syntax} ``, matching `.highlight-block`. */
+  /* Inline new syntax: `` `code`{:.new-syntax} ``, matching `.highlight-block.green`. */
   &.new-syntax {
-    background: var(--highlight-yellow);
-    box-shadow: inset 0 -2px var(--yellow);
+    background: var(--highlight-green);
     padding: 0 2px;
   }
 }
 
-/* Highlighted code blocks: `<div class="highlight-block" markdown="1">` around the fence. */
+/* Highlighted code blocks: `<div class="highlight-block green" markdown="1">`
+   around the fence, in green, red or blue. */
 .highlight-block {
-  background: var(--highlight-yellow);
-  border-left: 2px solid var(--yellow);
+  border-left: 2px solid;
   margin: 1em 0;
   padding: 5px 10px;
+
+  &.green {
+    background: var(--highlight-green);
+    border-left-color: var(--green);
+  }
 
   &.red {
     background: var(--highlight-red);
     border-left-color: var(--red);
   }
 
-  &.other {
+  &.blue {
     background: var(--highlight-blue);
     border-left-color: var(--blue);
   }
@@ -320,7 +362,7 @@ blockquote {
 
   @media print {
     border-left: 3px solid var(--black);
-    background-color: var(--white);
+    background-color: var(--bright-white);
   }
 }
 
@@ -629,8 +671,8 @@ li.draft {
 
       /* The groups off the scale, each in its own color. */
       &.math {
-        --fill: var(--highlight-purple);
-        --edge: var(--purple);
+        --fill: var(--highlight-magenta);
+        --edge: var(--magenta);
       }
 
       &.hardware {
@@ -696,15 +738,39 @@ li.draft {
 }
 
 /* The terminal view, from js/tui.js. It takes the page's place, which isn't
-   laid out at all while it's open. */
+   laid out at all while it's open.
+
+   The view is a terminal in the site's own colors: ratzilla draws its text,
+   background and palette colors with these. The view reads them back, and
+   mixes its grays and tints from them, as it does a real terminal's
+   (`Colors::from_terminal` in tui/app). */
 html.tui {
+  --ratzilla-foreground: var(--foreground);
+  --ratzilla-background: var(--background);
+  --ratzilla-color-0: var(--color-0);
+  --ratzilla-color-1: var(--color-1);
+  --ratzilla-color-2: var(--color-2);
+  --ratzilla-color-3: var(--color-3);
+  --ratzilla-color-4: var(--color-4);
+  --ratzilla-color-5: var(--color-5);
+  --ratzilla-color-6: var(--color-6);
+  --ratzilla-color-7: var(--color-7);
+  --ratzilla-color-8: var(--color-8);
+  --ratzilla-color-9: var(--color-9);
+  --ratzilla-color-10: var(--color-10);
+  --ratzilla-color-11: var(--color-11);
+  --ratzilla-color-12: var(--color-12);
+  --ratzilla-color-13: var(--color-13);
+  --ratzilla-color-14: var(--color-14);
+  --ratzilla-color-15: var(--color-15);
+
   /* The view does its own scrolling, so the page underneath shouldn't move,
      show a scrollbar, or bounce and pull to refresh on phones. */
   overflow: hidden;
   overscroll-behavior: none;
   /* The view's color from the first paint, so a page opening in the view
      doesn't flash the page's own background before the view draws. */
-  background: var(--dark);
+  background: var(--background);
 
   & body {
     background: none;
@@ -722,7 +788,7 @@ html.tui {
   overflow: hidden;
   /* Touches are the view's to scroll with, not the browser's. */
   touch-action: none;
-  background: var(--dark);
+  background: var(--background);
   font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace;
   font-size: 15px;
   line-height: normal;
