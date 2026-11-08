@@ -2,6 +2,7 @@
 
 use ratatui::layout::Rect;
 use ratmark::Theme;
+use ratmark::gesture::Step;
 // Like std's, but also works in the browser.
 use web_time::Instant;
 
@@ -232,21 +233,13 @@ impl App {
         }
     }
 
-    /// Scrolls by `lines`, down when positive. Returns whether it moved,
-    /// which it doesn't at either end.
-    pub fn scroll_by(&mut self, lines: isize) -> bool {
+    /// Scrolls, or shifts the code block too wide for the page under the
+    /// gesture, one [`Step`] of a wheel or touch gesture. Returns whether it
+    /// moved, which it doesn't at the end.
+    pub fn apply(&mut self, step: Step) -> bool {
         self.page
             .as_mut()
-            .is_some_and(|page| page.view.scroll_by(lines))
-    }
-
-    /// Shifts the code block too wide for the page at column `x`, row `y`
-    /// of the screen by `columns`, showing more of the right when positive.
-    /// Returns whether it moved, which it doesn't at its end.
-    pub fn shift_at(&mut self, x: u16, y: u16, columns: isize) -> bool {
-        self.page
-            .as_mut()
-            .is_some_and(|page| page.view.shift_at(x, y, columns))
+            .is_some_and(|page| step.apply(&mut page.view))
     }
 
     /// Whether the app is still fetching what its first frame needs, the

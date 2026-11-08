@@ -524,7 +524,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1057,6 +1057,7 @@ dependencies = [
  "nixpulvis",
  "open",
  "ratatui",
+ "ratmark",
  "rustix",
  "ureq",
 ]
@@ -1066,6 +1067,7 @@ name = "nixpulvis-web"
 version = "0.1.0"
 dependencies = [
  "nixpulvis",
+ "ratmark",
  "ratzilla",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -1511,7 +1513,7 @@ dependencies = [
 [[package]]
 name = "ratmark"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/ratmark#17701c3bff9714298e875b4b0e59743df8650af0"
+source = "git+https://github.com/nixpulvis/ratmark?branch=gestures#e7c41f451124c3b3f460d0e8b5b2708000d04f65"
 dependencies = [
  "html5gum",
  "pulldown-cmark",
@@ -1522,6 +1524,8 @@ dependencies = [
  "syntect",
  "unicode-width",
  "url",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
@@ -1622,7 +1626,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2448,7 +2452,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

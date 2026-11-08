@@ -8,6 +8,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use nixpulvis::{App, Effect, Host, Key};
+use ratmark::gesture;
 use ratzilla::event::{KeyCode, KeyEvent, MouseButton, MouseEventKind};
 use ratzilla::ratatui::Terminal;
 use ratzilla::{CellSized, DomBackend, WebRenderer};
@@ -16,9 +17,6 @@ use wasm_bindgen_futures::JsFuture;
 use web_sys::{Response, window};
 
 mod colors;
-mod gesture;
-
-use gesture::Gestures;
 
 type Shared = Rc<RefCell<App>>;
 
@@ -76,7 +74,12 @@ pub fn start(base: &str, path: &str, screen: web_sys::Element) -> Result<(), JsV
     // Measured by the backend from the view's font, which is fixed in CSS,
     // so it's measured once.
     let (width, height) = terminal.backend().cell_size_css_px();
-    Gestures::listen(&app, &screen, (f64::from(width), f64::from(height)))?;
+    let steps = app.clone();
+    gesture::web::listen(
+        &screen,
+        (f64::from(width), f64::from(height)),
+        move |step| steps.borrow_mut().apply(step),
+    )?;
     follow_links_in_app(&screen)?;
     colors::follow_color_scheme(&app)?;
 

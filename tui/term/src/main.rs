@@ -23,11 +23,15 @@ use ratatui::crossterm::event::{
     KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
 };
 use ratatui::crossterm::execute;
+use ratmark::gesture::terminal::Wheel;
 
 const USAGE: &str = "usage: nixpulvis-tui [PATH] [--url URL]";
 
 /// How long a page has to arrive before giving up on it.
 const TIMEOUT: Duration = Duration::from_secs(15);
+
+/// How far a tick of the wheel scrolls, in lines, or shifts code, in columns.
+const WHEEL: u16 = 3;
 
 fn main() -> io::Result<()> {
     let args = match Args::parse(std::env::args().skip(1)) {
@@ -69,6 +73,10 @@ fn run(
     fetcher: &Fetcher,
     mut effects: Vec<Effect>,
 ) -> io::Result<()> {
+    // Goes one way a gesture, like in the browser, so a trackpad swipe
+    // that's a little diagonal doesn't both scroll the page and shift the
+    // code under the pointer.
+    let mut wheel = Wheel::new(WHEEL);
     loop {
         for effect in effects.drain(..) {
             match effect {
@@ -84,7 +92,7 @@ fn run(
         effects.extend(fetcher.deliver(app));
         // Often enough to draw what arrives, and to clear old notices.
         if event::poll(Duration::from_millis(50))? {
-            effects.extend(input(app, event::read()?));
+            effects.extend(input(app, &mut wheel, event::read()?));
         }
     }
 }
@@ -199,7 +207,7 @@ impl Fetcher {
 }
 
 /// What a terminal event does to the app.
-fn input(app: &mut App, event: Event) -> Vec<Effect> {
+fn input(app: &mut App, wheel: &mut Wheel, event: Event) -> Vec<Effect> {
     match event {
         Event::Key(key) if key.kind != KeyEventKind::Release => match translate(key) {
             Some(key) => app.key(key),
@@ -209,14 +217,15 @@ fn input(app: &mut App, event: Event) -> Vec<Effect> {
         Event::Mouse(MouseEvent {
             kind, column, row, ..
         }) => {
-            match kind {
+            let ticks = match kind {
                 MouseEventKind::Down(MouseButton::Left) => return app.click(column, row),
-                MouseEventKind::ScrollDown => _ = app.scroll_by(3),
-                MouseEventKind::ScrollUp => _ = app.scroll_by(-3),
-                MouseEventKind::ScrollRight => _ = app.shift_at(column, row, 3),
-                MouseEventKind::ScrollLeft => _ = app.shift_at(column, row, -3),
-                _ => {}
-            }
+                MouseEventKind::ScrollDown => (0, 1),
+                MouseEventKind::ScrollUp => (0, -1),
+                MouseEventKind::ScrollRight => (1, 0),
+                MouseEventKind::ScrollLeft => (-1, 0),
+                _ => return Vec::new(),
+            };
+            wheel.tick(column, row, ticks, |step| app.apply(step));
             Vec::new()
         }
         _ => Vec::new(),

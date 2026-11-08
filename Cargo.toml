@@ -12,7 +12,8 @@ repository = "https://github.com/nixpulvis/nixpulvis.github.io"
 
 [workspace.dependencies]
 ratatui = { version = "0.30", default-features = false }
-ratmark = { git = "https://github.com/nixpulvis/ratmark", default-features = false, features = ["front-matter-yaml", "html", "kramdown"] }
+# The gestures branch, for its gesture API, until nixpulvis/ratmark#1 is merged.
+ratmark = { git = "https://github.com/nixpulvis/ratmark", branch = "gestures", default-features = false, features = ["front-matter-yaml", "html", "kramdown"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
