@@ -48,6 +48,56 @@ proposed syntax of what a full named argument sugar might look like:
 - `baz(1, named: "hi");`{:.new-syntax}
 
 ---
+
+{% tikz Dependencies and relations for the struct argument features %}
+\begingroup\def\lb{\char`\{}\def\rb{\char`\}}\frenchspacing
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners=3pt, minimum width=5.2cm, minimum height=1.1cm, align=center, font=\small},
+    rfc/.style={box, dashed},
+    group/.style={draw, draw opacity=0.35, rounded corners=6pt, fill=black, fill opacity=0.04},
+    glabel/.style={anchor=north west, font=\scriptsize\scshape, text opacity=0.65},
+    dep/.style={-{Stealth[length=2.2mm]}, semithick},
+    rel/.style={dep, densely dotted},
+    elabel/.style={font=\footnotesize\itshape, text opacity=0.65, inner sep=2pt},
+  ]
+  % groups
+  \draw[group] (-2.9,-1.35) rectangle (10.1,-3.35);
+  \node[glabel] at (-2.85,-1.38) {core};
+  \draw[group] (-2.9,-6.35) rectangle (10.1,-8.35);
+  \node[glabel] at (-2.85,-6.38) {elision};
+
+  % RFCs
+  \node[rfc] (R3444) at (0,0.6) {\textbf{RFC 3444}\\[-1pt] {\pgfsetfillopacity{0.65}path inference \texttt{.\lb{} \rb{}}}};
+  \node[rfc] (R3681) at (7.2,0.6) {\textbf{RFC 3681}\\[-1pt] {\pgfsetfillopacity{0.65}default\_field\_values}};
+
+  % core
+  \node[box] (SPI) at (0,-2.45) {\texttt{\char`\_{} \lb{} .. \rb{}}\\[-1pt] {\pgfsetfillopacity{0.65}struct\_pattern\_inference}};
+  \node[box] (ASP) at (7.2,-2.45) {\texttt{fn f(s: struct \lb{} .. \rb{})}\\[-1pt] {\pgfsetfillopacity{0.65}anonymous\_struct\_parameters}};
+
+  % named arguments
+  \node[box, minimum height=1.5cm] (NA) at (3.6,-5.2) {\texttt{fn f(a: i32; x: i32)}\\ \texttt{f(1, x: 2)}\\[-1pt] {\pgfsetfillopacity{0.65}named\_arguments}};
+
+  % elision
+  \node[box] (PTE)  at (0,-7.45) {\texttt{fn f(Point \lb{} x \rb{})}\\[-1pt] {\pgfsetfillopacity{0.65}parameter\_type\_elision}};
+  \node[box] (ASPE) at (7.2,-7.45) {\texttt{fn f(struct \lb{} x \rb{})}\\[-1pt] {\pgfsetfillopacity{0.65}anonymous\_struct\_pattern\_elision}};
+
+  % edges, with each label sitting on its line in a gap
+  \path (R3444) -- node[elabel] (e1) {superset} (SPI);
+  \path (R3681) -- node[elabel] (e2) {extends} (ASP);
+  \path (ASP) -- node[elabel] (e3) {requires} (SPI);
+  \path (NA.130) -- node[elabel] (e4) {requires} (SPI.-45);
+  \path (NA.50) -- node[elabel] (e5) {requires} (ASP.-135);
+  \path (ASPE) -- node[elabel, pos=0.55] (e6) {requires} (ASP);
+  \draw[densely dotted, semithick] (R3444) -- (e1);  \draw[rel] (e1) -- (SPI);
+  \draw[densely dotted, semithick] (R3681) -- (e2);  \draw[rel] (e2) -- (ASP);
+  \draw[semithick] (ASP) -- (e3);    \draw[dep] (e3) -- (SPI);
+  \draw[semithick] (NA.130) -- (e4); \draw[dep] (e4) -- (SPI.-45);
+  \draw[semithick] (NA.50) -- (e5);  \draw[dep] (e5) -- (ASP.-135);
+  \draw[semithick] (ASPE) -- (e6);   \draw[dep] (e6) -- (ASP);
+\end{tikzpicture}\endgroup
+{% endtikz %}
+
+---
 * TOC
 {:toc}
 ---
