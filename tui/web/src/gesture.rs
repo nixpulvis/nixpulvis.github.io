@@ -357,13 +357,13 @@ fn not_passive() -> AddEventListenerOptions {
 
 #[cfg(test)]
 mod tests {
-    use nixpulvis::Host;
+    use nixpulvis::{Colors, Host};
 
     use super::*;
 
     /// A mover with 10 pixel cells, and the steps it takes.
     fn mover() -> (Rc<Mover>, Rc<RefCell<Vec<isize>>>) {
-        let app = Rc::new(RefCell::new(App::new(Host::Browser, "", "/")));
+        let app = Rc::new(RefCell::new(App::new(Host::Browser, Colors::DARK, "", "/")));
         let steps = Rc::new(RefCell::new(Vec::new()));
         let taken = steps.clone();
         let mover = Mover::new(&app, 10.0, move |_, n| {

@@ -524,7 +524,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1057,6 +1057,7 @@ dependencies = [
  "nixpulvis",
  "open",
  "ratatui",
+ "rustix",
  "ureq",
 ]
 
@@ -1364,7 +1365,7 @@ dependencies = [
 [[package]]
 name = "pulldown-kram"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/pulldown-kram#7e7df0452fb8a93d492e15e27b4fbf8eb62fe1b3"
+source = "git+https://github.com/nixpulvis/pulldown-kram#d726d0f248fb1eeeb112bcf19e154ddea0f5bc17"
 dependencies = [
  "bitflags 2.13.2",
  "pulldown-cmark",
@@ -1510,7 +1511,7 @@ dependencies = [
 [[package]]
 name = "ratmark"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/ratmark#c0f67b4fac984214cd60fcadec3674bc58abf7cc"
+source = "git+https://github.com/nixpulvis/ratmark#17701c3bff9714298e875b4b0e59743df8650af0"
 dependencies = [
  "html5gum",
  "pulldown-cmark",
@@ -1526,7 +1527,7 @@ dependencies = [
 [[package]]
 name = "ratzilla"
 version = "0.3.1"
-source = "git+https://github.com/nixpulvis/ratzilla?branch=site#4148e788f3afe1583197100a90b3c217baf2ee11"
+source = "git+https://github.com/nixpulvis/ratzilla?branch=site#49b8ad5a98677e277351db37dec5d0bdbe16c56c"
 dependencies = [
  "beamterm-renderer",
  "bitvec",
@@ -1621,7 +1622,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -2447,7 +2448,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]

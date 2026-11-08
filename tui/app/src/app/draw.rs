@@ -12,7 +12,7 @@ use web_time::Duration;
 
 use super::App;
 use crate::Host;
-use crate::colors::{BACKGROUND, BORDER, FAINT, MUTED, TEXT, YELLOW};
+use crate::colors::{BORDER, BRIGHT_BLACK, Colors, FAINT, YELLOW};
 use crate::link::{Target, same_page};
 use crate::page::Page;
 
@@ -25,8 +25,9 @@ const MAX_WIDTH: u16 = 84;
 impl App {
     pub fn draw(&mut self, frame: &mut Frame) {
         let area = frame.area();
+        let colors = self.colors;
         frame.render_widget(
-            Block::new().style(Style::new().bg(BACKGROUND).fg(TEXT)),
+            Block::new().style(Style::new().bg(colors.background()).fg(colors.text())),
             area,
         );
         if self.starting() {
@@ -42,7 +43,7 @@ impl App {
         if let Some(footer) = footer {
             frame.render_widget(
                 Paragraph::new(footer)
-                    .style(Style::new().fg(MUTED))
+                    .style(Style::new().fg(colors.ansi(BRIGHT_BLACK)))
                     .centered(),
                 bottom,
             );
@@ -88,6 +89,7 @@ impl App {
     }
 
     fn draw_header(&mut self, frame: &mut Frame, area: Rect) {
+        let colors = self.colors;
         let current = self.page.as_ref().map_or("", |p| p.path.as_str());
         let mut spans = vec![Span::raw(" ")];
         let mut x = area.x + 1;
@@ -95,11 +97,13 @@ impl App {
         for (i, item) in self.nav().into_iter().enumerate() {
             let width = Span::raw(&item.label).width() as u16;
             let style = if i == 0 {
-                Style::new().fg(TEXT).bold()
+                Style::new().fg(colors.text()).bold()
             } else if same_page(current, &item.path) {
-                Style::new().fg(YELLOW).add_modifier(Modifier::UNDERLINED)
+                Style::new()
+                    .fg(colors.ansi(YELLOW))
+                    .add_modifier(Modifier::UNDERLINED)
             } else {
-                Style::new().fg(MUTED)
+                Style::new().fg(colors.ansi(BRIGHT_BLACK))
             };
             spans.push(Span::styled(item.label, style));
             spans.push(Span::raw("  "));
@@ -113,7 +117,7 @@ impl App {
         // A way out for touch screens, with no keyboard for `q`.
         self.drawn.close = Rect::new(area.right().saturating_sub(3), area.y, 3, 1);
         frame.render_widget(
-            Line::from(" × ").style(Style::new().fg(MUTED)),
+            Line::from(" × ").style(Style::new().fg(colors.ansi(BRIGHT_BLACK))),
             self.drawn.close,
         );
 
@@ -151,7 +155,7 @@ impl App {
         let block = Block::new()
             .borders(Borders::ALL)
             .padding(Padding::horizontal(1))
-            .border_style(Style::new().fg(BORDER));
+            .border_style(Style::new().fg(self.colors.gray(BORDER)));
         let Some(page) = &self.page else {
             return block;
         };
@@ -163,13 +167,13 @@ impl App {
         let block = if named {
             block
         } else {
-            block.title(page_title(page).centered())
+            block.title(page_title(page, self.colors).centered())
         };
         // Inside the corners, with a space either side.
         match page.meta(usize::from(width).saturating_sub(4)) {
             Some(meta) => block.title_bottom(
                 Line::from(format!(" {meta} "))
-                    .style(Style::new().fg(MUTED))
+                    .style(Style::new().fg(self.colors.ansi(BRIGHT_BLACK)))
                     .centered(),
             ),
             None => block,
@@ -186,6 +190,7 @@ impl App {
             return;
         };
         let scroll = page.view.scroll();
+        let faint = Style::new().fg(self.colors.gray(FAINT));
         for link in &rendered.links {
             let Target::Page { path, .. } = Target::resolve(&link.url, &page.path, &self.origin)
             else {
@@ -205,7 +210,7 @@ impl App {
                 let end = region.end.min(inner.width);
                 let start = region.start.min(end);
                 let rect = Rect::new(inner.x + start, inner.y + row as u16, end - start, 1);
-                frame.buffer_mut().set_style(rect, Style::new().fg(FAINT));
+                frame.buffer_mut().set_style(rect, faint);
             }
         }
     }
@@ -229,7 +234,7 @@ impl App {
                 .end_symbol(None)
                 .track_symbol(None)
                 .thumb_symbol("┃")
-                .thumb_style(Style::new().fg(MUTED)),
+                .thumb_style(Style::new().fg(self.colors.ansi(BRIGHT_BLACK))),
             area,
             &mut state,
         );
@@ -238,16 +243,19 @@ impl App {
 
 /// A page's title for the top of its box, with a project's status after
 /// it. Drafts are dimmed, like they are on the site.
-fn page_title(page: &Page) -> Line<'static> {
+fn page_title(page: &Page, colors: Colors) -> Line<'static> {
     let (title, style) = if page.draft {
-        (format!(" Draft: {} ", page.title), Style::new().fg(FAINT))
+        (
+            format!(" Draft: {} ", page.title),
+            Style::new().fg(colors.gray(FAINT)),
+        )
     } else {
-        (format!(" {} ", page.title), Style::new().fg(TEXT))
+        (format!(" {} ", page.title), Style::new().fg(colors.text()))
     };
     let status = page
         .status
         .as_ref()
-        .map(|s| Span::styled(format!("{s} "), Style::new().fg(MUTED)));
+        .map(|s| Span::styled(format!("{s} "), Style::new().fg(colors.ansi(BRIGHT_BLACK))));
     Line::from_iter(std::iter::once(Span::styled(title, style.bold())).chain(status))
 }
 

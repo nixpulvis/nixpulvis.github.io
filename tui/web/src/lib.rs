@@ -15,6 +15,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Response, window};
 
+mod colors;
 mod gesture;
 
 use gesture::Gestures;
@@ -33,7 +34,7 @@ pub fn start(base: &str, path: &str, screen: web_sys::Element) -> Result<(), JsV
         .unwrap_or_default();
     // The switch is remembered, so each page the browser loads opens in the
     // view again.
-    let mut app = App::new(Host::Browser, origin, base);
+    let mut app = App::new(Host::Browser, colors::page_colors(), origin, base);
     let effects = app.start(path);
     let app: Shared = Rc::new(RefCell::new(app));
     carry_out(&app, effects);
@@ -77,6 +78,7 @@ pub fn start(base: &str, path: &str, screen: web_sys::Element) -> Result<(), JsV
     let (width, height) = terminal.backend().cell_size_css_px();
     Gestures::listen(&app, &screen, (f64::from(width), f64::from(height)))?;
     follow_links_in_app(&screen)?;
+    colors::follow_color_scheme(&app)?;
 
     // Only the page's text can be selected, not the nav, border or hints.
     let selectable = terminal.backend().selectable_area();

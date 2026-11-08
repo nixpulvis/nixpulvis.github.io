@@ -4,6 +4,12 @@
 //!
 //! PATH is a page on the site, like `/ramblings`. `--url` points at another
 //! copy of the site, like a pull request preview.
+//!
+//! Drawn in the terminal's own colors, with the grays and tints between them
+//! mixed from the colors the terminal reports if it can, otherwise in the
+//! site's dark colors.
+
+mod colors;
 
 use std::io;
 use std::panic;
@@ -11,7 +17,7 @@ use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
 use std::time::Duration;
 
-use nixpulvis::{App, Effect, Host, Key};
+use nixpulvis::{App, Colors, Effect, Host, Key};
 use ratatui::crossterm::event::{
     self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyEventKind,
     KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
@@ -35,11 +41,13 @@ fn main() -> io::Result<()> {
             std::process::exit(2);
         }
     };
-    let mut app = App::new(Host::Terminal, &args.origin, &args.base);
-    let effects = app.start(&args.path);
     let fetcher = Fetcher::new(&args.origin);
-
     let mut terminal = ratatui::init();
+    // Queried in raw mode, before anything reads input, so the reports aren't
+    // taken for keys.
+    let colors = colors::terminal_colors().unwrap_or(Colors::DARK);
+    let mut app = App::new(Host::Terminal, colors, &args.origin, &args.base);
+    let effects = app.start(&args.path);
     execute!(io::stdout(), EnableMouseCapture)?;
     // Ratatui's own hook puts the terminal back after a panic, but not the
     // mouse.

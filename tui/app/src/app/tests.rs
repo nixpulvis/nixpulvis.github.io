@@ -8,7 +8,7 @@ use ratatui::backend::TestBackend;
 use ratatui::style::Color;
 
 use super::App;
-use crate::colors::FAINT;
+use crate::colors::{Colors, FAINT};
 use crate::{Effect, Host, Key};
 
 /// The made-up site, by the paths its files are published at.
@@ -83,7 +83,7 @@ struct Reader {
 impl Reader {
     fn new(host: Host, base: &str, files: Vec<(String, String)>) -> Self {
         Self {
-            app: App::new(host, "https://nixpulvis.com", base),
+            app: App::new(host, Colors::DARK, "https://nixpulvis.com", base),
             files: files.into_iter().collect(),
             fetches: Vec::new(),
             asked: Vec::new(),
@@ -380,8 +380,8 @@ fn draws_nothing_until_the_page_and_nav_are_in() {
 #[test]
 fn drafts_are_faded() {
     let mut reader = Reader::open(Host::Terminal, "/ramblings");
-    assert_eq!(reader.color_of("Unfinished"), FAINT);
-    assert_ne!(reader.color_of("First post"), FAINT);
+    assert_eq!(reader.color_of("Unfinished"), Colors::DARK.gray(FAINT));
+    assert_ne!(reader.color_of("First post"), Colors::DARK.gray(FAINT));
     reader.click("Unfinished");
     assert!(reader.screen().contains(" Draft: Unfinished "));
 }

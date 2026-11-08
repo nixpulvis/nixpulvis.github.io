@@ -6,8 +6,8 @@
 //! same code working in a real terminal and in the browser.
 //!
 //! ```no_run
-//! # use nixpulvis::{App, Host};
-//! let mut app = App::new(Host::Terminal, "https://nixpulvis.com", "/");
+//! # use nixpulvis::{App, Colors, Host};
+//! let mut app = App::new(Host::Terminal, Colors::DARK, "https://nixpulvis.com", "/");
 //! let effects = app.start("/ramblings");
 //! // Carry out the effects, pass what they fetch back to the app, and
 //! // draw it and pass it input until it sends `Effect::Quit`.
@@ -21,6 +21,7 @@ mod page;
 mod site;
 
 pub use app::App;
+pub use colors::Colors;
 
 /// Where the app runs, which decides who keeps the history, and what `q`
 /// does.

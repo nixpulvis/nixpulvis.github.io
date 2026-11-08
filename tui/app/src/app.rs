@@ -5,10 +5,11 @@ use ratmark::Theme;
 // Like std's, but also works in the browser.
 use web_time::Instant;
 
+use crate::colors::Colors;
 use crate::link::{self, Target};
 use crate::page::Page;
 use crate::site::Site;
-use crate::{Effect, Host, Key, colors};
+use crate::{Effect, Host, Key};
 
 mod draw;
 #[cfg(test)]
@@ -35,6 +36,7 @@ pub struct App {
     message: Option<String>,
     /// Shown at the bottom for a moment, like a link opening elsewhere.
     notice: Option<(String, Instant)>,
+    colors: Colors,
     theme: Theme,
     /// Where things were drawn in the last frame, for clicks.
     drawn: Drawn,
@@ -86,10 +88,10 @@ struct NavItem {
 }
 
 impl App {
-    /// A new app in `host`, for the site at `origin`, like
-    /// `https://nixpulvis.com`, under the path `base`, `/` except in
+    /// A new app in `host`, drawn in `colors`, for the site at `origin`,
+    /// like `https://nixpulvis.com`, under the path `base`, `/` except in
     /// previews. Call [`App::start`] next.
-    pub fn new(host: Host, origin: impl Into<String>, base: &str) -> Self {
+    pub fn new(host: Host, colors: Colors, origin: impl Into<String>, base: &str) -> Self {
         Self {
             host,
             origin: origin.into().trim_end_matches('/').to_owned(),
@@ -100,9 +102,17 @@ impl App {
             loading: None,
             message: None,
             notice: None,
-            theme: colors::theme(),
+            colors,
+            theme: colors.theme(),
             drawn: Drawn::default(),
         }
+    }
+
+    /// Draws in `colors` from the next frame on, like when the browser
+    /// switches between light and dark.
+    pub fn set_colors(&mut self, colors: Colors) {
+        self.colors = colors;
+        self.theme = colors.theme();
     }
 
     /// Starts on the page at `path`, which may have a `#` section.

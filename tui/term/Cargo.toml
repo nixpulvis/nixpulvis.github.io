@@ -12,3 +12,8 @@ nixpulvis = { path = "../app", features = ["syntax"] }
 ratatui = { workspace = true, features = ["crossterm", "cell-extensions"] }
 ureq = "3"
 open = "5"
+
+# Waiting on the terminal's answers to the color questions. Already under
+# crossterm.
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "1", default-features = false, features = ["event", "std"] }
