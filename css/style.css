@@ -297,7 +297,6 @@ code {
   /* Inline new syntax: `` `code`{:.new-syntax} ``, matching `.highlight-block.green`. */
   &.new-syntax {
     background: var(--highlight-green);
-    box-shadow: inset 0 -2px var(--green);
     padding: 0 2px;
   }
 }
