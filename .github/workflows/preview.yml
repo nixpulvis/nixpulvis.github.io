@@ -30,6 +30,25 @@ jobs:
       - run: .github/scripts/setup.sh
         if: github.event.action != 'closed'
 
+      # Rust for the terminal view in tui/, built to WebAssembly.
+      - uses: dtolnay/rust-toolchain@stable
+        if: github.event.action != 'closed'
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        if: github.event.action != 'closed'
+
+      # wasm-bindgen's CLI has to match the library version in Cargo.lock.
+      - id: wasm-bindgen
+        if: github.event.action != 'closed'
+        run: echo "version=$(grep -A1 '^name = "wasm-bindgen"$' Cargo.lock | sed -n 's/^version = "\(.*\)"$/\1/p')" >> "$GITHUB_OUTPUT"
+
+      - uses: taiki-e/install-action@v2
+        if: github.event.action != 'closed'
+        with:
+          tool: wasm-bindgen@${{ steps.wasm-bindgen.outputs.version }}
+
       # Keep Jekyll's cache, where compiled figures live, between runs.
       - uses: actions/cache@v4
         if: github.event.action != 'closed'

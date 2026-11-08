@@ -1,9 +1,7 @@
 ---
 title: Projects
-layout: default
+layout: page
 ---
-
-# Projects
 
 I work on projects from time to time, and try to post about them here. If you
 learn something, that's great. If you are inspired, that's even better. Half

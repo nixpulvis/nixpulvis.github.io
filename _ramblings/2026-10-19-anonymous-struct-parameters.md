@@ -133,7 +133,7 @@ type can be declared inline with `struct { .. }`. This is the base feature,
 `#![feature(anonymous_struct_parameters)]`, and it's an ordinary type in the
 `pat: ty` parameter position:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn g(p: struct { x: i32, y: i32 }) {}
 ```
@@ -171,7 +171,7 @@ bind its fields with `_ { .. }`, which is a struct pattern that infers its type.
 It works anywhere a pattern does, so the fields can also be renamed, borrowed,
 or skipped:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn g(_ { x, y }: struct { x: i32, y: i32 }) {}
 fn g(_ { x: horizontal, .. }: struct { x: i32, y: i32 = 0 }) {}
@@ -183,7 +183,7 @@ Calling a function with an anonymous struct argument is just like calling it
 with a named struct argument, except you can only use an `_` to refer to it, the
 literal form of the same `_ { .. }`:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 g(_ { x: 1, y: 2 });
 ```
@@ -191,7 +191,7 @@ g(_ { x: 1, y: 2 });
 
 But nothing is stopping you from inferring the type of a named struct argument either.
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 // recall: fn f(p: Point) {}
 f(_ { x: 1, y: 2 });
@@ -225,13 +225,13 @@ that works naturally with `_ { }`.
 With inferred literals, default field values ([RFC 3681][rfc-3681]) carry over
 directly:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn h(a: i32, _ { i, log }: struct { i: i32 = 1, log: bool = false }) {}
 ```
 </div>
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 h(1, _ { .. });
 h(2, _ { i: 2, .. });
@@ -250,7 +250,7 @@ fields themselves, we can leave the pattern off.
 `#![feature(anonymous_struct_pattern_elision)]` lets an anonymous struct type
 act as its own pattern, binding each of its fields by name:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn h(a: i32, struct { i: i32 = 1, log: bool = false }) {}
 ```
@@ -261,7 +261,7 @@ This is the form we'll use for most of the rest of this post.
 Fields are written just like parameters here, so they can use the same binding
 modes, `mut`, `ref`, and `ref mut`:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn g(struct { mut x: i32, ref name: String }) {}
 ```
@@ -291,7 +291,7 @@ fn f(Point { x, y }: Point) {}
 
 With an elided struct type, it could be written as:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn f(Point { x, y }) {}
 ```
@@ -302,7 +302,7 @@ pattern and that type. Struct and tuple struct patterns contain the type in
 their path names, a reference pattern has its referenced type, and tuples and
 arrays work if their members spell out their types.
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn f(p @ Point { x, .. })   // p @ Point { x, .. }: Point
 fn f(Meters(m))             // Meters(m): Meters
@@ -378,7 +378,7 @@ copy(b, a)?;  // oops, overwrites notes.txt
 
 With an anonymous struct instead:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 pub fn copy<P: AsRef<Path>, Q: AsRef<Path>>(struct {
     from: P,
@@ -390,7 +390,7 @@ pub fn copy<P: AsRef<Path>, Q: AsRef<Path>>(struct {
 Each call names its fields, so it's clear which path is `from` and which is
 `to`:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 let a = Path::new("notes.txt");
 let b = Path::new("notes.bak");
@@ -404,7 +404,7 @@ copy(_ { from: b, to: a })?;  // clearly wrong
 `_ { .. }` isn't tied to anonymous structs. It works wherever the expected type
 is a struct, so it works for every existing struct without changing anything:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 struct Rgb { red: u8, green: u8, blue: u8 }
 
@@ -461,7 +461,7 @@ have to. But it's still a whole separate type, with its own name and `pub` on
 every field, just to pass a few arguments to one function. An anonymous struct
 keeps the same fields and defaults, but puts them right in the signature:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 pub fn crop(img: &Image, struct {
     width: u32,
@@ -487,7 +487,7 @@ change the calls, since `_ { .. }` still works to build a named struct.
 Fields can use anything a parameter's type can, including generic parameters,
 elided lifetimes, `impl Trait`, `Self`, and associated types:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn map<T, U>(v: Vec<T>, struct {
     f: impl Fn(&T) -> U,
@@ -512,7 +512,7 @@ whether it's named like `'a` here, or elided like `&str` would be in `x: &str`.
 Unlike a named struct, which would need `struct PickArgs<'a>`, the anonymous
 struct parameter never declares lifetimes itself:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn pick<'a>(x: &'a str, struct {
     fallback: &'a str = "none",
@@ -532,7 +532,7 @@ The trait owns the struct and its defaults, and each `impl` repeats the fields
 with the same types, just like positional parameters. Calls through generics and
 `dyn` work like any other method call:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 trait Writer {
     fn write(&mut self, struct {
@@ -585,7 +585,7 @@ gets into, and there may be a better syntax here I just can't think of.
 
 With named argument sugar, `crop` and `copy` become:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn crop(
     img: &Image;
@@ -618,7 +618,7 @@ literal as the last argument. Once an argument is written `name: value`, it and
 every argument after it form the struct. The calls from [Section 2](#2-examples)
 become:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 copy(from: a, to: b)?;
 
@@ -677,7 +677,7 @@ Named arguments end with `..` to fill in the defaults of any fields left out,
 the same as a struct literal, or with `..base` to take them from another value.
 Without the `..`, every field has to be given:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 crop(&img, width: 200, ..);
 crop(&img, width: 200, height: None, x: 0, y: 0);
@@ -763,7 +763,7 @@ print_labeled_measurement(unit_label: 'h', value: 5);
 With an anonymous struct, the same function's named parameters become fields,
 which are only ever passed by name.
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 // anonymous struct
 fn print_labeled_measurement(struct { value: i32, unit_label: char = 'm' }) { .. }
@@ -815,7 +815,7 @@ An anonymous struct has to address that problem now. It can still replace the
 eight constructors with one function, though the hasher and the allocator
 become `Option`s that the body fills in:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 // anonymous struct
 fn new_map<K, V, S: BuildHasher + Default, A: Allocator + Default>(struct {
@@ -893,7 +893,7 @@ each one.
 Fields are evaluated in the order written at the call site, as in any struct
 literal. So this compiles:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn consume(struct { data: Vec<u8>, length: usize }) { .. }
 
@@ -904,7 +904,7 @@ consume(_ { length: data.len(), data: data });
 and swapping the two is a use-after-move error, exactly as it would be for a
 named struct:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 consume(_ { data: data, length: data.len() });
 // error[E0382]: borrow of moved value: `data`
@@ -926,7 +926,7 @@ the body wants a different name, an explicit `_ { .. }` pattern renames it like
 any struct pattern. Positional parameters keep their patterns, since they're
 never passed by name.
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn foo((x, y): (i32, i32), struct { scale: i32 = 1 }) -> i32 { .. }
 fn bar((x, y): (i32, i32), _ { scale: s }: struct { scale: i32 = 1 }) -> i32 { .. }
@@ -967,7 +967,7 @@ trait's field names are the ones they write.
 A function used as a value keeps its anonymous structs as parameter types, so
 names survive through the pointer, and so do defaults:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn foo(struct { a: i32, b: i32 = 10 }) -> i32 { .. }
 
@@ -1006,7 +1006,7 @@ without the boilerplate.
 Endler's `crop_imm` example, borrowed from Klabnik, declares a struct just for
 this one function:
 
-<div class="highlight-block other" markdown="1">
+<div class="highlight-block blue" markdown="1">
 ```rust
 // Endler
 struct Crop {
@@ -1027,7 +1027,7 @@ crop_imm(&img, Crop { x: 10, y: 20, width: 200, height: 100 });
 
 That's the case anonymous structs were made for:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 // anonymous struct
 fn crop_imm<I: GenericImageView>(image: &I, struct {
@@ -1050,7 +1050,7 @@ post [imagines][endler-composition] a pile of language features for gets close
 without any sugar. It basically just needs `_ { .. }` around the options and
 real syntax for the duration and headers:
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn request(url: impl Into<Url>, struct {
     timeout: Option<Duration> = None,
@@ -1185,7 +1185,7 @@ separately. rustfmt uses rustc's parser, so it mostly works already.
     parameters could become structural records without changing any caller (I
     think).
 
-<div class="highlight-block" markdown="1">
+<div class="highlight-block green" markdown="1">
 ```rust
 fn send_feedback(struct {
     from: impl TryInto<User, Error = InvalidEmail>,
