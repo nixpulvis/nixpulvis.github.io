@@ -103,7 +103,7 @@ published Markdown and `/site.json` described above. The code is in `tui/`:
 - `tui/app` is the app itself, shared by both clients
 - `tui/term` runs it in a real terminal, fetching pages over HTTP
 - `tui/web` builds it to WebAssembly for the browser, where the `>_` key
-  after the name, or any link ending in `?tui`, switches it on
+  after the name, a backtick, or any link ending in `?tui` switches it on
 
 #### Installing
 
@@ -111,14 +111,15 @@ The [`tui` release] has the terminal client built for Linux and macOS, on x86
 and ARM, rebuilt whenever it changes on `master`. Download the one for your
 machine and unpack it somewhere in your `PATH`.
 
-Or build it from source with Rust. `--locked` keeps the pinned git
-dependencies in `Cargo.lock`:
+Or build it from source with Rust 1.98 or newer. `--locked` keeps the pinned
+git dependencies in `Cargo.lock`:
 
 ```sh
 cargo install --locked --git https://github.com/nixpulvis/nixpulvis.github.io nixpulvis-tui
 ```
 
-Either way, run it with `nixpulvis-tui`.
+Either way, run it with `nixpulvis-tui`. It draws in the terminal's own colors
+when the terminal reports them, and in the site's dark colors when it doesn't.
 
 [`tui` release]: https://github.com/nixpulvis/nixpulvis.github.io/releases/tag/tui
 
@@ -137,7 +138,8 @@ Jekyll doesn't build the browser view. It's Rust compiled to WebAssembly,
 built into `_site/tui` by `make tui`, and Jekyll leaves that folder alone when
 it rebuilds (`keep_files` in `_config.yml`). So build it once and serve as
 usual. Edits to pages show up in the view on reload, since it reads their
-Markdown at runtime. Only changes under `tui/` need another `make tui`.
+Markdown at runtime. Only changes under `tui/`, or to the colors in
+`css/style.css`, which are compiled in, need another `make tui`.
 
 It needs the `wasm32-unknown-unknown` target and the `wasm-bindgen` CLI at the
 version in `Cargo.lock`. If they drift apart, `make tui` stops and says which
@@ -150,19 +152,22 @@ make tui
 bundle exec jekyll serve
 ```
 
-To try changes to [ratmark], [Ratzilla] or Ratatui that aren't pushed yet,
-point `make tui` at local checkouts. Any of them can be left out:
+To try changes to [ratmark], [ratjest], [pulldown-kram], [Ratzilla] or Ratatui
+that aren't pushed yet, point `make tui` at local checkouts. Any of them can be
+left out:
 
 ```sh
-make tui RATMARK=../ratmark RATZILLA=../ratzilla RATATUI=../ratatui
+make tui RATMARK=../ratmark RATJEST=../ratjest PULLDOWN_KRAM=../pulldown-kram \
+         RATZILLA=../ratzilla RATATUI=../ratatui
 ```
 
 Cargo can't build these `--locked`, and rewrites `Cargo.lock` to use them, so
 `make` puts it back after the build.
 
 [ratmark]: https://github.com/nixpulvis/ratmark
+[ratjest]: https://github.com/nixpulvis/ratjest
+[pulldown-kram]: https://github.com/nixpulvis/pulldown-kram
 [Ratzilla]: https://github.com/nixpulvis/ratzilla
-
 [Ratatui]: https://ratatui.rs
 
 ## Publishing
