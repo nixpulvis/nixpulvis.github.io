@@ -236,6 +236,26 @@ impl Colors {
 mod tests {
     use super::*;
 
+    #[test]
+    fn a_terminals_own_colors_are_drawn_as_its_own() {
+        // The terminal draws its text, background and palette itself.
+        let colors = Colors::from_terminal([0xca; 3], [0x16; 3], [[0; 3]; 16]);
+        assert_eq!(
+            [colors.text(), colors.background(), colors.ansi(BLUE)],
+            [Color::Reset, Color::Reset, Color::Indexed(BLUE)],
+        );
+        assert_eq!(colors.theme().syntax_palette, None);
+        // What's mixed from them is RGB either way.
+        assert_eq!(colors.gray(LIGHT), Colors::DARK.gray(LIGHT));
+
+        // The site's fixed colors are all RGB.
+        let colors = Colors::DARK;
+        for color in [colors.text(), colors.background(), colors.ansi(BLUE)] {
+            assert!(matches!(color, Color::Rgb(..)));
+        }
+        assert!(colors.theme().syntax_palette.is_some());
+    }
+
     /// Colors with only a text color and a background.
     fn on(foreground: u8, background: u8) -> Colors {
         Colors {

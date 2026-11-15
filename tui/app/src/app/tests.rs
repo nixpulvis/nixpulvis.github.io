@@ -7,6 +7,8 @@ use ratatui::Terminal;
 use ratatui::backend::TestBackend;
 use ratatui::style::Color;
 
+use ratmark::ratjest::{Axis, Step};
+
 use super::App;
 use crate::colors::{Colors, FAINT};
 use crate::{Effect, Host, Key};
@@ -56,6 +58,13 @@ fn site() -> Vec<(String, String)> {
             "---\ntitle: References\n---\n\nShow [unix](#unix) or [rust](#rust).\n\n<ul>\n\
              <li data-tags=\"unix\">The Unix book</li>\n\
              <li data-tags=\"rust\">The Rust book</li>\n</ul>\n",
+        ),
+        (
+            "/code.md",
+            &format!(
+                "---\ntitle: Code\n---\n\nSome text.\n\n```\nstart {} end\n```\n",
+                "-".repeat(120)
+            ),
         ),
         (
             "/404.md",
@@ -124,6 +133,20 @@ impl Reader {
         let effects = self.app.click(x, y);
         self.take(effects);
         self.serve();
+    }
+
+    /// A step of a gesture over the first place `text` shows on screen,
+    /// `cells` down, or right. Returns whether it moved.
+    fn step(&mut self, text: &str, axis: Axis, cells: isize) -> bool {
+        let Some((column, row)) = self.find(text) else {
+            panic!("{text:?} isn't on screen:\n{}", self.screen());
+        };
+        self.app.apply(Step {
+            axis,
+            cells,
+            column,
+            row,
+        })
     }
 
     /// Answers every fetch, and the ones those lead to.
@@ -269,6 +292,25 @@ fn jumps_to_sections() {
     let screen = reader.screen();
     assert!(screen.contains("The Unix book"));
     assert!(!screen.contains("The Rust book"));
+}
+
+#[test]
+fn gestures_scroll_the_page_and_shift_wide_code() {
+    let mut reader = Reader::open(Host::Terminal, "/ramblings/first");
+    assert!(reader.step("Line 1.", Axis::Vertical, 6));
+    assert!(!reader.screen().contains("Line 1."));
+    // Back at the top it stops, which ends the gesture.
+    assert!(reader.step("Line", Axis::Vertical, -6));
+    assert!(reader.screen().contains("Line 1."));
+    assert!(!reader.step("Line 1.", Axis::Vertical, -6));
+    // Sideways, only code too wide for the page moves.
+    assert!(!reader.step("Line 1.", Axis::Horizontal, 6));
+
+    let mut reader = Reader::open(Host::Terminal, "/code");
+    assert!(!reader.screen().contains("end"));
+    assert!(!reader.step("Some text.", Axis::Horizontal, 200));
+    assert!(reader.step("start", Axis::Horizontal, 200));
+    assert!(reader.screen().contains("end"));
 }
 
 #[test]
