@@ -1,0 +1,48 @@
+/* Always dark, in the shared colors of style.css, with light gray links. */
+:root {
+  color-scheme: dark;
+  --dashed: 1px dashed var(--text);
+}
+
+/* Wide enough for 80 columns of the typewriter font. The font is set here so
+   `ch` measures it, and the header keeps the serif. */
+.container {
+  max-width: 80ch;
+  font-family: "Computer Modern Typewriter", monospace;
+}
+
+footer {
+  display: none;
+}
+
+a {
+  color: var(--text);
+}
+
+header {
+  font-family: "Computer Modern Serif", serif;
+}
+
+blockquote {
+  border-color: var(--black);
+}
+
+.content {
+  white-space: pre-wrap;
+  overflow: auto;
+  padding: 30px 0;
+}
+
+.content p {
+  display: inline-block;
+  margin: 0;
+}
+
+.content pre, .content code {
+  margin: 0;
+}
+
+.content ul, .content ol {
+  margin: 0;
+  padding-left: 28px;
+}
