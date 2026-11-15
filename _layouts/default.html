@@ -52,6 +52,9 @@
     <script defer src="{{ '/js/main.js' | relative_url }}"></script>
     <!-- If the view's script can't load, show the page the head script hid. -->
     <script type="module" src="{{ '/js/tui.js' | relative_url }}?v={{ site.time | date: '%s' }}" onerror="document.documentElement.classList.remove('tui')"></script>
+    {% if page.collection == "ramblings" %}
+      <script defer src="{{ '/js/feedback.js' | relative_url }}"></script>
+    {% endif %}
     {% for script in page.scripts %}
       <script defer src="{{ script | relative_url }}"></script>
     {% endfor %}
