@@ -10,19 +10,23 @@ on:
       - master
     paths:
       - tui/**
+      # Compiled into the app, for its colors.
+      - css/style.css
       - Cargo.toml
       - Cargo.lock
       - .github/workflows/tui.yml
   pull_request:
     paths:
       - tui/**
+      # Compiled into the app, for its colors.
+      - css/style.css
       - Cargo.toml
       - Cargo.lock
       - .github/workflows/tui.yml
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency: tui-${{ github.ref }}
 
@@ -83,6 +87,9 @@ jobs:
     if: github.ref == 'refs/heads/master'
     needs: [check, build]
     runs-on: ubuntu-latest
+    # To replace the release and move its tag.
+    permissions:
+      contents: write
     steps:
       - uses: actions/download-artifact@v4
         with:
