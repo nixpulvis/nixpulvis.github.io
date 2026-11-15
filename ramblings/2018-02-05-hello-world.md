@@ -10,6 +10,10 @@ collection: ramblings
     123 words
     published
     on February 05, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 All things start with a "Hello World".

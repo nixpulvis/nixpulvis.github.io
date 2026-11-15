@@ -10,6 +10,10 @@ collection: ramblings
     534 words
     published
     on August 15, 2025
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 Expressing graphs is a useful thing to be able to do. Most libraries I've seen

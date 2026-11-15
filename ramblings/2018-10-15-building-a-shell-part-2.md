@@ -10,6 +10,10 @@ collection: ramblings
     1645 words
     published
     on October 15, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 This is part 2 of a series I'll be writing on the creation of [`oursh`][oursh],

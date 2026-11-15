@@ -10,6 +10,10 @@ collection: ramblings
     450 words
     published
     on March 24, 2020
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 I've been sheltering in place now for nearly two weeks, which was probably not

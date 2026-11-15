@@ -10,6 +10,10 @@ collection: ramblings
     507 words
     published
     on July 16, 2021
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 > “Physics is like sex: sure, it may give some practical results, but that's

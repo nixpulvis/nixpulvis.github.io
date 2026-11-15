@@ -10,6 +10,10 @@ collection: ramblings
     556 words
     published
     on May 27, 2022
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 I've been thinking about what is _normal_ more and more over the last few

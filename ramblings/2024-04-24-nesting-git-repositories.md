@@ -10,6 +10,10 @@ collection: ramblings
     242 words
     published
     on April 24, 2024
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 So I had an idea last night... what if we could simply nest git repositories

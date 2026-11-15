@@ -11,6 +11,10 @@ collection: ramblings
     804 words
     drafted
     on February 15, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 Let me start by saying that "stealing" WiFi (or anything for that matter) is

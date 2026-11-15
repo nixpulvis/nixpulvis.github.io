@@ -10,6 +10,10 @@ collection: ramblings
     116 words
     published
     on September 29, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 I've had many discussions and heated debates about the use of comments in code.

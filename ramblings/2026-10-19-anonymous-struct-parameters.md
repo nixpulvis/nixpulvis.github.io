@@ -10,6 +10,10 @@ collection: ramblings
     7121 words
     published
     on October 19, 2026
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 There have been a few [recent posts](#4-relating-to-recent-posts) on how Rust
