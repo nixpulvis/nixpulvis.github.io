@@ -46,6 +46,8 @@
   let pending = null;
   let loading = null;
   let script = null;
+  // Whether Hypothesis's sidebar is open, as it last said.
+  let expanded = false;
   // How many public comments the page has, once Hypothesis's API says.
   let count = null;
 
@@ -73,7 +75,13 @@
       groupsAllowlist: [GROUP],
       ...(PHONE.matches && {
         externalContainerSelector: ".comments-panel .frame",
-        onLayoutChange: (layout) => { panel.hidden = !layout.expanded; },
+        // Only when Hypothesis opens or closes, not each time it lays out
+        // again (as when a phone's toolbar hides on scroll), so a panel the
+        // reader closed stays closed.
+        onLayoutChange: (layout) => {
+          if (layout.expanded !== expanded) panel.hidden = !layout.expanded;
+          expanded = layout.expanded;
+        },
       }),
     });
     script = document.createElement("script");
@@ -108,6 +116,7 @@
     script?.remove();
     script = null;
     loading = null;
+    expanded = false;
     unwatchComments();
     panel.hidden = true;
   }
@@ -211,6 +220,8 @@
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
     annotate.click();
+    // Hypothesis may not say it opened, if it thinks it never closed.
+    if (PHONE.matches) panel.hidden = false;
     hide();
   }
 
