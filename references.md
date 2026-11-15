@@ -1,9 +1,7 @@
 ---
 title: References
-layout: default
+layout: page
 ---
-
-# References
 
 {% assign references = site.data.references | sort_natural: "title" %}
 {% assign tags = "" | split: "" %}
@@ -38,7 +36,7 @@ layout: default
 <div class="tagged">
 <nav class="tags">
     <a href="#all" id="all">all</a>
-{%- for tag in ordered -%}
+{% for tag in ordered -%}
     {%- assign count = references | where_exp: "reference", "reference.tags contains tag" | size -%}
     {%- include reference-tag.html tag=tag count=count -%}
 {%- endfor -%}

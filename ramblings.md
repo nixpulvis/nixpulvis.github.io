@@ -1,9 +1,7 @@
 ---
 title: Ramblings
-layout: default
+layout: page
 ---
-
-# Ramblings
 
 Here in lies a collection of words both technical and opinionated. I make no
 promise of complete clearity, nor do I wish to ramble to the point of insanity.

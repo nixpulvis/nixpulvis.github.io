@@ -8,5 +8,8 @@ make fortunes
 
 bundle exec jekyll build "$@"
 
+# The terminal view, which Jekyll keeps in _site/tui.
+make tui
+
 # The site is already built, so stop Pages from running Jekyll over it.
 touch _site/.nojekyll

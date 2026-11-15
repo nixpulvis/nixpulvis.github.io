@@ -6,15 +6,15 @@ module Jekyll
   class FortunesGenerator < Generator
     def generate(site)
       dir = File.join(site.source, 'fortunes')
-      files = Dir.glob(File.join(dir, '[0-9][0-9][0-9][0-9]')).sort.reverse
+      files = Dir.glob(File.join(dir, '[0-9][0-9][0-9][0-9].txt')).sort.reverse
 
       site.data['fortunes'] = files.map do |file|
-        year = File.basename(file)
+        year = File.basename(file, '.txt')
         {
           'year' => year,
-          'path' => "/fortunes/#{year}",
-          'dat' => (File.exist?("#{file}.dat") ? "/fortunes/#{year}.dat" : nil),
-          'entries' => parse(file, "fortunes/#{year}"),
+          'path' => "/fortunes/#{year}.txt",
+          'dat' => (File.exist?("#{file}.dat") ? "/fortunes/#{year}.txt.dat" : nil),
+          'entries' => parse(file, "fortunes/#{year}.txt"),
         }
       end
     end

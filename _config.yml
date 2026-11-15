@@ -25,8 +25,19 @@ tikz:
     \usepackage{tikz-cd}
     \usetikzlibrary{arrows.meta,graphs,positioning,automata}
 
+# The terminal view, built into _site/tui by `make tui`. Keeping it means
+# `jekyll serve` doesn't delete it when it rebuilds.
+keep_files:
+  - .git
+  - .svn
+  - tui
+
 exclude:
   - Makefile
   - README.md
   - TODO-espresso
   - bin/
+  - Cargo.lock
+  - Cargo.toml
+  - target/
+  - tui/
