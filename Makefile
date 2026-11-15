@@ -36,9 +36,13 @@ fortunes/%.dat: fortunes/%
 # Build against local checkouts of the git dependencies instead, to try changes
 # to them that aren't pushed yet, e.g. `make tui RATMARK=../ratmark`. RATATUI
 # is the root of the Ratatui repository. Each one overrides its git source or
-# patch in Cargo.toml, and PULLDOWN_KRAM the one in ratmark's.
+# patch in Cargo.toml, PULLDOWN_KRAM the one in ratmark's, and RATJEST both
+# ours and ratmark's.
 ifdef RATMARK
 LOCAL += --config 'patch."https://github.com/nixpulvis/ratmark".ratmark.path="$(abspath $(RATMARK))"'
+endif
+ifdef RATJEST
+LOCAL += --config 'patch."https://github.com/nixpulvis/ratjest".ratjest.path="$(abspath $(RATJEST))"'
 endif
 ifdef PULLDOWN_KRAM
 LOCAL += --config 'patch."https://github.com/nixpulvis/pulldown-kram".pulldown-kram.path="$(abspath $(PULLDOWN_KRAM))"'

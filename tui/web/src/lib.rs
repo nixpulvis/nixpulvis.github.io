@@ -8,7 +8,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use nixpulvis::{App, Effect, Host, Key};
-use ratmark::gesture;
 use ratzilla::event::{KeyCode, KeyEvent, MouseButton, MouseEventKind};
 use ratzilla::ratatui::Terminal;
 use ratzilla::{CellSized, DomBackend, WebRenderer};
@@ -75,7 +74,7 @@ pub fn start(base: &str, path: &str, screen: web_sys::Element) -> Result<(), JsV
     // so it's measured once.
     let (width, height) = terminal.backend().cell_size_css_px();
     let steps = app.clone();
-    gesture::web::listen(
+    ratjest::web::listen(
         &screen,
         (f64::from(width), f64::from(height)),
         move |step| steps.borrow_mut().apply(step),

@@ -23,7 +23,7 @@ use ratatui::crossterm::event::{
     KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
 };
 use ratatui::crossterm::execute;
-use ratmark::gesture::terminal::Wheel;
+use ratmark::ratjest::terminal::Wheel;
 
 const USAGE: &str = "usage: nixpulvis-tui [PATH] [--url URL]";
 

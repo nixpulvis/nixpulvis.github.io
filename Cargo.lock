@@ -1067,7 +1067,7 @@ name = "nixpulvis-web"
 version = "0.1.0"
 dependencies = [
  "nixpulvis",
- "ratmark",
+ "ratjest",
  "ratzilla",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -1511,21 +1511,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "ratjest"
+version = "0.1.0"
+source = "git+https://github.com/nixpulvis/ratjest#5952cabc4a6561aecca6fce12e0f0489b09ed950"
+dependencies = [
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
 name = "ratmark"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/ratmark#e7c41f451124c3b3f460d0e8b5b2708000d04f65"
+source = "git+https://github.com/nixpulvis/ratmark#5f4b23c1c23ec1e80f58825f9a17ce0759b3db12"
 dependencies = [
  "html5gum",
  "pulldown-cmark",
  "pulldown-kram",
  "ratatui-core",
+ "ratjest",
  "serde",
  "serde-saphyr",
  "syntect",
  "unicode-width",
  "url",
- "wasm-bindgen",
- "web-sys",
 ]
 
 [[package]]
