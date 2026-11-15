@@ -5,6 +5,13 @@ words: 509
 collection: ramblings
 ---
 
+<h2 class="title">A Pot of Brattle</h2>
+<p class="meta">
+    509 words
+    published
+    on February 04, 2023
+</p>
+
 > Be the morning cold or hot, the pot performs roughly the same.
 
 Today I wake up at exactly 9:00am, later than usual, but earlier than expected.
@@ -51,3 +58,4 @@ chalkboard-like chill of the metal cylinders as the petroleum rushes through
 it's cavities.  Much like the caffeine in my blood, the low-octane gasoline
 brings life to the car. We wait for warmth before we set off for the day. A day
 of wondering and exploring.
+

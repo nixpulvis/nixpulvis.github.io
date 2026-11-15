@@ -6,6 +6,13 @@ words: 1199
 collection: ramblings
 ---
 
+<h2 class="title">Keep It To Yourself</h2>
+<p class="meta">
+    1199 words
+    drafted
+    on April 02, 2020
+</p>
+
 Keeping yourself secure in the modern age of digital computers and the internet
 is a daunting task. While I like to think I'm somewhat sophisticated in this
 regard, surely there are flaws in my approach, begging to be exploited and
@@ -238,3 +245,4 @@ contacts/<name> -> <gpg_fingerprint>
 ```
 
 - TODO: Private set of contact names
+

@@ -5,6 +5,12 @@ words: 579
 collection: research
 ---
 
+<h2 class="title">Secure Multi-Party Communication & Rust</h2>
+<p class="meta">
+    579 words
+    written by Nathan Lilienthal
+</p>
+
 > **Abstract:** We show an extension to Rust for secure multi-party computation,
 > named `obliv-rust`. This language allows for N party, M protocol
 > computations, and further allows hybrid embeddings of secure code inside
@@ -113,3 +119,4 @@ schemes.
 
 This is how some research papers handle multiple language embedding, which is
 not too different from multi-party/protocol code.
+

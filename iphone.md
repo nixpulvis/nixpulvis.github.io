@@ -4,6 +4,13 @@ date: '2202-02-23'
 words: 127
 ---
 
+<h2 class="title">Incomplete List of iPhone Problems</h2>
+<p class="meta">
+    127 words
+    published
+    on February 23, 2202
+</p>
+
 - [Headphone Limits](https://discussions.apple.com/thread/252113205)
     - WHAT THE ACTUAL FUCK!
 - Lack of 3.5mm audio jack
@@ -23,5 +30,6 @@ words: 127
     - In my experience, it never understands me anyway; instead it calls people
       random causing anxiety and stress
 - ...
+
 
 

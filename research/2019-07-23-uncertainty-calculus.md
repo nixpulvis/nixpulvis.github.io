@@ -5,6 +5,12 @@ words: 617
 collection: research
 ---
 
+<h2 class="title">(S)MPC & An Uncertain Calculus</h2>
+<p class="meta">
+    617 words
+    written by Nathan Lilienthal
+</p>
+
 > Abstract: Towards a minimal language for multi-party communication and
 > computations. I (we?) define **two** new languages: $$\lambda_\div$$, a
 > language for probabilistic computation, and $$\lambda_o$$ a language for
@@ -132,3 +138,4 @@ $$
 $$
 
 Much more work is clearly needed on this idea...
+

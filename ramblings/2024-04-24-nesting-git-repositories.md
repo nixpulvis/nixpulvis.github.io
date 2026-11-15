@@ -5,6 +5,13 @@ words: 242
 collection: ramblings
 ---
 
+<h2 class="title">Nesting Git Repositories</h2>
+<p class="meta">
+    242 words
+    published
+    on April 24, 2024
+</p>
+
 So I had an idea last night... what if we could simply nest git repositories
 inside each other, without all the added complexity of `git-submodule`?
 
@@ -27,3 +34,4 @@ edge cases and blatant issues with it, but I do think there could be something
 here worth thinking about. People often shy away from using submodules because
 of the overhead they add. So giving a new way to manage nested repositories
 could go a long way for organizing things inside git.
+

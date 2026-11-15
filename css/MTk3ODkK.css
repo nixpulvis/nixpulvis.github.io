@@ -1,14 +1,7 @@
-/* A dark palette, over the shared one in style.css. */
+/* Always dark, in the shared colors of style.css, with light gray links. */
 :root {
-  --text: #cacaca;
-  --background: #161616;
-  --light: #282828;
-  --mid: #ccc;
-  --dashed: 1px dashed var(--mid);
-}
-
-body {
-  background: var(--background);
+  color-scheme: dark;
+  --dashed: 1px dashed var(--text);
 }
 
 /* Wide enough for 80 columns of the typewriter font. The font is set here so
@@ -23,7 +16,7 @@ footer {
 }
 
 a {
-  color: var(--mid);
+  color: var(--text);
 }
 
 header {

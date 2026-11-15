@@ -5,6 +5,13 @@ words: 449
 collection: ramblings
 ---
 
+<h2 class="title">Set Builder Notation</h2>
+<p class="meta">
+    449 words
+    published
+    on March 16, 2020
+</p>
+
 I'm not a fan of set builder notation, and let me explain why...
 
 I mean, it beats a lot of other things mathematicians were probably doing
@@ -73,3 +80,4 @@ One more thing, what about **chained** array comprehensions?
 
 My head hurts looking at this code. Where is `x` bound? Where is `b` bound?
 It's all so unclear, it really makes me wonder...
+

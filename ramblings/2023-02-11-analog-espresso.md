@@ -5,6 +5,13 @@ words: 919
 collection: ramblings
 ---
 
+<h2 class="title">Analog Espresso</h2>
+<p class="meta">
+    919 words
+    published
+    on February 11, 2023
+</p>
+
 This is how I currently make my espresso.
 
 ![Close up of freshly ground coffee](/img/ramblings/2023-02-11-analog-espresso/0.jpeg)
@@ -170,3 +177,4 @@ The afternoon is for straight espresso, "No milk, thanks".
 ![Black and white cat stretched out next to an empty shot glass](/img/ramblings/2023-02-11-analog-espresso/5.jpeg)
 
 Enjoy.
+

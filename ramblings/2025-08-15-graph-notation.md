@@ -5,6 +5,13 @@ words: 534
 collection: ramblings
 ---
 
+<h2 class="title">Graph Notation</h2>
+<p class="meta">
+    534 words
+    published
+    on August 15, 2025
+</p>
+
 Expressing graphs is a useful thing to be able to do. Most libraries I've seen
 in the past give you a way to declare _nodes_ and _edges_ directly. In some
 applications this is the most natural way to express the graph, when edges are
@@ -119,3 +126,4 @@ given me feedback about the difficulty describing ad-hoc edges and arbitrary
 cyclic structures. I'm considering some extensions to make this easier, but
 nothing final yet. I'll try to update this post to point to the implementation
 if/when I finish it.
+

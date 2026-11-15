@@ -2,7 +2,7 @@
 title: Mathematics
 ---
 
-# Mathematics
+<h1 id="mathematics">Mathematics</h1>
 
 > The study of the measurement, properties, and relationships of quantities and
 > sets, using numbers and symbols.
@@ -10,11 +10,12 @@ title: Mathematics
 <ul><li>
             <a href="/math/00-euler">Euler's Identity</a>
             <small>
-                published on October 30, 2019.
+                published on October 30, 2019
             </small>
         </li><li>
             <a href="/math/01-fibonacci">Fibonacci's Sequence</a>
             <small>
-                published on May 10, 2019.
+                published on May 10, 2019
             </small>
         </li></ul>
+

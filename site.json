@@ -24,7 +24,8 @@
     {
       "title": "Music",
       "url": "/musings",
-      "icon": "♪"
+      "icon": "♪",
+      "tui": false
     }
   ],
   "pages": [

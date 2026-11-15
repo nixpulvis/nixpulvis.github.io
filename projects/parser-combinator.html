@@ -1,7 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-baseurl="" data-build="1794772003">
   <head>
     <meta charset="utf-8">
+    <script>
+      // A link ending in `?tui` turns the terminal view on, like the `>_` key
+      // after the name does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>nixpulvis - Parser Combinator</title>
     
@@ -23,12 +38,14 @@
     
     <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/feed.xml" />
     <link rel="stylesheet" type="text/css" href="/css/fonts.css" />
-    <link rel="stylesheet" href="/css/style.css?v=1794151597">
+    <link rel="stylesheet" href="/css/style.css?v=1794772003">
     <link rel="stylesheet" href="/css/syntax.css">
     
     <script defer src="/js/mousetrap.min.js"></script>
     
     <script defer src="/js/main.js"></script>
+    <!-- If the view's script can't load, show the page the head script hid. -->
+    <script type="module" src="/js/tui.js?v=1794772003" onerror="document.documentElement.classList.remove('tui')"></script>
     
   </head>
 
@@ -36,7 +53,9 @@
     <header>
       <img id="lambda" alt="Show photo of Nathan" src="/img/cat-lambda.png" />
       <img id="me" alt="Photo of Nathan" src="/img/me.jpg" class="hidden" />
-      <a href="/" class="identity">nixpulvis</a>
+      <div class="title">
+        <a href="/" class="identity">nixpulvis</a>
+      </div>
       <nav>
         <ul>
           
@@ -70,11 +89,8 @@
 </h2>
 
 <ul class="references">
-
     <li><a href="https://github.com/nixpulvis/parser-combinator">https://github.com/nixpulvis/parser-combinator</a></li>
-
     <li><a href="https://github.com/nixpulvis/parser-combinator/blob/master/lab8.pdf">https://github.com/nixpulvis/parser-combinator/blob/master/lab8.pdf</a></li>
-
 </ul>
 
 <p>Lexers and Parsers are at the core of every language. The main goal is to turn
