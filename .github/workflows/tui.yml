@@ -103,5 +103,5 @@ jobs:
           gh release delete tui --cleanup-tag --yes || true
           gh release create tui nixpulvis-tui-*.tar.gz \
             --target "$GITHUB_SHA" \
-            --title "Terminal client" \
+            --title "TUI" \
             --notes "The terminal client for nixpulvis.com, built from $GITHUB_SHA. See the README to install it."
