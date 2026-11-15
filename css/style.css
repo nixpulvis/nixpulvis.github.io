@@ -475,6 +475,23 @@ figure.tikz {
     cursor: pointer;
   }
 
+  /* Docked along the bottom on touch screens, clear of the phone's own copy
+     menu, which goes above or below the selection. */
+  @media (pointer: coarse) {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+    border: none;
+    border-top: var(--dashed);
+    border-radius: 0;
+    box-shadow: 0 -1px 3px var(--shadow);
+    font-size: 16px;
+  }
+
   @media print {
     display: none;
   }
