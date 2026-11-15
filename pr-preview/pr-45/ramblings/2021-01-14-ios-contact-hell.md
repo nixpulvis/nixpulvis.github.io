@@ -5,6 +5,17 @@ words: 485
 collection: ramblings
 ---
 
+<h2 class="title">iOS Contact Hell</h2>
+<p class="meta">
+    485 words
+    published
+    on January 14, 2021
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 All I want to do is move my contacts to one location.
 
 Seeing as Apple makes things somewhat hard these days, and until I'm running my
@@ -60,3 +71,4 @@ supports multiple accounts.
 In summary, it's best to stick with exporting and managing your contacts on a
 computer. This way you can make use of proper tools, or scripts to fix your
 issues for free.
+

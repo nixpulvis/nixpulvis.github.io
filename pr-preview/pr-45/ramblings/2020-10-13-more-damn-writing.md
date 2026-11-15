@@ -5,6 +5,17 @@ words: 148
 collection: ramblings
 ---
 
+<h2 class="title">More Damn Writing</h2>
+<p class="meta">
+    148 words
+    published
+    on October 13, 2020
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 I realize I've been in a bit of a writers block as of late. I think part of the
 problem can be addressed by simply writing more at all costs. What this means
 exactly, on a day to day basis, I can't be sure yet. If anything this dumb rant
@@ -21,3 +32,4 @@ Perhaps this is also part of my problem...
 
 Good night,  
 my dearest reader
+

@@ -5,6 +5,12 @@ words: 25
 collection: mathematics
 ---
 
+<h2 class="title">Factorials & Triangular Numbers</h2>
+<p class="meta">
+    25 words
+    written by Nathan Lilienthal
+</p>
+
 $$
 \begin{align}
   n! &= \prod_{i=1}^n i \\\\
@@ -19,3 +25,4 @@ $$
       &= \binom{n+1}{2}
 \end{align}
 $$
+

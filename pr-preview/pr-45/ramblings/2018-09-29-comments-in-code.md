@@ -5,6 +5,17 @@ words: 116
 collection: ramblings
 ---
 
+<h2 class="title">Comments in Code</h2>
+<p class="meta">
+    116 words
+    published
+    on September 29, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 I've had many discussions and heated debates about the use of comments in code.
 The conversation is usually geared toward looking for a _rule_. One side
 argues, "Never write comments, code should be self documenting", while I've
@@ -15,3 +26,4 @@ than you want to, or it could mean creating a new function with a descriptive
 name. If you **must** have a rule, here it is. Someone should be able to read
 your code (from top to bottom) and understand what is going on, hopefully
 getting a taste of _why_.
+

@@ -5,6 +5,12 @@ words: 1064
 collection: mathematics
 ---
 
+<h2 class="title">Overview of Mathematics</h2>
+<p class="meta">
+    1064 words
+    written by Nathan Lilienthal
+</p>
+
 ## Overview of Mathematics
 
 Mathematics makes use of symbols and names somewhat liberally, allowing for a
@@ -305,3 +311,4 @@ f(n) =
     -(n+1)/2  & \quad \text{if } n \text{ is odd}
   \end{cases}
 $$
+

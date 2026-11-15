@@ -5,6 +5,17 @@ words: 556
 collection: ramblings
 ---
 
+<h2 class="title">New but not Normal</h2>
+<p class="meta">
+    556 words
+    published
+    on May 27, 2022
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 I've been thinking about what is _normal_ more and more over the last few
 years. Even moreso now, given the "new normal", caused primarily by the
 pandemic. However, nothing about the situation we're in is normal! Therefor,
@@ -65,3 +76,4 @@ of today.
 Onto better times, forever holding the best ideas higher. Strung and strum
 together late into the night, before rest calms. We find ourselves together
 once again in the gradual bright light of morning.
+

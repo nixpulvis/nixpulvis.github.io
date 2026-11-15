@@ -6,6 +6,17 @@ words: 658
 collection: ramblings
 ---
 
+<h2 class="title">Building a Shell - Part 3</h2>
+<p class="meta">
+    658 words
+    drafted
+    on September 13, 2023
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 This is the long awaited part 3 of a series I'm writing on the creation of
 [`oursh`][oursh]. Oursh's goals are to be POSIX compatible, while implementing
 many new concepts on top of a new shell language that will make using the shell
@@ -109,3 +120,4 @@ What about windows?
 [repl]:         https://nixpulvis.com/oursh/oursh/repl
 [termion]:      https://nixpulvis.com/oursh/termion
 [bash-invoke]:  https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Invoking-Bash
+

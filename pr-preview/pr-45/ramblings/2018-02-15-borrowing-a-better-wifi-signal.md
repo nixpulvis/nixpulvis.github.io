@@ -6,6 +6,17 @@ words: 804
 collection: ramblings
 ---
 
+<h2 class="title">"Borrowing" a Better WiFi Signal</h2>
+<p class="meta">
+    804 words
+    drafted
+    on February 15, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 Let me start by saying that "stealing" WiFi (or anything for that matter) is
 wrong, and bad. Please don't do it. But if you happen to find yourself
 "borrowing" someone elses WiFi with permission, i.e. they gave you the password,
@@ -143,3 +154,4 @@ TODO: a bit of info on this.
 
 With an optimal setup, I've heard of people beaming WiFi over a kilometer, so
 this could be fun indeed! Tune in next time...
+

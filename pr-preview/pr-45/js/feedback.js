@@ -44,6 +44,8 @@
   let pending = null;
   let loading = null;
   let script = null;
+  // Whether Hypothesis's sidebar is open, as it last said.
+  let expanded = false;
   // How many public comments the page has, once Hypothesis's API says.
   let count = null;
 
@@ -71,7 +73,13 @@
       groupsAllowlist: [GROUP],
       ...(PHONE.matches && {
         externalContainerSelector: ".comments-panel .frame",
-        onLayoutChange: (layout) => { panel.hidden = !layout.expanded; },
+        // Only when Hypothesis opens or closes, not each time it lays out
+        // again (as when a phone's toolbar hides on scroll), so a panel the
+        // reader closed stays closed.
+        onLayoutChange: (layout) => {
+          if (layout.expanded !== expanded) panel.hidden = !layout.expanded;
+          expanded = layout.expanded;
+        },
       }),
     });
     script = document.createElement("script");
@@ -106,6 +114,7 @@
     script?.remove();
     script = null;
     loading = null;
+    expanded = false;
     unwatchComments();
     panel.hidden = true;
   }
@@ -141,21 +150,23 @@
     return PAGE + "#:~:text=" + text;
   }
 
-  // Centered on the selection, above it, or below it on touch screens, where
-  // the phone's own copy menu goes above (clear of the selection's handle).
+  // Centered above the selection. On touch screens the phone's own copy menu
+  // takes the space around a selection, above or below it, so style.css docks
+  // the menu along the bottom of the screen instead.
   function place(range) {
-    const bounds = range.getBoundingClientRect();
-    const rects = range.getClientRects();
     menu.hidden = false;
+    if (TOUCH.matches) {
+      menu.style.left = menu.style.top = "";
+      return;
+    }
+    const bounds = range.getBoundingClientRect();
+    const first = range.getClientRects()[0] || bounds;
     const left = Math.min(
       Math.max(bounds.left + bounds.width / 2 - menu.offsetWidth / 2, 10),
       document.documentElement.clientWidth - menu.offsetWidth - 10
     );
-    const top = TOUCH.matches
-      ? (rects[rects.length - 1] || bounds).bottom + 24
-      : (rects[0] || bounds).top - menu.offsetHeight - 8;
     menu.style.left = left + window.scrollX + "px";
-    menu.style.top = top + window.scrollY + "px";
+    menu.style.top = first.top + window.scrollY - menu.offsetHeight - 8 + "px";
   }
 
   function hide() {
@@ -207,6 +218,8 @@
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
     annotate.click();
+    // Hypothesis may not say it opened, if it thinks it never closed.
+    if (PHONE.matches) panel.hidden = false;
     hide();
   }
 

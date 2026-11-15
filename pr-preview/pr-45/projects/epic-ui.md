@@ -7,6 +7,16 @@ references:
 collection: projects
 ---
 
+<h2 class="title">
+    <span class="status complete">complete</span>
+    Epic UI
+</h2>
+
+<ul class="references">
+    <li><a href="https://github.com/nixpulvis/EpicUI-2.0">https://github.com/nixpulvis/EpicUI-2.0</a></li>
+    <li><a href="https://github.com/nixpulvis/EUI">https://github.com/nixpulvis/EUI</a></li>
+</ul>
+
 I used to be an avid World of Warcraft player, raiding bosses many times a
 week with my guild. In order to get the most out of my own performance I forked
 an advanced UI replacement addon named [Tukui][tukui] into my own project, I
@@ -169,3 +179,4 @@ owe it all to a little LUA and a lot of help from the members of Tukui.
 
 [tukui]: https://www.tukui.org/
 [wow-api]: http://wowprogramming.com/docs
+

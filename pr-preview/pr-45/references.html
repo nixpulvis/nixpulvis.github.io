@@ -1,7 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-baseurl="/pr-preview/pr-45" data-build="1794773243">
   <head>
     <meta charset="utf-8">
+    <script>
+      // A link ending in `?tui` turns the terminal view on, like the `>_` key
+      // after the name does.
+      // Then hide the page straight away when it's on, rather than flash it
+      // before js/tui.js takes over.
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("tui")) {
+          localStorage.setItem("tui", "on");
+          url.searchParams.delete("tui");
+          history.replaceState(history.state, "", url);
+        }
+        if (localStorage.getItem("tui")) document.documentElement.classList.add("tui");
+      } catch (e) {}
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>nixpulvis - References</title>
     
@@ -23,12 +38,14 @@
     
     <link rel="alternate" type="application/atom+xml" title="nixpulvis - Ramblings" href="/pr-preview/pr-45/feed.xml" />
     <link rel="stylesheet" type="text/css" href="/pr-preview/pr-45/css/fonts.css" />
-    <link rel="stylesheet" href="/pr-preview/pr-45/css/style.css?v=1793983545">
+    <link rel="stylesheet" href="/pr-preview/pr-45/css/style.css?v=1794773243">
     <link rel="stylesheet" href="/pr-preview/pr-45/css/syntax.css">
     
     <script defer src="/pr-preview/pr-45/js/mousetrap.min.js"></script>
     
     <script defer src="/pr-preview/pr-45/js/main.js"></script>
+    <!-- If the view's script can't load, show the page the head script hid. -->
+    <script type="module" src="/pr-preview/pr-45/js/tui.js?v=1794773243" onerror="document.documentElement.classList.remove('tui')"></script>
     
     
   </head>
@@ -37,7 +54,9 @@
     <header>
       <img id="lambda" alt="Show photo of Nathan" src="/pr-preview/pr-45/img/cat-lambda.png" />
       <img id="me" alt="Photo of Nathan" src="/pr-preview/pr-45/img/me.jpg" class="hidden" />
-      <a href="/pr-preview/pr-45/" class="identity">nixpulvis</a>
+      <div class="title">
+        <a href="/pr-preview/pr-45/" class="identity">nixpulvis</a>
+      </div>
       <nav>
         <ul>
           
@@ -67,13 +86,15 @@
 
     <div class="content"><h1 id="references">References</h1>
 
+
 <!-- Picking a tag targets its link, and these rules hide every reference
      without that tag. With no tag picked, everything shows. -->
 <style>.tagged:has(#avr:target) li:not([data-tags~="avr"]) { display: none; }.tagged:has(#bare-metal:target) li:not([data-tags~="bare-metal"]) { display: none; }.tagged:has(#contracts:target) li:not([data-tags~="contracts"]) { display: none; }.tagged:has(#electronics:target) li:not([data-tags~="electronics"]) { display: none; }.tagged:has(#foundations:target) li:not([data-tags~="foundations"]) { display: none; }.tagged:has(#functional:target) li:not([data-tags~="functional"]) { display: none; }.tagged:has(#math:target) li:not([data-tags~="math"]) { display: none; }.tagged:has(#pl:target) li:not([data-tags~="pl"]) { display: none; }.tagged:has(#processes:target) li:not([data-tags~="processes"]) { display: none; }.tagged:has(#racket:target) li:not([data-tags~="racket"]) { display: none; }.tagged:has(#rust:target) li:not([data-tags~="rust"]) { display: none; }.tagged:has(#terminal:target) li:not([data-tags~="terminal"]) { display: none; }.tagged:has(#unicode:target) li:not([data-tags~="unicode"]) { display: none; }.tagged:has(#unix:target) li:not([data-tags~="unix"]) { display: none; }</style>
 
 <div class="tagged">
 <nav class="tags">
-    <a href="#all" id="all">all</a><a href="#pl" id="pl" class="scale-1">pl <small>3</small></a>
+    <a href="#all" id="all">all</a>
+<a href="#pl" id="pl" class="scale-1">pl <small>3</small></a>
 <a href="#functional" id="functional" class="scale-1">functional <small>1</small></a>
 <a href="#contracts" id="contracts" class="scale-1">contracts <small>7</small></a>
 <a href="#foundations" id="foundations" class="scale-2">foundations <small>2</small></a>
@@ -289,6 +310,7 @@
 </span>
     </li></ul>
 </div>
+
 </div>
 
     <footer>

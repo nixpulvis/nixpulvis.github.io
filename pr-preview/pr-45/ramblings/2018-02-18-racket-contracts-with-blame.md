@@ -6,6 +6,17 @@ words: 1710
 collection: ramblings
 ---
 
+<h2 class="title">Racket Contracts With Blame</h2>
+<p class="meta">
+    1710 words
+    drafted
+    on February 18, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 The idea of a contract isn't all that different from a type, since both are
 used to describe the shape of data. However, due to the dynamic nature of
 contracts they can describe much more than just shape. The three main
@@ -357,3 +368,4 @@ delaying execution of the contracts until the function itself returns.
 ### `contract`, `make-contract` and Other Juicy Details
 
 TODO...
+

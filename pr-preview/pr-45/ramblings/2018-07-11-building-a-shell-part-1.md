@@ -5,6 +5,17 @@ words: 1099
 collection: ramblings
 ---
 
+<h2 class="title">Building a Shell - Part 1</h2>
+<p class="meta">
+    1099 words
+    published
+    on July 11, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 A shell is one of the best computer interfaces I've ever used.
 Twas *declarative*, before being declarative was cool. It's
 *keyboard centric*, making it fast, and reliable to use. Sure, a
@@ -211,3 +222,4 @@ variables, job control, user groups, glob syntax, locale, and much more.
 [system]:  https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-system
 [proc]:    https://ruby-doc.org/core-2.2.0/Proc.html
 [trap]:    https://ruby-doc.org/core-2.2.0/Kernel.html#method-i-trap
+

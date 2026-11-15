@@ -5,6 +5,17 @@ words: 507
 collection: ramblings
 ---
 
+<h2 class="title">Why Feynman, Why?</h2>
+<p class="meta">
+    507 words
+    published
+    on July 16, 2021
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 > “Physics is like sex: sure, it may give some practical results, but that's
 > not why we do it.”
 >
@@ -68,3 +79,4 @@ need an out, just say "how come?". These are "how" people, for whatever reason.
 > spinning sphere of methane and ammonia must be silent?” 
 >
 > -- Richard P. Feynman 
+

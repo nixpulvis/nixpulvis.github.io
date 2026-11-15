@@ -6,6 +6,17 @@ words: 1262
 collection: ramblings
 ---
 
+<h2 class="title">Language Of Purpose</h2>
+<p class="meta">
+    1262 words
+    drafted
+    on December 25, 2020
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 I believe language is how we come to understand the world we live in.  While
 the student adopts the languages of their teachers, we must impose our language
 directly upon machines which are constructed from matter found on Earth.  These
@@ -123,3 +134,4 @@ something for their constituents who I would like to see empowered to protect
 user's integrity.  To accomplish this, I see no other way than for an effort to
 be made in industry based on solid foundations I hope to help develop with my
 research one day.
+

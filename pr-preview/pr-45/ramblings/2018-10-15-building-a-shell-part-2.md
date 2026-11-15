@@ -5,6 +5,17 @@ words: 1645
 collection: ramblings
 ---
 
+<h2 class="title">Building a Shell - Part 2</h2>
+<p class="meta">
+    1645 words
+    published
+    on October 15, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 This is part 2 of a series I'll be writing on the creation of [`oursh`][oursh],
 a modern POSIX compatible shell written in Rust. If you haven't read [Part
 1][part1], and want a brief overview of shell terminology and functionality I
@@ -357,3 +368,4 @@ control library `termion`, `nix` and more.
 [basic::Program]:      https://nixpulvis.com/oursh/oursh/program/basic/struct.Program
 [posix::ast::Program]: https://nixpulvis.com/oursh/oursh/program/posix/ast/struct.Program
 [lalrpop]:             https://docs.rs/lalrpop/0.16.0/lalrpop
+

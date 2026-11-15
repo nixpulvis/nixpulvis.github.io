@@ -5,6 +5,17 @@ words: 308
 collection: ramblings
 ---
 
+<h2 class="title">Basement Dreams</h2>
+<p class="meta">
+    308 words
+    published
+    on February 16, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 Sometimes I like to pretend I was around for the settlement of the West. Much
 wonder and excitement must have been felt for the new frontier, and unlike the
 "final" frontier of space, I would have felt a part of the expansion.
@@ -36,4 +47,5 @@ separate from ourselves, and look outwards. We forget the masks we wear after a
 while, and all that remains is real.
 
 🤠🌎
+
 

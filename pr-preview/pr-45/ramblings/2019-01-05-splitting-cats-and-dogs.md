@@ -5,6 +5,17 @@ words: 1225
 collection: ramblings
 ---
 
+<h2 class="title">Splitting Cats and Dogs</h2>
+<p class="meta">
+    1225 words
+    published
+    on January 05, 2019
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
+</p>
+
 Often when you're programming you find the need to split things up a bit. This
 is such a fundamental part of programming that almost every language gives you
 many tools to aid with this. Maybe it's _modules_, _classes_, _impls_, or
@@ -332,3 +343,4 @@ Just try to remember this:
 Hopefully in the process of thinking through how to split up your programs
 you'll discover elegant abstractions, and clean implementations. Or at least as
 clean as a bunch of functions that deal with `poop` can ever be.
+
