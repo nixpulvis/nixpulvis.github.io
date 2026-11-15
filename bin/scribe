@@ -5,7 +5,7 @@
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-file="$root/fortunes/$(date +%Y)"
+file="$root/fortunes/$(date +%Y).txt"
 
 # The draft is removed once it's added, or if it's empty. Otherwise it's kept
 # and its path printed, whether the entry was rejected, the editor failed or
