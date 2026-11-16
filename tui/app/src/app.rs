@@ -13,8 +13,6 @@ use crate::site::Site;
 use crate::{Effect, Host, Key};
 
 mod draw;
-#[cfg(test)]
-mod tests;
 
 /// How many columns `<` and `>` shift wide code by.
 const SHIFT: isize = 8;

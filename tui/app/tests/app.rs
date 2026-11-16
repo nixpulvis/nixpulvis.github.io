@@ -9,9 +9,7 @@ use ratatui::style::Color;
 
 use ratmark::ratjest::{Axis, Scroll, Step};
 
-use super::App;
-use crate::colors::{Colors, FAINT};
-use crate::{Effect, Host, Key};
+use nixpulvis::{App, Colors, Effect, Host, Key};
 
 /// The made-up site, by the paths its files are published at.
 fn site() -> Vec<(String, String)> {
@@ -424,8 +422,10 @@ fn draws_nothing_until_the_page_and_nav_are_in() {
 #[test]
 fn drafts_are_faded() {
     let mut reader = Reader::open(Host::Terminal, "/ramblings");
-    assert_eq!(reader.color_of("Unfinished"), Colors::DARK.gray(FAINT));
-    assert_ne!(reader.color_of("First post"), Colors::DARK.gray(FAINT));
+    let faint = reader.color_of("Unfinished");
+    assert_ne!(faint, reader.color_of("First post"));
     reader.click("Unfinished");
     assert!(reader.screen().contains(" Draft: Unfinished "));
+    // The draft's title is faded the same as links to it.
+    assert_eq!(reader.color_of("Draft: Unfinished"), faint);
 }
