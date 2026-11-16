@@ -1,0 +1,65 @@
+/* Rouge's classes in the shared palette of style.css, colored the way the
+   terminal view colors code: comments muted, constants green, statements
+   red, functions blue, preprocessor magenta and types bright yellow.
+   Everything else is the text color. Code sits on the page or a
+   `.highlight-block`. */
+.highlight {
+  color: var(--text);
+
+  /* Comments, and a shell's prompt. */
+  & :is(.c, .ch, .cd, .cm, .c1, .cs, .gl, .gp) {
+    color: var(--muted);
+  }
+
+  /* Strings, numbers and other constants. */
+  & :is(.kc, .l, .ld, .m, .mb, .mf, .mh, .mi, .il, .mo, .mx, .no,
+        .s, .sa, .sb, .sc, .dl, .sd, .s2, .se, .sh, .sx, .sr, .s1, .ss) {
+    color: var(--green);
+  }
+
+  /* Statements: keywords, operators and tags. */
+  & :is(.k, .kd, .kp, .kr, .kv, .o, .ow, .bp, .nt) {
+    color: var(--red);
+  }
+
+  & :is(.nf, .fm) {
+    color: var(--blue);
+  }
+
+  /* The preprocessor: imports, macros, decorators and attributes. */
+  & :is(.cp, .cpf, .kn, .nd) {
+    color: var(--magenta);
+  }
+
+  /* Types, builtins among them, and HTML's attributes. */
+  & :is(.kt, .nb, .nc, .ne, .na) {
+    color: var(--bright-yellow);
+  }
+
+  & :is(.err, .gr) {
+    color: var(--bright-red);
+  }
+
+  & .gd {
+    color: var(--red);
+    background-color: var(--highlight-red);
+  }
+
+  & .gi {
+    color: var(--green);
+    background-color: var(--highlight-green);
+  }
+
+  & :is(.gh, .gu, .gs) {
+    font-weight: bold;
+  }
+
+  & .ge {
+    font-style: italic;
+  }
+
+  & .ges {
+    font-weight: bold;
+    font-style: italic;
+  }
+}
