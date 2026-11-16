@@ -11,6 +11,10 @@ collection: ramblings
     1710 words
     drafted
     on February 18, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 The idea of a contract isn't all that different from a type, since both are

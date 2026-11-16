@@ -10,6 +10,10 @@ collection: ramblings
     60 words
     published
     on August 25, 2021
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 > There are only two hard things in Computer Science: cache invalidation and naming things.

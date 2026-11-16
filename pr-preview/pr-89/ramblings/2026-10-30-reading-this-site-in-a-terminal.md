@@ -11,6 +11,10 @@ collection: ramblings
     1554 words
     drafted
     on October 30, 2026
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 This site can be read in a terminal now. Click the little `>_` key next to my

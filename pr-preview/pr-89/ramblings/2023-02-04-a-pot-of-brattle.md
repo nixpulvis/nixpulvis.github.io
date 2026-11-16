@@ -10,6 +10,10 @@ collection: ramblings
     509 words
     published
     on February 04, 2023
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 > Be the morning cold or hot, the pot performs roughly the same.

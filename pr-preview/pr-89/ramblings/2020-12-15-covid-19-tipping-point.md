@@ -10,6 +10,10 @@ collection: ramblings
     339 words
     published
     on December 15, 2020
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 It's been about 9 months now since the [pandemic became a reality for me](2020-03-24-covid-19-pandemic).

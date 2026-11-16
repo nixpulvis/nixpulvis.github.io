@@ -13,14 +13,14 @@ you.
     <a href="/pr-preview/pr-89/math/10-overview">Overview of Mathematics</a>
     <small>
         1064 words
-        drafted on October 30, 2026
+        drafted on November 16, 2026
     </small>
 </li>
 <li class="draft">
     <a href="/pr-preview/pr-89/math/03-sum-and-product">Factorials & Triangular Numbers</a>
     <small>
         25 words
-        drafted on October 30, 2026
+        drafted on November 16, 2026
     </small>
 </li>
 <li class="draft">

@@ -11,6 +11,10 @@ collection: ramblings
     1199 words
     drafted
     on April 02, 2020
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 Keeping yourself secure in the modern age of digital computers and the internet

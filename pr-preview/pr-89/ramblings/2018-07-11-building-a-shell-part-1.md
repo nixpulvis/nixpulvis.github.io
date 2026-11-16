@@ -10,6 +10,10 @@ collection: ramblings
     1099 words
     published
     on July 11, 2018
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 A shell is one of the best computer interfaces I've ever used.

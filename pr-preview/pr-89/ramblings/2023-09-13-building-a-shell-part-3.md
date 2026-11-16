@@ -11,6 +11,10 @@ collection: ramblings
     658 words
     drafted
     on September 13, 2023
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 This is the long awaited part 3 of a series I'm writing on the creation of

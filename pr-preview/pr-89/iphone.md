@@ -9,6 +9,10 @@ words: 127
     127 words
     published
     on February 23, 2202
+    <span class="comments-controls" hidden>
+        <button type="button" class="comments-toggle"></button>
+        <button type="button" class="comments-open" hidden>Read comments</button>
+    </span>
 </p>
 
 - [Headphone Limits](https://discussions.apple.com/thread/252113205)
