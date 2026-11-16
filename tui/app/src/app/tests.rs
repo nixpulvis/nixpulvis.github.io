@@ -7,7 +7,7 @@ use ratatui::Terminal;
 use ratatui::backend::TestBackend;
 use ratatui::style::Color;
 
-use ratmark::ratjest::{Axis, Step};
+use ratmark::ratjest::{Axis, Scroll, Step};
 
 use super::App;
 use crate::colors::{Colors, FAINT};
@@ -141,12 +141,14 @@ impl Reader {
         let Some((column, row)) = self.find(text) else {
             panic!("{text:?} isn't on screen:\n{}", self.screen());
         };
-        self.app.apply(Step {
+        let step = Step {
             axis,
             cells,
             column,
             row,
-        })
+        };
+        let area = self.terminal.get_frame().area();
+        self.app.scroll(step, area)
     }
 
     /// Answers every fetch, and the ones those lead to.

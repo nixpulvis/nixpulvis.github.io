@@ -1513,8 +1513,10 @@ dependencies = [
 [[package]]
 name = "ratjest"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/ratjest#5952cabc4a6561aecca6fce12e0f0489b09ed950"
+source = "git+https://github.com/nixpulvis/ratjest#6c0be1fef5120ee5c1133d7f8e47b32a2b5ac1e1"
 dependencies = [
+ "ratatui-core",
+ "ratatui-widgets",
  "wasm-bindgen",
  "web-sys",
 ]
@@ -1522,7 +1524,7 @@ dependencies = [
 [[package]]
 name = "ratmark"
 version = "0.1.0"
-source = "git+https://github.com/nixpulvis/ratmark#5f4b23c1c23ec1e80f58825f9a17ce0759b3db12"
+source = "git+https://github.com/nixpulvis/ratmark#3205e50d7d1c6408fcc19138ec186e0b32cbcd47"
 dependencies = [
  "html5gum",
  "pulldown-cmark",

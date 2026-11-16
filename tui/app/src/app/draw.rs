@@ -189,7 +189,7 @@ impl App {
         let Some(rendered) = page.view.rendered() else {
             return;
         };
-        let scroll = page.view.scroll();
+        let scroll = page.view.offset();
         let faint = Style::new().fg(self.colors.gray(FAINT));
         for link in &rendered.links {
             let Target::Page { path, .. } = Target::resolve(&link.url, &page.path, &self.origin)
@@ -227,7 +227,7 @@ impl App {
         if max == 0 {
             return;
         }
-        let mut state = ScrollbarState::new(max).position(page.view.scroll());
+        let mut state = ScrollbarState::new(max).position(page.view.offset());
         frame.render_stateful_widget(
             Scrollbar::new(ScrollbarOrientation::VerticalRight)
                 .begin_symbol(None)
