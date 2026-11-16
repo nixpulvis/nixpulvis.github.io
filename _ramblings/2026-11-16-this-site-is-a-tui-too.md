@@ -39,19 +39,20 @@ the backend swapped. [Ratzilla] renders the browser with WebAssembly, and
 ![This post in the TUI]({{ '/img/ramblings/2026-11-16-this-site-is-a-tui-too/tui.png' | relative_url }})
 
 The idea comes from Tyler Bloom's [avid-rustacean], which does this for their
-blog. I liked it enough to want it here, but I didn't want to copy it piece by
-piece, so I built it fresh. The main difference is what it renders from. Their
-posts are rendered from an intermediate JSON format, and I wanted to render
-straight from the Markdown. Along the way it grew into a few crates of its own:
+blog. I liked it enough to want it here, but rather than copy it piece by
+piece, I started fresh. The main difference is what it renders from. Their
+posts go through an intermediate JSON format, whereas I wanted to render
+straight from the Markdown. Along the way a few crates fell out of it:
 [`ratmark`] is a Ratatui `StatefulWidget` that draws the Markdown,
-[`pulldown-kram`] reads it the way Jekyll does, and [`ratjest`] does the
+[`pulldown-kram`] reads it the way Jekyll does, and [`ratjest`] handles the
 scrolling. This post is mostly about the parts that turned out to be more
 interesting than I expected.
 
 ## Serving Markdown
 
 Jekyll already turns the site's Markdown into HTML, but parsing that HTML back
-into something a TUI can draw would be backwards. So the site publishes the
+into something a TUI can draw would be a lot of extra work, just to recover
+what was written in Markdown in the first place. So the site publishes the
 Markdown itself. A small Jekyll plugin writes each page's source next to its
 HTML, after Liquid has run but before kramdown, so includes and loops are
 already filled in. Each page goes through its layouts too (everything but the
@@ -59,8 +60,8 @@ outer HTML shell), so the title, date and tags you see in the TUI come from
 the same templates as the web page.
 
 The only other piece is `/site.json`, with the nav and an index of pages,
-titles, dates and word counts. That's the whole API: static files, cacheable,
-and you could read them with `curl` if you wanted.
+titles, dates and word counts. That's the whole API. It's all static files, so
+it caches well, and you can read any of it with plain old `curl`:
 
 ```sh
 curl https://nixpulvis.com/ramblings/2026-11-16-this-site-is-a-tui-too.md
@@ -68,67 +69,67 @@ curl https://nixpulvis.com/ramblings/2026-11-16-this-site-is-a-tui-too.md
 
 ## `ratmark`
 
-Something has to turn that Markdown into Ratatui text, and that's [`ratmark`].
-It parses with [`pulldown-cmark`] and handles the usual CommonMark plus tables,
-footnotes, strikethrough, task lists, definition lists and math. You draw a
-`MarkdownView` like any other Ratatui widget, and its `MarkdownState` keeps the
-document laid out to the current width, tracks scrolling, and remembers where
-every link landed so keyboard focus and clicks work on links in the middle of
-wrapped text.
+[`ratmark`] is what turns that Markdown into Ratatui text. It parses with
+[`pulldown-cmark`] and handles the usual CommonMark, plus tables, footnotes,
+strikethrough, task lists, definition lists and math. You draw a
+`MarkdownView` like any other Ratatui widget. Its `MarkdownState` keeps the
+document laid out for the current width, tracks scrolling, and remembers
+where every link landed, so focusing or clicking a link still works when it's
+wrapped across lines.
 
-Everything beyond that is an opt-in feature, and none of them are on by
-default. It would have been easy to lump them together as "Jekyll support",
-but they're really different things, and plenty of Markdown wants one without
-the others.
+The extras are behind feature flags, all off by default. I was tempted to
+lump them together as "Jekyll support", but they really are separate things,
+and plenty of Markdown only needs one or two of them.
 
 - `front-matter-yaml` and `front-matter-toml` are for the YAML (`---`) or TOML
   (`+++`) block at the top of a document. This isn't a Markdown thing at all,
   it's a static site generator thing. Jekyll reads it for a page's title,
-  date, tags and layout. `ratmark` doesn't look for it while rendering. You
+  date, tags and layout. `ratmark` doesn't look for it while rendering, you
   split it off first, hand the body to `ratmark`, and deserialize the front
-  matter into your own serde type, with [`serde-saphyr`] or [`toml`]. Each
-  format is its own feature, so you only build the parser you need.
+  matter into your own serde type with [`serde-saphyr`] or [`toml`].
 
 - `html` is for raw HTML, which is part of CommonMark itself, so any Markdown
-  might have some. A GitHub README is full of it, with no front matter in sight.
-  Without this feature the HTML is just left out. With it, `ratmark` runs
-  [`html5gum`]'s tokenizer over the tags and keeps what makes sense in a TUI:
-  text, links, emphasis, lists, tables, `<kbd>` and so on. There's no DOM, just
-  a stream of tags, and anything like `<script>` or `<svg>` is skipped.
+  might have some. Without this feature the HTML is just left out. With it,
+  `ratmark` runs [`html5gum`]'s tokenizer over the tags and keeps whatever
+  makes sense in a TUI: text, links, emphasis, lists, tables, `<kbd>` and so
+  on. There's no DOM, just a stream of tags, and things like `<script>` or
+  `<svg>` are skipped.
 
 - `kramdown` is for Markdown written for kramdown, the dialect Jekyll uses,
   which reads a few things differently than CommonMark. It reads with
-  [`pulldown-kram`], which gets its own section below. `* TOC` with `{:toc}`
-  turns into a list of links to the headings, Markdown inside a `markdown="1"`
-  element gets read as Markdown, and attribute lists like `{: #intro .note}`
-  are read off blocks and spans instead of showing up as text. A theme can
-  style elements by class, so the `{:.new-syntax}` after inline code in my
-  [anonymous struct post][anon-struct] picks its color from the theme. It
-  wants `html` on too, since kramdown reads the text inside elements like
-  `<kbd>` as HTML.
+  [`pulldown-kram`] (more on that below). A list tagged with `{:toc}` is
+  replaced by a table of contents linking to each heading. Markdown inside a
+  `markdown="1"` element gets read as Markdown, and attribute lists like
+  `{: #intro .note}` are applied to their blocks and spans instead of showing
+  up as text. A theme can also style elements by class, so the
+  `{:.new-syntax}` after inline code in my [anonymous struct
+  post][anon-struct] picks its color from the theme. It goes hand in hand with
+  `html`, since kramdown treats the text inside elements like `<kbd>` as HTML.
 
 - `syntax` highlights fenced code blocks with [`syntect`]. It uses
   `syntect`'s pure Rust regex engine, so it still builds for wasm.
 
-- `links` puts each link's URL on the cells it covers, which is what makes the
-  real links below work. It's the only feature that needs cell extensions,
-  which aren't in a Ratatui release yet ([ratatui#2854]), though for now the
-  whole crate builds against the [branch][ratatui-cells] that adds them.
+- `links` puts each link's URL on the cells it covers, so the backend can
+  turn those cells into a real link, clickable in a terminal or an `<a>` in
+  the browser ([more on that below](#links)). It's the only feature that needs
+  cell extensions, which aren't in a Ratatui release yet ([ratatui#2854]),
+  though for now the whole crate builds against the [branch][ratatui-cells]
+  that adds them.
 
 - `scroll` makes `MarkdownState` scroll with [`ratjest`], from a wheel, a
-  trackpad or a finger. More on that below too.
+  trackpad or a finger. [More on that below](#scrolling) too.
 
 I've tried hard to keep it a general crate. Whenever something on this site
 rendered badly, the fix went into the site's markup or the site's app, not
 into `ratmark`. A few times I had to revert something that was really just me
 teaching the library about my own CSS.
 
-One fun bit is wide code blocks. A TUI can't really scroll a single block
-sideways, so `ratmark` cuts wide lines off with a `‹` or `›` marker and each
-block keeps its own horizontal offset. Swipe or scroll sideways over a block to
-move just that one, or use `<` and `>` to move the topmost wide block on screen.
-
-Try it on the site's own `Cargo.toml` line for `ratmark`:
+Wide code blocks were a fun one. There's no good way for a TUI to scroll a
+single block sideways, so `ratmark` cuts wide lines off with a `‹` or `›`
+marker, and each block keeps its own horizontal offset. Swipe or scroll
+sideways over a block to move just that one, or use `<` and `>` to move the
+topmost wide block on screen. Here's the site's own `Cargo.toml` entry for
+`ratmark` to try it on:
 
 ```toml
 [workspace.dependencies]
@@ -137,27 +138,27 @@ ratmark = { git = "https://github.com/nixpulvis/ratmark", default-features = fal
 
 ## `pulldown-kram`
 
-`ratmark` used to handle kramdown itself, with a pile of small rewrites and
-special cases. Knowing what kramdown means by a document is really a parser's
-job though, and nothing about it is specific to drawing a TUI, so it moved
-out into its own crate, [`pulldown-kram`].
+Originally `ratmark` handled kramdown itself, with a growing pile of rewrites
+and special cases. But figuring out what kramdown means by a document is
+really the parser's job, and none of it has anything to do with drawing a
+TUI, so I pulled it out into its own crate, [`pulldown-kram`].
 
-It reads kramdown into ordinary `pulldown-cmark` events, each paired with the
-attributes an attribute list gives it. First it lightly rewrites the input
-where kramdown and CommonMark disagree, then `pulldown-cmark` parses the
-result, and then kramdown's extensions are added to the events: attribute
-lists, header ids, definition lists, `$$` math, `markdown="1"` HTML, `{:toc}`
-and so on. Since what comes out is plain `pulldown-cmark` events, anything
-that already renders them keeps working, and can look at the attributes where
-it cares. Each extension can be turned off on its own, and there's an HTML
-writer that writes elements the way kramdown does.
+It reads kramdown into ordinary `pulldown-cmark` events, each paired with
+whatever attributes an attribute list gives it. The input is lightly rewritten
+first, wherever kramdown and CommonMark disagree, then `pulldown-cmark` parses
+it, and finally kramdown's extensions (attribute lists, header ids, definition
+lists, `$$` math, `markdown="1"` HTML, `{:toc}`, etc.) are added to the
+events. Since the output is just `pulldown-cmark` events, existing renderers
+keep working, and can use the attributes if they care to. Each extension can
+be turned off on its own, and there's also an HTML writer that outputs
+elements the same way kramdown does.
 
-The tests are the interesting part. The suite runs kramdown's own test cases,
-plus a set of cases for each extension, and compares `pulldown-kram`'s HTML
-with what kramdown 2.5.2 makes of the same Markdown. A case it doesn't get
-right yet goes in a known failures file, with why. Its test passes while the
-case still fails, so the suite shows what's missing without being red, and it
-fails once the case starts passing, so it comes off the list.
+The test suite is worth a mention. It runs kramdown's own test cases, plus a
+set for each extension, and compares `pulldown-kram`'s HTML against what
+kramdown 2.5.2 generates for the same Markdown. Right now 232 of the 364 cases
+match, about 64%. That's 158 of kramdown's 216, and 74 of `pulldown-kram`'s
+own 148. Cases that don't pass yet are listed in a known failures file, along
+with why.
 
 ## Links
 
@@ -168,84 +169,70 @@ nowhere to put a URL.
 
 There's an open proposal for this, [ratatui#2854], with a branch from
 WeirdBrains, [`multi-char-cells`][ratatui-cells], that adds extensions to
-cells. Its PR, [ratatui#2853], is closed, but I'm building against the branch
-for now, and since `ratmark` depends on it, everything else here does too.
-`ratmark`'s `links` feature puts the URL on each linked cell, the terminal
-client writes it out as an OSC 8 hyperlink, and the browser side wraps those
-cells in `<a>` tags.
+cells. Its PR ([ratatui#2853]) was closed, but I'm building against the branch
+for now. Since `ratmark` depends on it, so does everything else here. With the
+`links` feature, `ratmark` puts the URL on each linked cell, the terminal
+client writes it out as an OSC 8 hyperlink, and the browser wraps those cells
+in `<a>` tags.
 
-That last part needed changes to Ratzilla, so I [forked it][ratzilla-fork].
-Every change sits on its own branch off upstream, so each one can go back as
-its own PR, and they're all merged together into a `site` branch that this
-site builds from. The links are [`hyperlinks`][rz-hyperlinks], which wraps
-each run of cells that share a link in one `<a href>`, behind a `hyperlinks`
-feature, so hovering shows the URL and screen readers see a link.
-
-Two fixes came out of that. Ratzilla replaces its grid element when the
-window changes size, and the key and mouse listeners went with it, so input
-stopped working after a resize. That's
-[`dom-input-after-resize`][rz-input], and `hyperlinks` carries the same
-fixes. Someone else ran into the same bug, [ratzilla#192], and their fix,
-[ratzilla#194], supersedes mine. And clicks were mapped to cells by splitting
-the grid's width between its columns, but the grid is as wide as its parent,
-so a click near the right edge could land a column off.
-[`dom-mouse-cell-size`][rz-mouse] uses the cell size the backend already
-measures instead.
+That last part needed changes to Ratzilla, so I [forked it][ratzilla-fork] and
+added a [`hyperlinks`][rz-hyperlinks] branch. It wraps each run of cells
+sharing a link in a single `<a href>` (behind a `hyperlinks` feature), so
+hovering shows the URL and screen readers see a link.
 
 ## Scrolling
 
-Reading is mostly scrolling, and it's where a TUI in a browser feels most out
-of place. A web page follows your fingers on a trackpad by the pixel and
-keeps gliding after a flick, while a terminal jumps a whole line at a
-time. Getting the view to feel right took two things: drawing fast enough
-that scrolling doesn't stutter, and turning the pixels a trackpad or finger
-moves into whole lines and columns.
+Reading is mostly scrolling, which is exactly where a TUI in the browser feels
+the most out of place. A web page follows your fingers on a trackpad pixel by
+pixel, and keeps gliding after a flick, while a terminal jumps a whole line at
+a time. Getting this to feel right came down to two problems: drawing fast
+enough that scrolling doesn't stutter, and turning the pixels a trackpad or
+finger moves into whole lines and columns.
 
 ### The scroll hitch
 
-The first version scrolled, but on my Mac it was choppy. Not terrible, just
-enough to notice. Ratzilla's DOM backend redrew changed cells through
-`innerHTML`, so the first fix was setting text in place instead, on
-[`dom-text-in-place`][rz-text]. That helped a lot, and I figured that was the
-end of it.
+The first version scrolled, but on my Mac it was a little choppy. Ratzilla's
+DOM backend redrew changed cells through `innerHTML`, so my first fix was to
+set the text in place instead ([`dom-text-in-place`][rz-text]). That helped a
+lot, and I figured that was the end of it.
 
-It wasn't. There was still a little hitch every so often, and I spent a while
-looking at my own code before trying it with my extensions turned off. It
-was smooth. The hitching was my ad blocker. Its content script runs a
+Nope. There was still a little hitch every so often, and I spent way too long
+looking at my own code before trying it with my browser extensions turned off.
+Perfectly smooth. The culprit was my ad blocker, whose content script runs a
 `querySelector` on a timer, and the screen was around sixteen thousand
 `<span>` elements, one per cell. Every pass walked all of them.
 
-None of that was a bug in my code, but it was still my problem, since plenty
-of people run the same blocker. So two more changes went into the fork. Each
-line is now drawn as runs of cells with the same style, which cuts the number
-of elements by about 25x. That went on `dom-text-in-place` too. And the
-backend can now draw inside any element, on
-[`dom-parent-element`][rz-parent], so the site draws inside a shadow root
-where the rest of the page, ad blockers included, doesn't see it change at
-all.
+Technically not my bug, but still my problem, since plenty of people run the
+same blocker. So two more changes went into the fork. First, each line is now
+drawn as runs of cells with the same style, which cuts the number of elements
+by about 25x (this is on `dom-text-in-place` too). Second, the backend can now
+draw inside any element ([`dom-parent-element`][rz-parent]), so the site
+draws inside a shadow root where the rest of the page, ad blockers included,
+doesn't see it change at all.
 
-### A cell at a time
+### Scrolling pixels to cells
 
 Turning pixels into cells takes more than dividing by the size of a cell. A
 slow swipe should still move, a swipe that's a little diagonal shouldn't move
 both ways, and a flick should keep gliding for a bit, slowing down, like a
 page does.
 
-This started out inside `ratmark`, but none of it is about Markdown, so it moved
-out too, into [`ratjest`]. It takes a host's wheel and touch events, adds up
-pixels until there's a whole line or column's worth, and locks each gesture to
-one axis. In a terminal, `terminal::Wheel` takes `crossterm`'s wheel ticks. In
-the browser, its `web` feature listens for wheel and touch events on the
-element the view is drawn in, the same one Ratzilla draws in.
+This started out in `ratmark` too, but it has nothing to do with Markdown, so
+it became its own crate, [`ratjest`]. It takes a host's wheel and touch
+events, adds up pixels until there's a whole line or column's worth, and locks
+each gesture to one axis. In a terminal, `terminal::Wheel` takes `crossterm`'s
+wheel ticks. In the browser, the `web` feature listens for wheel and touch
+events on the element the view is drawn in, the same one Ratzilla draws in.
 
-What it scrolls is a `Scroll`, a trait with one method. It's given a step of
-whole cells and the area the widget was drawn in, scrolls if the step is over
-that area, and says whether anything moved. When nothing does, the gesture
-ends, which also stops a glide. Ratatui's `ListState` and `TableState` are
-`Scroll`s already, and an app with several widgets is one too, by splitting
-its area the way it does to draw and trying each part in turn. With `ratmark`'s
-`scroll` feature `MarkdownState` is a `Scroll` that moves the page, or the wide
-code block under the gesture when it goes sideways.
+What it scrolls is anything implementing `Scroll`, a trait with a single
+method. It gets a step (in whole cells) and the area the widget was drawn in,
+scrolls if the step is over that area, and returns whether anything moved. If
+nothing did, the gesture ends, which also stops a glide. Ratatui's `ListState`
+and `TableState` already implement it, and an app with several widgets can
+too, by splitting its area the same way it does when drawing and trying each
+part in turn. With the `scroll` feature, `MarkdownState` implements `Scroll`,
+moving the page, or the wide code block under the gesture when it goes
+sideways.
 
 ## Colors
 
@@ -256,59 +243,70 @@ mixes the rest of its colors from the terminal's text, background and
 16-color palette. The terminal client asks for those with OSC 10, 11 and 4
 queries, which work over SSH too.
 
-The site's stylesheet is where its colors are defined, and I didn't want a
-second copy of them in Rust that drifts. So the app reads `css/style.css`
-while it compiles. It's a tiny parser of `const fn`s that knows just enough
+The site's colors are defined in its stylesheet, and I didn't want a second
+copy in Rust that would inevitably drift. So the app reads `css/style.css` at
+compile time, with a tiny parser made of `const fn`s that knows just enough
 CSS for the site's custom properties: hex colors, `var()`, `light-dark()` and
-`color-mix(in oklch, ...)`. The dark palette is what it falls back on when a
-terminal doesn't answer. The grays, like the background behind code blocks
-and the borders, are written in the CSS as so much of the text mixed into the
-background, and the app keeps just that share. Then it mixes them in oklch,
-like the browser does, from whatever text and background it's drawn on. If a
-color is missing, or written in a way it can't read, the build fails.
+`color-mix(in oklch, ...)`. The dark palette is the fallback for terminals
+that don't answer. The grays (e.g. code block backgrounds and borders) are
+written in the CSS as some percentage of the text mixed into the background,
+so the app keeps just that percentage, and mixes them in oklch like the
+browser does, from whatever text and background it's actually drawn on. If a
+color is missing, or written in a way the parser doesn't understand, the build
+fails.
 
 In the browser there's no terminal to ask, so the page stands in for one: the
 stylesheet gives Ratzilla its palette, as variables like `--ratzilla-color-4`,
 set to the site's light or dark colors. Ratzilla doesn't read CSS variables
 upstream, so that's another branch in the fork, [`dom-palette`][rz-palette],
-which will go back as its own PR. The app reads the same variables, by
-letting the browser resolve them on a hidden element, and reads them again
-whenever the page switches between light and dark.
+which will go back as its own PR. The app reads the same variables by letting
+the browser resolve them on a hidden element, and reads them again whenever
+the page switches between light and dark.
 
 ## Browser
 
-A TUI inside a web page has to give some things back to the browser.
-Text selection was the first. Dragging across the screen used to grab the
-borders and padding along with the words, so the page text is now the only
-selectable area, and copying keeps the blank lines between paragraphs. That's
-[`dom-selectable-area`][rz-select], where whatever draws tells the backend
-where its text is, and everything else is drawn with `user-select: none`.
-It's built on top of `dom-text-in-place`.
+A TUI inside a web page has to give some things back to the browser. Text
+selection was the first. Dragging across the screen used to grab the borders
+and padding along with the words, so now the page text is the only selectable
+area, and copying keeps the blank lines between paragraphs. This is
+[`dom-selectable-area`][rz-select] (built on top of `dom-text-in-place`),
+which lets whatever's drawing tell the backend where its text is, and
+everything else gets `user-select: none`.
 
-History was the second, and I had strong opinions here. Every link to another
-page on the site is a real page load. The browser owns history, the back
-button is the browser's back button, and `h` just calls `history.back()`. I
-don't like sites that fake navigation with `pushState` and then try to keep
-their own idea of history in sync with the browser's. A page load here is
-cheap anyway, the app is cached and the Markdown is small.
+History was next, and I have pretty strong opinions about this one. Every link
+to another page on the site is a real page load. The browser owns history, the
+back button is the browser's back button, and `h` just calls
+`history.back()`. I don't like sites that fake navigation with `pushState` and
+then try to keep their own idea of history in sync with the browser's. A page
+load here is cheap anyway, since the app is cached and the Markdown is small.
 
-And finally there's the toggle. I went through a few ideas, like a fake
-`$ less foo.md` prompt, a bare glyph in the nav, or making the lambda clickable.
-They were cluttered, looked like they were floating, or were impossible to
-find. The framed `>_` key after my name is small but looks like something you
-can press, which is all it needs to do. The choice sticks between pages, and a
-link ending in `?tui` turns it on for whoever follows it.
+Input needed a couple of fixes in Ratzilla's DOM backend too. It replaces its
+grid element whenever the window changes size, and the key and mouse listeners
+went with it, so input stopped working after a resize. I fixed that on
+[`dom-input-after-resize`][rz-input] (`hyperlinks` carries the same fix), but
+someone else hit the same bug ([ratzilla#192]) and their fix, [ratzilla#194],
+supersedes mine. The other was clicks near the right edge landing a column
+off. Clicks were mapped to cells by dividing the grid's width by its columns,
+but the grid is as wide as its parent, not its cells.
+[`dom-mouse-cell-size`][rz-mouse] uses the measured cell size instead.
+
+Finally, the toggle. I went through a few ideas, like a fake `$ less foo.md`
+prompt, a bare glyph in the nav, or making the lambda clickable. Each was
+either too cluttered, felt like it was floating, or was just impossible to
+find. The framed `>_` key after my name is small, but it looks like something
+you can press, and that's really all it needs. The choice sticks between
+pages, and a link ending in `?tui` turns it on for whoever follows it.
 
 ## What's next
 
-The terminal client is built for Linux and macOS on every change and attached
-to the [`tui` release][tui-release], so you don't need Rust to try it.
+The terminal client gets built for Linux and macOS on every change, and
+attached to the [`tui` release][tui-release].
 
-`pulldown-kram` and `ratjest` only depend on released crates, so they can go to
-crates.io first, and `pulldown-kram`'s 0.1.0 is close. Then `ratmark` can follow
-once cell extensions ([ratatui#2854]) land in a Ratatui release.
+`pulldown-kram` and `ratjest` only depend on released crates, so they can go up
+on crates.io first (`pulldown-kram` 0.1.0 is close). `ratmark` will have to
+wait until cell extensions ([ratatui#2854]) land in a Ratatui release.
 
-And the Ratzilla branches should go upstream:
+I'm also hoping to get the Ratzilla branches upstream:
 
 - [`hyperlinks`][rz-hyperlinks], linked cells as `<a>` elements
   ([PR][rz-hyperlinks-pr])
