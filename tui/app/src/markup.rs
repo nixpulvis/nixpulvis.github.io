@@ -3,10 +3,10 @@
 //! project's status beside its title, so these say the same in text.
 
 /// `body`, a page without its front matter, as the terminal shows it:
-/// without the title the box's border shows instead, with projects'
-/// statuses after their titles, and with drafts' links marked.
+/// without the title the box's border shows instead, and with projects'
+/// statuses after their titles.
 pub(crate) fn adapt(body: &str) -> String {
-    draft_prefixes(&status_after_title(without_title(body)))
+    status_after_title(without_title(body))
 }
 
 /// `markdown` with only the `<li data-tags="…">` items tagged `tag`, or
@@ -81,36 +81,6 @@ fn status_after_title(markdown: &str) -> String {
     out
 }
 
-/// Starts the link in each draft's list item with `Draft: `, like a
-/// draft's own title. The site fades these items, which says the same thing
-/// in a browser.
-fn draft_prefixes(markdown: &str) -> String {
-    let mut out = String::with_capacity(markdown.len());
-    let mut rest = markdown;
-    while let Some(start) = rest.find("<li") {
-        let Some(end) = rest[start..].find('>').map(|i| start + i + 1) else {
-            break;
-        };
-        let tag = &rest[start..end];
-        out.push_str(&rest[..end]);
-        rest = &rest[end..];
-        let draft = tag
-            .split_once("class=\"")
-            .and_then(|(_, classes)| classes.split('"').next())
-            .is_some_and(|classes| classes.split_whitespace().any(|c| c == "draft"));
-        if draft
-            && let Some(a) = rest.find("<a ")
-            && let Some(close) = rest[a..].find('>').map(|i| a + i + 1)
-        {
-            out.push_str(&rest[..close]);
-            out.push_str("Draft: ");
-            rest = &rest[close..];
-        }
-    }
-    out.push_str(rest);
-    out
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -130,39 +100,6 @@ mod tests {
     <p>Text</p>
 </li>
 "#
-        );
-    }
-
-    #[test]
-    fn draft_prefixes() {
-        let markdown = r#"<ul>
-<li class="draft">
-    <a href="/a">A</a>
-</li>
-<li>
-    <a href="/b">B</a>
-</li>
-<li class="project draft">
-    <a class="name" href="/c">C</a>
-</li>
-</ul>"#;
-        assert_eq!(
-            super::draft_prefixes(markdown),
-            r#"<ul>
-<li class="draft">
-    <a href="/a">Draft: A</a>
-</li>
-<li>
-    <a href="/b">B</a>
-</li>
-<li class="project draft">
-    <a class="name" href="/c">Draft: C</a>
-</li>
-</ul>"#
-        );
-        assert_eq!(
-            super::draft_prefixes("<link> <a href=x>y</a>"),
-            "<link> <a href=x>y</a>"
         );
     }
 
