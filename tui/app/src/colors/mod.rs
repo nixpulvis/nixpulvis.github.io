@@ -182,7 +182,7 @@ impl Colors {
     /// color, with weight and underlines doing the work. Code is highlighted
     /// with ratmark's `ansi` theme, in palette colors, drawn as RGB like
     /// everything else when these aren't the terminal's own.
-    pub fn theme(&self) -> Theme {
+    pub(crate) fn theme(&self) -> Theme {
         let text = Style::new().fg(self.text());
         let bold = text.add_modifier(Modifier::BOLD);
         let muted = Style::new().fg(self.ansi(BRIGHT_BLACK));

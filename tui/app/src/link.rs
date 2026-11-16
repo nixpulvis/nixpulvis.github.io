@@ -17,13 +17,14 @@ pub(crate) enum Target {
 
 impl Target {
     /// Where `href`, found on the page at `current`, leads. `origin` is the
-    /// site's address, so absolute links back to it stay inside.
+    /// site's address, without a trailing `/`, so absolute links back to it
+    /// stay inside.
     pub(crate) fn resolve(href: &str, current: &str, origin: &str) -> Self {
         let href = href.trim();
         if let Some(anchor) = href.strip_prefix('#') {
             return Target::Anchor(anchor.to_owned());
         }
-        let href = match href.strip_prefix(origin.trim_end_matches('/')) {
+        let href = match href.strip_prefix(origin) {
             Some(rest) if !origin.is_empty() && (rest.is_empty() || rest.starts_with('/')) => {
                 if rest.is_empty() {
                     "/"
@@ -55,34 +56,10 @@ impl Target {
                 path: format!("{}{stem}", &path[..path.len() - last.len()]),
                 anchor,
             },
-            Some(_) => Target::External(format!("{}{path}", origin.trim_end_matches('/'))),
+            Some(_) => Target::External(format!("{origin}{path}")),
             None => Target::Page { path, anchor },
         }
     }
-}
-
-/// The page a host starts on at `address`, and its `#` section. It may be an
-/// old `.html` address.
-pub(crate) fn page_at(address: &str) -> (String, Option<String>) {
-    match Target::resolve(address, "/", "") {
-        Target::Page { path, anchor } => (path, anchor),
-        _ => (address.to_owned(), None),
-    }
-}
-
-/// Where a page's Markdown is published: `/foo` at `/foo.md`, and `/foo/` at
-/// `/foo/index.md`.
-pub(crate) fn source(path: &str) -> String {
-    if path.ends_with('/') {
-        format!("{path}index.md")
-    } else {
-        format!("{path}.md")
-    }
-}
-
-/// Whether two paths are the same page, with or without a trailing slash.
-pub(crate) fn same_page(a: &str, b: &str) -> bool {
-    a.trim_end_matches('/') == b.trim_end_matches('/')
 }
 
 /// Resolves `.` and `..` in an absolute path.
@@ -162,18 +139,5 @@ mod tests {
             resolve("/resume.pdf", "/"),
             Target::External("https://nixpulvis.com/resume.pdf".into())
         );
-    }
-
-    #[test]
-    fn start_pages() {
-        assert_eq!(page_at("/ramblings/x.html"), ("/ramblings/x".into(), None));
-        assert_eq!(page_at("/a#b"), ("/a".into(), Some("b".into())));
-    }
-
-    #[test]
-    fn sources() {
-        assert_eq!(source("/"), "/index.md");
-        assert_eq!(source("/fortunes/"), "/fortunes/index.md");
-        assert_eq!(source("/ramblings/x"), "/ramblings/x.md");
     }
 }

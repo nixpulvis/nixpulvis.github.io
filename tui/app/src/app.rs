@@ -7,7 +7,7 @@ use ratmark::ratjest::{Scroll, Step};
 use web_time::Instant;
 
 use crate::colors::Colors;
-use crate::link::{self, Target};
+use crate::link::Target;
 use crate::page::Page;
 use crate::site::Site;
 use crate::{Effect, Host, Key};
@@ -66,6 +66,28 @@ impl Loading {
             not_found: false,
         }
     }
+
+    /// The page a host starts on at `address`, with its `#` section. It may
+    /// be an old `.html` address.
+    fn at(address: &str) -> Self {
+        match Target::resolve(address, "/", "") {
+            Target::Page { path, anchor } => Self::new(path, anchor),
+            _ => Self::new(address.to_owned(), None),
+        }
+    }
+
+    /// Where its Markdown is published: `/foo` at `/foo.md`, `/foo/` at
+    /// `/foo/index.md`, and the site's 404 page, under `base`, in place of a
+    /// page that isn't there.
+    fn source(&self, base: &str) -> String {
+        if self.not_found {
+            format!("{base}/404.md")
+        } else if self.path.ends_with('/') {
+            format!("{}index.md", self.path)
+        } else {
+            format!("{}.md", self.path)
+        }
+    }
 }
 
 /// Where the nav, the close button and the page's text landed in the last
@@ -90,10 +112,10 @@ impl App {
     /// A new app in `host`, drawn in `colors`, for the site at `origin`,
     /// like `https://nixpulvis.com`, under the path `base`, `/` except in
     /// previews. Call [`App::start`] next.
-    pub fn new(host: Host, colors: Colors, origin: impl Into<String>, base: &str) -> Self {
+    pub fn new(host: Host, colors: Colors, origin: &str, base: &str) -> Self {
         Self {
             host,
-            origin: origin.into().trim_end_matches('/').to_owned(),
+            origin: origin.trim_end_matches('/').to_owned(),
             base: base.trim_end_matches('/').to_owned(),
             site: None,
             page: None,
@@ -116,9 +138,8 @@ impl App {
 
     /// Starts on the page at `path`, which may have a `#` section.
     pub fn start(&mut self, path: &str) -> Vec<Effect> {
-        let (path, anchor) = link::page_at(path);
         let mut effects = vec![Effect::FetchSite(format!("{}/site.json", self.base))];
-        effects.extend(self.load(Loading::new(path, anchor)));
+        effects.extend(self.load(Loading::at(path)));
         effects
     }
 
@@ -166,7 +187,7 @@ impl App {
         } else {
             markdown
         };
-        let (mut page, error) = Page::new(path, self.url(path), &markdown);
+        let (mut page, error) = Page::new(loading.path, self.url(path), &markdown);
         if error.is_some() {
             self.message = error;
         }
@@ -229,14 +250,6 @@ impl App {
             Some(url) => self.follow(&url),
             None => Vec::new(),
         }
-    }
-
-    /// Whether the app is still fetching what its first frame needs, the
-    /// first page and the site's index for the nav. Until they arrive, or
-    /// fail to, it draws only its background, rather than flash a
-    /// half-drawn screen.
-    fn starting(&self) -> bool {
-        self.site.is_none() || self.page.is_none() && self.loading.is_some()
     }
 
     /// Where the page's text was drawn in the last frame, for hosts that
@@ -303,11 +316,7 @@ impl App {
     }
 
     fn load(&mut self, loading: Loading) -> Vec<Effect> {
-        let source = if loading.not_found {
-            format!("{}/404.md", self.base)
-        } else {
-            link::source(&loading.path)
-        };
+        let source = loading.source(&self.base);
         let path = loading.path.clone();
         self.loading = Some(loading);
         vec![Effect::FetchPage { path, source }]

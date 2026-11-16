@@ -117,19 +117,48 @@ mod tests {
 
     #[test]
     fn status_after_title() {
-        let markdown = "<li class=\"project\">\n    <span class=\"status complete\">complete</span>\n    <a class=\"name\" href=\"/projects/epic-ui\">Epic UI</a>\n    <p>Text</p>\n</li>\n";
+        let markdown = r#"<li class="project">
+    <span class="status complete">complete</span>
+    <a class="name" href="/projects/epic-ui">Epic UI</a>
+    <p>Text</p>
+</li>
+"#;
         assert_eq!(
             super::status_after_title(markdown),
-            "<li class=\"project\">\n    <a class=\"name\" href=\"/projects/epic-ui\">Epic UI</a> <small>complete</small>\n    <p>Text</p>\n</li>\n"
+            r#"<li class="project">
+    <a class="name" href="/projects/epic-ui">Epic UI</a> <small>complete</small>
+    <p>Text</p>
+</li>
+"#
         );
     }
 
     #[test]
     fn draft_prefixes() {
-        let markdown = "<ul>\n<li class=\"draft\">\n    <a href=\"/a\">A</a>\n</li>\n<li>\n    <a href=\"/b\">B</a>\n</li>\n<li class=\"project draft\">\n    <a class=\"name\" href=\"/c\">C</a>\n</li>\n</ul>";
+        let markdown = r#"<ul>
+<li class="draft">
+    <a href="/a">A</a>
+</li>
+<li>
+    <a href="/b">B</a>
+</li>
+<li class="project draft">
+    <a class="name" href="/c">C</a>
+</li>
+</ul>"#;
         assert_eq!(
             super::draft_prefixes(markdown),
-            "<ul>\n<li class=\"draft\">\n    <a href=\"/a\">Draft: A</a>\n</li>\n<li>\n    <a href=\"/b\">B</a>\n</li>\n<li class=\"project draft\">\n    <a class=\"name\" href=\"/c\">Draft: C</a>\n</li>\n</ul>"
+            r#"<ul>
+<li class="draft">
+    <a href="/a">Draft: A</a>
+</li>
+<li>
+    <a href="/b">B</a>
+</li>
+<li class="project draft">
+    <a class="name" href="/c">Draft: C</a>
+</li>
+</ul>"#
         );
         assert_eq!(
             super::draft_prefixes("<link> <a href=x>y</a>"),
@@ -139,13 +168,29 @@ mod tests {
 
     #[test]
     fn drops_the_layouts_title() {
-        let body =
-            "\n<h2 class=\"title\">\n    Hi\n</h2>\n\n<ul class=\"references\"></ul>\n\nText";
+        let body = r#"
+<h2 class="title">
+    Hi
+</h2>
+
+<ul class="references"></ul>
+
+Text"#;
         assert_eq!(
             without_title(body),
-            "\n\n<ul class=\"references\"></ul>\n\nText"
+            r#"
+
+<ul class="references"></ul>
+
+Text"#
         );
-        let body = "\n<h2 class=\"title\">Hi</h2>\n<p class=\"meta\">\n    7 words\n</p>\n\nText";
+        let body = r#"
+<h2 class="title">Hi</h2>
+<p class="meta">
+    7 words
+</p>
+
+Text"#;
         assert_eq!(without_title(body), "\n\nText");
         assert_eq!(without_title("# Not a layout's\n"), "# Not a layout's\n");
     }

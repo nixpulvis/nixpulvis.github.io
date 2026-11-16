@@ -12,9 +12,9 @@ use web_time::Duration;
 
 use super::App;
 use crate::Host;
-use crate::colors::{BORDER, BRIGHT_BLACK, Colors, FAINT, YELLOW};
-use crate::link::{Target, same_page};
-use crate::page::Page;
+use crate::colors::{BORDER, BRIGHT_BLACK, FAINT, YELLOW};
+use crate::link::Target;
+use crate::page::{Page, same_page_path};
 
 /// How long a notice shows before the key hints come back.
 const NOTICE_TIME: Duration = Duration::from_secs(3);
@@ -50,6 +50,14 @@ impl App {
         }
         self.draw_header(frame, column(header));
         self.draw_page(frame, column(body));
+    }
+
+    /// Whether the app is still fetching what its first frame needs, the
+    /// first page and the site's index for the nav. Until they arrive, or
+    /// fail to, it draws only its background, rather than flash a
+    /// half-drawn screen.
+    fn starting(&self) -> bool {
+        self.site.is_none() || self.page.is_none() && self.loading.is_some()
     }
 
     /// The line at the bottom. The page loading, messages and notices always
@@ -98,7 +106,7 @@ impl App {
             let width = Span::raw(&item.label).width() as u16;
             let style = if i == 0 {
                 Style::new().fg(colors.text()).bold()
-            } else if same_page(current, &item.path) {
+            } else if same_page_path(current, &item.path) {
                 Style::new()
                     .fg(colors.ansi(YELLOW))
                     .add_modifier(Modifier::UNDERLINED)
@@ -163,11 +171,11 @@ impl App {
         let named = self
             .nav()
             .iter()
-            .any(|item| item.names_page && same_page(&page.path, &item.path));
+            .any(|item| item.names_page && same_page_path(&page.path, &item.path));
         let block = if named {
             block
         } else {
-            block.title(page_title(page, self.colors).centered())
+            block.title(self.page_title(page).centered())
         };
         // Inside the corners, with a space either side.
         match page.meta(usize::from(width).saturating_sub(4)) {
@@ -178,6 +186,25 @@ impl App {
             ),
             None => block,
         }
+    }
+
+    /// A page's title for the top of its box, with a project's status after
+    /// it. Drafts are dimmed, like they are on the site.
+    fn page_title(&self, page: &Page) -> Line<'static> {
+        let colors = self.colors;
+        let (title, style) = if page.draft {
+            (
+                format!(" Draft: {} ", page.title),
+                Style::new().fg(colors.gray(FAINT)),
+            )
+        } else {
+            (format!(" {} ", page.title), Style::new().fg(colors.text()))
+        };
+        let status = page
+            .status
+            .as_ref()
+            .map(|s| Span::styled(format!("{s} "), Style::new().fg(colors.ansi(BRIGHT_BLACK))));
+        Line::from_iter(std::iter::once(Span::styled(title, style.bold())).chain(status))
     }
 
     /// Fades the links to drafts, like drafts in the site's lists, on the
@@ -239,24 +266,6 @@ impl App {
             &mut state,
         );
     }
-}
-
-/// A page's title for the top of its box, with a project's status after
-/// it. Drafts are dimmed, like they are on the site.
-fn page_title(page: &Page, colors: Colors) -> Line<'static> {
-    let (title, style) = if page.draft {
-        (
-            format!(" Draft: {} ", page.title),
-            Style::new().fg(colors.gray(FAINT)),
-        )
-    } else {
-        (format!(" {} ", page.title), Style::new().fg(colors.text()))
-    };
-    let status = page
-        .status
-        .as_ref()
-        .map(|s| Span::styled(format!("{s} "), Style::new().fg(colors.ansi(BRIGHT_BLACK))));
-    Line::from_iter(std::iter::once(Span::styled(title, style.bold())).chain(status))
 }
 
 /// The middle of `area`, as wide as a page's box, so the nav lines up with it.

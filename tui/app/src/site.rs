@@ -2,6 +2,8 @@
 
 use serde::Deserialize;
 
+use crate::page::same_page_path;
+
 /// What the app needs from the index: the nav, and which pages are drafts.
 #[derive(Debug, Clone, Default, Deserialize)]
 pub(crate) struct Site {
@@ -22,7 +24,7 @@ impl Site {
     pub(crate) fn is_draft(&self, path: &str) -> bool {
         self.pages
             .iter()
-            .any(|p| p.draft && crate::link::same_page(&p.url, path))
+            .any(|p| p.draft && same_page_path(&p.url, path))
     }
 }
 
@@ -34,7 +36,7 @@ pub(crate) struct Nav {
     /// Shown in place of the title, like `λ`.
     pub icon: Option<String>,
     /// False for pages that only work in a browser.
-    #[serde(default = "yes")]
+    #[serde(default = "shown_in_tui")]
     tui: bool,
 }
 
@@ -46,7 +48,9 @@ struct Listing {
     draft: bool,
 }
 
-fn yes() -> bool {
+/// The default for [`Nav::tui`]: a page is shown unless `site.json` says
+/// `"tui": false`.
+fn shown_in_tui() -> bool {
     true
 }
 

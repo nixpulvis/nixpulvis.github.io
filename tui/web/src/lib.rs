@@ -31,7 +31,7 @@ pub fn start(base: &str, path: &str, screen: web_sys::Element) -> Result<(), JsV
         .unwrap_or_default();
     // The switch is remembered, so each page the browser loads opens in the
     // view again.
-    let mut app = App::new(Host::Browser, colors::page_colors(), origin, base);
+    let mut app = App::new(Host::Browser, colors::page_colors(), &origin, base);
     let effects = app.start(path);
     let app: Shared = Rc::new(RefCell::new(app));
     carry_out(&app, effects);

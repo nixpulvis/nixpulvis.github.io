@@ -10,7 +10,7 @@ pub(crate) struct Page {
     pub path: String,
     /// Its full address, like `https://nixpulvis.com/ramblings`, for links
     /// that work outside the app.
-    pub url: String,
+    url: String,
     /// The page before any tag filter, once one has replaced `view`.
     unfiltered: Option<MarkdownState>,
     pub title: String,
@@ -29,7 +29,7 @@ impl Page {
     /// The page at `path`, with the full address `url`, from its Markdown,
     /// and what went wrong reading its front matter, if anything. Front
     /// matter that doesn't fit leaves the page with its defaults.
-    pub fn new(path: &str, url: String, markdown: &str) -> (Self, Option<String>) {
+    pub(crate) fn new(path: String, url: String, markdown: &str) -> (Self, Option<String>) {
         let (front_matter, body) = ratmark::front_matter::FrontMatter::split(markdown);
         let (front, error) = match front_matter.map(|f| f.deserialize::<FrontMatter>()) {
             None => (FrontMatter::default(), None),
@@ -40,13 +40,13 @@ impl Page {
             ),
         };
         let page = Self {
-            path: path.to_owned(),
+            title: front.title.unwrap_or_else(|| path.clone()),
+            path,
             // The view only gets the body, so a tag filter never meets the
             // front matter again.
             view: view(&url, markup::adapt(body)),
             url,
             unfiltered: None,
-            title: front.title.unwrap_or_else(|| path.to_owned()),
             date: front.date.map(|d| long_date(&d).unwrap_or(d)),
             draft: front.draft,
             words: front.words,
@@ -58,7 +58,7 @@ impl Page {
     /// Goes to the section `anchor` names. On a page of tagged items, like
     /// the references, a tag's link shows only the items with that tag
     /// instead, as the site does with CSS.
-    pub fn jump(&mut self, anchor: &str) {
+    pub(crate) fn jump(&mut self, anchor: &str) {
         let source = self.unfiltered.as_ref().unwrap_or(&self.view).markdown();
         match markup::filter_tagged(source, anchor) {
             Some(markdown) => {
@@ -76,7 +76,7 @@ impl Page {
     /// The line under a post, worded like the site's, as in `7121 words
     /// published on October 19, 2026`, or a shorter wording when that's
     /// wider than `width`, dropping the word count first.
-    pub fn meta(&self, width: usize) -> Option<String> {
+    pub(crate) fn meta(&self, width: usize) -> Option<String> {
         let verb = if self.draft { "drafted" } else { "published" };
         let mut wordings = Vec::new();
         if let Some(words) = &self.words {
@@ -120,6 +120,11 @@ struct FrontMatter {
     status: Option<String>,
 }
 
+/// Whether two paths are the same page, with or without a trailing slash.
+pub(crate) fn same_page_path(a: &str, b: &str) -> bool {
+    a.trim_end_matches('/') == b.trim_end_matches('/')
+}
+
 /// `markdown` ready to draw, for the page at `url`.
 fn view(url: &str, markdown: String) -> MarkdownState {
     MarkdownState::new(markdown).with_link_base(url)
@@ -156,7 +161,7 @@ mod tests {
     use super::*;
 
     fn load(markdown: &str) -> Page {
-        Page::new("/x", "https://nixpulvis.com/x".into(), markdown).0
+        Page::new("/x".into(), "https://nixpulvis.com/x".into(), markdown).0
     }
 
     #[test]
@@ -191,7 +196,7 @@ mod tests {
     #[test]
     fn bad_front_matter_is_reported() {
         let markdown = "---\ntitle: [a]\n---\n\nhi";
-        let (page, error) = Page::new("/x", "https://nixpulvis.com/x".into(), markdown);
+        let (page, error) = Page::new("/x".into(), "https://nixpulvis.com/x".into(), markdown);
         assert_eq!(page.title, "/x");
         let expected = ratmark::front_matter::FrontMatter::split(markdown)
             .0
