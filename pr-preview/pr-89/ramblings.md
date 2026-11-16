@@ -24,10 +24,10 @@ you.
     </small>
 </li>
 <li class="draft">
-    <a href="/pr-preview/pr-89/ramblings/2026-10-30-reading-this-site-in-a-terminal">Reading this Site in a Terminal</a>
+    <a href="/pr-preview/pr-89/ramblings/2026-11-16-this-site-is-a-tui-too">This Site is a TUI too</a>
     <small>
-        1554 words
-        drafted on October 30, 2026
+        2730 words
+        drafted on November 16, 2026
     </small>
 </li>
 <li>

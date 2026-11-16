@@ -317,11 +317,11 @@
       "url": "/ramblings/2026-10-19-anonymous-struct-parameters"
     },
     {
-      "title": "Reading this Site in a Terminal",
-      "date": "2026-10-30",
+      "title": "This Site is a TUI too",
+      "date": "2026-11-16",
       "collection": "ramblings",
       "draft": true,
-      "url": "/ramblings/2026-10-30-reading-this-site-in-a-terminal"
+      "url": "/ramblings/2026-11-16-this-site-is-a-tui-too"
     },
     {
       "title": "Secure Multi-Party Communication & Rust",
