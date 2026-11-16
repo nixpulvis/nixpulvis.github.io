@@ -2,7 +2,7 @@
 
 use ratatui::layout::Rect;
 use ratmark::Theme;
-use ratmark::ratjest::Step;
+use ratmark::ratjest::{Scroll, Step};
 // Like std's, but also works in the browser.
 use web_time::Instant;
 
@@ -233,13 +233,6 @@ impl App {
         }
     }
 
-    /// Scrolls, or shifts the code block too wide for the page under the
-    /// gesture, one [`Step`] of a wheel or touch gesture. Returns whether it
-    /// moved, which it doesn't at the end.
-    pub fn apply(&mut self, step: Step) -> bool {
-        self.page.as_mut().is_some_and(|page| page.view.step(step))
-    }
-
     /// Whether the app is still fetching what its first frame needs, the
     /// first page and the site's index for the nav. Until they arrive, or
     /// fail to, it draws only its background, rather than flash a
@@ -287,7 +280,7 @@ impl App {
                 if let Some(page) = &self.page {
                     self.history.push(Visit {
                         path: page.path.clone(),
-                        scroll: page.view.scroll(),
+                        scroll: page.view.offset(),
                     });
                 }
                 self.load(Loading::new(path, anchor))
@@ -344,5 +337,16 @@ impl App {
     /// The full address of the site's page at `path`.
     fn url(&self, path: &str) -> String {
         format!("{}{path}", self.origin)
+    }
+}
+
+/// A wheel or touch gesture scrolls the page, or shifts the code block too
+/// wide for it under the gesture. The page is all there is to scroll, so a
+/// gesture anywhere on the screen, `area`, scrolls it.
+impl Scroll for App {
+    fn scroll(&mut self, step: Step, area: Rect) -> bool {
+        self.page
+            .as_mut()
+            .is_some_and(|page| page.view.scroll(step, area))
     }
 }

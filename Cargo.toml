@@ -29,3 +29,4 @@ ratzilla = { git = "https://github.com/nixpulvis/ratzilla", branch = "site" }
 ratatui = { git = "https://github.com/WeirdBrains/ratatui", branch = "multi-char-cells" }
 ratatui-core = { git = "https://github.com/WeirdBrains/ratatui", branch = "multi-char-cells" }
 ratatui-crossterm = { git = "https://github.com/WeirdBrains/ratatui", branch = "multi-char-cells" }
+ratatui-widgets = { git = "https://github.com/WeirdBrains/ratatui", branch = "multi-char-cells" }

@@ -63,7 +63,7 @@ impl Page {
         match markup::filter_tagged(source, anchor) {
             Some(markdown) => {
                 let mut filtered = view(&self.url, markdown);
-                filtered.scroll_to(self.view.scroll());
+                filtered.scroll_to(self.view.offset());
                 let shown = std::mem::replace(&mut self.view, filtered);
                 // Keep the view the first filter replaced, the whole page.
                 // Later ones replace a filtered view.

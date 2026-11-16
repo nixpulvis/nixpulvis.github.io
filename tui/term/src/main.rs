@@ -23,6 +23,7 @@ use ratatui::crossterm::event::{
     KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
 };
 use ratatui::crossterm::execute;
+use ratatui::layout::Rect;
 use ratmark::ratjest::terminal::Wheel;
 
 const USAGE: &str = "usage: nixpulvis-tui [PATH] [--url URL]";
@@ -88,11 +89,11 @@ fn run(
                 Effect::Quit => return Ok(()),
             }
         }
-        terminal.draw(|frame| app.draw(frame))?;
+        let area = terminal.draw(|frame| app.draw(frame))?.area;
         effects.extend(fetcher.deliver(app));
         // Often enough to draw what arrives, and to clear old notices.
         if event::poll(Duration::from_millis(50))? {
-            effects.extend(input(app, &mut wheel, event::read()?));
+            effects.extend(input(app, &mut wheel, event::read()?, area));
         }
     }
 }
@@ -206,8 +207,8 @@ impl Fetcher {
     }
 }
 
-/// What a terminal event does to the app.
-fn input(app: &mut App, wheel: &mut Wheel, event: Event) -> Vec<Effect> {
+/// What a terminal event does to the app, drawn in `area`.
+fn input(app: &mut App, wheel: &mut Wheel, event: Event, area: Rect) -> Vec<Effect> {
     match event {
         Event::Key(key) if key.kind != KeyEventKind::Release => match translate(key) {
             Some(key) => app.key(key),
@@ -225,7 +226,7 @@ fn input(app: &mut App, wheel: &mut Wheel, event: Event) -> Vec<Effect> {
                 MouseEventKind::ScrollLeft => (-1, 0),
                 _ => return Vec::new(),
             };
-            wheel.tick(column, row, ticks, |step| app.apply(step));
+            wheel.tick(column, row, ticks, app, area);
             Vec::new()
         }
         _ => Vec::new(),

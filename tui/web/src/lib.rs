@@ -73,12 +73,8 @@ pub fn start(base: &str, path: &str, screen: web_sys::Element) -> Result<(), JsV
     // Measured by the backend from the view's font, which is fixed in CSS,
     // so it's measured once.
     let (width, height) = terminal.backend().cell_size_css_px();
-    let steps = app.clone();
-    ratjest::web::listen(
-        &screen,
-        (f64::from(width), f64::from(height)),
-        move |step| steps.borrow_mut().apply(step),
-    )?;
+    let cell = (f64::from(width), f64::from(height));
+    ratjest::web::listen(&screen, cell, app.clone())?;
     follow_links_in_app(&screen)?;
     colors::follow_color_scheme(&app)?;
 
